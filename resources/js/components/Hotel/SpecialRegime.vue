@@ -79,10 +79,7 @@ import DateTimePicker from "../DateTimePicker/DateTimePicker";
 export default {
   name: "SpecialRegime",
   created() {
-    if (
-      this.objArrCompo.start_period != null &&
-      this.objArrCompo.final_period != null
-    ) {
+    if (this.objArrCompo.start_period != null && this.objArrCompo.final_period != null) {
       this.propStartDate = {
         info: "Start",
         prop: this.objArrCompo.start_period,

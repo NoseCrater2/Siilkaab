@@ -3,7 +3,6 @@
     <v-card class="pa-2" outlined tile>
       <!--Contenido del card-->
       <!--DIRECCION-->
-      <div v-if="hotel!==null">
         <v-banner single-line>
           <div class="flexed">
             <v-icon class="iconsInformation" left>mdi-email</v-icon>
@@ -61,7 +60,6 @@
             <v-text-field v-model="computedManagerName" label="Nombre de gerente" required></v-text-field>
           </v-col>
         </v-row>
-      </div>
     </v-card>
   </div>
 </template>

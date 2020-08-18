@@ -1,7 +1,6 @@
 <template>
   <div>
     <v-card class="pa-2" outlined tile>
-      <div v-if="hotel!==null">
         <!--Contenido del card-->
         <!--PRINCIPAL-->
         <v-banner single-line>
@@ -64,7 +63,6 @@
             ></v-text-field>
           </v-col>
         </v-row>
-      </div>
     </v-card>
   </div>
 </template>

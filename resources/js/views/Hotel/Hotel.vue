@@ -22,26 +22,38 @@
                 ></v-text-field>
               </div>
               <div v-if="iditemsListOptions===0 && chargeView===true">
-                <Information></Information>
+                <div v-if="hotel!==null">
+                  <Information></Information>
+                </div>
               </div>
 
               <div v-if="iditemsListOptions===1 && chargeView===true">
-                <Configuration></Configuration>
+                <div v-if="hotel!==null">
+                  <Configuration></Configuration>
+                </div>
               </div>
 
               <div v-if="iditemsListOptions===2 && chargeView===true">
-                <Contact></Contact>
+                <div v-if="hotel!==null">
+                  <Contact></Contact>
+                </div>
               </div>
 
               <div v-if="iditemsListOptions===3 && chargeView===true">
-                <Condition></Condition>
+                <div v-if="hotel!==null">
+                  <Condition></Condition>
+                </div>
               </div>
 
               <div v-if="iditemsListOptions===4 && chargeView===true">
-                <Regime></Regime>
+                <div v-if="hotel!==null">
+                  <Regime></Regime>
+                </div>
               </div>
               <div v-if="iditemsListOptions===5 && chargeView===true">
-                <AditionalInfo></AditionalInfo>
+                <div v-if="hotel!==null">
+                  <AditionalInfo></AditionalInfo>
+                </div>
               </div>
             </v-col>
           </v-row>

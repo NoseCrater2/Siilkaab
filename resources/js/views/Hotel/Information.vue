@@ -3,7 +3,6 @@
     <v-card class="pa-2" outlined tile>
       <!--Contenido del card-->
       <!--PRINCIPAL-->
-      <div v-if="hotel!==null">
         <v-banner single-line>
           <div class="flexed">
             <v-icon class="iconsInformation" left>mdi-information</v-icon>
@@ -67,7 +66,6 @@
             <MarkdownCompo containerType="Information"></MarkdownCompo>
           </v-col>
         </div>
-      </div>
     </v-card>
   </div>
 </template>
