@@ -15,9 +15,7 @@ const HotelModule = {
         regimes: null,
         restaurants: null,
         pools: null,
-        aditionalInfo: null,
-        contentInformation: "", //Esta es la variable que utilizara el Markdown TipTap (MarkdownCompo.vue)
-        contentConditions: ""
+        aditionalInfo: null
     },
     getters: {
         getAssignHotels(state) {
@@ -25,7 +23,6 @@ const HotelModule = {
         }
     },
     mutations: {
-
         //Se reinician los estados (principalmente por el problema del router-link)
         setReinicialized(state) {
             (state.iditemsListOptions = 0),
@@ -39,9 +36,7 @@ const HotelModule = {
                 (state.regimes = null),
                 (state.restaurants = null),
                 (state.pools = null),
-                (state.aditionalInfo = null),
-                (state.contentInformation = ""),
-                (state.contentConditions = "");
+                (state.aditionalInfo = null);
         },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
@@ -49,23 +44,13 @@ const HotelModule = {
         },
         setHotel(state, payload) {
             state.hotel = payload;
-            state.contentInformation = payload.LargeText;
         },
         setHotels(state, payload) {
             state.hotels = payload;
         },
 
-        editHotel(state,hotel){
-            state.allhotels.map(function(currentHotel){
-              if(currentHotel.id === hotel.id){
-                Object.assign(currentHotel,hotel);
-              }
-            });
-          },
-
         setAllHotels(state, payload) {
             state.allhotels = payload;
-            
         },
         setAssignHotels(state, payload) {
             state.assignHotels = payload;
@@ -88,7 +73,6 @@ const HotelModule = {
         },
         setConditions(state, payload) {
             state.conditions = payload;
-            state.contentConditions = payload.cancelation_text;
         },
         setRegimes(state, payload) {
             state.regimes = payload;
@@ -102,37 +86,42 @@ const HotelModule = {
         setAditionalInfo(state, payload) {
             state.aditionalInfo = payload;
         },
-        //Metodo que guarda el estado de las variables usadas en el Markdown mientras el hotel este configurandose
-        setContents(state, objContents) {
-            if (objContents.info === "Information") {
-                state.contentInformation = objContents.fullText;
-            }
-            if (objContents.info === "Conditions") {
-                state.contentConditions = objContents.fullText;
-            }
+
+        postEditHotel(state, hotel) {
+            state.hotels.map(function(currentHotel) {
+                if (currentHotel.id === hotel.id) {
+                    Object.assign(currentHotel, hotel);
+                }
+            });
         },
+
+        editHotel(state, hotel) {
+            state.allhotels.map(function(currentHotel) {
+                if (currentHotel.id === hotel.id) {
+                    Object.assign(currentHotel, hotel);
+                }
+            });
+        },
+
         deleteHotel(state, deletedHotel) {
             deletedHotel.forEach(currentHotel => {
-            let h = state.allhotels.find((allhotel => allhotel.id === currentHotel))
-            state.allhotels.splice(state.allhotels.indexOf(h),1)
+                let h = state.allhotels.find(
+                    allhotel => allhotel.id === currentHotel
+                );
+                state.allhotels.splice(state.allhotels.indexOf(h), 1);
             });
-           
-          },
+        }
     },
     actions: {
-
-        getHotels: async function ({ commit, state }){
-            if(state.allhotels.length === 0){
-                const request =  await axios
-                .get("/api/hotels");
-                const allhotels = request.data.data
-                commit('setAllHotels',allhotels)
-            }else{
-                
-                return state.allhotels
-            } 
-    
-          },
+        getHotels: async function({ commit, state }) {
+            if (state.allhotels.length === 0) {
+                const request = await axios.get("/api/hotels");
+                const allhotels = request.data.data;
+                commit("setAllHotels", allhotels);
+            } else {
+                return state.allhotels;
+            }
+        },
 
         getHotel: async function({ commit }, id) {
             try {
@@ -177,9 +166,7 @@ const HotelModule = {
                 let configuration = request.data.data;
                 //console.log(typeof(configuration))
                 commit("setConfiguration", configuration);
-            } catch (error) {
-                
-            }
+            } catch (error) {}
         },
         getContacts: async function({ commit }, id) {
             try {
@@ -211,7 +198,9 @@ const HotelModule = {
         getRestaurants: async function({ commit }, idHotel) {
             try {
                 const request = await axios.get("/api/restaurants");
-                let restaurants = request.data.data.filter(element=> element.hotel_id === idHotel );
+                let restaurants = request.data.data.filter(
+                    element => element.hotel_id === idHotel
+                );
                 //console.log(typeof(configuration))
                 commit("setRestaurants", restaurants);
             } catch (error) {}
@@ -219,7 +208,9 @@ const HotelModule = {
         getPools: async function({ commit }, idHotel) {
             try {
                 const request = await axios.get("/api/pools");
-                let pools = request.data.data.filter(element=> element.hotel_id === idHotel );
+                let pools = request.data.data.filter(
+                    element => element.hotel_id === idHotel
+                );
                 //console.log(typeof(configuration))
                 commit("setPools", pools);
             } catch (error) {}
@@ -237,7 +228,6 @@ const HotelModule = {
             try {
                 const request = await axios.get(`/api/adminhotels/`);
                 let hotels = request.data.data;
-
                 //console.log(typeof(configuration))
                 commit("setHotels", hotels);
             } catch (error) {}
@@ -247,7 +237,7 @@ const HotelModule = {
             try {
                 const request = await axios.get(`/api/hotels_users/${id}`);
 
-                let assignHotels= request.data.data;
+                let assignHotels = request.data.data;
 
                 //console.log(typeof(configuration))
 
@@ -263,43 +253,60 @@ const HotelModule = {
                         hotels[1]
                     );
                 }
-
                 //let assignHotels= request.data.data;
 
                 // commit("setAssignHotels", assignHotels);
             } catch (error) {
                 console.log("An error has ocurred");
             }
-
         },
 
-        deleteHotels: async function ({ commit},ids){
-            try {
-              const request = await axios
-              .post("/api/deletehotels/",ids)
-             commit('deleteHotel',request.data);
-             // commit('setStatus',request.status);
-            } catch (error) {
-             // commit('setStatus',error.response.status);
+        postEditHotel: async function({ commit }, newHotel) {
+            let formDataHotel = new FormData();
+
+            for (let attrib in newHotel) {
+                formDataHotel.append(attrib, newHotel[attrib]);
             }
-          },
+            
+            formDataHotel.append("_method", "put");
 
-          editHotel: async function ({ commit},newHotel){
             try {
-              const request = await axios
-              .put("/api/hotels/"+newHotel.id,newHotel)
-              commit('editHotel',request.data.data);
-             // commit('setStatus',request.status);
+                const request = await axios.post(
+                    `/api/hotels/${newHotel.id}`,
+                    formDataHotel
+                );
+                console.log(request.data.data);
+                commit("postEditHotel", request.data.data);
+                // commit('setStatus',request.status);
             } catch (error) {
-              commit('setErrors',error.response)
-              commit('setStatus',error.response.status);
+                commit("setErrors", error.response.data);
+                commit("setStatus", error.response.status);
             }
-          },
+        },
 
+        editHotel: async function({ commit }, newHotel) {
+            try {
+                const request = await axios.put(
+                    "/api/hotels/" + newHotel.id,
+                    newHotel
+                );
+                commit("editHotel", request.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrors", error.response);
+                commit("setStatus", error.response.status);
+            }
+        },
 
-
-
+        deleteHotels: async function({ commit }, ids) {
+            try {
+                const request = await axios.post("/api/deletehotels/", ids);
+                commit("deleteHotel", request.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                // commit('setStatus',error.response.status);
+            }
         }
-
     }
+};
 export default HotelModule;

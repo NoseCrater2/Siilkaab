@@ -14,34 +14,6 @@
             <v-expansion-panels focusable accordion multiple>
               <v-expansion-panel>
                 <v-expansion-panel-header color="#b2b2b2">
-                  <strong>Informacion de propiedad</strong>
-                </v-expansion-panel-header>
-                <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
-                          <strong>Numero de habitaciones</strong>
-                        </span>
-                        <v-text-field class="ml-auto" v-model="aditionalInfo.num_rooms" required></v-text-field>
-                      </v-card>
-                    </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
-                          <strong>Numero de pisos</strong>
-                        </span>
-                        <v-text-field class="ml-auto" v-model="aditionalInfo.num_floors" required></v-text-field>
-                      </v-card>
-                    </v-col>
-                  </v-row>
-                </v-expansion-panel-content>
-              </v-expansion-panel>
-            </v-expansion-panels>
-            <br />
-            <v-expansion-panels focusable accordion multiple>
-              <v-expansion-panel>
-                <v-expansion-panel-header color="#b2b2b2">
                   <strong>Servicios destacados</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>

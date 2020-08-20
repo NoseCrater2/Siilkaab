@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-banner single-line>
-      <v-btn small color="info" class="white--text">
+      <v-btn small color="info" class="white--text" @click="saveChanges()">
         <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
       </v-btn>
       <v-btn small color="grey" class="white--text">
@@ -12,19 +12,32 @@
       </v-btn>
 
       <template v-slot:actions>
-        <v-icon id="iconHotel" left>mdi-domain</v-icon>
         <h3>{{title}}</h3>
+        <v-icon id="iconHotel">mdi-domain</v-icon>
       </template>
     </v-banner>
   </div>
 </template>
 
 <script>
+import { mapState, mapActions } from "vuex";
+
 export default {
   name: "ButtonActionsSup",
+  computed: {
+    ...mapState({
+      hotel: (state) => state.HotelModule.hotel,
+    }),
+  },
+  methods: {
+    ...mapActions(["postEditHotel"]),
+    saveChanges() {
+      this.postEditHotel(this.hotel);
+    },
+  },
   props: {
-    title: String
-  }
+    title: String,
+  },
 };
 </script>
 

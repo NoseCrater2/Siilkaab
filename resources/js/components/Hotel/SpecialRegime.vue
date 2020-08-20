@@ -9,12 +9,12 @@
         </v-col>
         <!--MENU DESDE-->
         <v-col cols="12" md="4">
-          <DateTimePicker :dates="getStartDate"></DateTimePicker>
+          <DateTimePicker :dates="getStartDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </v-col>
 
         <!--MENU HASTA-->
         <v-col cols="12" md="4">
-          <DateTimePicker :dates="getFinalDate"></DateTimePicker>
+          <DateTimePicker :dates="getFinalDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </v-col>
       </v-row>
       <v-col cols="12" md="5">
@@ -315,6 +315,16 @@ export default {
     removeCompo(id) {
       this.$emit("removeCompo", id);
     },
+    sendNewHour(newHour, info){
+      if(info === "Start"){
+        this.objArrCompo.start_period = newHour+":00";
+        this.propStartDate.prop = this.objArrCompo.start_period
+      }
+      if(info === "Final"){
+        this.objArrCompo.final_period = newHour+":00";
+        this.propFinalDate.prop = this.objArrCompo.final_period
+      }
+    }
   },
   components: {
     DateTimePicker,
