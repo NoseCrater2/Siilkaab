@@ -27,12 +27,20 @@ export default {
   computed: {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
+      configuration: (state) => state.HotelModule.configuration,
+      contacts: (state) => state.HotelModule.contacts,
+      conditions: (state) => state.HotelModule.conditions,
+      regimes: (state) => state.HotelModule.regimes,
     }),
   },
   methods: {
-    ...mapActions(["postEditHotel"]),
+    ...mapActions(["postEditHotel", "putEditConfiguration", "putEditContacts", "putEditConditions", "putEditRegimes"]),
     saveChanges() {
       this.postEditHotel(this.hotel);
+      this.putEditConfiguration(this.configuration);
+      this.putEditContacts(this.contacts);
+      this.putEditConditions(this.conditions);
+      this.putEditRegimes({newRegimes: this.regimes, currentHotelId: this.hotel.id, currentRegimes: this.hotel.idRegime});
     },
   },
   props: {
