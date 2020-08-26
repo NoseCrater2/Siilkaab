@@ -123,6 +123,10 @@ const HotelModule = {
             state.conditions = conditions;
         },
 
+        putEditAditionalInfo(state, aditionalInfo) {
+            state.aditionalInfo = aditionalInfo;
+        },
+
         editHotel(state, hotel) {
             state.allhotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
@@ -468,6 +472,27 @@ const HotelModule = {
                 commit("setStatus", error.response.status);
             }
         },
+
+        putEditAditionalInfo: async function({ commit }, newAditionalInfo) {
+            try {
+                //Eliminamos las propiedades que no es necesario agregar en la peticion AXIOS
+                //Eliminamos el nombre del hotel
+                delete newAditionalInfo.hotel;
+                //Eliminamos el id del hotel
+                delete newAditionalInfo.hotel_id;
+                const requestEditAditionalInfo = await axios.put(
+                    `/api/amenities/${newAditionalInfo.id}`,
+                    newAditionalInfo
+                );
+                console.log(requestEditAditionalInfo.data.data)
+                commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrors", error.response.data);
+                commit("setStatus", error.response.status);
+            }
+        },
+
 
         editHotel: async function({ commit }, newHotel) {
             try {

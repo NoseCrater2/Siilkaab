@@ -658,9 +658,6 @@ export default {
         if (this.aditionalInfo.spa == "paid") {
           this.ddwnSpaModel = "De Pago";
         }
-        if (this.aditionalInfo.spa == "flag") {
-          this.ddwnSpaModel = "Flag";
-        }
       }
       if (this.aditionalInfo.water_park != null) {
         if (this.aditionalInfo.water_park == "free") {
@@ -668,9 +665,6 @@ export default {
         }
         if (this.aditionalInfo.water_park == "paid") {
           this.ddwnAcuaticModel = "De Pago";
-        }
-        if (this.aditionalInfo.water_park == "flag") {
-          this.ddwnAcuaticModel = "Flag";
         }
       }
       if (this.aditionalInfo.beach != null) {
@@ -680,19 +674,13 @@ export default {
         if (this.aditionalInfo.beach == "in front") {
           this.ddwnBeachModel = "En frente";
         }
-        if (this.aditionalInfo.beach == "flag") {
-          this.ddwnBeachModel = "Flag";
-        }
       }
       if (this.aditionalInfo.romantic_dinners != null) {
         if (this.aditionalInfo.romantic_dinners == "free") {
           this.ddwnRomanticDModel = "Gratis";
         }
         if (this.aditionalInfo.romantic_dinners == "paid") {
-          this.ddwnRomanticDModel = "De pago";
-        }
-        if (this.aditionalInfo.romantic_dinners == "flag") {
-          this.ddwnRomanticDModel = "Flag";
+          this.ddwnRomanticDModel = "De Pago";
         }
       }
       if (this.aditionalInfo.touristic_tour != null) {
@@ -700,10 +688,7 @@ export default {
           this.ddwnTouristicTModel = "Gratis";
         }
         if (this.aditionalInfo.touristic_tour == "paid") {
-          this.ddwnTouristicTModel = "De pago";
-        }
-        if (this.aditionalInfo.touristic_tour == "flag") {
-          this.ddwnTouristicTModel = "Flag";
+          this.ddwnTouristicTModel = "De Pago";
         }
       }
       if (this.aditionalInfo.daily_housekipping != null) {
@@ -711,10 +696,7 @@ export default {
           this.ddwnDailyHModel = "Gratis";
         }
         if (this.aditionalInfo.daily_housekipping == "paid") {
-          this.ddwnDailyHModel = "De pago";
-        }
-        if (this.aditionalInfo.daily_housekipping == "flag") {
-          this.ddwnDailyHModel = "Flag";
+          this.ddwnDailyHModel = "De Pago";
         }
       }
       this.swAirConditionedModel = this.aditionalInfo.air_conditioned;
@@ -756,7 +738,7 @@ export default {
       this.swNoSmokingModel = this.aditionalInfo.no_smoking;
       this.swPetFriendlyModel = this.aditionalInfo.pet_friendly;
       this.swPetHouseModel = this.aditionalInfo.pet_house;
-      this.swPetBasketModel = this.aditionalInfo.PetBasket;
+      this.swPetBasketModel = this.aditionalInfo.pet_basket;
       this.swOnlyAdultsModel = this.aditionalInfo.only_adults;
       this.swSanitizedRoomsModel = this.aditionalInfo.sanitized_rooms;
       this.swBridalSuiteModel = this.aditionalInfo.bridal_suite;
@@ -774,17 +756,17 @@ export default {
   },
   data() {
     return {
-      spaItems: ["Gratis", "De Pago", "Flag"],
+      spaItems: ["Gratis", "De Pago"],
       ddwnSpaModel: null,
-      acuaticItems: ["Gratis", "De Pago", "Flag"],
+      acuaticItems: ["Gratis", "De Pago"],
       ddwnAcuaticModel: null,
-      beachItems: ["Privada", "En frente", "Flag"],
+      beachItems: ["Privada", "En frente"],
       ddwnBeachModel: null,
-      romanticDItems: ["Gratis", "De Pago", "Flag"],
+      romanticDItems: ["Gratis", "De Pago"],
       ddwnRomanticDModel: null,
-      touristicTItems: ["Gratis", "De Pago", "Flag"],
+      touristicTItems: ["Gratis", "De Pago"],
       ddwnTouristicTModel: null,
-      dailyHItems: ["Gratis", "De Pago", "Flag"],
+      dailyHItems: ["Gratis", "De Pago"],
       ddwnDailyHModel: null,
       swAirConditionedModel: null,
       swNoSmokeRoomsModel: null,
@@ -859,9 +841,6 @@ export default {
         if (this.ddwnSpaModel == "De Pago") {
           this.aditionalInfo.spa = "paid";
         }
-        if (this.ddwnSpaModel == "Flag") {
-          this.aditionalInfo.spa = "flag";
-        }
         return this.ddwnSpaModel;
       },
     },
@@ -876,9 +855,6 @@ export default {
         }
         if (this.ddwnAcuaticModel == "De Pago") {
           this.aditionalInfo.water_park = "paid";
-        }
-        if (this.ddwnAcuaticModel == "Flag") {
-          this.aditionalInfo.water_park = "flag";
         }
         return this.ddwnAcuaticModel;
       },
@@ -895,9 +871,6 @@ export default {
         if (this.ddwnBeachModel == "En frente") {
           this.aditionalInfo.beach = "in front";
         }
-        if (this.ddwnBeachModel == "Flag") {
-          this.aditionalInfo.beach = "flag";
-        }
         return this.ddwnBeachModel;
       },
     },
@@ -912,9 +885,6 @@ export default {
         }
         if (this.ddwnRomanticDModel == "De Pago") {
           this.aditionalInfo.romantic_dinners = "paid";
-        }
-        if (this.ddwnRomanticDModel == "Flag") {
-          this.aditionalInfo.romantic_dinners = "flag";
         }
         return this.ddwnRomanticDModel;
       },
@@ -931,9 +901,6 @@ export default {
         if (this.ddwnTouristicTModel == "De Pago") {
           this.aditionalInfo.touristic_tour = "paid";
         }
-        if (this.ddwnTouristicTModel == "Flag") {
-          this.aditionalInfo.touristic_tour = "flag";
-        }
         return this.ddwnTouristicTModel;
       },
     },
@@ -948,9 +915,6 @@ export default {
         }
         if (this.ddwnDailyHModel == "De Pago") {
           this.aditionalInfo.daily_housekipping = "paid";
-        }
-        if (this.ddwnDailyHModel == "Flag") {
-          this.aditionalInfo.daily_housekipping = "flag";
         }
         return this.ddwnDailyHModel;
       },
@@ -1352,7 +1316,7 @@ export default {
       },
       set(model) {
         this.swPetBasketModel = model;
-        this.aditionalInfo.PetBasket = this.swPetBasketModel;
+        this.aditionalInfo.pet_basket = this.swPetBasketModel;
         return this.swPetBasketModel;
       },
     },
