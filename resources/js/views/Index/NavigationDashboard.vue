@@ -185,7 +185,7 @@ export default {
             {
               icon: "mdi-account-cash",
               text: "Ajustes de Pago",
-              //route:"/paypal",
+              route:"/payment-options",
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #7a429b; padding-left: 3px"

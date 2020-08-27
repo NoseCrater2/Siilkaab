@@ -23,6 +23,7 @@ class PaymentController extends Controller
        $rules = [
            'value' => 'required|numeric|min:3',
            'currency' => 'required|exists:currencies,code',
+           'payee' => 'required|email',
            'platform' => 'required|exists:platforms,id'
        ];
 
@@ -48,17 +49,18 @@ class PaymentController extends Controller
             ->withErrors('You cancelled the payment');
     }
   
-    public function approval()
+    public function approval(Request $request)
     {
-        if(session()->has('paymentPlatformId')){
-            $paymentPlatform = $this->paymentPlatformResolver->resolveService(session()->get('paymentPlatformId'));
-
-            return $paymentPlatform->handleApproval();
-        }
        
-        return redirect()
-            ->route('payments')
-            ->withErrors('We cannot retrieve your payment platform. Try again, please.');
+      
+            $paymentPlatform = $this->paymentPlatformResolver->resolveService($request["paymentPlatformID"]);
+
+            return $paymentPlatform->handleApproval($request["orderID"]);
+      
+       
+        // return redirect()
+        //     ->route('payments')
+        //     ->withErrors('We cannot retrieve your payment platform. Try again, please.');
       
     }
 }

@@ -31,6 +31,7 @@ class HotelShowResource extends JsonResource
             'num_rooms' => $this->num_rooms,
             'num_floors' => $this->num_floors,
             'enabled' => $this->enabled,
+            
         ];
     }
 }

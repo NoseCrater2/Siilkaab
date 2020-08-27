@@ -14,9 +14,13 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+Route::apiResource('credentials','HotelCredentialsController')->only('index','show','store','update','destroy');
+
+
 Route::post('payments/pay', 'PaymentController@pay')->name('pay');
 Route::get('payments/cancelled', 'PaymentController@cancelled')->name('cancelled');
-Route::get('payments/success', 'PaymentController@approval')->name('approval');
+Route::post('payments/success/', 'PaymentController@approval')->name('approval');
 
 Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 
@@ -24,13 +28,14 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('new_athorization', 'HotelCredentialsController@getNewAuthorization');
 
 Route::post('/login', 'AuthController@login');
 
 Route::middleware('auth:api')->post('/logout', 'AuthController@logout');
 
 
-
+Route::apiResource('paypal_pays','PayPalController')->only('index','show','store','update','destroy');
 
 
 

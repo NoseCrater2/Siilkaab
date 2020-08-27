@@ -4,45 +4,62 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 use App\Traits\ConsumeExternalServices;
+use GuzzleHttp\Client;
 
 class PayPalService{
 
     use ConsumeExternalServices;
 
-    protected $baseUri;
-
     protected $clientId;
 
     protected $clientSecret;
+
+    public  $baseUri;
     
     public function __construct() {
         $this->baseUri = config('services.paypal.base_uri');
-        $this->clientId= config('services.paypal.client_id');
+        $this->clientId = config('services.paypal.client_id');
         $this->clientSecret = config('services.paypal.client_secret');
     }
-
+   
     public function resolveAuthorization(&$queryParams, &$formParams, &$headers)
     {
-        $headers['Authorization'] = $this->resolveAccesToken();
+      
+
+        $headers['Authorization'] = "Bearer ".$this->resolveAccesToken();
       
     }
 
     public function decodeResponse($response)
     {
-        return json_decode($response);
+       return json_decode($response);
     }
 
 
     public function resolveAccesToken()
     {
-        $credentials = base64_encode("{$this->clientId}:{$this->clientSecret}");
 
-        return "Basic {$credentials}";
+        // $credentials = base64_encode("{$this->clientId}:{$this->clientSecret}");
+        // return "Basic {$credentials}";
+        $client = new Client();
+       $res = $client->request('POST','https://api.sandbox.paypal.com/v1/oauth2/token',
+            [
+            "auth"=> [$this->clientId,$this->clientSecret],
+            "headers"=> [
+                "Accept"=> "application/json",
+                "Accept-Language"=> "en_US",
+            ],
+            
+            "body" => "grant_type=client_credentials"]
+        ); 
+
+        $response =  $res->getBody()->getContents();
+        return json_decode($response)->{'access_token'};
     }
 
     public function handlePayment(Request $request)
     {
-        $order = $this->createOrder($request->value, $request->currency);
+        $order = $this->createOrder($request->value, $request->currency, $request->payee);
 
         $orderLinks = collect($order->links);
 
@@ -51,33 +68,33 @@ class PayPalService{
         session()->put('approvalId', $order->id);
         
        
-        return ($approve->href);
+        return (['id'=> $order->id]);
     }
 
-    public function handleApproval()
+    public function handleApproval($orderID)
     {
-        if(session()->has('approvalId')){
-            $approvalId = session()->get('approvalId');
+        if($orderID !== null){
+           // $approvalId = session()->get('approvalId');
 
-            $payment = $this->capturePayment($approvalId);
+            $payment = $this->capturePayment($orderID);
 
             $name = $payment->payer->name->given_name;
             $payment = $payment->purchase_units[0]->payments->captures[0]->amount;
             $amount = $payment->value;
             $currency = $payment->currency_code;
 
-            return redirect()
-                ->route('payments')
-                ->withSuccess(['payment' => "Thanks, {$name}. We received your {$amount}{$currency} payment."]);
+            return response(['payment' => "Thanks, {$name}. We received your {$amount}{$currency} payment."],200);
+            // return redirect()
+            //     ->route('payments')
+            //     ->withSuccess(['payment' => "Thanks, {$name}. We received your {$amount}{$currency} payment."]);
         }
 
-        return redirect()
-        ->route('payments')
-        ->withErrors('We cannot capture your payment. Try again, please.');
+        return response('We cannot capture your payment. Try again, please.',200);
     }
 
-    public function createOrder($value, $currency)
+    public function createOrder($value, $currency, $payee)
     {
+        
         return $this->makeRequest(
             'POST',
             '/v2/checkout/orders',
@@ -89,6 +106,9 @@ class PayPalService{
                         'amount' => [
                             'currency_code' => strtoupper($currency),
                             'value' => round($value * $factor = $this->resolveFactor($currency)) / $factor,
+                        ],
+                        'payee' => [
+                            'email_address' => $payee
                         ]
                     ]
                 ],

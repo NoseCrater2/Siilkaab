@@ -19,6 +19,7 @@ class Hotel extends Model
         'num_rooms',
         'num_floors',
         'enabled',
+        'credentials_id',
     ];
 
 
@@ -90,6 +91,11 @@ class Hotel extends Model
     public function rates()
     {
         return $this->hasMany(Rate::class);
+    }
+
+    public function hotelCredentials()
+    {
+        return $this->belongsTo(HotelCredentials::class);
     }
 
 }
