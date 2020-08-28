@@ -46,6 +46,10 @@ const HotelModule = {
         setArrayRegimes(state, payload) {
             state.regimes = payload;
         },
+        //Mutacion que setea el state.restaurants para asignar nuevo arreglo
+        setArrayRestaurants(state, payload) {
+            state.restaurants = payload;
+        },
         setHotel(state, payload) {
             state.hotel = payload;
         },
@@ -484,7 +488,6 @@ const HotelModule = {
                     `/api/amenities/${newAditionalInfo.id}`,
                     newAditionalInfo
                 );
-                console.log(requestEditAditionalInfo.data.data)
                 commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {

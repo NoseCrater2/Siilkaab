@@ -5,7 +5,7 @@
         <v-row class="ml-1 d-flex">
           <span>
             <h2>
-              <strong>Restaurante #{{idCompo+1}}</strong>
+              <strong>Restaurante #{{restauranNumber+1}}</strong>
             </h2>
           </span>
           <div class="ml-auto mr-3">
@@ -156,6 +156,7 @@ export default {
         TagSTimePicker: SelectTimePicker,
       });
     },
+    //Metodos componente SelectTimePicker ya existente desde BD
     addCompo(obj) {
       this.countIdCompo++;
       this.arrayComponents.push({
@@ -163,9 +164,9 @@ export default {
         TagSTimePicker: SelectTimePicker,
         objArrCompo: obj,
       });
+      console.log(this.arrayComponents)
     },
     removeCompoTime(idCompoParam) {
-      this.countIdCompo--;
       let idCompoMap = this.arrayComponents
         .map((element) => element.idCompo)
         .indexOf(idCompoParam);
@@ -177,6 +178,7 @@ export default {
   },
   props: {
     idCompo: Number,
+    restauranNumber: Number,
     objArrCompo: Object,
   },
 };
