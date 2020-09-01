@@ -15,6 +15,7 @@
         <component
           v-for="(component) in arrayComponents"
           :idCompo="component.idCompo"
+          :idRestaurant="component.objArrCompo.id"
           :restauranNumber="component.restauranNumber"
           :objArrCompo="component.objArrCompo"
           :key="component.idCompo"
@@ -41,6 +42,10 @@ import DynamicRestaurant from "./DynamicRestaurant";
 import { mapState, mapMutations } from "vuex";
 export default {
   name: "CarrouselRestaurant",
+  updated(){
+    //console.log(this.restaurants[this.countLastElementCarrousel])
+    
+  },
   created() {
     let count = 0;
     while (count <= this.restaurants.length - 1) {
@@ -60,6 +65,7 @@ export default {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
       restaurants: (state) => state.HotelModule.restaurants,
+      
     }),
   },
   methods: {
@@ -75,7 +81,7 @@ export default {
         TagDRestaurant: DynamicRestaurant,
         restauranNumber: this.countLastElementCarrousel,
         objArrCompo: {
-          id: "NEW", //Se pone "NEW" para identificarlo en el posterior metodo PUT
+          id: "NEW", //Se pone "NEW" para identificarlo en el posterior método PUT
           name: null,
           menu_type: null,
           schedules: [],
@@ -112,6 +118,7 @@ export default {
       let mapArrayComponents = this.arrayComponents.map(element =>{
         return element.objArrCompo;
       })
+      
 
       //Seteamos tambien en "this.arrayComponentes" el "restauranNumber"
       //Que es el que indica que numero de restaurante estamos visualizando
@@ -120,9 +127,9 @@ export default {
         element.restauranNumber = fixRestauranNumber++;
         return element;
       })
-
       //Mandamos la array var "mapArrayComponents" que se seteara en la variable state "restaurants"
       this.setArrayRestaurants(mapArrayComponents);
+
     },
   },
   components: {

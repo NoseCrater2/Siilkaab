@@ -97,6 +97,7 @@ export default {
           this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
           this.getPools(this.hotel.id).then(() => {});
           this.getRestaurants(this.hotel.id).then(() => {});
+          this.getSchedules(this.hotel.id).then(() => {});
         }
         this.chargeView = true;
       });
@@ -122,6 +123,7 @@ export default {
       "getConditions",
       "getRegimes",
       "getRestaurants",
+      "getSchedules",
       "getPools",
       "getAditionalInfo",
     ]),

@@ -14,6 +14,7 @@ const HotelModule = {
         conditions: null,
         regimes: null,
         restaurants: null,
+        schedules: null,
         pools: null,
         aditionalInfo: null
     },
@@ -35,6 +36,7 @@ const HotelModule = {
                 (state.conditions = null),
                 (state.regimes = null),
                 (state.restaurants = null),
+                (state.schedules = null),
                 (state.pools = null),
                 (state.aditionalInfo = null);
         },
@@ -49,6 +51,10 @@ const HotelModule = {
         //Mutacion que setea el state.restaurants para asignar nuevo arreglo
         setArrayRestaurants(state, payload) {
             state.restaurants = payload;
+        },
+        //Mutacion que setea el state.schedules para asignar nuevo arreglo
+        setArraySchedules(state, payload) {
+            state.schedules = payload;
         },
         setHotel(state, payload) {
             state.hotel = payload;
@@ -88,6 +94,11 @@ const HotelModule = {
         setRestaurants(state, payload) {
             state.restaurants = payload;
         },
+
+        setSchedules(state, payload) {
+            state.schedules = payload;
+        },
+
         setPools(state, payload) {
             state.pools = payload;
         },
@@ -236,11 +247,28 @@ const HotelModule = {
                 commit("setRestaurants", restaurants);
             } catch (error) {}
         },
+
+        getSchedules: async function({ commit }, idHotel) {
+            try {
+                const request = await axios.get("/api/restaurants");
+                //Primero filtramos los restaurantes que coincidan con el id del hotel
+                let schedules = request.data.data.filter(restaurantItem => {
+                    return idHotel === restaurantItem.hotel_id;
+                }
+                //Despues mapeamos para dejar unicamente los horarios a ocupar
+                ).map(scheduleItem=>{
+                    return {idRestaurant: scheduleItem.id, restaurantSchedules: scheduleItem.schedules}
+                });
+                commit("setSchedules", schedules);
+            } catch (error) {}
+        },
+
         getPools: async function({ commit }, idHotel) {
             try {
                 const request = await axios.get("/api/pools");
                 let pools = request.data.data.filter(
                     element => element.hotel_id === idHotel
+                    
                 );
                 commit("setPools", pools);
             } catch (error) {}
