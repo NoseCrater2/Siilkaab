@@ -388,7 +388,7 @@ export default {
         .indexOf(idCompoParam);
 
       this.arrayComponents.splice(idCompoMap, 1);
-
+      
       //Mandamos el nuevo arreglo de esta manera
       //En un array anonimo concatenamos el arreglo actual regimes y
       //this.arrayComponents
