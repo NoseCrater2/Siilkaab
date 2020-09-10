@@ -34,7 +34,7 @@ class CreateRoomsTable extends Migration
             $table->double('child_extra')->nullable();
             $table->double('baby_extra')->nullable();
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->index()->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->unsignedBigInteger('discount_id')->nullable();
             $table->foreign('discount_id')->references('id')->on('discounts');
             $table->unsignedBigInteger('rate_id')->nullable();

@@ -20,7 +20,7 @@ class CreateImagesTable extends Migration
             $table->string('image3')->nullable();
             $table->string('image4')->nullable();
             $table->unsignedBigInteger('room_id');
-            $table->foreign('room_id')->index()->references('id')->on('rooms')->onDelete('cascade');
+            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->timestamps();
         });
     }

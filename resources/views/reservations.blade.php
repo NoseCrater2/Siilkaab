@@ -12,9 +12,13 @@
 
 <body>
     <div id="app">
-        <reservations></reservations>
+       <reservations :id="{{ json_encode($id) }}" ></reservations>
     </div>
-    
+
+<script>
+ 
+</script>
+
 </body>
 
 </html>

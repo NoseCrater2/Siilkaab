@@ -19,7 +19,7 @@ class CreateSchedulesTable extends Migration
             $table->time('start_time')->required();
             $table->time('end_time')->required();
             $table->unsignedBigInteger('restaurant_id');
-            $table->foreign('restaurant_id')->index()->references('id')->on('restaurants')->onDelete('cascade');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
             $table->timestamps();
         });
     }

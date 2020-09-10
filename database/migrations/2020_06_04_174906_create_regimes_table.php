@@ -28,7 +28,7 @@ class CreateRegimesTable extends Migration
             $table->double('all_included_children')->default(0.0);
             $table->double('all_included_adult')->default(0.0);
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->index()->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->timestamps();
         });
     }

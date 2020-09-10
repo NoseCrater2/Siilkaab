@@ -17,7 +17,7 @@
         <v-card-text>
         <v-row align="center" justify="center">
           <v-col class="display-2" cols="6">
-            {{payment.value}} MXN
+            {{payment.value}} {{payment.currency}}
           </v-col>
           <v-col cols="3"  >
             <v-chip-group
@@ -25,7 +25,7 @@
             active-class="green accent-4 white--text"
             column
             >
-              <v-chip @click="makePayment()">
+              <v-chip >
                  <v-img
               src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/39/PayPal_logo.svg/300px-PayPal_logo.svg.png"
               alt="paypal"
@@ -51,9 +51,7 @@
   <v-divider horizontal></v-divider>
       <v-card-text>
         <div v-if="selection === 0">
-  
-             <component  :is="compo.p"></component>
-          
+          <Paypal :objPayment ="payment"></Paypal>
          
         </div>
         <div v-if="selection === 1">
@@ -96,6 +94,7 @@ export default {
       payment:{
         value: this.randomPrice(300,5000),
         currency: 'MXN',
+        idHotel: 1,//Asegurse que este hotel tenga credenciales para paypal
         platform: 0,
       },
       compo:{
@@ -127,8 +126,6 @@ watch: {
 
      makePayment () {
        this.payment.platform = 1;
-       this.payment.value = this.count;
-     
       this.$store.dispatch('saveLink',this.payment).then(()=>{
           this.overlay = !this.overlay;
       });       

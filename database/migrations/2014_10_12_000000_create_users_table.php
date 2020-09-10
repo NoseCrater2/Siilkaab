@@ -23,6 +23,8 @@ class CreateUsersTable extends Migration
             $table->enum('type',['manager','administrator','super'])->default('manager')->required();
             $table->string('language')->required();
             $table->string('timezone')->required();
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('users');
             
             $table->rememberToken();
             $table->timestamps();

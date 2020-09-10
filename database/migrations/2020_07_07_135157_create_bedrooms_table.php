@@ -21,7 +21,7 @@ class CreateBedroomsTable extends Migration
             $table->double('child_extra')->nullable();
             $table->double('baby_extra')->nullable();
             $table->unsignedBigInteger('room_id');
-            $table->foreign('room_id')->index()->references('id')->on('rooms')->onDelete('cascade');
+            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->timestamps();
         });
     }
