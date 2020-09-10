@@ -15,7 +15,7 @@ class AmenityIndexResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+        'id' => $this->id,
         'spa'=> $this->spa,
         'air_conditioned'=> $this->air_conditioned,
         'no_smoke_rooms'=> $this->no_smoke_rooms,
@@ -28,8 +28,6 @@ class AmenityIndexResource extends JsonResource
         'bar'=> $this->bar,
         'garden'=> $this->garden,
         'water_park'=> $this->water_park,
-        'num_rooms'=> $this->num_rooms,
-        'num_floors'=> $this->num_floors,
         'beach'=> $this->beach,
         'recreational_activities'=> $this->recreational_activities,
         'romantic_dinners'=> $this->romantic_dinners,
@@ -56,7 +54,7 @@ class AmenityIndexResource extends JsonResource
         'meeting_center'=> $this->meeting_center,
         'fax_photocopier'=> $this->fax_photocopier,
         'coffee_break'=> $this->coffee_break,
-        'souvenirs_store'=> $this->souvenirs_service,
+        'souvenirs_store'=> $this->souvenirs_store,
         'inclusive_service'=> $this->inclusive_service,
         'elevator'=> $this->elevator,
         'smoking_zone'=> $this->smoking_zone,
@@ -65,7 +63,7 @@ class AmenityIndexResource extends JsonResource
         'pet_house'=> $this->pet_house,
         'pet_basket'=> $this->pet_basket,
         'only_adults'=> $this->only_adults,
-        'sanitized_rooms'=> $this->sanitized_room,
+        'sanitized_rooms'=> $this->sanitized_rooms,
         'bridal_suite'=> $this->bridal_suite,
         'vip_service'=> $this->vip_service,
         'calefaction'=> $this->calefaction,

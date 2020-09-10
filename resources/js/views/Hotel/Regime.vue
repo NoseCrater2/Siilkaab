@@ -14,13 +14,12 @@
           <v-switch v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
         </v-col>
         <v-col cols="2" md="6">
-          <v-autocomplete
+          <v-select
             :items="prioritiesModel"
             v-model="computedDdwnPriority"
-            dense
-            filled
+            outlined
             label="Prioridad"
-          ></v-autocomplete>
+          ></v-select>
         </v-col>
         <v-row align="center">
           <v-col cols="12" md="5">
@@ -78,15 +77,15 @@
       </v-row>
       <!--ETIQUETA SpecialRegime.vue-->
       <component
-        v-for="(component) in arrayComponents"
+        v-for="(component) in computedArrayComponents"
         :idCompo="component.idCompo"
-        :objArrCompo="component.objArrCompo"
         :key="component.idCompo"
+        :objArrCompo="component.objArrCompo"
         :is="component.TagSRegimes"
         @removeCompo="removeCompo"
       ></component>
       <v-row class="pa-6">
-        <v-btn small color="info" class="white--text" depressed @click="addCompo()">
+        <v-btn small color="info" class="white--text" depressed @click="addCompoButton()">
           <v-icon left dark>mdi-plus-circle</v-icon>Agregar
         </v-btn>
       </v-row>
@@ -97,15 +96,15 @@
 <script>
 import SpecialRegime from "../../components/Hotel/SpecialRegime";
 
-import { mapState } from "vuex";
+import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "Regime",
   created() {
-    let count = this.regimes.length - 1;
-    while (count > 0) {
-      this.addCompo(this.regimes[count]);
-      count--;
+    let countWhile = 1;
+    while (countWhile <= this.regimes.length - 1) {
+      this.addCompo(this.regimes[countWhile]);
+      countWhile++;
     }
     if (this.regimes[0] != null) {
       this.swOnlyRoomModel = this.regimes[0].only_room;
@@ -321,17 +320,54 @@ export default {
         return this.txtAllIncludedChildrenModel;
       },
     },
+    //Propiedad computada para asignar al store los arreglos dinamicos que se crearan con btnAddCompo
+    computedRegimes: {
+      get() {
+        return this.regimes;
+      },
+      set(model) {
+        this.regimes = model;
+        return this.regimes;
+      },
+    },
+    computedArrayComponents() {
+      return this.arrayComponents;
+    },
   },
+
   components: {
     SpecialRegime,
   },
   methods: {
-    addCompo() {
+    //Esta mutacion setea regimes
+    ...mapMutations(["setArrayRegimes"]),
+    addCompoButton() {
       this.countIdCompo++;
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagSRegimes: SpecialRegime,
+        objArrCompo: {
+          id: "NEW", //Se pone "NEW" para identificarlo en el posterior metodo PUT
+          priority: "normal",
+          only_room: 0,
+          start_period:
+            new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00",
+          final_period:
+            new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00",
+          lodging_breakfast_children: null,
+          lodging_breakfast_adult: null,
+          half_pension_children: null,
+          half_pension_adult: null,
+          full_pension_children: null,
+          full_pension_adult: null,
+          all_included_children: null,
+          all_included_adult: null,
+          hotel_id: null,
+        },
       });
+      this.regimes.push(
+        this.arrayComponents[this.arrayComponents.length - 1].objArrCompo
+      );
     },
     addCompo(obj) {
       this.countIdCompo++;
@@ -342,11 +378,20 @@ export default {
       });
     },
     removeCompo(idCompoParam) {
-      this.countIdCompo--;
+      let tempArray = this.regimes[0];
+      //Mandamos el arreglo temporal que se seteara en la variable state "regimes"
+      this.setArrayRegimes([tempArray]);
+
       let idCompoMap = this.arrayComponents
         .map((element) => element.idCompo)
         .indexOf(idCompoParam);
+
       this.arrayComponents.splice(idCompoMap, 1);
+      
+      //Mandamos el nuevo arreglo de esta manera
+      //En un array anonimo concatenamos el arreglo actual regimes y
+      //this.arrayComponents
+      this.setArrayRegimes([].concat(this.regimes, this.arrayComponents.map(el => el.objArrCompo)));
     },
   },
 };

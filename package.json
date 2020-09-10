@@ -30,6 +30,7 @@
         "@toast-ui/vue-editor": "^2.2.0",
         "babel-runtime": "^6.26.0",
         "bulma": "^0.8.2",
+        "compressorjs": "^1.0.6",
         "emoji-mart": "^3.0.0",
         "emoji-mart-vue": "^2.6.6",
         "emoji-picker-vue": "^1.0.1",
