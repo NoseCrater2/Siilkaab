@@ -2,9 +2,11 @@
 
 namespace App\Services;
 
+use GuzzleHttp\Client;
+use App\Hotel;
 use Illuminate\Http\Request;
 use App\Traits\ConsumeExternalServices;
-use GuzzleHttp\Client;
+
 
 class PayPalService{
 
@@ -59,7 +61,7 @@ class PayPalService{
 
     public function handlePayment(Request $request)
     {
-        $order = $this->createOrder($request->value, $request->currency, $request->payee);
+        $order = $this->createOrder($request->value, $request->currency, $request->idHotel);
 
         $orderLinks = collect($order->links);
 
@@ -92,9 +94,9 @@ class PayPalService{
         return response('We cannot capture your payment. Try again, please.',200);
     }
 
-    public function createOrder($value, $currency, $payee)
+    public function createOrder($value, $currency, $idHotel)
     {
-        
+     $register =  Hotel::findOrFail($idHotel);
         return $this->makeRequest(
             'POST',
             '/v2/checkout/orders',
@@ -108,7 +110,7 @@ class PayPalService{
                             'value' => round($value * $factor = $this->resolveFactor($currency)) / $factor,
                         ],
                         'payee' => [
-                            'email_address' => $payee
+                            'email_address' => $register->hotelCredentials->paypal
                         ]
                     ]
                 ],

@@ -95,6 +95,7 @@ export default {
           borderStyle: "border-left: 5px solid #cb552d",
           children: [
             {
+              route: "/disponibility",
               icon: "mdi-clipboard-list",
               text: "Disponibilidad y Tarifas",
               borderStyle: "padding-left: 37px; text-decoration: none;",

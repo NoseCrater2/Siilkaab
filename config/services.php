@@ -30,6 +30,7 @@ return [
         'secret' => env('MERCADOPAGO_SECRET'),
         'secret_key'=> env('MERCADOPAGO_SECRET_KEY'),
         'app_id' => env('MIX_MERCADOPAGO_APP_ID'),
+        'redirect_uri' => env('MIX_MERCADOPAGO_REDIRECT_URI'),
         'class' => App\Services\MercadoPagoService::class,
         'base_currency' => 'MXN',
     ],

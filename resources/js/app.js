@@ -1,5 +1,3 @@
-require("./bootstrap");
-
 import "@mdi/font/css/materialdesignicons.css";
 import Vuetify from "vuetify/lib";
 import router from "./routes";
@@ -29,7 +27,7 @@ import es from "../../node_modules/vuetify/src/locale/es.ts";
 Vue.use(Vuex);
 
 
-import "vuetify/dist/vuetify.css";
+//import "vuetify/dist/vuetify.css";
 
 import Vue from "vue";
 

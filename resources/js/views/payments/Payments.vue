@@ -43,7 +43,7 @@
                       align="center"
                     ></v-text-field>
                     <v-spacer></v-spacer>
-                    <v-dialog v-model="dialog" persistent max-width="500px">
+                    <v-dialog v-model="dialog" persistent max-width="600px">
                       
                       <v-card>
                         <v-card-title>
@@ -54,24 +54,10 @@
                             <v-container>
                               <v-row>
 
-                                <v-col cols="12">
-                                  <v-text-field label="Paypal*" v-model="editedItem.paypal" required :error-messages="getErrors.data.email"></v-text-field>
-                                </v-col>
-
-                               
-                                  <v-btn 
-                                    rounded
-                                    block
-                                    color="primary"
-                                    @click="getAuthorization()">
-                                  SINCRONIZAR CUENTA DE MERCADOPAGO                       
-                                  </v-btn>
-                                
-                              
-                                <v-col cols="12">
-                                  <!-- <div v-if="hotels !== []">
+                                 <v-col cols="12">
+                                <div v-if="hotels !== []">
                                     <v-autocomplete
-                                      v-model="selectedHotels"
+                                      v-model="editedItem.hotels"
                                       :hint="!isEditing ? 'Click en el icono para editar' : 'Clic en el icono para guardar'"
                                       :items="hotels"
                                       :readonly="!isEditing"
@@ -79,6 +65,7 @@
                                       item-value="hotel_id"
                                       :label="`Hoteles — ${isEditing ? 'Editable' : 'Solo vista'}`"
                                       multiple
+                                      :error-messages="getErrors.data.hotels"
                                       chips
                                       small-chips
                                       persistent-hint
@@ -96,8 +83,112 @@
                                         </v-slide-x-reverse-transition>
                                       </template>
                                     </v-autocomplete>
-                                  </div> -->
+                                  </div>
                                 </v-col>
+
+                                <v-tabs
+                                v-model="tab"
+                                background-color="primary"
+                                centered
+                                dark
+                                icons-and-text
+                                >
+                                  <v-tabs-slider></v-tabs-slider>
+
+                                  <v-tab>
+                                    Paypal
+                                    <!-- <v-img
+                                    src="https://www.paypalobjects.com/webstatic/icon/pp258.png"
+                                    >
+                                    </v-img> -->
+                                  </v-tab>
+
+                                  <v-tab>
+                                    MercadoPago
+                                    <!-- <v-img
+                                    src="https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRMq6RgxTk3ZM1HcXVxwVBBn-mHrgWE6IRFoZTVnY0pkM2R4UbqKtRGgS_3WBV_kyHlgWea6agkGdVN0lyx2OgV--HdNpVxj6YWTA&usqp=CAU&ec=45695924"
+                                    >
+                                    </v-img> -->
+                                  </v-tab>
+
+                                  <v-tabs-items v-model="tab">
+                                    <v-tab-item>
+                                      <v-col cols="12">
+                                  <v-text-field 
+                                  label="Paypal*" 
+                                  v-model="editedItem.paypal" 
+                                  required :error-messages="getErrors.data.paypal"
+                                  placeholder="ab-cdefg1234567@businness.example.com"
+                                  ></v-text-field>
+                                </v-col>
+                                    </v-tab-item>
+
+                                    <v-tab-item>
+                                       <div v-if="editedItem.mercadopago_client_id">
+                                 <v-alert text dense color="teal" icon="mdi-clock-fast" border="left">
+
+
+                                   <h3 class="headline">MercadoPago</h3>
+                                       <div>
+                                         La autorización del vendedor para que Siilkaab pueda solicitar pagos a su nombre dura hasta: 
+                                         <h2>{{ editedItem.expiration_at}}</h2>
+                                         Puede actualizar las credenciales en cualquier momento antes de la fecha de expiración. 
+                                       </div>
+                                  
+                                       <v-divider
+                                         class="my-4 info"
+                                         style="opacity: 0.22"
+                                       ></v-divider>
+                                  
+                                       <v-row
+                                         align="center"
+                                         no-gutters
+                                       >
+                                         <v-col class="grow">
+                                        
+                                      Si la autorización caduca, los clientes no podrán pagar por MercadoPago y se tiene que volver a sincronizar la cuenta. 
+                                           </v-col>
+                                         
+                                         <v-col class="shrink">
+                                           <v-btn
+                                              :loading="loading"
+                                              :disabled="loading"
+                                              outlined
+                                              class="ma-2 teal--text"
+                                              @click="updateCredentials(editedItem.id)"
+                                            >
+                                              ACTULIZAR
+                                              <v-icon right dark>mdi-reload</v-icon>
+                                            </v-btn>
+                                         </v-col>
+                                       </v-row>
+                                  
+                                   
+                                  </v-alert>
+                               </div>
+
+                               <div v-else>
+                                  <v-btn
+                                    :disabled="ableToRedirect"
+                                    rounded
+                                    block
+                                    color="primary"
+                                    @click="getAuthorization(editedItem.id)">
+                                  SINCRONIZAR CUENTA DE MERCADOPAGO                       
+                                  </v-btn>
+                               </div>
+                                    </v-tab-item>
+                                  </v-tabs-items>
+
+                                </v-tabs>
+
+                                
+
+                              
+                                 
+                                
+                              
+                               
                               </v-row>
                             </v-container>
                           </v-form>
@@ -115,12 +206,7 @@
                       </v-card>
                       
                     </v-dialog>
-                    <v-dialog v-model="mercadopagoPage" width="75%" height="100%">
-                        
-                         <v-card>
-                          <iframe style="width:100%" id="mercadopagoframe" @load="charge()" :src="`https://auth.mercadopago.com.mx/authorization?client_id=${app_id}&response_type=code&platform_id=mp&http://127.0.0.1:8000/payment-options`"></iframe>
-                         </v-card>
-                    </v-dialog>
+                   
                     <v-dialog v-model="deleteDialog" persistent max-width="290">
                       <v-card>
                         <v-card-title class="headline">¿Eliminar usuarios?</v-card-title>
@@ -161,6 +247,10 @@ export default {
      app_id: process.env.MIX_MERCADOPAGO_APP_ID,
       editedIndex: -1,
       dialog: false,
+      tab: null,
+      loading: false,
+      loader: null,
+      isDisabled: false,
       mercadopagoPage: false,
       deleteDialog: false,
       valid:false,
@@ -185,13 +275,14 @@ export default {
         paypal:null,
         mercadopago_client_id:null,
         expiration_at: null,
+        hotels: null,
       },
 
       defaultItem:{
         paypal:'',
         mercadopago_client_id:'',
         expiration_at: '',
-
+        hotels: [],
       },
 
       defaultErrors : {
@@ -211,30 +302,43 @@ export default {
       ],
     };
   },
+
     
   computed:{
     formTitle(){
       return this.editedIndex === -1 ? 'Nuevo Registro' : 'Editar Registro'
     },
 
+    ableToRedirect(){
+      return this.editedIndex === -1 ? true : false
+    },
+
     ...mapState({
       credentials: state => state.CredentialsModule.credentials,
-      //assignHotels:state => state.HotelModule.assignHotels,
+      hotels: state => state.HotelModule.hotels,
+      assignHotels:state => state.HotelModule.assignHotels,
 
     }),
 
      ...mapGetters([
        'getErrors',
-    //   'getStatus',
+       'getStatus',
     //   'getAssignHotels',
     //   'getUserId',
       ]),
   
   },
 
-  mounted(){  
+  mounted(){ 
+    this.$store.dispatch('getHotelsForAdmin')  
     this.$store.dispatch('getCredentials');
-
+    if(this.$route.query.code){
+     // console.log(this.$route.query)
+      axios.post('api/payments/getCode/',{paymentPlatformID:2,code:this.$route.query.code, id:this.$route.query.state}).then(res => {
+        window.location.href = process.env.MIX_MERCADOPAGO_REDIRECT_URI;
+      //Mostrar response en la vista
+      });
+    }
   },
 
   methods:{
@@ -282,44 +386,40 @@ export default {
     
   save () {    
     if (this.editedIndex > -1) {
-      try {    
-        this.$store.dispatch('editUser',this.editedItem).then(()=>{
-          if(this.getStatus=== 200){
-            this.actualHotels[0].id = this.editedItem.id
-            this.actualHotels[1].hotels = this.selectedHotels
-            this.$store.dispatch('setHotelsToUsers',this.actualHotels).then(()=>{
+      try {   
+       
+         this.$store.dispatch('editCredentials',this.editedItem).then(()=>{
+           if(this.getStatus=== 200){
             this.close()
-            })
-         }
-        })
+          }
+         })
         } catch (error) {
           
         }
          
     } else { 
-      try {     
-        this.$store.dispatch('saveUser',this.editedItem).then(()=>{
-          if(this.getStatus=== 200){
-            this.actualHotels[0].id = this.$store.getters.getUserId
-            this.actualHotels[1].hotels = this.selectedHotels
-            this.$store.dispatch('setHotelsToUsers',this.actualHotels).then(()=>{
-              this.close()
-            })
-            
-          }
-          })
+      try {  
+           
+         this.$store.dispatch('setCredencials',this.editedItem).then(()=>{
+           if(this.getStatus=== 200){
+             this.close();
+           }
+           })
         } catch (error) {   
         }           
       }
     },
 
-    getAuthorization(){
-      this.mercadopagoPage = true;
-     // window.location.href= 'https://auth.mercadopago.com.mx/authorization?client_id='+process.env.MIX_MERCADOPAGO_APP_ID+'&response_type=code&platform_id=mp&https://127.0.0.1:8000/payment-options';
+    getAuthorization(idRegister){    
+      window.location.href= 'https://auth.mercadopago.com.mx/authorization?client_id='+process.env.MIX_MERCADOPAGO_APP_ID+'&response_type=code&platform_id=mp&state='+idRegister+'&redirect_uri='+process.env.MIX_MERCADOPAGO_REDIRECT_URI;
     },
 
-    charge( ){
-      console.log(document.getElementById("mercadopagoframe").src)
+    updateCredentials(idRegistro){
+      this.loading = true
+      axios.post('api/payments/updateCode/',{paymentPlatformID:2,id:idRegistro}).then(res => {
+      //Mostrar response en la vista
+      this.loading = false;
+      });
     }
   }
 
@@ -335,6 +435,8 @@ a:link{
 a:visited{
   color: white;
 }
+
+
 </style>
 
 

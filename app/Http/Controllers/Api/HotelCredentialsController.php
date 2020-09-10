@@ -1,13 +1,16 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Messages;
+use App\Hotel;
 use App\HotelCredentials;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CredentialsIndexResource;
-use GuzzleHttp\Client;
+use App\Http\Controllers\Controller;
+
 
 class HotelCredentialsController extends Controller
 {
@@ -34,17 +37,21 @@ class HotelCredentialsController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'paypal' => 'email',
-            'mercadopago_client_id' => 'string',
-            'expiration_at' => 'numeric',
+            "paypal" => "nullable|email",
+            "hotels"    => "required|array|min:1",
+            "hotels.*"  => "required|exists:hotels,id|distinct|min:1|different:hotel_id",
         ];
                   
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
-            $contact = HotelCredentials::create($data);
-             return new CredentialsIndexResource(HotelCredentials::findOrFail($contact->id));
+            $c = DB::transaction(function()use ($data){
+            $credential = HotelCredentials::create($data);
+            Hotel::whereIn('id',$data['hotels'])->update(['credentials_id' => $credential->id]);
+            return $credential;
+            });
+            return new CredentialsIndexResource(HotelCredentials::findOrFail($c->id));
         }
     }
 
@@ -54,9 +61,9 @@ class HotelCredentialsController extends Controller
      * @param  \App\HotelCredentials  $hotelCredentials
      * @return \Illuminate\Http\Response
      */
-    public function show(HotelCredentials $hotelCredentials)
+    public function show($idHotel)
     {
-        return new CredentialsIndexResource(HotelCredentials::findOrFail($hotelCredentials->id));
+        return new CredentialsIndexResource(HotelCredentials::findOrFail($idHotel));
     }
 
 
@@ -67,21 +74,26 @@ class HotelCredentialsController extends Controller
      * @param  \App\HotelCredentials  $hotelCredentials
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, HotelCredentials $hotelCredentials)
+    public function update(Request $request, $idHotel)
     {
+        $hotelCredentials = HotelCredentials::findOrFail($idHotel);
         $data = $request->all();
 
         $rules = [
-            'paypal' => 'email',
-            'mercadopago_client_id' => 'string',
-            'expiration_at' => 'numeric',
+            "paypal" => "nullable|email",
+            "hotels"    => "array|min:1",
+            "hotels.*"  => "exists:hotels,id|distinct|min:1|different:id",
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
        
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
+           DB::transaction(function()use ($data, $hotelCredentials){
+              // dd($hotelCredentials->id);
             $hotelCredentials->update($data);
+            Hotel::whereIn('id',$data['hotels'])->update(['credentials_id' => $hotelCredentials->id]);
+            });
             return new CredentialsIndexResource(HotelCredentials::findOrFail($hotelCredentials->id));
         }
     }
@@ -97,25 +109,5 @@ class HotelCredentialsController extends Controller
         $hotelCredentials->delete();
     }
 
-    public function getNewAuthorization(Request $request)
-    {
-        //https://auth.mercadopago.com.mx/authorization?client_id='+process.env.MIX_MERCADOPAGO_APP_ID+'&response_type=code&platform_id=mp&http://127.0.0.0:8000/payment-options';
-        $client = new Client();
-        $method = 'GET';
-        $requestUrl = 'https://auth.mercadopago.com.mx/authorization';
-        $queryParams = [
-            'client_id' => env('MIX_MERCADOPAGO_APP_ID'),
-            'response_type' => 'code',
-            'platform_id' => 'mp',
-            'https://127.0.0.0:8000/payments'
-        ];
-
-
-        $response = $client->request($method, $requestUrl, [
-            //'form_params' => $formParams,
-            //'headers' => $headers,
-            'query' => $queryParams,
-        ]);
-        return $response->getBody()->getContents();
-    }
+   
 }

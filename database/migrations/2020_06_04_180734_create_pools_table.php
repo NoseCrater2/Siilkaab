@@ -24,7 +24,7 @@ class CreatePoolsTable extends Migration
             $table->boolean('bar_pool')->default(false);
             $table->time('open_at');
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->index()->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->timestamps();
         });
     }

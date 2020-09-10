@@ -23,7 +23,7 @@ class CreateSecuritiesTable extends Migration
             $table->boolean('fire_extinguishers')->default(false);
             $table->enum('safe',['free','paid','flag'])->default('flag');
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->index()->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->timestamps();
         });
     }

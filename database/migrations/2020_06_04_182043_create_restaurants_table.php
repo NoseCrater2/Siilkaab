@@ -18,7 +18,7 @@ class CreateRestaurantsTable extends Migration
             $table->string('name')->required();
             $table->enum('menu_type',['a la carte','buffet','both'])->default('buffet');
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->index()->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->timestamps();
         });
     }

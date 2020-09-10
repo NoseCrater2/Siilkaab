@@ -54,6 +54,12 @@ const routes = [
         component: require("./views/payments/Payments").default,
         name: "payment-options"
     },
+
+    {
+        path: "/disponibility",
+        component: require("./views/Disponibility/Disponibility").default,
+        name: "disponibility"
+    },
 ];
 
 const router = new VueRouter({

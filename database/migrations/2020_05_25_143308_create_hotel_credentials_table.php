@@ -19,7 +19,7 @@ class CreateHotelCredentialsTable extends Migration
             $table->string('mercadopago_at')->nullable();
             $table->string('mercadopago_rt')->nullable();
             $table->string('mercadopago_client_id')->nullable();
-            $table->integer('expiration_at')->nullable();
+            $table->string('expiration_at')->nullable();
             $table->timestamps();
         });
     }

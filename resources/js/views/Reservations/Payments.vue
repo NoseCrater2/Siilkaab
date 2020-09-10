@@ -94,7 +94,7 @@ export default {
       payment:{
         value: this.randomPrice(300,5000),
         currency: 'MXN',
-        payee: 'sb-rwkeu2992317@business.example.com',///Este es para paypal unicamente
+        idHotel: 1,//Asegurse que este hotel tenga credenciales para paypal
         platform: 0,
       },
       compo:{

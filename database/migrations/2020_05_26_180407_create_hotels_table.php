@@ -25,7 +25,7 @@ class CreateHotelsTable extends Migration
             $table->integer('num_rooms')->default(0);
             $table->integer('num_floors')->default(0);
             $table->boolean('enabled')->default(true);
-            $table->unsignedBigInteger('credentials_id')->default(0);
+            $table->unsignedBigInteger('credentials_id')->nullable();
             $table->foreign('credentials_id')->references('id')->on('hotel_credentials');
             $table->timestamps();
         });

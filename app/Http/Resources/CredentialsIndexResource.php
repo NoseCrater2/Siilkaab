@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CredentialsIndexResource extends JsonResource
@@ -19,7 +18,11 @@ class CredentialsIndexResource extends JsonResource
             'id' => $this->id,
             'paypal' => $this->paypal,
             'mercadopago_client_id' => $this->mercadopago_client_id,
-            'expiration_at' => Carbon::now()->addSeconds($this->expiration_at)->diffForHumans() ,
+            'hotels' => $this->hotels->map(function ($hotel)
+            {
+                return $hotel->id;
+            }),
+            'expiration_at' => $this->expiration_at,
            
         ];
     }

@@ -95,7 +95,7 @@ class Hotel extends Model
 
     public function hotelCredentials()
     {
-        return $this->belongsTo(HotelCredentials::class);
+        return $this->belongsTo(HotelCredentials::class,'credentials_id');
     }
 
 }

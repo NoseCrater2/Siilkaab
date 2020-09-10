@@ -23,7 +23,7 @@ export default {
         platform: 1,
         currency: this.objPayment.currency,
         value: this.objPayment.value,
-        payee: this.objPayment.payee,
+        idHotel: this.objPayment.idHotel,
       },
 
       statusMessage: null,
@@ -42,7 +42,7 @@ computed:{
   methods:{
  getPayPalButtonsInstance(){
     var formulary = document.createElement('script')
-      formulary.setAttribute('src', 'https://www.paypal.com/sdk/js?client-id='+process.env.MIX_PAYPAL_CLIENT_ID+'&currency='+this.data.currency);
+      formulary.setAttribute('src', 'https://www.paypal.com/sdk/js?client-id='+process.env.MIX_PAYPAL_CLIENT_ID+'&merchant-id=sb-rwkeu2992317@business.example.com&currency='+this.data.currency);
       document.body.appendChild(formulary)
       return formulary;
     },
