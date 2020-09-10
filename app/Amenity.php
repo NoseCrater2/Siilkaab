@@ -19,8 +19,6 @@ class Amenity extends Model
         'bar',
         'garden',
         'water_park',
-        'num_rooms',
-        'num_floors',
         'beach',
         'recreational_activities',
         'romantic_dinners',

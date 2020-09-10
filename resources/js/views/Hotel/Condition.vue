@@ -112,8 +112,8 @@ export default {
       this.childrenAgeModel = this.conditions.children_age;
       this.adultsRegimenModel = this.conditions.adults_regimen;
       this.adultsAgeModel = this.conditions.adults_age;
-      this.checkinTimeModel = (this.conditions.checkin_time.length === 5) ? this.conditions.checkin_time : this.conditions.checkin_time.slice(0, -3);
-      this.checkoutTimeModel = (this.conditions.checkout_time.length === 5) ? this.conditions.checkout_time : this.conditions.checkout_time.slice(0, -3);
+      this.checkinTimeModel = this.conditions.checkin_time;
+      this.checkoutTimeModel = this.conditions.checkout_time;
     }
   },
   data() {

@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Regime extends Model
 {
     protected $fillable = [
+        'priority',
         'special',
         'only_room',
         'start_period',

@@ -37,6 +37,7 @@ export default {
   },
   updated() {
       this.formatDate(this.datetime)
+      this.sendNewHour(this.datetime, this.dates.info)
   },
   data() {
     return {
@@ -61,7 +62,10 @@ export default {
         let localISOTime = new Date(lastDate - tzoffset).toISOString().slice(0, -8);
         const date = localISOTime.replace(/T/, " ");
         this.datetime = date;
-    }
+    },
+    sendNewHour(newHour, info) {
+      this.$emit("sendNewHour", newHour, info);
+    },
   },
   props: {
     dates: Object

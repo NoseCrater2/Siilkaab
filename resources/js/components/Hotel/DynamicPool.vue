@@ -34,7 +34,7 @@
         <span>
           <strong>Otros</strong>
         </span>
-        <v-row no-gutters>
+        <v-row>
           <v-col cols="6" style="margin-bottom: 1%">
             <v-card outlined style="padding: 5%; display: flex" color="#e0e0e0">
               <span class="d-flex align-center" style="margin-right: 5%">
