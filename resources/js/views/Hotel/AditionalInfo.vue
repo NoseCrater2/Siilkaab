@@ -23,13 +23,13 @@
                         <span class="d-flex align-center" style="margin-right: 5%">
                           <strong>Spa</strong>
                         </span>
-                        <v-autocomplete
+                        <v-select
                           class="ml-auto"
                           :items="spaItems"
                           v-model="computedDdwnSpa"
                           dense
-                          filled
-                        ></v-autocomplete>
+                          outlined
+                        ></v-select>
                       </v-card>
                     </v-col>
                     <v-col cols="6" style="margin-bottom: 1%">
@@ -117,13 +117,13 @@
                         <span class="d-flex align-center" style="margin-right: 5%">
                           <strong>Parque acuatico</strong>
                         </span>
-                        <v-autocomplete
+                        <v-select
                           class="ml-auto"
                           :items="acuaticItems"
                           v-model="computedDdwnAcuatic"
                           dense
-                          filled
-                        ></v-autocomplete>
+                          outlined
+                        ></v-select>
                       </v-card>
                     </v-col>
                     <v-col cols="12" style="margin-bottom: 1%">
@@ -153,13 +153,13 @@
                         <span class="d-flex align-center" style="margin-right: 5%">
                           <strong>Playa</strong>
                         </span>
-                        <v-autocomplete
+                        <v-select
                           class="ml-auto"
                           :items="beachItems"
                           v-model="computedDdwnBeach"
                           dense
-                          filled
-                        ></v-autocomplete>
+                          outlined
+                        ></v-select>
                       </v-card>
                     </v-col>
                     <v-col cols="6" style="margin-bottom: 1%">
@@ -175,13 +175,13 @@
                         <span class="d-flex align-center" style="margin-right: 5%">
                           <strong>Cena romantica</strong>
                         </span>
-                        <v-autocomplete
+                        <v-select
                           class="ml-auto"
                           :items="romanticDItems"
                           v-model="computedDdwnRomanticD"
                           dense
-                          filled
-                        ></v-autocomplete>
+                          outlined
+                        ></v-select>
                       </v-card>
                     </v-col>
                     <v-col cols="6" style="margin-bottom: 1%">
@@ -189,13 +189,13 @@
                         <span class="d-flex align-center" style="margin-right: 5%">
                           <strong>Tour turistico</strong>
                         </span>
-                        <v-autocomplete
+                        <v-select
                           class="ml-auto"
                           :items="touristicTItems"
                           v-model="computedDdwnTouristicT"
                           dense
-                          filled
-                        ></v-autocomplete>
+                          outlined
+                        ></v-select>
                       </v-card>
                     </v-col>
                   </v-row>
@@ -371,13 +371,13 @@
                         <span class="d-flex align-center" style="margin-right: 5%">
                           <strong>Limpieza interna diaria</strong>
                         </span>
-                        <v-autocomplete
+                        <v-select
                           class="ml-auto"
                           :items="dailyHItems"
                           v-model="computedDdwnDailyH"
                           dense
-                          filled
-                        ></v-autocomplete>
+                          outlined
+                        ></v-select>
                       </v-card>
                     </v-col>
                     <v-col cols="6" style="margin-bottom: 1%">

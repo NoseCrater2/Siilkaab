@@ -14,13 +14,12 @@
           <v-switch v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
         </v-col>
         <v-col cols="2" md="6">
-          <v-autocomplete
+          <v-select
             :items="prioritiesModel"
             v-model="computedDdwnPriority"
-            dense
-            filled
+            outlined
             label="Prioridad"
-          ></v-autocomplete>
+          ></v-select>
         </v-col>
         <v-row align="center">
           <v-col cols="12" md="5">

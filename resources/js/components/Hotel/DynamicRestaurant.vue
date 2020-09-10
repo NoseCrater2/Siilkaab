@@ -44,6 +44,7 @@
             @click="addCompoFromComponent()"
           >
             <v-icon dark>mdi-pencil</v-icon>
+
           </v-btn>
         </v-row>
         <br />
@@ -278,11 +279,9 @@ export default {
         }
         return itemNewRestaurant;
       })
-
       //Mandamos el nuevo arreglo "newArrayRestaurants"
       //Para cambiar el estado de "this.restaurants"
       this.setArrayRestaurants(newArrayRestaurants);
-
     },
   },
   components: {

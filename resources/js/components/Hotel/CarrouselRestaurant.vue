@@ -98,7 +98,6 @@ export default {
       let concatNewArraySchedules = [{idRestaurant: putId, restaurantSchedules: []}]
       //Mandamos al setter la concatenacion de arreglos (el state actual + el nuevo array)
       this.setArraySchedules([].concat(this.schedules, concatNewArraySchedules))
-
       
     },
     addCompo(obj) {
@@ -160,4 +159,3 @@ export default {
   },
 };
 </script>
-

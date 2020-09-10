@@ -44,13 +44,13 @@
             <span>
               <strong>Tipo de pago</strong>
             </span>
-            <v-autocomplete
-              class="ml-auto"
+            <v-select
+              class="ml-auto mt-2"
               :items="paymentTypeItems"
               v-model="computedDdwnPaymentType"
               dense
-              filled
-            ></v-autocomplete>
+              outlined
+            ></v-select>
           </v-card>
         </v-col>
       </v-row>

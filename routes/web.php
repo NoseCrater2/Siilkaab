@@ -18,10 +18,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('reservations',function ()
+Route::get('reservations/{id}',function ($id)
 {
-    return view('reservations/{hotel}');
-})->name('reservations');
+    //return $id;
+    return view('reservations', ['id'=>$id]);
+})->where(['id' => '[0-9]+'])->name('reservations.hotels');
 
 Route::get('payments',function ()
 {

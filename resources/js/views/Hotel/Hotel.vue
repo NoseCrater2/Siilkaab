@@ -77,41 +77,19 @@ import AditionalInfo from "../../views/Hotel/AditionalInfo";
 
 export default {
   created() {
-    if (this.$route.params.id) {
-      this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
-      this.getHotel(this.$route.params.id).then(() => {
-        this.hotelTitle = this.hotel.title;
-        if (this.hotel.idConfiguration !== null) {
-          this.getConfiguration(this.hotel.idConfiguration).then(() => {});
-        }
-        if (this.hotel.idContact !== null) {
-          this.getContacts(this.hotel.idContact).then(() => {});
-        }
-        if (this.hotel.idCondition !== null) {
-          this.getConditions(this.hotel.idCondition).then(() => {});
-        }
-        if (this.hotel.idRegime !== null) {
-          this.getRegimes(this.hotel.idRegime).then(() => {});
-        }
-        if (this.hotel.idAmenity !== null) {
-          this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
-          this.getPools(this.hotel.id).then(() => {});
-          this.getRestaurants(this.hotel.id).then(() => {});
-          this.getSchedules(this.hotel.id).then(() => {});
-        }
-        this.chargeView = true;
-      });
-    }
+    //Ejecuta el metodo de carga del hotel
+    this.chargeDataHotel();
   },
   data() {
     return {
       hotelTitle: "",
-      chargeView: false,
     };
   },
   computed: {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
+      chargeView: (state) => state.HotelModule.chargeView,
+      setReinicializedVar: (state) => state.HotelModule.setReinicializedVar,
       iditemsListOptions: (state) => state.HotelModule.iditemsListOptions,
     }),
   },
@@ -128,6 +106,32 @@ export default {
       "getAditionalInfo",
     ]),
     ...mapMutations(["setReinicialized"]),
+    chargeDataHotel() {
+      if (this.$route.params.id) {
+        this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
+        this.getHotel(this.$route.params.id).then(() => {
+          this.hotelTitle = this.hotel.title;
+          if (this.hotel.idConfiguration !== null) {
+            this.getConfiguration(this.hotel.idConfiguration).then(() => {});
+          }
+          if (this.hotel.idContact !== null) {
+            this.getContacts(this.hotel.idContact).then(() => {});
+          }
+          if (this.hotel.idCondition !== null) {
+            this.getConditions(this.hotel.idCondition).then(() => {});
+          }
+          if (this.hotel.idRegime !== null) {
+            this.getRegimes(this.hotel.idRegime).then(() => {});
+          }
+          if (this.hotel.idAmenity !== null) {
+            this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
+            this.getPools(this.hotel.id).then(() => {});
+            this.getRestaurants(this.hotel.id).then(() => {});
+            this.getSchedules(this.hotel.id).then(() => {});
+          }
+        });
+      }
+    },
   },
   components: {
     ButtonActionsSup,

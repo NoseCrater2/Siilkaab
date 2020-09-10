@@ -3,6 +3,8 @@ const HotelModule = {
     state: {
         allhotels: [],
         hotels: [],
+        setReinicializedVar: null,
+        chargeView: false, //Variable que carga las vistas de componentes de submenus de hotel
         assignHotels: null,
         iditemsListOptions: 0,
         hotel: null,
@@ -27,6 +29,8 @@ const HotelModule = {
         //Se reinician los estados (principalmente por el problema del router-link)
         setReinicialized(state) {
             (state.iditemsListOptions = 0),
+            (state.setReinicializedVar = null),
+            (state.chargeView = false),
                 (state.hotel = null),
                 (state.currencies = null),
                 (state.timezones = null),
@@ -57,6 +61,10 @@ const HotelModule = {
             state.schedules = payload;
         },
         setHotel(state, payload) {
+            //Inicializa la variable "setReinicializedVar" que indica que ya hay datos de hotel
+            state.setReinicializedVar = 1;
+            //Inicializa la variable "chargeView" que indica que ya se puede cargar las vistas
+            state.chargeView = true;
             state.hotel = payload;
         },
         setHotels(state, payload) {
@@ -225,16 +233,51 @@ const HotelModule = {
             try {
                 const request = await axios.get(`/api/conditions/${id}`);
                 let conditions = request.data.data;
+                conditions.checkin_time = conditions.checkin_time.slice(0, -3);
+                conditions.checkout_time = conditions.checkout_time.slice(0, -3);
                 commit("setConditions", conditions);
             } catch (error) {}
         },
         getRegimes: async function({ commit }, id) {
             try {
-                let arrayRegimes = [];
-                id.forEach(async elID => {
-                    const request = await axios.get(`/api/regimes/${elID}`);
-                    arrayRegimes.push(request.data.data);
-                });
+                const promiseRequest = await Promise.all(
+                    id.map(elID => {
+                        const requestRegime = axios.get(`/api/regimes/${elID}`);
+                        return requestRegime;
+                    })
+                );
+                
+                //Guardamos en un arreglo el resultado de la promesa (que contiene los regimenes)
+                let mapArray = promiseRequest.map((itemPromise, index)=>{
+                    return itemPromise.data.data;
+                })
+                
+                //Ordenamos el arreglo de regimenes de manera desc
+                mapArray.sort(function(a,b) {return (a.id < b.id) ? 1 : ((b.id < a.id) ? -1 : 0);} );
+
+                //Creamos e inicializamos una variable donde se guardara el indice del arreglo
+                //Y que servirá para cortar del arreglo el regimen que no tenga fecha
+                let indexSplice = 0;
+
+                //Seteamos en un nuevo array llamado "arrayRegimes" el contenido del array original
+                //"mapArray" y en este ademas seteamos la variable "indexSplice" con el indice de la coincidencia
+                //Del regime sin fecha
+                let arrayRegimes = mapArray.map((itemArray, index)=>{
+                    if(itemArray.start_period === null && itemArray.start_period === null){
+                        indexSplice = index;
+                    }
+                    return itemArray;
+                })
+
+                //Creamos una variable llamada "tempRegimeCuted" que guardara el elemento cortado del array
+                //Cabe señalar que el metodo Javascript "splice" tambien afecta directamente al array al que se
+                //Le aplica y por lo tanto, si elimina tambien el elemento señalado. Es por eso que el elemento
+                //Anterior se guardó en la variable temporal
+                let tempRegimeCuted = arrayRegimes.splice(indexSplice, 1);
+                //Agregamos a "arrayRegimes" el elemento cortado como primer elemento del array de la siguiente manera
+                //Posicion donde se agrega, numero de elementos a eliminar en el proceso, elemento a insertar/eliminar
+                arrayRegimes.splice(0, 0, tempRegimeCuted[0]);
+                
                 commit("setRegimes", arrayRegimes);
             } catch (error) {}
         },
@@ -260,7 +303,9 @@ const HotelModule = {
                     return {idRestaurant: scheduleItem.id, restaurantSchedules: scheduleItem.schedules}
                 });
                 commit("setSchedules", schedules);
-            } catch (error) {}
+            } catch (error) {
+                
+            }
         },
 
         getPools: async function({ commit }, idHotel) {
@@ -268,7 +313,6 @@ const HotelModule = {
                 const request = await axios.get("/api/pools");
                 let pools = request.data.data.filter(
                     element => element.hotel_id === idHotel
-                    
                 );
                 commit("setPools", pools);
             } catch (error) {}
@@ -320,7 +364,18 @@ const HotelModule = {
             let formDataHotel = new FormData();
 
             for (let attrib in newHotel) {
-                formDataHotel.append(attrib, newHotel[attrib]);
+                //Si la propiedad a agregar al FormData es la imagen
+                if(attrib === "image"){
+                    //Si la imagen.result es diferente de "undefined" es por que se editó la imagen
+                    //Y se modificó la propiedad donde se guardaria temporalmente el "comprimido"
+                    if(typeof(newHotel[attrib].result) !== "undefined"){
+                        formDataHotel.append(attrib, newHotel[attrib].result);
+                    }
+                }
+                //Sino, se sigue agregando como normalmente se agrega
+                else{
+                    formDataHotel.append(attrib, newHotel[attrib]);
+                }
             }
 
             formDataHotel.append("_method", "put");
@@ -423,7 +478,10 @@ const HotelModule = {
                     `/api/conditions/${newConditions.id}`,
                     newConditions
                 );
-                commit("putEditConditions", request.data.data);
+                let conditions = request.data.data;
+                conditions.checkin_time = conditions.checkin_time.slice(0, -3);
+                conditions.checkout_time = conditions.checkout_time.slice(0, -3);
+                commit("putEditConditions", conditions);
                 // commit('setStatus',request.status);
             } catch (error) {
                 commit("setErrors", error.response.data);
@@ -524,6 +582,45 @@ const HotelModule = {
             }
         },
 
+        putEditRestaurants: async function({ commit }, newRestaurants) {
+            //console.log(newRestaurants)
+            try {
+                //Eliminamos las propiedades que no es necesario agregar en la peticion AXIOS
+                //Eliminamos el nombre del hotel
+                //delete newAditionalInfo.hotel;
+                //Eliminamos el id del hotel
+                //delete newAditionalInfo.hotel_id;
+                //const requestEditAditionalInfo = await axios.put(
+                //    `/api/amenities/${newAditionalInfo.id}`,
+                //    newAditionalInfo
+                //);
+                //commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrors", error.response.data);
+                commit("setStatus", error.response.status);
+            }
+        },
+
+        putEditSchedules: async function({ commit }, newSchedules) {
+            //console.log(newSchedules)
+            try {
+                //Eliminamos las propiedades que no es necesario agregar en la peticion AXIOS
+                //Eliminamos el nombre del hotel
+                //delete newAditionalInfo.hotel;
+                //Eliminamos el id del hotel
+                //delete newAditionalInfo.hotel_id;
+                //const requestEditAditionalInfo = await axios.put(
+                //    `/api/amenities/${newAditionalInfo.id}`,
+                //    newAditionalInfo
+                //);
+                //commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrors", error.response.data);
+                commit("setStatus", error.response.status);
+            }
+        },
 
         editHotel: async function({ commit }, newHotel) {
             try {
