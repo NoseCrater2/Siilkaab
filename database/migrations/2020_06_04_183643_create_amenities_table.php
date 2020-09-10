@@ -77,7 +77,7 @@ class CreateAmenitiesTable extends Migration
             $table->boolean('safe_deposit_box')->default(false);
 
             $table->unsignedBigInteger('hotel_id');
-            $table->foreign('hotel_id')->index()->references('id')->on('hotels')->onDelete('cascade');
+            $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->timestamps();
         });
     }

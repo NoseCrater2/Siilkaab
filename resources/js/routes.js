@@ -45,14 +45,20 @@ const routes = [
         name: "panel"
     },
     {
-        path: "/paypal",
-        component: require("./views/Reservations/Paypal").default,
-        name: "paypal"
-    },
-    {
         path: "/payments",
         component: require("./views/Reservations/Payments").default,
         name: "payments"
+    },
+    {
+        path: "/payment-options",
+        component: require("./views/payments/Payments").default,
+        name: "payment-options"
+    },
+
+    {
+        path: "/disponibility",
+        component: require("./views/Disponibility/Disponibility").default,
+        name: "disponibility"
     },
 ];
 

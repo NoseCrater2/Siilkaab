@@ -17,7 +17,7 @@ class CreateBookingsTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->date('from')->required();
             $table->date('to')->required();
-            $table->unsignedBigInteger('room_id')->index();
+            $table->unsignedBigInteger('room_id');
             $table->foreign('room_id')->references('id')->on('rooms');
             $table->timestamps();
         });

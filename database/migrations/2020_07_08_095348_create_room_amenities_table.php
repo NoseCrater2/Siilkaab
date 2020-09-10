@@ -90,7 +90,7 @@ class CreateRoomAmenitiesTable extends Migration
             $table->boolean('fire_extinguisher')->default(false);
             $table->boolean('air_purifiers')->default(false);
             $table->unsignedBigInteger('room_id');
-            $table->foreign('room_id')->index()->references('id')->on('rooms')->onDelete('cascade');
+            $table->foreign('room_id')->references('id')->on('rooms')->onDelete('cascade');
             $table->timestamps();
         });
     }

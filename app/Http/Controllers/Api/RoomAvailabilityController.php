@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Room;
+use App\Hotel;
 
 class RoomAvailabilityController extends Controller
 {
@@ -17,16 +17,15 @@ class RoomAvailabilityController extends Controller
     public function __invoke($id, Request $request)
     {
         $data = $request->validate([
-            'from' => 'required|date_format:Y-m-d|after_or_equal:now',
-            'to' => 'required|date_format:Y-m-d|after_or_equal:from',
+            //'id' => 'required|exists:hotels,id'
+            //'from' => 'required|date_format:Y-m-d|after_or_equal:now',
+            //'to' => 'required|date_format:Y-m-d|after_or_equal:from',
 
         ]);
 
-        $room = Room::findOrFail($id);
+        $hotel = Hotel::findOrFail($id);
 
-       return $room->availableFor($data['from'], $data['to'])
-                ? response()->json([])
-                : response()->json([],404);
-
+       return  response($hotel->rooms,200);
+               
     }
 }

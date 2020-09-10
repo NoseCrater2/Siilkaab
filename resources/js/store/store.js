@@ -2,6 +2,8 @@ import UsersModule from './UsersModule';
 import BinnacleModule from './BinnacleModule';
 import HotelModule from './HotelModule';
 import PaymentModule from './PaymentModule';
+import RoomModule from './RoomModule';
+import CredentialsModule from './CredentialsModule';
 
 export default {
 
@@ -9,8 +11,9 @@ export default {
     UsersModule,
     BinnacleModule,
     HotelModule,
-    PaymentModule
-
+    PaymentModule,
+    RoomModule,
+    CredentialsModule,
   },
  
 }

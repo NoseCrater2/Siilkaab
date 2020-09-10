@@ -2,11 +2,14 @@
     <div>
         <div id="app">
             <v-app id="inspire">
-                <v-card>
+                <v-card
+                color="black"
+                >
                     <v-card-text>
                         <v-row>
                             <v-col cols="12" sm="3">
                                 <v-menu
+                                dark
                                 v-model="menu"
                                 :close-on-content-click="false"
                                 :nudge-right="40"
@@ -15,6 +18,7 @@
                                 offset-y>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
+                                    dark
                                     v-model="date"
                                     label="DESDE"
                                     prepend-inner-icon="mdi-calendar"
@@ -30,6 +34,7 @@
 
                             <v-col cols="12" sm="3">
                                 <v-menu
+                                dark
                                 v-model="menu2"
                                 :close-on-content-click="false"
                                 :nudge-right="40"
@@ -38,6 +43,7 @@
                                 offset-y>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
+                                    dark
                                     v-model="date2"
                                     label="HASTA"
                                     prepend-inner-icon="mdi-calendar"
@@ -53,6 +59,7 @@
 
                             <v-col cols="12" sm="3">
                                 <v-menu
+                                dark
                                 ref="menu3"
                                 v-model="menu3"
                                 :close-on-content-click="false"
@@ -60,6 +67,7 @@
                                 offset-y>
                                 <template v-slot:activator="{ on, attrs }">
                                     <v-text-field
+                                    dark
                                     v-model="searchTerms"
                                     label="OCUPACIÓN"
                                     prepend-inner-icon="mdi-account-multiple"
@@ -75,6 +83,7 @@
 
                             <v-col cols="12" sm="3" >
                                 <v-btn
+                                dark
                                 x-large
                                 block
                                 :loading="loading"
@@ -89,15 +98,23 @@
                         </v-row>
                     </v-card-text>
                 </v-card>
+                <div v-if="showRooms">
+                  <AvailabilityRooms></AvailabilityRooms>
+                </div>
+                <!--COMPONENTE PARA CARGAR HABITACIONES-->  
             </v-app>
         </div>
     </div>
 </template>
 
-<script>
+
+<script >
+import { mapActions, mapState } from 'vuex';
+import AvailabilityRooms from './AvailabilityRooms';
 export default {
   data () {
     return {
+   
     date: new Date().toISOString().substr(0, 10),
     date2: new Date().toISOString().substr(0, 10),
     menu: false,
@@ -108,6 +125,7 @@ export default {
     loading: false,
     status: null,
     errors: null,
+    showRooms : false,
     }
   },
 
@@ -115,8 +133,12 @@ export default {
     search(){
      this.loading = true;
      this.errors = null;
+      this.$store.dispatch('getAvailabilityRooms',this.id).then(()=>{
+        this.showRooms = true;
+        this.loading = false;
+      })
 
-     axios
+     /*axios
      .get(`/api/rooms/1/availability?from=${this.date}&to=${this.date2}`)
      .then(response => {
        this.status = response.status;
@@ -127,7 +149,7 @@ export default {
        }
 
        this.status = error.response.status;
-     }).then(() => {this.loading = false});
+     }).then(() => {this.loading = false});*/
     },
 
     errorFor(field){
@@ -137,6 +159,7 @@ export default {
   },
 
   computed:{
+    
     hasErrors(){
       return 422 === this.status && this.errors !== null;
     },
@@ -150,11 +173,15 @@ export default {
     }
   },
   mounted(){
-  
+    
+    console.log(this.id);
+    
   },
 
-  props:{
-   
+  props:['id'],
+
+  components:{
+    AvailabilityRooms,
   },
 
   watch:{

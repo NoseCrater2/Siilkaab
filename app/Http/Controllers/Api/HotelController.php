@@ -18,8 +18,6 @@ use App\Http\Resources\HotelIndexResource;
 use App\Http\Resources\HotelViewResource;
 
 
-use function GuzzleHttp\json_decode;
-
 class HotelController extends Controller
 {
     public function index()

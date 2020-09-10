@@ -1,6 +1,7 @@
 <?php
 
-use App\Bookable;
+use App\Calendar;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,9 +15,25 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+
+//Route::get('getcredential/{hotel_credentials}','HotelCredentialsController@show');
+
 Route::post('payments/pay', 'PaymentController@pay')->name('pay');
 Route::get('payments/cancelled', 'PaymentController@cancelled')->name('cancelled');
-Route::get('payments/success', 'PaymentController@approval')->name('approval');
+Route::post('payments/success/', 'PaymentController@approval')->name('approval');
+Route::post('payments/getCode', 'PaymentController@getSellerCode')->name('getCode');
+Route::post('payments/updateCode', 'PaymentController@updateCredentials')->name('updateCode');
+
+
+
+
+Route::group(['prefix' => 'events'], function ()
+{
+    Route::get('/{year}', 'CalendarController@eventsCountForYear');
+    Route::get('/{month}/{year}','CalendarController@eventsForMonth');
+    Route::post('/','CalendarController@store');
+});
 
 Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 
@@ -30,10 +47,10 @@ Route::post('/login', 'AuthController@login');
 Route::middleware('auth:api')->post('/logout', 'AuthController@logout');
 
 
+Route::apiResource('paypal_pays','PayPalController')->only('index','show','store','update','destroy');
 
 
-
-
+Route::apiResource('credentials','Api\HotelCredentialsController')->only('index','show','store','update','destroy');
 Route::apiResource('hotels','Api\HotelController')->only('index','show','store','update');
 Route::post('deletehotels','Api\HotelController@delete');
 
@@ -41,7 +58,7 @@ Route::name('hotelsnoadmin')->get('myhotels/','Api\HotelController@getHotelsForN
 Route::name('hotelsadmin')->get('adminhotels/','Api\HotelController@getHotelsForAdmin');
 
 Route::apiResource('rooms','Api\RoomController')->only('index','show','store','update','destroy');
-Route::get('rooms/{room}/availability','Api\RoomAvailabilityController')->name('rooms.availability.show');
+Route::get('rooms/{hotel}/availability','Api\RoomAvailabilityController')->name('rooms.availability.show');
 
 Route::apiResource('rates','Api\RateController')->only('index','show','store','update','destroy');
 Route::apiResource('discounts','Api\DiscountController')->only('index','show','store','update','destroy');

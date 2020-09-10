@@ -24,11 +24,11 @@ Route::get('reservations/{id}',function ($id)
     return view('reservations', ['id'=>$id]);
 })->where(['id' => '[0-9]+'])->name('reservations.hotels');
 
-Route::get('payments',function ()
-{
-    return view('payments');
-})->name('payments');
 
+Route::get('payments',function ()
+    {
+        return view('payments');
+    })->name('payments');
 
 
 Route::get('mercadopago',function ()
