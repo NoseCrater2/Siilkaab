@@ -9,25 +9,24 @@
         </v-col>
         <!--MENU DESDE-->
         <v-col cols="12" md="4">
-          <DateTimePicker :dates="getStartDate"></DateTimePicker>
+          <DateTimePicker :dates="getStartDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </v-col>
 
         <!--MENU HASTA-->
         <v-col cols="12" md="4">
-          <DateTimePicker :dates="getFinalDate"></DateTimePicker>
+          <DateTimePicker :dates="getFinalDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </v-col>
       </v-row>
       <v-col cols="12" md="5">
         <v-switch v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
       </v-col>
       <v-col cols="2" md="6">
-        <v-autocomplete
+        <v-select
           :items="prioritiesModel"
           v-model="computedDdwnPriority"
-          dense
-          filled
+          outlined
           label="Prioridad"
-        ></v-autocomplete>
+        ></v-select>
       </v-col>
       <v-row align="center">
         <v-col cols="12" md="5">
@@ -79,10 +78,7 @@ import DateTimePicker from "../DateTimePicker/DateTimePicker";
 export default {
   name: "SpecialRegime",
   created() {
-    if (
-      this.objArrCompo.start_period != null &&
-      this.objArrCompo.final_period != null
-    ) {
+    if (this.objArrCompo.start_period != null && this.objArrCompo.final_period != null) {
       this.propStartDate = {
         info: "Start",
         prop: this.objArrCompo.start_period,
@@ -318,6 +314,16 @@ export default {
     removeCompo(id) {
       this.$emit("removeCompo", id);
     },
+    sendNewHour(newHour, info){
+      if(info === "Start"){
+        this.objArrCompo.start_period = newHour+":00";
+        this.propStartDate.prop = this.objArrCompo.start_period
+      }
+      if(info === "Final"){
+        this.objArrCompo.final_period = newHour+":00";
+        this.propFinalDate.prop = this.objArrCompo.final_period
+      }
+    }
   },
   components: {
     DateTimePicker,
