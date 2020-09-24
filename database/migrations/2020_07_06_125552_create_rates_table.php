@@ -17,6 +17,9 @@ class CreateRatesTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->enum('type',['room','person'])->default('room');
             $table->double('rack')->default(0.0);
+            $table->date('start')->nullable();
+            $table->date('end')->nullable();
+            $table->date('day')->nullable();
             $table->double('monday')->default(0.0);
             $table->double('tuesday')->default(0.0);
             $table->double('wednesday')->default(0.0);
@@ -24,6 +27,8 @@ class CreateRatesTable extends Migration
             $table->double('friday')->default(0.0);
             $table->double('saturday')->default(0.0);
             $table->double('sunday')->default(0.0);
+            $table->foreign('room_id')->references('id')->on('rooms');
+            $table->unsignedBigInteger('room_id');
             $table->timestamps();
         });
     }

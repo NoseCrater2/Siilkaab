@@ -55,12 +55,17 @@ Route::apiResource('hotels','Api\HotelController')->only('index','show','store',
 Route::post('deletehotels','Api\HotelController@delete');
 
 Route::name('hotelsnoadmin')->get('myhotels/','Api\HotelController@getHotelsForNoAdmin');
+
 Route::name('hotelsadmin')->get('adminhotels/','Api\HotelController@getHotelsForAdmin');
+
+Route::name('roomsadmin')->get('adminrooms/{id}','Api\RoomController@getRoomsForAdmin');
 
 Route::apiResource('rooms','Api\RoomController')->only('index','show','store','update','destroy');
 Route::get('rooms/{hotel}/availability','Api\RoomAvailabilityController')->name('rooms.availability.show');
 
 Route::apiResource('rates','Api\RateController')->only('index','show','store','update','destroy');
+Route::name('ratesByRoom')->get('ratesByRoom/{room}','Api\RateController@getRatesByRoom');
+
 Route::apiResource('discounts','Api\DiscountController')->only('index','show','store','update','destroy');
 Route::apiResource('extras','Api\ExtraController')->only('index','show','store','update','destroy');
 

@@ -17,6 +17,9 @@ class RateIndexResource extends JsonResource
         return [
             'type' => $this->type,
             'rack' => $this->rack,
+            'start' => $this->start,
+            'end' => $this->end,
+            'day' => $this->day,
             'monday' => $this->monday,
             'tuesday' => $this->tuesday,
             'wednesday' => $this->wednesday,
@@ -24,6 +27,7 @@ class RateIndexResource extends JsonResource
             'friday' => $this->friday,
             'saturday' => $this->saturday,
             'sunday' => $this->sunday,
+            'room_id' => $this->room->id,
         ];
     }
 }

@@ -6,8 +6,8 @@ import Vuex from "vuex";
 import Index from "./views/Index/Index";
 import Payments from "./views/Reservations/Payments";
 import Reservations from "./views/Reservations/Reservations";
+import HorizontalCalendar from "./components/HorizontalCalendar/HorizontalCalendar";
 import storeDefinition from "./store/store";
-import LoadScript from "vue-plugin-load-script";
 
 window.Vue = require("vue");
 
@@ -15,7 +15,7 @@ Vue.use(VueRouter);
 Vue.use(Vuetify, {
     iconfont: "mdi"
 });
-Vue.use(LoadScript);
+
 
 // Translation provided by Vuetify (typescript)
 import es from "../../node_modules/vuetify/src/locale/es.ts";
@@ -46,9 +46,8 @@ const app = new Vue({
     components: {
         index: Index,
         payments: Payments,
-        reservations: Reservations
+        reservations: Reservations,
+        calendar: HorizontalCalendar,
     },
-    data: () => ({
-        drawer: null
-    })
+    
 });

@@ -56,9 +56,9 @@ class Room extends Model
         return $this->belongsTo(Discount::class);
     }
 
-    public function rate()
+    public function rates()
     {
-        return $this->belongsTo(Rate::class);
+        return $this->hasMany(Rate::class);
     }
 
     public function extra()
