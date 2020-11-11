@@ -240,6 +240,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex';
+import axios from 'axios';
 import { mapMutations, mapGetters, mapModules} from 'vuex';
 export default {
   data(){

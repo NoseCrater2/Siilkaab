@@ -36,6 +36,12 @@ Route::get('mercadopago',function ()
     return view('mercadopago');
 })->name('mercadopago');
 
+
+Route::get('calendar',function ()
+{
+    return view('calendar');
+})->name('calendar');
+
 Route::get('/{any?}', function () {
     return view('welcome');
 })->where('any','^(?!api\/)[\/\w\.-]*');

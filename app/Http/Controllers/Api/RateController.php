@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Rate;
+use App\Room;
 use App\Messages;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,7 +37,11 @@ class RateController extends Controller
         $data = $request->all();
         $rules = [
             'type' => 'required|in:room,person',
-            'rack' => 'required|numeric|min:0',
+            'rack' => 'numeric|min:0',
+            'bed_rooms' => 'numeric|min:0',
+            'start' => 'date',
+            'end' => 'date',
+            'day' => 'date',
             'monday' => 'numeric|min:0',
             'tuesday' => 'numeric|min:0',
             'wednesday' => 'numeric|min:0',
@@ -44,6 +49,7 @@ class RateController extends Controller
             'friday' => 'numeric|min:0',
             'saturday' => 'numeric|min:0',
             'sunday' => 'numeric|min:0',
+            'room_id' => 'required|exists:rooms,id',
         ];
                   
         $validator= Validator::make($data,$rules, Messages::getMessages());
@@ -79,8 +85,12 @@ class RateController extends Controller
         $data = $request->all();
 
         $rules = [
-            'type' => 'in:room|person',
+            'type' => 'in:room,person',
             'rack' => 'numeric|min:0',
+            'bed_rooms' => 'numeric|min:0',
+            'start' => 'date',
+            'end' => 'date',
+            'day' => 'date',
             'monday' => 'numeric|min:0',
             'tuesday' => 'numeric|min:0',
             'wednesday' => 'numeric|min:0',
@@ -88,6 +98,7 @@ class RateController extends Controller
             'friday' => 'numeric|min:0',
             'saturday' => 'numeric|min:0',
             'sunday' => 'numeric|min:0',
+            'room_id' => 'exists:rooms,id',
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
        
@@ -109,5 +120,13 @@ class RateController extends Controller
     {
         $rate->delete();
         return new RateIndexResource($rate);
+    }
+
+
+    public function getRatesByRoom(Room $room)
+    {
+        return RateIndexResource::collection(
+          $room->rates
+        );
     }
 }

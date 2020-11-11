@@ -19,6 +19,7 @@ class RoomIndexResource extends JsonResource
         'name' => $this->name,
         'type' => $this->type,
         'quantity' => $this->quantity,
+        'bed_rooms' => $this->bedrooms->count(),
         'rack_rate' => $this->rack_rate,
         'default_image' => $this->default_image,
         'large_text' => $this->large_text,

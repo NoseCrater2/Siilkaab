@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Hotel;
 use App\Room;
 use App\Messages;
 use Illuminate\Http\Request;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RoomIndexResource;
+use App\Http\Resources\RoomViewResource;
 use App\RoomAmenities;
 use App\Hotel;
 
@@ -53,7 +55,6 @@ class RoomController extends Controller
             'baby_extra' => 'numeric|min:0',
             'hotel_id' => 'required|exists:hotels,id',
             'discount_id' => 'exists:discounts,id',
-            'rate_id' => 'exists:rates,id',
             'extra_id' => 'exists:extras,id',
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
@@ -139,13 +140,10 @@ class RoomController extends Controller
 
     }
 
-    public function currentHotelRooms(Hotel $hotel)
+    public function getRoomsForAdmin($id)
     {
-        //$logged_user = User::find(auth('api')->user()->id);
-        return RoomIndexResource::collection(
-            //$logged_user->hotels
-            $hotel->rooms
-           //Room::all()
+        return RoomViewResource::collection(
+            Hotel::findOrFail($id)->rooms
         );
     }
 

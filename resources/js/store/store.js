@@ -4,6 +4,7 @@ import HotelModule from './HotelModule';
 import PaymentModule from './PaymentModule';
 import RoomModule from './RoomModule';
 import CredentialsModule from './CredentialsModule';
+import  disponibilityMoule from './disponibilityModule';
 
 export default {
 
@@ -14,6 +15,7 @@ export default {
     PaymentModule,
     RoomModule,
     CredentialsModule,
+    disponibilityMoule,
   },
  
 }

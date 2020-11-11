@@ -1,77 +1,190 @@
 <template>
 <div>
-   <div id="app">
-  <v-app id="inspire">
-    <v-card>
-    <v-row justify="center" align="center">
-      
-       <Calendar
-      is-expanded
-        :min-date='new Date()'
-        is-inline
-       >
-       
-       <div
-          slot="day-content"
-          
-          slot-scope="{day, dayTitle}" margin="bold">
-          <div class="text-xs text-gray-300 font-semibold text-center">
-            {{ dayTitle}}
-          </div>
-          <div class="text-xs text-gray-300 font-semibold text-center">
-            {{day.day}}
-          </div>
-         <v-row justify="center" align="center">
-           <input  type="text" class="white--text orange text-center" value="$2000">
-           <v-divider class="mx-1" inset></v-divider>
-            <input  type="text" class="white--text orange text-center" value="18">
-         </v-row>
-           
-         
-            
-         
-          
-       </div>
-       </Calendar>
+   <div >
+    <v-row >
+      <v-col cols="4" md="4" sm="0">
+
+      </v-col>
+      <v-col cols="4" sm="12" md="4" >
+        <v-autocomplete
+              v-model="hotelSelected"
+              :items="hotels"
+              item-text="title"
+              item-value="hotel_id"
+              outlined
+              dense
+              label="Seleccione Hotel"
+              @change="searchRoom(hotelSelected)"
+            ></v-autocomplete>
+      </v-col>
+      <v-col cols="4" sm="12" md="4" >
         
-     
-      
+
+            <v-autocomplete
+              v-model="roomSelected"
+              :items="rooms"
+              :loading="loadingRooms"
+              item-text="name"
+              item-value="id"
+              outlined
+              dense
+              label="Seleccione Habitación"  
+        ></v-autocomplete>
+      </v-col>
     </v-row>
-    </v-card>
-  </v-app>
+
+   <v-row >
+     <v-col  cols="4" sm="12" md="4"  >
+      <v-form>
+         <v-alert dense type="info">
+        Para ver o configurar
+         <strong>Disponibilidad</strong> y <strong>Tarifa</strong> seleccione un <strong>Rango de fecha</strong>,
+          los <strong>Días</strong> a aplicar, las <strong>Unidades</strong> y la <strong>Tarifa</strong>  a aplicar.
+        </v-alert>
+        <v-col class="my-3">
+          
+        </v-col>
+             
+         <v-combobox
+            v-model="select"
+            
+            label="Días"
+            multiple
+            outlined
+            dense
+          ></v-combobox>
+        
+            <v-text-field
+            outlined
+              solo
+              label="Unidades"
+              prepend-inner-icon="mdi-bed-empty"
+            ></v-text-field>
+          
+          
+             <v-text-field
+             outlined
+              solo
+              label="Tarifa"
+               prepend-inner-icon="mdi-currency-usd-circle"
+             
+            ></v-text-field>
+          
+           <v-spacer></v-spacer>
+          <v-btn color="primary" large block>Aplicar</v-btn>
+           <v-spacer></v-spacer>
+      
+        
+
+      </v-form>
+    </v-col>
+    <v-col cols="8" sm="12" md="8">
+        Calendar
+    </v-col>
+    </v-row>
+ 
 </div>
 </div>
 </template>
 
-<script>
-import Calendar from 'v-calendar/lib/components/calendar.umd'
-import DatePicker from 'v-calendar/lib/components/date-picker.umd'
+
+<script >
+
+
+
+import { mapActions, mapState, mapGetters } from 'vuex';
+
 
 export default{
-    data(){
+    data(){ 
     return {
-    selectedDate: null,
-    
+     
+      hotelSelected: null,
+      loadingRooms: false,
+      roomSelected: null,
+      select: null,
     };
     },
 
     mounted () {
+      this.$store.dispatch('getHotelsForAdmin');   
+    },
+
+ 
+
+    beforeDestroy() {
    
   },
 
-  methods: {
+  methods:{
+
+    ...mapActions(['getRoomsForAdmin']),
+      searchRoom(idHotel){
+        this.loadingRooms = true
+        this.getRoomsForAdmin(idHotel).then( () => {
+        this.loadingRooms = false
+        this.loadRooms();
+      } 
+     )
+    },
+    onState(state){
+      // this.state = state;
+      // subs.push(
+      //   state.subscribe(`config.chart.items.${GSTCID('1')}`, (item) => {
+      //     console.log('item 1 changed', item);
+      //   })
+      // );
+
+      // subs.push(
+      //   state.subscribe(`config.list.rows.${GSTCID('1')}`, (row) => {
+      //     console.log('item 1 changed', row);
+      //   })
+      // );
+    },
+
+    onLoaded(gstc){
+      // console.log('gstc loaded!', gstc);
+      // window.gstc = gstc;
+      // setTimeout(() => {
+      //   const item1 = this.config.chart.items[GSTCID('1')];
+      //   item1.label = 'label changed dynamically';
+      //   item1.time.end += 2 * 24 * 60 * 60 * 1000;
+      //   const row1 = this.config.list.rows[GSTCID('1')];
+      //   row1.label = 'label changed dynamically';
+      // }, 4000);
+    },
+
+    loadRooms(){
+      this.config.list.rows = this.rooms
+    }
     
   },
 
-  components:{
-   Calendar,
-  DatePicker
+  beforeUnmount() {
+  
   },
+
+  components:{
+   
+  },
+
   computed: {
-    
+    ...mapState({
+      hotels: state => state.disponibilityMoule.ahotels,
+      rooms: state => state.disponibilityMoule.arooms,
+    }),
+  
   },
 }
 
 </script>
 
-
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>
