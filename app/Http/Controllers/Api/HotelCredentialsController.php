@@ -82,7 +82,7 @@ class HotelCredentialsController extends Controller
         $rules = [
             "paypal" => "nullable|email",
             "hotels"    => "array|min:1",
-            "hotels.*"  => "exists:hotels,id|distinct|min:1|different:id",
+            "hotels.*"  => "exists:hotels,id|distinct|min:1",
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
        

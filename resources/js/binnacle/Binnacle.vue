@@ -2,12 +2,12 @@
     <div>
         <div id="app">
   <v-app id="inspire">
-      <div v-if="binnacles">
+      <div v-if="details">
 
      
     <v-timeline :reverse=true :dense="$vuetify.breakpoint.smAndDown">
       <v-timeline-item
-      v-for="(binnacle, i) in binnacles"
+      v-for="(binnacle, i) in details"
       :key="i"
        
         color="orange"
@@ -66,11 +66,12 @@
 
 <script>
 
+import { mapActions, mapState } from 'vuex';
 export default {
     
      data () {
         return{
-            binnacles:null,
+           
             loading: false,
             colors:{
               create: 'blue lighten-2',
@@ -82,7 +83,10 @@ export default {
         }
   },
     computed:{
-       
+       ...mapState({
+      details: state => state.BinnacleModule.details,
+      
+    }),
     },
     mounted(){
         this.loading = true;
@@ -94,10 +98,7 @@ export default {
     methods:{
 
     getHotel(id) {
-      axios.get(`/api/binnacles/${id}`).then(response => {
-        this.binnacles = response.data.data;
-        this.loading = false;
-      });
+     this.$store.dispatch('getBinnacleDetails',id)
     }
     }
 }

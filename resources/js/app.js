@@ -6,7 +6,7 @@ import Vuex from "vuex";
 import Index from "./views/Index/Index";
 import Payments from "./views/Reservations/Payments";
 import Reservations from "./views/Reservations/Reservations";
-import HorizontalCalendar from "./components/HorizontalCalendar/HorizontalCalendar";
+import Calendar from "./components/HorizontalCalendar/Calendar";
 import storeDefinition from "./store/store";
 
 window.Vue = require("vue");
@@ -47,7 +47,7 @@ const app = new Vue({
         index: Index,
         payments: Payments,
         reservations: Reservations,
-        calendar: HorizontalCalendar,
+        calendar: Calendar,
     },
     
 });

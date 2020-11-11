@@ -17,6 +17,7 @@ class CreateRatesTable extends Migration
             $table->bigIncrements('id')->unsigned();
             $table->enum('type',['room','person'])->default('room');
             $table->double('rack')->default(0.0);
+            $table->integer('bed_rooms')->default(0);
             $table->date('start')->nullable();
             $table->date('end')->nullable();
             $table->date('day')->nullable();

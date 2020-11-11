@@ -16,6 +16,7 @@ class RateIndexResource extends JsonResource
     {
         return [
             'type' => $this->type,
+            'bed_rooms' => $this->bed_rooms,
             'rack' => $this->rack,
             'start' => $this->start,
             'end' => $this->end,

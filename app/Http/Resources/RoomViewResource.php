@@ -17,6 +17,7 @@ class RoomViewResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'bed_rooms' => $this->bedrooms->count(),
         ];
     }
 }

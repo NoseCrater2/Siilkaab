@@ -1,7 +1,6 @@
 <template>
 <div>
-   <div id="app">
-  
+   <div >
     <v-row >
       <v-col cols="4" md="4" sm="0">
 
@@ -35,7 +34,7 @@
     </v-row>
 
    <v-row >
-     <v-col  cols="4" sm="12" md="4" class="pb-4" >
+     <v-col  cols="4" sm="12" md="4"  >
       <v-form>
          <v-alert dense type="info">
         Para ver o configurar
@@ -48,7 +47,7 @@
              
          <v-combobox
             v-model="select"
-            :items="items"
+            
             label="Días"
             multiple
             outlined
@@ -80,7 +79,7 @@
       </v-form>
     </v-col>
     <v-col cols="8" sm="12" md="8">
-  
+        Calendar
     </v-col>
     </v-row>
  
@@ -88,113 +87,85 @@
 </div>
 </template>
 
-<script>
+
+<script >
 
 
 
 import { mapActions, mapState, mapGetters } from 'vuex';
 
-let subs = []
-
 
 export default{
     data(){ 
     return {
-      myChartStart: "2020-03-01 00:00",
-      myChartEnd: "2020-03-5 00:00",
-      rows: [
-        {
-          label: "Room #1",
-          bars: [
-            {
-             myStart: "2020-03-01 12:10",
-            myEnd: "2020-03-01 16:35"
-            }
-          ]
-        },
-        {
-          label: "Room #1",
-          bars: [
-             {
-              myStart: "2020-03-02 01:00",
-              myEnd: "2020-03-02 12:00"
-            },
-            {
-              myStart: "2020-03-02 13:00",
-              myEnd: "2020-03-02 22:00"
-            }
-          ]
-        }
-        
-      ],  
+     
+      hotelSelected: null,
       loadingRooms: false,
       roomSelected: null,
-      hotelSelected: null,
-      range: {
-        start: new Date(),
-        end : new Date(),
-      },
       select: null,
-      items:[
-        'Lunes',
-        'Martes',
-        'Miércoles',
-        'Jueves',
-        'Sábado',
-        'Domingo',
-      ],
-
-     
     };
     },
 
     mounted () {
-      this.$store.dispatch('getHotelsForAdmin');
-       this.getDays(2020, 9);
-       console.log(this.fechas)
-     
+      this.$store.dispatch('getHotelsForAdmin');   
     },
 
  
 
     beforeDestroy() {
-    subs.forEach(unsub => unsub());
+   
   },
 
   methods:{
+
     ...mapActions(['getRoomsForAdmin']),
-    searchRoom(idHotel){
-     this.loadingRooms = true
-     
-     this.getRoomsForAdmin(idHotel).then( () => {
+      searchRoom(idHotel){
+        this.loadingRooms = true
+        this.getRoomsForAdmin(idHotel).then( () => {
         this.loadingRooms = false
-     }
-      
+        this.loadRooms();
+      } 
      )
     },
+    onState(state){
+      // this.state = state;
+      // subs.push(
+      //   state.subscribe(`config.chart.items.${GSTCID('1')}`, (item) => {
+      //     console.log('item 1 changed', item);
+      //   })
+      // );
 
-    // getDays(year, month){
-    //   var diasMes = new Date(year, month, 0).getDate()
-    //   var diasSemana = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+      // subs.push(
+      //   state.subscribe(`config.list.rows.${GSTCID('1')}`, (row) => {
+      //     console.log('item 1 changed', row);
+      //   })
+      // );
+    },
 
-    //   for (var dia = 1; dia <= diasMes; dia++) {
-    //       // Ojo, hay que restarle 1 para obtener el mes correcto
-    //       var indice = new Date(year, month - 1, dia).getDay();
-    //       var f = new this.fechas()
-    //       this.f.year = year
-    //       this.f.month = month
-    //       this.f.dayNumber = dia
-    //       this.f.year = diasSemana[indice]
-         
-    //   }
-    // }
+    onLoaded(gstc){
+      // console.log('gstc loaded!', gstc);
+      // window.gstc = gstc;
+      // setTimeout(() => {
+      //   const item1 = this.config.chart.items[GSTCID('1')];
+      //   item1.label = 'label changed dynamically';
+      //   item1.time.end += 2 * 24 * 60 * 60 * 1000;
+      //   const row1 = this.config.list.rows[GSTCID('1')];
+      //   row1.label = 'label changed dynamically';
+      // }, 4000);
+    },
+
+    loadRooms(){
+      this.config.list.rows = this.rooms
+    }
     
+  },
 
-
+  beforeUnmount() {
+  
   },
 
   components:{
- 
+   
   },
 
   computed: {
@@ -202,14 +173,18 @@ export default{
       hotels: state => state.disponibilityMoule.ahotels,
       rooms: state => state.disponibilityMoule.arooms,
     }),
-
-    ...mapGetters([
-
-     ]),
-
   
   },
 }
 
 </script>
 
+<style>
+#app {
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+</style>

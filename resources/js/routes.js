@@ -60,6 +60,11 @@ const routes = [
         component: require("./views/Disponibility/Disponibility").default,
         name: "disponibility"
     },
+    {
+        path: "/calendar",
+        component: require("./components/HorizontalCalendar/Calendar").default,
+        name: "calendar"
+    },
 ];
 
 const router = new VueRouter({
