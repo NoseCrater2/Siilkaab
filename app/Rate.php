@@ -9,6 +9,9 @@ class Rate extends Model
     protected $fillable =  [
         'type',
         'rack',
+        'start',
+        'end',
+        'day',
         'monday',
         'tuesday',
         'wednesday',
@@ -16,10 +19,11 @@ class Rate extends Model
         'friday',
         'saturday',
         'sunday',
+        'room_id'
     ];
 
-    public function rooms()
+    public function room()
     {
-        return $this->hasMany(Room::class);
+        return $this->belongsTo(Room::class);
     }
 }

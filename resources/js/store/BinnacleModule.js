@@ -4,6 +4,7 @@ const BinnacleModule = {
 
     state:{
         binnacles: [],
+        details: [],
     },
     getters:{
 
@@ -12,6 +13,11 @@ const BinnacleModule = {
         setBinnacles(state,apiBinnacles){
             state.binnacles = apiBinnacles;
         },
+
+        setDetails(state,details){
+            state.details = details;
+        },
+
     },
     actions:{
         getBinnacles: async function ({ commit, state }){
@@ -26,6 +32,17 @@ const BinnacleModule = {
             } 
     
           },
+
+
+        getBinnacleDetails: async function({ commit }, id) {
+            try {
+                const response = await axios.get(`/api/binnacles/`+id);
+                let details = response.data.data;
+                commit("setDetails", details);
+            } catch (error) {
+                console.log(error)
+            }
+        },
     },
 }
 

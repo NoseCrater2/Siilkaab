@@ -16,6 +16,7 @@
 
 <script>
 import {mapState, mapGetters } from 'vuex';
+import axios from 'axios';
 export default {
   data () {
     return {
@@ -42,7 +43,7 @@ computed:{
   methods:{
  getPayPalButtonsInstance(){
     var formulary = document.createElement('script')
-      formulary.setAttribute('src', 'https://www.paypal.com/sdk/js?client-id='+process.env.MIX_PAYPAL_CLIENT_ID+'&merchant-id=sb-rwkeu2992317@business.example.com&currency='+this.data.currency);
+      formulary.setAttribute('src', 'https://www.paypal.com/sdk/js?client-id=AUjYTvR0qUTUCXXIJGQexrO-xkC9a1f6n_OCukiIZMKTQVTm2HKB1pM4Lv5e4pAYgdca830wrbBiMTTM&currency='+this.data.currency);
       document.body.appendChild(formulary)
       return formulary;
     },
@@ -50,7 +51,7 @@ computed:{
   },
 
   mounted(){
-
+   
     this.getPayPalButtonsInstance().onload = () => {
       
       window.paypal.Buttons({

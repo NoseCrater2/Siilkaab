@@ -106,6 +106,7 @@
 <script>
 
 import { mapActions, mapState } from 'vuex';
+import axios from 'axios';
 export default {
   data () {
     return {
@@ -138,7 +139,7 @@ export default {
         card_token: null,
         idHotel: null,
       },
-      key: process.env.MIX_MERCADOPAGO_KEY,
+      key: 'TEST-1ecc6b4e-75d1-4720-99c3-8ffe5e311e2b',//process.env.MIX_MERCADOPAGO_KEY,
       items:[
          "C.C",
       ],
@@ -226,9 +227,7 @@ export default {
      },
 
      cleanErrors(){
-       this.cardErrors.forEach(error => {
-         error = null;
-       });
+       
      }
 
   },
