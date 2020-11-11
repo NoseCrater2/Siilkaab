@@ -1,28 +1,34 @@
 <template>
   <div>
     <v-banner single-line>
-      <v-btn small color="info" class="white--text" @click="saveChanges()">
-        <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
-      </v-btn>
-      <v-btn small color="grey" class="white--text">
-        <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y cerrar
-      </v-btn>
-      <v-btn small color="red" class="white--text">
-        <v-icon left dark>mdi-close-circle</v-icon>Cerrar
-      </v-btn>
+      <v-row class="d-flex align-center justify-end">
+        <v-col cols="12" md="8" sm="8" xs="12" class="d-flex justify-start">
+          <v-btn depressed small color="info" class="white--text mr-3" @click="saveChanges()">
+            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
+          </v-btn>
+          <v-btn depressed small color="grey" class="white--text mr-3">
+            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y cerrar
+          </v-btn>
+          <v-btn depressed small color="red" class="white--text mr-3">
+            <v-icon left dark>mdi-close-circle</v-icon>Cerrar
+          </v-btn>
+        </v-col>
 
-      <template v-slot:actions>
-        <v-autocomplete
-          :items="listItemHotels"
-          item-text="title"
-          item-value="id"
-          v-model="computedTitleHotel"
-          dense
-          outlined
-          label="Hoteles"
-        ></v-autocomplete>
-        <v-icon id="iconHotel">mdi-domain</v-icon>
-      </template>
+        <v-col cols="12" md="4" sm="4" xs="12" class="d-flex justify-end my-n8">
+          <v-autocomplete
+            :items="listItemHotels"
+            item-text="title"
+            item-value="id"
+            v-model="computedTitleHotel"
+            dense
+            outlined
+            prepend-inner-icon="mdi-domain"
+            label="Hoteles"
+            class="mt-7"
+            background-color="white"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
     </v-banner>
   </div>
 </template>
@@ -144,10 +150,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-#iconHotel {
-  margin-right: 0px;
-  margin-bottom: 6px;
-}
-</style>

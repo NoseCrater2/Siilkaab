@@ -1,5 +1,7 @@
 import Hotels from "./views/Hotels/Hotels";
 import Hotel from "./views/Hotel/Hotel";
+import RoomsHome from "./views/Rooms/RoomsHome"
+import RoomDetails from './views/Rooms/RoomDetails';
 import Users from "./users/Users";
 import Binnacles from "./binnacle/Binnacles";
 import Binnacle from "./binnacle/Binnacle";
@@ -23,6 +25,16 @@ const routes = [
         path: "/hotel/:id",
         component: Hotel,
         name: "Hotel"
+    },
+    {
+        path: "/rooms-home",
+        component: RoomsHome,
+        name: "RoomsHome"
+    },
+    {
+        path: "/roomDetails/:id",
+        component: RoomDetails,
+        name: "RoomDetails"
     },
     {
         path: "/users/",

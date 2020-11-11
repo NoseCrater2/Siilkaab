@@ -15,22 +15,27 @@
       <v-app id="inspire">
         <v-bottom-navigation grow>
           <div v-show="selected==! []?false:true">
-            <v-btn @click="showDeleteDialog()">
-              <span color="error">ELIMINAR SELECCIÓN</span>
-              <v-icon large color="error">mdi-delete-sweep</v-icon>
+            <div class="d-flex align-center mt-1">
+              <v-btn @click="showDeleteDialog()">
+                <span class="black--text">ELIMINAR SELECCIÓN</span>
+                <v-icon size="32" color="error">mdi-delete-sweep</v-icon>
+              </v-btn>
+              <v-divider inset vertical></v-divider>
+            </div>
+          </div>
+
+          <v-spacer></v-spacer>
+          <div class="d-flex align-center">
+            <span class="text-h4 font-weight-bold">HOTELES</span>
+          </div>
+          <v-spacer></v-spacer>
+          <v-divider inset vertical></v-divider>
+          <div class="d-flex align-center mt-n1">
+            <v-btn @click="dialog = !dialog">
+              <span class="black--text">NUEVO HOTEL</span>
+              <v-icon size="32" color="primary">mdi-plus</v-icon>
             </v-btn>
           </div>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-
-          <h1>HOTELES</h1>
-
-          <v-spacer></v-spacer>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-btn @click="dialog = !dialog">
-            <span color="error">NUEVO HOTEL</span>
-            <v-icon large color="primary">mdi-plus</v-icon>
-          </v-btn>
         </v-bottom-navigation>
         <v-card>
           <v-data-table
@@ -51,10 +56,11 @@
                 <v-text-field
                   v-model="search"
                   append-icon="mdi-magnify"
-                  label="Buscar Hotel"
+                  label="Buscar hotel"
                   single-line
                   hide-details
-                  align="center"
+                  outlined
+                  dense
                 ></v-text-field>
                 <v-spacer></v-spacer>
 
@@ -73,50 +79,61 @@
                   </v-card>
                 </v-dialog>
               </v-toolbar>
-              <v-switch v-model="singleSelect" label="Selección única" class="pa-3" inset></v-switch>
+              <div class="d-flex align-center ml-2 my-n4">
+                <v-switch v-model="singleSelect" label="Selección única" class="pa-3" inset></v-switch>
+              </div>
             </template>
 
             <template v-slot:item.rooms="{item}">
-              <v-badge :content="item.rooms" :value="item.rooms" color="red" overlap>
-                <v-icon>mdi-bed</v-icon>
-              </v-badge>
+              <div class="d-flex align-center justify-start ml-5">
+                <v-badge :content="item.rooms" :value="item.rooms" color="red" overlap>
+                  <v-icon>mdi-bed</v-icon>
+                </v-badge>
+              </div>
             </template>
 
             <template v-slot:item.rates="{item}">
-              <v-badge :content="item.rates" :value="item.rates" color="red" overlap>
-                <v-icon>mdi-cash-multiple</v-icon>
-              </v-badge>
+              <div class="d-flex align-center justify-start ml-1">
+                <v-badge :content="item.rates" :value="item.rates" color="red" overlap>
+                  <v-icon>mdi-cash-multiple</v-icon>
+                </v-badge>
+              </div>
             </template>
 
             <template v-slot:item.discounts="{item}">
-              <v-badge :content="item.discounts" :value="item.discounts" color="red" overlap>
-                <v-icon>mdi-label-percent</v-icon>
-              </v-badge>
+              <div class="d-flex align-center justify-start ml-5">
+                <v-badge :content="item.discounts" :value="item.discounts" color="red" overlap>
+                  <v-icon>mdi-label-percent</v-icon>
+                </v-badge>
+              </div>
             </template>
 
             <template v-slot:item.extras="{item}">
-              <v-badge :content="item.extras" :value="item.extras" color="red" overlap>
-                <v-icon>mdi-tag-plus</v-icon>
-              </v-badge>
+              <div class="d-flex align-center justify-start ml-1">
+                <v-badge :content="item.extras" :value="item.extras" color="red" overlap>
+                  <v-icon>mdi-tag-plus</v-icon>
+                </v-badge>
+              </div>
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <v-row class="align-center">
+              <div
+                :class="windowSize"
+              >
                 <router-link
                   :to="{name: 'Hotel' , params: {id: item.id}}"
-                  style="text-decoration: none;"
+                  class="text-decoration-none mx-4"
                 >
-                  <v-icon class="mr-2 mt-0 mb-0">mdi-pencil</v-icon>
+                  <v-icon>mdi-pencil</v-icon>
                 </router-link>
                 <v-switch
-                  class="mt-1 mb-0"
                   :input-value="item.enabled"
                   value
                   dense
-                  border="1px"
+                  inset
                   @change="changeStatus(item,$event)"
                 ></v-switch>
-              </v-row>
+              </div>
             </template>
           </v-data-table>
         </v-card>
@@ -136,7 +153,7 @@ export default {
       singleSelect: false,
       loading: false,
       columns: 3,
-      
+
       headers: [
         {
           text: "Título",
@@ -144,7 +161,7 @@ export default {
           sortable: true,
           value: "title",
         },
-        { text: "Código de referencia", value: "reference_code" },
+        { text: "Código de referencia", align: "center", value: "reference_code" },
         { text: "Habitaciones", value: "rooms" },
         { text: "Tarifas", value: "rates" },
         { text: "Descuentos", value: "discounts" },
@@ -162,6 +179,20 @@ export default {
     ...mapState({
       hotels: (state) => state.HotelModule.allhotels,
     }),
+    windowSize() {
+      switch (this.$vuetify.breakpoint.name) {
+        case "xs":
+          return 'd-flex align-center justify-start mr-n4';
+        case "sm":
+          return 'd-flex align-center justify-start ml-n8';
+        case "md":
+          return 'd-flex align-center justify-start ml-n8';
+        case "lg":
+          return 'd-flex align-center justify-start ml-n8';
+        case "xl":
+          return 'd-flex align-center justify-start ml-n8';
+      }
+    },
   },
 
   mounted() {

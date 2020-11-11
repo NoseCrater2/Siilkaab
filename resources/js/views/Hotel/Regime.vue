@@ -4,71 +4,122 @@
       <!--Contenido del card-->
       <!--REGIMENES-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-silverware-fork-knife</v-icon>
-          <h3>Regimenes</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-silverware-fork-knife</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">REGIMENES</span>
+          </div>
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-switch v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
         </v-col>
-        <v-col cols="2" md="6">
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-select
             :items="prioritiesModel"
             v-model="computedDdwnPriority"
-            outlined
+            prepend-inner-icon="mdi-pen"
             label="Prioridad"
+            :menu-props="{ bottom: true, offsetY: true }"
+            outlined
           ></v-select>
         </v-col>
-        <v-row align="center">
-          <v-col cols="12" md="5">
-            <v-switch v-model="computedSwBreakfast" inset label="Alojamiento y desayuno"></v-switch>
-          </v-col>
-          <v-col cols="2" md="3">
-            <v-text-field v-model="computedTxtBreakfastAdult" label="Adulto" required></v-text-field>
-          </v-col>
-          <v-col cols="2" md="3">
-            <v-text-field v-model="computedTxtBreakfastChildren" label="Niño" required></v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-switch v-model="computedSwBreakfast" inset label="Alojamiento y desayuno"></v-switch>
+        </v-col>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtBreakfastAdult"
+            prepend-inner-icon="mdi-human-male"
+            label="Adulto"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtBreakfastChildren"
+            prepend-inner-icon="mdi-human-male-boy"
+            label="Niño"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-switch v-model="computedSwHalfPension" inset label="Media pension"></v-switch>
         </v-col>
-        <v-col cols="2" md="3">
-          <v-text-field v-model="computedTxtHalfPensionAdult" label="Adulto" required></v-text-field>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtHalfPensionAdult"
+            prepend-inner-icon="mdi-human-male"
+            label="Adulto"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
-        <v-col cols="2" md="3">
-          <v-text-field v-model="computedTxtHalfPensionChildren" label="Niño" required></v-text-field>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtHalfPensionChildren"
+            prepend-inner-icon="mdi-human-male-boy"
+            label="Niño"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-switch v-model="computedSwFullPension" inset label="Pension completa"></v-switch>
         </v-col>
-        <v-col cols="2" md="3">
-          <v-text-field v-model="computedTxtFullPensionAdult" label="Adulto" required></v-text-field>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtFullPensionAdult"
+            prepend-inner-icon="mdi-human-male"
+            label="Adulto"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
-        <v-col cols="2" md="3">
-          <v-text-field v-model="computedTxtFullPensionChildren" label="Niño" required></v-text-field>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtFullPensionChildren"
+            prepend-inner-icon="mdi-human-male-boy"
+            label="Niño"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
-        <v-col cols="12" md="5">
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-switch v-model="computedSwAllIncluded" inset label="Todo incluido"></v-switch>
         </v-col>
-        <v-col cols="2" md="3">
-          <v-text-field v-model="computedTxtAllIncludedAdult" label="Adulto" required></v-text-field>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtAllIncludedAdult"
+            prepend-inner-icon="mdi-human-male"
+            label="Adulto"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
-        <v-col cols="2" md="3">
-          <v-text-field v-model="computedTxtAllIncludedChildren" label="Niño" required></v-text-field>
+        <v-col cols="12" md="3" sm="12" xs="12">
+          <v-text-field
+            v-model="computedTxtAllIncludedChildren"
+            prepend-inner-icon="mdi-human-male-boy"
+            label="Niño"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
       </v-row>
       <v-banner single-line>
         <!--PERIODOS REGIMENES-->
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-calendar-month</v-icon>
-          <h3>Periodos especiales de regimenes</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-calendar-month</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">PERIODOS ESPECIALES DE REGIMENES</span>
+          </div>
         </div>
       </v-banner>
-      <v-row class="pa-6">
+      <v-row class="pa-6 mx-1">
         <span>
           Puedes añadir periodos de regimenes especiales.
           Si un regimen no esta disponible para todas las fechas de la reserva, no
@@ -387,21 +438,17 @@ export default {
         .indexOf(idCompoParam);
 
       this.arrayComponents.splice(idCompoMap, 1);
-      
+
       //Mandamos el nuevo arreglo de esta manera
       //En un array anonimo concatenamos el arreglo actual regimes y
       //this.arrayComponents
-      this.setArrayRegimes([].concat(this.regimes, this.arrayComponents.map(el => el.objArrCompo)));
+      this.setArrayRegimes(
+        [].concat(
+          this.regimes,
+          this.arrayComponents.map((el) => el.objArrCompo)
+        )
+      );
     },
   },
 };
 </script>
-
-<style scoped>
-.iconsInformation {
-  margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
-}
-</style>

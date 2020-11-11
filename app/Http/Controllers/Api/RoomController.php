@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RoomIndexResource;
 use App\RoomAmenities;
+use App\Hotel;
 
 class RoomController extends Controller
 {
@@ -40,7 +41,7 @@ class RoomController extends Controller
             'large_text' => 'string',
             'short_text' => 'string',
             'smoking_policy' => 'in:yes,no,both',
-            'pool-near' => 'in:all,some,none',
+            'pool_near' => 'in:all,some,none',
             'floor_near' => 'in:ground,upper,both',
             'size' => 'required|numeric|min:0',
             'size_type' => 'required|in:meters,feets',
@@ -96,7 +97,7 @@ class RoomController extends Controller
             'large_text' => 'string',
             'short_text' => 'string',
             'smoking_policy' => 'in:yes,no,both',
-            'pool-near' => 'in:all,some,none',
+            'pool_near' => 'in:all,some,none',
             'floor_near' => 'in:ground,upper,both',
             'size' => 'numeric|min:0',
             'size_type' => 'in:meters,feets',
@@ -136,6 +137,16 @@ class RoomController extends Controller
         $room->delete();
         return new RoomIndexResource($room);
 
+    }
+
+    public function currentHotelRooms(Hotel $hotel)
+    {
+        //$logged_user = User::find(auth('api')->user()->id);
+        return RoomIndexResource::collection(
+            //$logged_user->hotels
+            $hotel->rooms
+           //Room::all()
+        );
     }
 
 

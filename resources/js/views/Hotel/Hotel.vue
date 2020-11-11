@@ -6,7 +6,7 @@
         <ButtonActionsSup :title="hotelTitle"></ButtonActionsSup>
         <v-container>
           <v-row no-gutters>
-            <v-col id="columMenu" cols="6" md="3" sm="12">
+            <v-col cols="12" md="3" sm="12" xs="12">
               <!--Usamos componente LateralMenu-->
               <LateralMenu></LateralMenu>
             </v-col>

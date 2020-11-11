@@ -4,9 +4,11 @@
       <!--Contenido del card-->
       <!--PRINCIPAL-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-cog</v-icon>
-          <h3>Principal</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-cog</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">PRINCIPAL</span>
+          </div>
         </div>
       </v-banner>
       <v-row class="pa-6">
@@ -16,8 +18,8 @@
             item-text="currency"
             item-value="currency_id"
             v-model="computedCurrencyID"
-            dense
-            filled
+            outlined
+            prepend-inner-icon="mdi-currency-usd-circle"
             label="Divisa"
           ></v-autocomplete>
         </v-col>
@@ -25,13 +27,13 @@
           <v-autocomplete
             :items="timezones"
             v-model="computedTimezone"
-            dense
-            filled
+            outlined
+            prepend-inner-icon="mdi-map-clock"
             label="Zona horaria"
           ></v-autocomplete>
         </v-col>
         <v-col cols="12" md="6">
-          <v-card outlined style="padding: 5%;">
+          <v-card outlined class="pa-5">
             <span>
               <strong>Formas de pago</strong>
             </span>
@@ -40,15 +42,16 @@
           </v-card>
         </v-col>
         <v-col cols="12" md="6">
-          <v-card outlined style="padding: 5%;">
-            <span>
+          <v-card outlined class="px-auto pb-11 pa-5">
+            <div>
               <strong>Tipo de pago</strong>
-            </span>
+            </div>
             <v-select
-              class="ml-auto mt-2"
+              class="ml-auto mt-5"
               :items="paymentTypeItems"
               v-model="computedDdwnPaymentType"
-              dense
+              prepend-inner-icon="mdi-cash"
+              :menu-props="{ bottom: true, offsetY: true }"
               outlined
             ></v-select>
           </v-card>
@@ -56,16 +59,20 @@
       </v-row>
       <!--NOTIFICACION-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-bell</v-icon>
-          <h3>Notificacion</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-bell</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">NOTIFICACIÓN</span>
+          </div>
         </div>
       </v-banner>
       <v-row class="pa-6">
         <v-col cols="12" md="8">
           <v-text-field
             v-model="computedNotificationVoucher"
+            prepend-inner-icon="mdi-email"
             label="Notificacion voucher reservas"
+            outlined
             required
           ></v-text-field>
         </v-col>
@@ -73,7 +80,9 @@
         <v-col cols="12" md="8">
           <v-text-field
             v-model="computedNotificationDetails"
+            prepend-inner-icon="mdi-email"
             label="Notificacion detalles de la reserva"
+            outlined
             required
           ></v-text-field>
         </v-col>
@@ -81,7 +90,9 @@
         <v-col cols="12" md="8">
           <v-text-field
             v-model="computedNotificationCard"
+            prepend-inner-icon="mdi-email"
             label="Notificación datos de tarjeta"
+            outlined
             required
           ></v-text-field>
         </v-col>
@@ -127,8 +138,7 @@ export default {
         if (this.configuration.payment_place === "both") {
           this.selectPaymentsPlaceModel.push("online");
           this.selectPaymentsPlaceModel.push("offline");
-        }
-        else{
+        } else {
           this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
         }
       }
@@ -227,12 +237,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.iconsInformation {
-  margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
-}
-</style>

@@ -4,39 +4,42 @@
       <!--Contenido del card-->
       <!--PRINCIPAL-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-information</v-icon>
-          <h3>Principal</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-information</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">PRINCIPAL</span>
+          </div>
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="8">
-          <v-text-field v-model="computedTitle" label="Titulo" required></v-text-field>
+        <v-col cols="12" md="8" sm="8" xs="12">
+          <v-text-field v-model="computedTitle" prepend-inner-icon="mdi-notebook" label="Titulo" outlined required></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="8">
-          <v-text-field v-model="computedUrl" label="URL" required></v-text-field>
+        <v-col cols="12" md="8" sm="8" xs="12">
+          <v-text-field v-model="computedUrl" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="8">
-          <v-text-field v-model="computedReferenceC" label="Codigo de referencia" required></v-text-field>
+        <v-col cols="12" md="8" sm="8" xs="12">
+          <v-text-field v-model="computedReferenceC" prepend-inner-icon="mdi-barcode" label="Codigo de referencia" outlined required></v-text-field>
         </v-col>
 
         <v-row class="ml-1">
-          <v-col md="4">
-            <v-text-field v-model="computedNumRooms" label="Número de habitaciones" required></v-text-field>
+          <v-col cols="12" md="4" sm="4" xs="12">
+            <v-text-field v-model="computedNumRooms" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
           </v-col>
 
-          <v-col md="4">
-            <v-text-field v-model="computedNumFloors" label="Número de pisos" required></v-text-field>
+          <v-col cols="12" md="4" sm="4" xs="12">
+            <v-text-field v-model="computedNumFloors" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
           </v-col>
         </v-row>
 
-        <v-col cols="8">
+        <v-col cols="12" md="8" sm="8" xs="12">
           <v-select
             class="ml-auto"
             :items="typeItems"
-            v-model="computedDdwnType"         
+            v-model="computedDdwnType"
+            prepend-inner-icon="mdi-domain"
             label="Tipo"
             outlined
           ></v-select>
@@ -44,9 +47,11 @@
       </v-row>
       <!--FOTOS-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-image-area</v-icon>
-          <h3>Fotos</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-image-area</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">IMÁGENES</span>
+          </div>
         </div>
       </v-banner>
 
@@ -63,12 +68,18 @@
               class="grey darken-4"
             ></v-img>
             <!--En este input de file (que se mantendra oculto) se activa dando clic al boton de Vue-->
-            <input type="file" ref="btnUploadImage" style="display:none" @change="selectImage($event)" />
+            <input
+              type="file"
+              ref="btnUploadImage"
+              style="display:none"
+              @change="selectImage($event)"
+            />
             <v-btn
               block
               small
               color="grey"
               class="white--text mt-1"
+              depressed
               @click="$refs.btnUploadImage.click()"
             >Seleccionar imagen</v-btn>
           </v-card>
@@ -77,16 +88,17 @@
       <br />
       <!--TEXTOS-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-text</v-icon>
-          <h3>Textos</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-text</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">TEXTOS</span>
+          </div>
         </div>
       </v-banner>
       <div class="pa-4">
-        <v-col cols="12" sm="6" md="12">
+        <v-col cols="12">
           <v-textarea
             outlined
-            label="Texto corto"
             no-resize
             rows="4"
             row-height="30"
@@ -94,7 +106,7 @@
             v-model="computedShortT"
           ></v-textarea>
         </v-col>
-        <v-col cols="12" sm="6" md="12">
+        <v-col cols="12">
           <!--<v-textarea outlined no-resize rows="13" row-height="30" v-model="textoLargo"></v-textarea>-->
           <!--<vue-markdown :source="textoLargo" :html="false" :toc="false" show="show"></vue-markdown>-->
           <MarkdownCompo containerType="Information"></MarkdownCompo>
@@ -119,7 +131,7 @@ export default {
       this.numRoomsModel = this.hotel.num_rooms;
       this.numFloorsModel = this.hotel.num_floors;
       this.shortTModel = this.hotel.short_text;
-      this.currentImage = '/storage/img/' + this.hotel.image;
+      this.currentImage = "/storage/img/" + this.hotel.image;
       if (this.hotel.type != null) {
         if (this.hotel.type == "bungalow") {
           this.ddwnTypeModel = "Bungalow";
@@ -165,17 +177,20 @@ export default {
       //Menor a 5,242,880bytes q = 0.4
       //Menor a 11,534,336bytes q = 0.2
 
-      //Se asigna un valor de quality a la variable "sizeImageQuality" de acuerdo a su tamaño (en bytes) 
-      if(this.hotel.image.size < 512000){
+      //Se asigna un valor de quality a la variable "sizeImageQuality" de acuerdo a su tamaño (en bytes)
+      if (this.hotel.image.size < 512000) {
         sizeImageQuality = 0.8;
       }
-      if(this.hotel.image.size >= 512000 && this.hotel.image.size < 1048576){
+      if (this.hotel.image.size >= 512000 && this.hotel.image.size < 1048576) {
         sizeImageQuality = 0.6;
       }
-      if(this.hotel.image.size >= 1048576 && this.hotel.image.size < 11534336){
+      if (
+        this.hotel.image.size >= 1048576 &&
+        this.hotel.image.size < 11534336
+      ) {
         sizeImageQuality = 0.4;
       }
-      if(this.hotel.image.size >= 11534336){
+      if (this.hotel.image.size >= 11534336) {
         sizeImageQuality = 0.2;
       }
 
@@ -189,13 +204,13 @@ export default {
         //console.log(err.message);
         //},
       });
-      
+
       //La variable state "this.hotel" en su propiedad "image" ahora pasa a contener la imagen comprimida
       //(Es un objeto, y realmente la imagen esta contenida de la siguiente manera
       //"this.hotel.image.result"; sin embargo, no se puede añadir desde aqui directamente la propiedad "result"
       //del compressor a la variable state)
       this.hotel.image = compressImg;
-      
+
       const reader = new FileReader();
       //Esto trae la URL temporal de la imagen actual
       reader.readAsDataURL(this.currentImage);
@@ -205,7 +220,7 @@ export default {
       };
 
       //Seteamos la variable para que quede vacia y el contenedor de imagen <v-img> no la cargue
-      this.currentImage = '';
+      this.currentImage = "";
     },
   },
   computed: {
@@ -299,12 +314,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.iconsInformation {
-  margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
-}
-</style>

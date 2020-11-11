@@ -4,27 +4,47 @@
       <!--Contenido del card-->
       <!--CONDICIONES-->
       <v-banner single-line>
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-gavel</v-icon>
-          <h3>Condiciones</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-gavel</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">CONDICIONES</span>
+          </div>
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="6">
-          <v-switch v-model="computedAdults" inset label="Solo adultos"></v-switch>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-switch class="ml-3" v-model="computedAdults" inset label="Solo adultos"></v-switch>
         </v-col>
-        <v-col cols="12" md="6">
-          <v-text-field v-model="computedChildrenAge" label="Niño desde" required></v-text-field>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedChildrenAge"
+            prepend-inner-icon="mdi-playlist-edit"
+            label="Niño desde"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="6">
-          <v-text-field v-model="computedAdultsRegimen" label="Regimen adulto desde" required></v-text-field>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedAdultsRegimen"
+            prepend-inner-icon="mdi-playlist-edit"
+            label="Regimen adulto desde"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="6">
-          <v-text-field v-model="computedAdultsAge" label="Adulto desde" required></v-text-field>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedAdultsAge"
+            prepend-inner-icon="mdi-playlist-edit"
+            label="Adulto desde"
+            outlined
+            required
+          ></v-text-field>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-dialog
             ref="dialogChekin"
             v-model="modalCheckin"
@@ -36,9 +56,10 @@
               <v-text-field
                 v-model="checkinTimeModel"
                 label="Check-in"
-                prepend-icon="mdi-clock"
+                prepend-inner-icon="mdi-clock"
                 v-bind="attrs"
                 v-on="on"
+                outlined
                 required
               ></v-text-field>
             </template>
@@ -53,7 +74,7 @@
             </v-time-picker>
           </v-dialog>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" md="6" sm="12" xs="12">
           <v-dialog
             ref="dialogChekout"
             v-model="modalCheckout"
@@ -65,13 +86,19 @@
               <v-text-field
                 v-model="checkoutTimeModel"
                 label="Check-out"
-                prepend-icon="mdi-clock"
+                prepend-inner-icon="mdi-clock"
                 v-bind="attrs"
                 v-on="on"
+                outlined
                 required
               ></v-text-field>
             </template>
-            <v-time-picker v-if="modalCheckout" v-model="checkoutTimeModel" format="24hr" full-width>
+            <v-time-picker
+              v-if="modalCheckout"
+              v-model="checkoutTimeModel"
+              format="24hr"
+              full-width
+            >
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="modalCheckout = false">Cancelar</v-btn>
               <v-btn
@@ -85,13 +112,15 @@
       </v-row>
       <v-banner single-line>
         <!--TEXTOS DE CONDICIONES-->
-        <div class="flexed">
-          <v-icon class="iconsInformation" left>mdi-text</v-icon>
-          <h3>Textos de condiciones</h3>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-text</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">TEXTOS DE CONDICIONES</span>
+          </div>
         </div>
       </v-banner>
       <div class="pa-4">
-        <v-col cols="12" sm="6" md="12">
+        <v-col cols="12" md="12" sm="12" xs="12">
           <!--<v-textarea outlined no-resize rows="13" row-height="30" v-model="textoLargo"></v-textarea>-->
           <!--<vue-markdown :source="textoLargo" :html="false" :toc="false" show="show"></vue-markdown>-->
           <MarkdownCompo containerType="Conditions"></MarkdownCompo>
@@ -154,7 +183,7 @@ export default {
       },
       set(model) {
         this.childrenAgeModel = model;
-        this.conditions.children_age= this.childrenAgeModel;
+        this.conditions.children_age = this.childrenAgeModel;
         return this.childrenAgeModel;
       },
     },
@@ -164,7 +193,7 @@ export default {
       },
       set(model) {
         this.adultsRegimenModel = model;
-        this.conditions.adults_regimen= this.adultsRegimenModel;
+        this.conditions.adults_regimen = this.adultsRegimenModel;
         return this.adultsRegimenModel;
       },
     },
@@ -174,7 +203,7 @@ export default {
       },
       set(model) {
         this.adultsAgeModel = model;
-        this.conditions.adults_age= this.adultsAgeModel;
+        this.conditions.adults_age = this.adultsAgeModel;
         return this.adultsAgeModel;
       },
     },
@@ -189,12 +218,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.iconsInformation {
-  margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
-}
-</style>

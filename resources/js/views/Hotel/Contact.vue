@@ -3,63 +3,121 @@
     <v-card class="pa-2" outlined tile>
       <!--Contenido del card-->
       <!--DIRECCION-->
-        <v-banner single-line>
-          <div class="flexed">
-            <v-icon class="iconsInformation" left>mdi-email</v-icon>
-            <h3>Direccion</h3>
+      <v-banner single-line>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-email</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">DIRECCIÓN</span>
           </div>
-        </v-banner>
-        <v-row class="pa-6">
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedUrl" label="URL del sitio web" required></v-text-field>
-          </v-col>
+        </div>
+      </v-banner>
+      <v-row class="pa-6">
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedUrl"
+            prepend-inner-icon="mdi-web"
+            label="URL del sitio web"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
 
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedEmail" label="Email" required></v-text-field>
-          </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedEmail"
+            prepend-inner-icon="mdi-email"
+            label="Email"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
 
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedPhone" label="Telefono" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedAddress" label="Direccion" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedZipCode" label="Codigo postal" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedCity" label="Ciudad" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedState" label="Provincia" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-autocomplete
-              :items="countries"
-              item-text="name"
-              item-value="id"
-              v-model="computedCountryID"
-              dense
-              filled
-              label="Pais"
-            ></v-autocomplete>
-          </v-col>
-        </v-row>
-        <!--LOCALIZACION-->
-        <v-banner single-line>
-          <div class="flexed">
-            <v-icon class="iconsInformation" left>mdi-map-marker</v-icon>
-            <h3>Localizacion</h3>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedPhone"
+            prepend-inner-icon="mdi-phone"
+            label="Telefono"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedAddress"
+            prepend-inner-icon="mdi-card-text"
+            label="Direccion"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedZipCode"
+            prepend-inner-icon="mdi-map"
+            label="Codigo postal"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedCity"
+            prepend-inner-icon="mdi-map"
+            label="Ciudad"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedState"
+            prepend-inner-icon="mdi-map"
+            label="Provincia"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-autocomplete
+            :items="countries"
+            item-text="name"
+            item-value="id"
+            v-model="computedCountryID"
+            outlined
+            prepend-inner-icon="mdi-map"
+            label="Pais"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+      <!--LOCALIZACION-->
+      <v-banner single-line>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-map-marker</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">LOCALIZACIÓN</span>
           </div>
-        </v-banner>
-        <v-row class="pa-6">
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedLegalRep" label="Representante legal" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedManagerName" label="Nombre de gerente" required></v-text-field>
-          </v-col>
-        </v-row>
+        </div>
+      </v-banner>
+      <v-row class="pa-6">
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedLegalRep"
+            prepend-inner-icon="mdi-form-textbox"
+            label="Representante legal"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedManagerName"
+            prepend-inner-icon="mdi-form-textbox"
+            label="Nombre de gerente"
+            outlined
+            required
+          ></v-text-field>
+        </v-col>
+      </v-row>
     </v-card>
   </div>
 </template>
@@ -210,12 +268,3 @@ export default {
   },
 };
 </script>
-
-<style scoped>
-.iconsInformation {
-  margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
-}
-</style>

@@ -6,6 +6,8 @@
       permanent
       color="#2b3b4a"
       dark
+      width="287"
+      height="100%"
       :mini-variant.sync="navigationDrawerSize"
       :clipped="$vuetify.breakpoint.xlOnly || $vuetify.breakpoint.lgAndDown"
     >
@@ -130,7 +132,7 @@ export default {
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #cba818; padding-left: 3px",
-              route: "/rooms"
+              route: "/rooms-home"
             },
             {
               icon: "mdi-cash-multiple",

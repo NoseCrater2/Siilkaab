@@ -44,7 +44,9 @@ export default {
       dato: null,
       datetime: null,
       textFieldProps: {
-        prependIcon: "mdi-calendar-month"
+        prependInnerIcon: "mdi-calendar-month",
+        backgroundColor: 'white',
+        outlined: true
       },
       dateProps: {
         headerColor: "primary"
