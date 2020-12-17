@@ -17,7 +17,7 @@
         </v-col>
 
         <v-col cols="12" md="8" sm="8" xs="12">
-          <v-text-field v-model="computedUrl" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
+          <v-text-field v-model="computedUrl" :error-messages="errors != null ? errors.url[0] : ''" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
         </v-col>
 
         <v-col cols="12" md="8" sm="8" xs="12">
@@ -58,7 +58,7 @@
       <div class="pa-10">
         <v-row>
           <v-card class="mx-3" max-width="400" outlined color="white">
-            <v-icon size="70" style="height:210px; width:300px" v-if="currentImage===null">mdi-image</v-icon>
+            <v-icon size="70" style="height:210px; width:300px; border: 1px solid grey;" v-if="currentImage===null">mdi-image</v-icon>
             <v-img
               v-else
               :src="(urlTemporal === '') ? (currentImage) : urlTemporal"
@@ -131,7 +131,11 @@ export default {
       this.numRoomsModel = this.hotel.num_rooms;
       this.numFloorsModel = this.hotel.num_floors;
       this.shortTModel = this.hotel.short_text;
-      this.currentImage = "/storage/img/" + this.hotel.image;
+      if(this.hotel.image.includes("jpeg") == true){
+        this.currentImage = "/storage/img/" + this.hotel.image;
+      }
+      
+      console.log(this.currentImage)
       if (this.hotel.type != null) {
         if (this.hotel.type == "bungalow") {
           this.ddwnTypeModel = "Bungalow";
@@ -226,6 +230,7 @@ export default {
   computed: {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
+      errors: (state) => state.HotelModule.errors
     }),
     computedTitle: {
       get() {

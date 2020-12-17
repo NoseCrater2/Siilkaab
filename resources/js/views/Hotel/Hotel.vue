@@ -13,45 +13,45 @@
             <v-col cols="12" sm="auto" md="9">
               <div class="ml-8">
                 <v-text-field
-                  style="text-align:right"
+                  style="text-align: right"
                   color="primary"
                   loading
                   disabled
                   label="Obteniendo información..."
-                  v-if="chargeView===false"
+                  v-if="chargeView === false"
                 ></v-text-field>
               </div>
-              <div v-if="iditemsListOptions===0 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 0 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Information></Information>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===1 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 1 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Configuration></Configuration>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===2 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 2 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Contact></Contact>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===3 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 3 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Condition></Condition>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===4 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 4 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Regime></Regime>
                 </div>
               </div>
-              <div v-if="iditemsListOptions===5 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 5 && chargeView === true">
+                <div v-if="hotel !== null">
                   <AditionalInfo></AditionalInfo>
                 </div>
               </div>

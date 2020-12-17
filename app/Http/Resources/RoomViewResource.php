@@ -18,6 +18,8 @@ class RoomViewResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'bed_rooms' => $this->bedrooms->count(),
+            'rack_rate' => $this->rack_rate,
+            'room_type' => $this->type
         ];
     }
 }

@@ -152,10 +152,11 @@ import { mapState, mapMutations } from "vuex";
 export default {
   name: "Regime",
   created() {
-    let countWhile = 1;
-    while (countWhile <= this.regimes.length - 1) {
+    let countWhile = this.regimes.length - 1;
+    while (countWhile >= 1) {
+      console.log(this.regimes[countWhile])
       this.addCompo(this.regimes[countWhile]);
-      countWhile++;
+      countWhile--;
     }
     if (this.regimes[0] != null) {
       this.swOnlyRoomModel = this.regimes[0].only_room;

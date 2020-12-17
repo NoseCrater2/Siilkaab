@@ -18,7 +18,10 @@ const HotelModule = {
         restaurants: null,
         schedules: null,
         pools: null,
-        aditionalInfo: null
+        aditionalInfo: null,
+
+        errors: null,
+        status: null
     },
     getters: {
         getAssignHotels(state) {
@@ -44,9 +47,21 @@ const HotelModule = {
                 (state.pools = null),
                 (state.aditionalInfo = null);
         },
+        setReinicializedErrorsStatus(state){
+            (state.errors = null),
+            (state.status = null)
+        },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
             state.iditemsListOptions = index;
+        },
+        //Mutacion para los errores
+        setErrors(state,errors){
+            state.errors = errors
+          },
+        //Mutacion para el estatus
+        setStatus(state, status){
+            state.status = status
         },
         //Mutacion que setea el state.regimes para asignar nuevo arreglo
         setArrayRegimes(state, payload) {
@@ -388,6 +403,8 @@ const HotelModule = {
                 commit("postEditHotel", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
+                console.log(error.response.data)
+                console.log(error.response.status)
                 commit("setErrors", error.response.data);
                 commit("setStatus", error.response.status);
             }

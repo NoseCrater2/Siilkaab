@@ -3,11 +3,18 @@
     <v-banner single-line>
       <v-row class="d-flex align-center justify-end">
         <v-col cols="12" md="8" sm="8" xs="12" class="d-flex justify-start">
-          <v-btn depressed small color="info" class="white--text mr-3" @click="saveChanges()">
+          <v-btn
+            depressed
+            small
+            color="info"
+            class="white--text mr-3"
+            @click="saveChanges()"
+          >
             <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
           </v-btn>
           <v-btn depressed small color="grey" class="white--text mr-3">
-            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y cerrar
+            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y
+            cerrar
           </v-btn>
           <v-btn depressed small color="red" class="white--text mr-3">
             <v-icon left dark>mdi-close-circle</v-icon>Cerrar
@@ -102,21 +109,23 @@ export default {
       "putEditRestaurants",
       "putEditSchedules",
     ]),
-    ...mapMutations(["setReinicialized"]),
+    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus"]),
     saveChanges() {
+      this.setReinicializedErrorsStatus();
       this.postEditHotel(this.hotel);
-      this.putEditConfiguration(this.configuration);
-      this.putEditContacts(this.contacts);
-      this.putEditConditions(this.conditions);
-      this.putEditRegimes({
-        newRegimes: this.regimes,
-        currentHotelId: this.hotel.id,
-        currentRegimes: this.hotel.idRegime,
-      });
-      this.putEditAditionalInfo(this.aditionalInfo);
-      this.putEditRestaurants(this.restaurants).then(() => {
-        this.putEditSchedules(this.schedules);
-      });
+      ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+      // this.putEditConfiguration(this.configuration);
+      // this.putEditContacts(this.contacts);
+      // this.putEditConditions(this.conditions);
+      // this.putEditRegimes({
+      //   newRegimes: this.regimes,
+      //   currentHotelId: this.hotel.id,
+      //   currentRegimes: this.hotel.idRegime,
+      // });
+      // this.putEditAditionalInfo(this.aditionalInfo);
+      // this.putEditRestaurants(this.restaurants).then(() => {
+      //   this.putEditSchedules(this.schedules);
+      // });
     },
     chargeDataHotel() {
       if (this.$route.params.id) {

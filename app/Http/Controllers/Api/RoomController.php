@@ -12,7 +12,6 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RoomIndexResource;
 use App\Http\Resources\RoomViewResource;
 use App\RoomAmenities;
-use App\Hotel;
 
 class RoomController extends Controller
 {
@@ -144,6 +143,13 @@ class RoomController extends Controller
     {
         return RoomViewResource::collection(
             Hotel::findOrFail($id)->rooms
+        );
+    }
+
+    public function currentHotelRooms(Hotel $hotel)
+    {
+        return RoomIndexResource::collection(
+            $hotel->rooms
         );
     }
 

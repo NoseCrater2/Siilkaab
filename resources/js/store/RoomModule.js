@@ -68,7 +68,7 @@ const RoomModule = {
         },
 
         getBeds: async function({ commit }, arrayIdBedroom) {
-            if(typeof(arrayIdBedroom) == 'number'){
+            if (typeof arrayIdBedroom == "number") {
                 arrayIdBedroom = [arrayIdBedroom];
             }
             try {
