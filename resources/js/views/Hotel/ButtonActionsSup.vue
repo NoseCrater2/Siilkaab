@@ -117,11 +117,11 @@ export default {
       // this.putEditConfiguration(this.configuration);
       // this.putEditContacts(this.contacts);
       // this.putEditConditions(this.conditions);
-      // this.putEditRegimes({
-      //   newRegimes: this.regimes,
-      //   currentHotelId: this.hotel.id,
-      //   currentRegimes: this.hotel.idRegime,
-      // });
+      this.putEditRegimes({
+        newRegimes: this.regimes,
+        currentHotelId: this.hotel.id,
+        currentRegimes: this.hotel.idRegime,
+      });
       // this.putEditAditionalInfo(this.aditionalInfo);
       // this.putEditRestaurants(this.restaurants).then(() => {
       //   this.putEditSchedules(this.schedules);

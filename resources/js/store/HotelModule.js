@@ -20,8 +20,14 @@ const HotelModule = {
         pools: null,
         aditionalInfo: null,
 
-        errors: null,
-        status: null
+        errorsInformation: null,
+        statusInformation: null,
+        errorsConfiguration: null,
+        statusConfiguration: null,
+        errorsContacts: null,
+        statusContacts: null,
+        errorsConditions: null,
+        statusConditions: null
     },
     getters: {
         getAssignHotels(state) {
@@ -48,20 +54,44 @@ const HotelModule = {
                 (state.aditionalInfo = null);
         },
         setReinicializedErrorsStatus(state){
-            (state.errors = null),
-            (state.status = null)
+            (state.errorsInformation = null),
+            (state.statusInformation = null),
+            (state.errorsConfiguration = null),
+            (state.statusConfiguration = null),
+            (state.errorsContacts = null),
+            (state.statusContacts = null),
+            (state.errorsConditions = null),
+            (state.statusConditions = null)
         },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
             state.iditemsListOptions = index;
         },
         //Mutacion para los errores
-        setErrors(state,errors){
-            state.errors = errors
+        setErrorsInformation(state,errors){
+            state.errorsInformation = errors
           },
+        setErrorsConfiguration(state,errors){
+            state.errorsConfiguration = errors
+        },
+        setErrorsContacts(state,errors){
+            state.errorsContacts = errors
+        },
+        setErrorsConditions(state,errors){
+            state.errorsConditions = errors
+        },
         //Mutacion para el estatus
-        setStatus(state, status){
-            state.status = status
+        setStatusInformation(state, status){
+            state.statusInformation = status
+        },
+        setStatusConfiguration(state, status){
+            state.statusConfiguration = status
+        },
+        setStatusContacts(state, status){
+            state.statusContacts = status
+        },
+        setStatusConditions(state, status){
+            state.statusConditions = status
         },
         //Mutacion que setea el state.regimes para asignar nuevo arreglo
         setArrayRegimes(state, payload) {
@@ -405,8 +435,8 @@ const HotelModule = {
             } catch (error) {
                 console.log(error.response.data)
                 console.log(error.response.status)
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsInformation", error.response.data);
+                commit("setStatusInformation", error.response.status);
             }
         },
 
@@ -470,8 +500,10 @@ const HotelModule = {
                 commit("putEditConfiguration", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                console.log(error.response.data)
+                console.log(error.response.status)
+                commit("setErrorsConfiguration", error.response.data);
+                commit("setStatusConfiguration", error.response.status);
             }
         },
 
@@ -484,25 +516,27 @@ const HotelModule = {
                 commit("putEditContacts", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsContacts", error.response.data);
+                commit("setStatusContacts", error.response.status);
             }
         },
 
         putEditConditions: async function({ commit }, newConditions) {
+            console.log("newConditions", newConditions)
             try {
                 const request = await axios.put(
                     `/api/conditions/${newConditions.id}`,
                     newConditions
                 );
                 let conditions = request.data.data;
+                console.log("conditions", conditions)
                 conditions.checkin_time = conditions.checkin_time.slice(0, -3);
                 conditions.checkout_time = conditions.checkout_time.slice(0, -3);
                 commit("putEditConditions", conditions);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsConditions", error.response.data);
+                commit("setStatusConditions", error.response.status);
             }
         },
 

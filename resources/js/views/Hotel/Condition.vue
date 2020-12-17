@@ -22,6 +22,8 @@
             label="Niño desde"
             outlined
             required
+            v-if="computedAdults == false"
+            :error-messages="(errorsConditions != null && typeof(errorsConditions['children_age']) != 'undefined') ? errorsConditions.children_age[0] : ''"
           ></v-text-field>
         </v-col>
 
@@ -32,6 +34,7 @@
             label="Regimen adulto desde"
             outlined
             required
+            :error-messages="(errorsConditions != null && typeof(errorsConditions['adults_regimen']) != 'undefined') ? errorsConditions.adults_regimen[0] : ''"
           ></v-text-field>
         </v-col>
 
@@ -42,6 +45,7 @@
             label="Adulto desde"
             outlined
             required
+            :error-messages="(errorsConditions != null && typeof(errorsConditions['adults_age']) != 'undefined') ? errorsConditions.adults_age[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -61,6 +65,7 @@
                 v-on="on"
                 outlined
                 required
+                :error-messages="(errorsConditions != null && typeof(errorsConditions['checkin_time']) != 'undefined') ? errorsConditions.checkin_time[0] : ''"
               ></v-text-field>
             </template>
             <v-time-picker v-if="modalCheckin" v-model="checkinTimeModel" format="24hr" full-width>
@@ -91,6 +96,7 @@
                 v-on="on"
                 outlined
                 required
+                :error-messages="(errorsConditions != null && typeof(errorsConditions['checkout_time']) != 'undefined') ? errorsConditions.checkout_time[0] : ''"
               ></v-text-field>
             </template>
             <v-time-picker
@@ -165,6 +171,7 @@ export default {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
       conditions: (state) => state.HotelModule.conditions,
+      errorsConditions: (state) => state.HotelModule.errorsConditions
     }),
     //Codigo para guardar temporalmente en el state
     computedAdults: {

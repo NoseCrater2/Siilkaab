@@ -17,7 +17,7 @@
         </v-col>
 
         <v-col cols="12" md="8" sm="8" xs="12">
-          <v-text-field v-model="computedUrl" :error-messages="errors != null ? errors.url[0] : ''" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
+          <v-text-field v-model="computedUrl" :error-messages="(errorsInformation != null && typeof(errorsInformation['url']) != 'undefined') ? errorsInformation.url[0] : ''" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
         </v-col>
 
         <v-col cols="12" md="8" sm="8" xs="12">
@@ -26,11 +26,11 @@
 
         <v-row class="ml-1">
           <v-col cols="12" md="4" sm="4" xs="12">
-            <v-text-field v-model="computedNumRooms" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
+            <v-text-field v-model="computedNumRooms" :error-messages="(errorsInformation != null && typeof(errorsInformation['num_rooms']) != 'undefined') ? errorsInformation.num_rooms[0] : ''" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
           </v-col>
 
           <v-col cols="12" md="4" sm="4" xs="12">
-            <v-text-field v-model="computedNumFloors" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
+            <v-text-field v-model="computedNumFloors" :error-messages="(errorsInformation != null && typeof(errorsInformation['num_floors']) != 'undefined') ? errorsInformation.num_floors[0] : ''" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
           </v-col>
         </v-row>
 
@@ -230,7 +230,7 @@ export default {
   computed: {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
-      errors: (state) => state.HotelModule.errors
+      errorsInformation: (state) => state.HotelModule.errorsInformation
     }),
     computedTitle: {
       get() {

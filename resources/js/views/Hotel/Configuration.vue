@@ -74,6 +74,7 @@
             label="Notificacion voucher reservas"
             outlined
             required
+            :error-messages="(errorsConfiguration != null && typeof(errorsConfiguration['notification_voucher'])!='undefined') ? errorsConfiguration.notification_voucher[0] : ''"
           ></v-text-field>
         </v-col>
 
@@ -84,6 +85,7 @@
             label="Notificacion detalles de la reserva"
             outlined
             required
+            :error-messages="(errorsConfiguration != null && typeof(errorsConfiguration['notification_details'])!='undefined') ? errorsConfiguration.notification_details[0] : ''"
           ></v-text-field>
         </v-col>
 
@@ -94,6 +96,7 @@
             label="Notificación datos de tarjeta"
             outlined
             required
+            :error-messages="(errorsConfiguration != null && typeof(errorsConfiguration['notification_card'])!='undefined') ? errorsConfiguration.notification_card[0] : ''"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -150,6 +153,7 @@ export default {
       currencies: (state) => state.HotelModule.currencies,
       timezones: (state) => state.HotelModule.timezones,
       configuration: (state) => state.HotelModule.configuration,
+      errorsConfiguration: (state) => state.HotelModule.errorsConfiguration
     }),
     //Codigo para guardar temporalmente en el state
     computedCurrencyID: {

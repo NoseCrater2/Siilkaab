@@ -19,6 +19,7 @@
             label="URL del sitio web"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['url']) != 'undefined') ? errorsContacts.url[0] : ''"
           ></v-text-field>
         </v-col>
 
@@ -29,6 +30,7 @@
             label="Email"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['email']) != 'undefined') ? errorsContacts.email[0] : ''"
           ></v-text-field>
         </v-col>
 
@@ -39,6 +41,7 @@
             label="Telefono"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['phone']) != 'undefined') ? errorsContacts.phone[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -48,6 +51,7 @@
             label="Direccion"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['address']) != 'undefined') ? errorsContacts.address[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -57,6 +61,7 @@
             label="Codigo postal"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['zipcode']) != 'undefined') ? errorsContacts.zipcode[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -66,6 +71,7 @@
             label="Ciudad"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['city']) != 'undefined') ? errorsContacts.city[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -75,6 +81,7 @@
             label="Provincia"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['state']) != 'undefined') ? errorsContacts.state[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -106,6 +113,7 @@
             label="Representante legal"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['legal_rep']) != 'undefined') ? errorsContacts.legal_rep[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -115,6 +123,7 @@
             label="Nombre de gerente"
             outlined
             required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['manager_name']) != 'undefined') ? errorsContacts.manager_name[0] : ''"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -161,6 +170,7 @@ export default {
       hotel: (state) => state.HotelModule.hotel,
       contacts: (state) => state.HotelModule.contacts,
       countries: (state) => state.HotelModule.countries,
+      errorsContacts: (state) => state.HotelModule.errorsContacts
     }),
     computedUrl: {
       get() {
