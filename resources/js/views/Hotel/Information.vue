@@ -61,7 +61,7 @@
             <v-icon size="70" style="height:210px; width:300px; border: 1px solid grey;" v-if="currentImage===null">mdi-image</v-icon>
             <v-img
               v-else
-              :src="(urlTemporal === '') ? (currentImage) : urlTemporal"
+              :src="srcImage()"
               height="210"
               width="300"
               contain
@@ -131,11 +131,18 @@ export default {
       this.numRoomsModel = this.hotel.num_rooms;
       this.numFloorsModel = this.hotel.num_floors;
       this.shortTModel = this.hotel.short_text;
-      if(this.hotel.image.includes("jpeg") == true){
-        this.currentImage = "/storage/img/" + this.hotel.image;
+      if(this.hotel.image != null || this.hotel.image != ""){
+        if(typeof(this.hotel.image) == 'object'){
+          this.currentImage = this.hotel.image.temporalURL
+        }
+        else if(this.hotel.image.includes("jpeg") == true){
+          this.currentImage = "/storage/img/" + this.hotel.image;
+        }
+      }
+      else{
+        //console.log("noImage")
       }
       
-      console.log(this.currentImage)
       if (this.hotel.type != null) {
         if (this.hotel.type == "bungalow") {
           this.ddwnTypeModel = "Bungalow";
@@ -161,7 +168,7 @@ export default {
       referenceCModel: null,
       numRoomsModel: null,
       numFloorsModel: null,
-      shortTModel: null,
+      shortTModel: null
     };
   },
   components: {
@@ -213,7 +220,7 @@ export default {
       //(Es un objeto, y realmente la imagen esta contenida de la siguiente manera
       //"this.hotel.image.result"; sin embargo, no se puede añadir desde aqui directamente la propiedad "result"
       //del compressor a la variable state)
-      this.hotel.image = compressImg;
+      this.hotel.image = {compressImage: compressImg};
 
       const reader = new FileReader();
       //Esto trae la URL temporal de la imagen actual
@@ -222,10 +229,23 @@ export default {
         //Guarda el base64 de la imagen
         this.urlTemporal = e.target.result;
       };
-
       //Seteamos la variable para que quede vacia y el contenedor de imagen <v-img> no la cargue
       this.currentImage = "";
+      console.log("this.hotel.image",  this.hotel)
     },
+    //Coloca la URL de la imágen
+    srcImage(){
+      let localSrcImage = (this.urlTemporal === '') ? (this.currentImage) : this.urlTemporal;
+      if(typeof(this.hotel.image) == 'object'){
+        if(this.urlTemporal != ""){
+          this.hotel.image.temporalURL =  this.urlTemporal;
+        }
+      }
+      console.log("this.hotel.imageSrcImage", this.hotel.image)
+      console.log("this.urlTemporalSrcImage", this.urlTemporal)
+      console.log("this.currentImageSrcImage", this.currentImage)
+      return localSrcImage;
+    }
   },
   computed: {
     ...mapState({

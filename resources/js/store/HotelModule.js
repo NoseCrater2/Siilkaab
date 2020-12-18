@@ -11,7 +11,16 @@ const HotelModule = {
         currencies: null,
         timezones: null,
         countries: null,
-        configuration: null,
+        configuration: {
+            notification_details: null,
+            notification_voucher: null,
+            notification_card: null,
+            timezone: null,
+            payment_place: null,
+            payment_type: null,
+            currency_id: null,
+            hotel_id: null,
+        },
         contacts: null,
         conditions: null,
         regimes: null,
@@ -46,7 +55,16 @@ const HotelModule = {
                 (state.currencies = null),
                 (state.timezones = null),
                 (state.countries = null),
-                (state.configuration = null),
+                (state.configuration = {
+                    notification_details: null,
+                    notification_voucher: null,
+                    notification_card: null,
+                    timezone: null,
+                    payment_place: null,
+                    payment_type: null,
+                    currency_id: null,
+                    hotel_id: null,
+                }),
                 (state.contacts = null),
                 (state.conditions = null),
                 (state.regimes = null),
@@ -171,6 +189,11 @@ const HotelModule = {
 
         postEditHotel(state, hotel) {
             state.hotels.map(function(currentHotel) {
+                if (currentHotel.id === hotel.id) {
+                    Object.assign(currentHotel, hotel);
+                }
+            });
+            state.allhotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
                     Object.assign(currentHotel, hotel);
                 }
@@ -416,6 +439,7 @@ const HotelModule = {
         },
 
         postEditHotel: async function({ commit }, newHotel) {
+            console.log(newHotel)
             let formDataHotel = new FormData();
 
             for (let attrib in newHotel) {
@@ -423,8 +447,10 @@ const HotelModule = {
                 if(attrib === "image"){
                     //Si la imagen.result es diferente de "undefined" es por que se editó la imagen
                     //Y se modificó la propiedad donde se guardaria temporalmente el "comprimido"
-                    if(typeof(newHotel[attrib].result) !== "undefined"){
-                        formDataHotel.append(attrib, newHotel[attrib].result);
+                    if(typeof(newHotel[attrib].compressImage) !== 'undefined'){
+                        if(typeof(newHotel[attrib]["compressImage"].result) !== 'undefined'){
+                            formDataHotel.append(attrib, newHotel[attrib]["compressImage"].result);
+                        }
                     }
                 }
                 //Sino, se sigue agregando como normalmente se agrega
@@ -440,6 +466,7 @@ const HotelModule = {
                     `/api/hotels/${newHotel.id}`,
                     formDataHotel
                 );
+                console.log(request.data.data)
                 commit("postEditHotel", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
@@ -517,6 +544,23 @@ const HotelModule = {
                 commit("setStatusRegimes", error.response.status);
             }
         },
+
+        postEditConfiguration: async function({ commit }, newConfiguration) {
+            try {
+                const request = await axios.post(
+                    `/api/configurations`,
+                    newConfiguration
+                );
+                commit("putEditConfiguration", request.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                console.log(error.response.data)
+                console.log(error.response.status)
+                commit("setErrorsConfiguration", error.response.data);
+                commit("setStatusConfiguration", error.response.status);
+            }
+        },
+
 
         putEditConfiguration: async function({ commit }, newConfiguration) {
             try {

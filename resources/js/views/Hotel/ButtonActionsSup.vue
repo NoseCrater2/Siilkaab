@@ -103,6 +103,7 @@ export default {
       "getAditionalInfo",
       "postEditHotel",
       "putEditConfiguration",
+      "postEditConfiguration",
       "putEditContacts",
       "putEditConditions",
       "putEditRegimes",
@@ -156,16 +157,29 @@ export default {
     //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
     executeSaveOnAPI(){
         this.postEditHotel(this.hotel);
+        //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+        if(this.configuration.timezone != null){
+          if(this.configuration.hotel_id == null){
+            //metodo post
+            this.configuration.hotel_id = this.idHotel;
+            console.log("BTN", this.configuration);
+            this.postEditConfiguration(this.configuration);
+          }
+          else{
+            //metodo put
+            this.putEditConfiguration(this.configuration);
+          }
+        }
+        //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
         ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
-        // this.putEditConfiguration(this.configuration);
-        // this.putEditContacts(this.contacts);
-        // this.putEditConditions(this.conditions);
-        // this.putEditRegimes({
-        //   newRegimes: this.regimes,
-        //   currentHotelId: this.hotel.id,
-        //   currentRegimes: this.hotel.idRegime,
-        // });
-        // this.putEditAditionalInfo(this.aditionalInfo);
+        this.putEditContacts(this.contacts);
+        this.putEditConditions(this.conditions);
+        this.putEditRegimes({
+          newRegimes: this.regimes,
+          currentHotelId: this.hotel.id,
+          currentRegimes: this.hotel.idRegime,
+        });
+        this.putEditAditionalInfo(this.aditionalInfo);
         // this.putEditRestaurants(this.restaurants).then(() => {
         //   this.putEditSchedules(this.schedules);
         // });

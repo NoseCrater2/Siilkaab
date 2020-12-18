@@ -3346,7 +3346,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "putEditContacts", "putEditConditions", "putEditRegimes", "putEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus"])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "postEditConfiguration", "putEditContacts", "putEditConditions", "putEditRegimes", "putEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus"])), {}, {
     close: function close() {
       this.setReinicialized();
       this.setReinicializedErrorsStatus();
@@ -3409,17 +3409,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
     executeSaveOnAPI: function executeSaveOnAPI() {
-      this.postEditHotel(this.hotel); ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
-      // this.putEditConfiguration(this.configuration);
-      // this.putEditContacts(this.contacts);
-      // this.putEditConditions(this.conditions);
-      // this.putEditRegimes({
-      //   newRegimes: this.regimes,
-      //   currentHotelId: this.hotel.id,
-      //   currentRegimes: this.hotel.idRegime,
-      // });
-      // this.putEditAditionalInfo(this.aditionalInfo);
-      // this.putEditRestaurants(this.restaurants).then(() => {
+      this.postEditHotel(this.hotel); //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+
+      if (this.configuration.timezone != null) {
+        if (this.configuration.hotel_id == null) {
+          //metodo post
+          this.configuration.hotel_id = this.idHotel;
+          console.log("BTN", this.configuration);
+          this.postEditConfiguration(this.configuration);
+        } else {
+          //metodo put
+          this.putEditConfiguration(this.configuration);
+        }
+      } //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
+      ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+
+
+      this.putEditContacts(this.contacts);
+      this.putEditConditions(this.conditions);
+      this.putEditRegimes({
+        newRegimes: this.regimes,
+        currentHotelId: this.hotel.id,
+        currentRegimes: this.hotel.idRegime
+      });
+      this.putEditAditionalInfo(this.aditionalInfo); // this.putEditRestaurants(this.restaurants).then(() => {
       //   this.putEditSchedules(this.schedules);
       // });
     }
@@ -3691,6 +3704,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../routes */ "./resources/js/routes.js");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -3804,6 +3818,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "Configuration",
   data: function data() {
@@ -3823,30 +3838,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.getTimezones().then(function () {});
 
     if (this.hotel.idConfiguration !== null) {
-      this.currencyIdModel = this.configuration.currency_id;
-      this.timezoneModel = this.configuration.timezone;
-      this.notificationVoucherModel = this.configuration.notification_voucher;
-      this.notificationDetailsModel = this.configuration.notification_details;
-      this.notificationCardModel = this.configuration.notification_card;
-
-      if (this.configuration.payment_type != null) {
-        if (this.configuration.payment_type == "one") {
-          this.ddwnPaymentTypeModel = "Una noche";
-        }
-
-        if (this.configuration.payment_type == "all") {
-          this.ddwnPaymentTypeModel = "Todas las noches";
-        }
-      }
-
-      if (this.configuration.payment_place != null) {
-        if (this.configuration.payment_place === "both") {
-          this.selectPaymentsPlaceModel.push("online");
-          this.selectPaymentsPlaceModel.push("offline");
-        } else {
-          this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
-        }
-      }
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    } else {
+      this.fillModel();
+      console.log(this.configuration); //console.log(this.configuration)
+      //this.configuration.currency_id = 0;
     }
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
@@ -3952,7 +3948,69 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getCurrencies", "getTimezones"]))
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getCurrencies", "getTimezones"])), {}, {
+    //Metodo para llenar la vista con los datos
+    fillModel: function fillModel() {
+      if (this.configuration.currency_id != null) {
+        this.currencyIdModel = this.configuration.currency_id;
+      } else {
+        this.configuration.currency_id = 1;
+        this.currencyIdModel = this.configuration.currency_id;
+      }
+
+      if (this.configuration.timezone != null) {
+        this.timezoneModel = this.configuration.timezone;
+      } else {
+        this.configuration.timezone = "America/Mexico_City";
+        this.timezoneModel = this.configuration.timezone;
+      }
+
+      if (this.configuration.notification_voucher != null) {
+        this.notificationVoucherModel = this.configuration.notification_voucher;
+      } else {
+        this.configuration.notification_voucher = "";
+        this.notificationVoucherModel = this.configuration.notification_voucher;
+      }
+
+      if (this.configuration.notification_details != null) {
+        this.notificationDetailsModel = this.configuration.notification_details;
+      } else {
+        this.configuration.notification_details = "";
+        this.notificationDetailsModel = this.configuration.notification_details;
+      }
+
+      if (this.configuration.notification_card != null) {
+        this.notificationCardModel = this.configuration.notification_card;
+      } else {
+        this.configuration.notification_card = "";
+        this.notificationCardModel = this.configuration.notification_card;
+      }
+
+      if (this.configuration.payment_type != null) {
+        if (this.configuration.payment_type == "one") {
+          this.ddwnPaymentTypeModel = "Una noche";
+        }
+
+        if (this.configuration.payment_type == "all") {
+          this.ddwnPaymentTypeModel = "Todas las noches";
+        }
+      } else {
+        this.configuration.payment_type = "one";
+        this.ddwnPaymentTypeModel = "Una noche";
+      }
+
+      if (this.configuration.payment_place != null) {
+        if (this.configuration.payment_place === "both") {
+          this.selectPaymentsPlaceModel.push("online");
+          this.selectPaymentsPlaceModel.push("offline");
+        } else {
+          this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
+        }
+      } else {
+        this.configuration.payment_place = "";
+      }
+    }
+  })
 });
 
 /***/ }),
@@ -4453,6 +4511,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 //
 //
 //
@@ -4585,11 +4645,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.numFloorsModel = this.hotel.num_floors;
       this.shortTModel = this.hotel.short_text;
 
-      if (this.hotel.image.includes("jpeg") == true) {
-        this.currentImage = "/storage/img/" + this.hotel.image;
+      if (this.hotel.image != null || this.hotel.image != "") {
+        if (_typeof(this.hotel.image) == 'object') {
+          this.currentImage = this.hotel.image.temporalURL;
+        } else if (this.hotel.image.includes("jpeg") == true) {
+          this.currentImage = "/storage/img/" + this.hotel.image;
+        }
+      } else {//console.log("noImage")
       }
-
-      console.log(this.currentImage);
 
       if (this.hotel.type != null) {
         if (this.hotel.type == "bungalow") {
@@ -4669,7 +4732,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       //"this.hotel.image.result"; sin embargo, no se puede añadir desde aqui directamente la propiedad "result"
       //del compressor a la variable state)
 
-      this.hotel.image = compressImg;
+      this.hotel.image = {
+        compressImage: compressImg
+      };
       var reader = new FileReader(); //Esto trae la URL temporal de la imagen actual
 
       reader.readAsDataURL(this.currentImage);
@@ -4681,6 +4746,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
       this.currentImage = "";
+      console.log("this.hotel.image", this.hotel);
+    },
+    //Coloca la URL de la imágen
+    srcImage: function srcImage() {
+      var localSrcImage = this.urlTemporal === '' ? this.currentImage : this.urlTemporal;
+
+      if (_typeof(this.hotel.image) == 'object') {
+        if (this.urlTemporal != "") {
+          this.hotel.image.temporalURL = this.urlTemporal;
+        }
+      }
+
+      console.log("this.hotel.imageSrcImage", this.hotel.image);
+      console.log("this.urlTemporalSrcImage", this.urlTemporal);
+      console.log("this.currentImageSrcImage", this.currentImage);
+      return localSrcImage;
     }
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
@@ -12370,10 +12451,7 @@ var render = function() {
                         : _c("v-img", {
                             staticClass: "grey darken-4",
                             attrs: {
-                              src:
-                                _vm.urlTemporal === ""
-                                  ? _vm.currentImage
-                                  : _vm.urlTemporal,
+                              src: _vm.srcImage(),
                               height: "210",
                               width: "300",
                               contain: ""
