@@ -10,6 +10,7 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../routes */ "./resources/js/routes.js");
 var _methods;
 
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
@@ -163,6 +164,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -238,6 +240,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     deleteItem: function deleteItem(item) {},
     showDeleteDialog: function showDeleteDialog() {
       this.deleteDialog = true;
+    },
+    newHotel: function newHotel() {
+      _routes__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+        name: 'Hotel',
+        params: {
+          id: 'new'
+        }
+      });
     }
   }, _defineProperty(_methods, "deleteItem", function deleteItem() {
     var _this = this;
@@ -384,7 +394,7 @@ var render = function() {
                           {
                             on: {
                               click: function($event) {
-                                _vm.dialog = !_vm.dialog
+                                return _vm.newHotel()
                               }
                             }
                           },

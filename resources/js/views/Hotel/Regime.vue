@@ -36,6 +36,7 @@
             outlined
             required
             :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['lodging_breakfast_adult']) != 'undefined') ? errorsRegimes.lodging_breakfast_adult[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -46,6 +47,7 @@
             outlined
             required
             :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['lodging_breakfast_children']) != 'undefined') ? errorsRegimes.lodging_breakfast_children[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -59,6 +61,7 @@
             outlined
             required
             :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['half_pension_adult']) != 'undefined') ? errorsRegimes.half_pension_adult[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -69,6 +72,7 @@
             outlined
             required
             :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['half_pension_children']) != 'undefined') ? errorsRegimes.half_pension_children[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -82,6 +86,7 @@
             outlined
             required
             :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['full_pension_adult']) != 'undefined') ? errorsRegimes.full_pension_adult[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -92,6 +97,7 @@
             outlined
             required
             :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['full_pension_children']) != 'undefined') ? errorsRegimes.full_pension_children[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -105,6 +111,7 @@
             outlined
             required
             :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['all_included_adult']) != 'undefined') ? errorsRegimes.all_included_adult[0] : ''"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -115,6 +122,7 @@
             outlined
             required
             :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
+            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['all_included_children']) != 'undefined') ? errorsRegimes.all_included_children[0] : ''"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -182,28 +190,28 @@ export default {
       this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
       this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
       if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
-        if (this.txtBreakfastAdultModel != "" || this.txtBreakfastChildrenModel != "") {
+        if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
           this.swBreakfastModel = 1;
         }
       }
       this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
       this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
       if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
-        if (this.txtHalfPensionAdultModel !=="" || this.txtHalfPensionChildrenModel !== "") {
+        if (this.txtHalfPensionAdultModel !==0 || this.txtHalfPensionChildrenModel !== 0) {
           this.swHalfPensionModel = 1;
         }
       }
       this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
       this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
       if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
-        if (this.txtFullPensionAdultModel !== "" || this.txtFullPensionChildrenModel !== "") {
+        if (this.txtFullPensionAdultModel !== 0 || this.txtFullPensionChildrenModel !== 0) {
           this.swFullPensionModel = 1;
         }
       }
       this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
       this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
       if (this.txtAllIncludedAdultModel !==null || this.txtAllIncludedChildrenModel !== null) {
-        if (this.txtAllIncludedAdultModel !=="" || this.txtAllIncludedChildrenModel !== "") {
+        if (this.txtAllIncludedAdultModel !==0 || this.txtAllIncludedChildrenModel !== 0) {
           this.swAllIncludedModel = 1;
         }
       }
@@ -234,6 +242,7 @@ export default {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
       regimes: (state) => state.HotelModule.regimes,
+      errorsRegimes: (state) => state.HotelModule.errorsRegimes
     }),
     //Codigo para guardar temporalmente en el state
     computedSwOnlyRoom: {
@@ -271,10 +280,10 @@ export default {
       set(model) {
         this.swBreakfastModel = model;
         if(model == 0){
-          this.txtBreakfastChildrenModel = "";
-          this.txtBreakfastAdultModel = "";
-          this.regimes[0].lodging_breakfast_children = "";
-          this.regimes[0].lodging_breakfast_adult = "";
+          this.txtBreakfastChildrenModel = 0;
+          this.txtBreakfastAdultModel = 0;
+          this.regimes[0].lodging_breakfast_children = 0;
+          this.regimes[0].lodging_breakfast_adult = 0;
         }
         return this.swBreakfastModel;
       },
@@ -306,10 +315,10 @@ export default {
       set(model) {
         this.swHalfPensionModel = model;
         if(model == 0){
-          this.txtHalfPensionChildrenModel = "";
-          this.txtHalfPensionAdultModel = "";
-          this.regimes[0].half_pension_children = "";
-          this.regimes[0].half_pension_adult = "";
+          this.txtHalfPensionChildrenModel = 0;
+          this.txtHalfPensionAdultModel = 0;
+          this.regimes[0].half_pension_children = 0;
+          this.regimes[0].half_pension_adult = 0;
         }
         return this.swHalfPensionModel;
       },
@@ -341,10 +350,10 @@ export default {
       set(model) {
         this.swFullPensionModel = model;
         if(model == 0){
-          this.txtFullPensionChildrenModel = "";
-          this.txtFullPensionAdultModel = "";
-          this.regimes[0].full_pension_children = "";
-          this.regimes[0].full_pension_adult = "";
+          this.txtFullPensionChildrenModel = 0;
+          this.txtFullPensionAdultModel = 0;
+          this.regimes[0].full_pension_children = 0;
+          this.regimes[0].full_pension_adult = 0;
         }
         return this.swFullPensionModel;
       },
@@ -376,10 +385,10 @@ export default {
       set(model) {
         this.swAllIncludedModel = model;
         if(model == 0){
-          this.txtAllIncludedChildrenModel = "";
-          this.txtAllIncludedAdultModel = "";
-          this.regimes[0].all_included_children = "";
-          this.regimes[0].all_included_adult = "";
+          this.txtAllIncludedChildrenModel = 0;
+          this.txtAllIncludedAdultModel = 0;
+          this.regimes[0].all_included_children = 0;
+          this.regimes[0].all_included_adult = 0;
         }
         return this.swAllIncludedModel;
       },

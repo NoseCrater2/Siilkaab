@@ -91,7 +91,7 @@ class RegimeController extends Controller
             'priority' => 'in:normal,medium,high',
             'only_room' => 'boolean',
             'start_period' => 'date_format:Y-m-d H:i',
-            'final_period' => 'date_format:Y-m-d H:i|after:start_time',
+            'final_period' => 'date_format:Y-m-d H:i|after:start_period',
             'lodging_breakfast_children' => 'numeric',
             'lodging_breakfast_adult' => 'numeric',
             'half_pension_children' => 'numeric',

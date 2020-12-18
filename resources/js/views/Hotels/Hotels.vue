@@ -31,7 +31,7 @@
           <v-spacer></v-spacer>
           <v-divider inset vertical></v-divider>
           <div class="d-flex align-center mt-n1">
-            <v-btn @click="dialog = !dialog">
+            <v-btn @click="newHotel()">
               <span class="black--text">NUEVO HOTEL</span>
               <v-icon size="32" color="primary">mdi-plus</v-icon>
             </v-btn>
@@ -144,6 +144,7 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
+import router from "../../routes";
 export default {
   data() {
     return {
@@ -205,6 +206,10 @@ export default {
 
     showDeleteDialog() {
       this.deleteDialog = true;
+    },
+
+    newHotel(){
+      router.push({ name: 'Hotel', params: { id: 'new' } })
     },
 
     deleteItem() {

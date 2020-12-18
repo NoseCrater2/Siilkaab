@@ -48,10 +48,6 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify_datetime_picker__WEBPACK_
       this.datetime = this.dates.prop.toString().slice(0, -3);
     }
   },
-  updated: function updated() {
-    this.formatDate(this.datetime);
-    this.sendNewHour(this.datetime, this.dates.info);
-  },
   data: function data() {
     return {
       dato: null,
@@ -72,12 +68,21 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuetify_datetime_picker__WEBPACK_
   },
   methods: {
     formatDate: function formatDate(val) {
+      console.log(val);
       var lastDate = new Date(val).getTime();
       var tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
 
       var localISOTime = new Date(lastDate - tzoffset).toISOString().slice(0, -8);
+      console.log(lastDate);
+      console.log(tzoffset);
       var date = localISOTime.replace(/T/, " ");
       this.datetime = date;
+    },
+    formatAndSendHour: function formatAndSendHour() {
+      console.log(this.datetime);
+      this.formatDate(this.datetime);
+      console.log(this.datetime);
+      this.sendNewHour(this.datetime, this.dates.info);
     },
     sendNewHour: function sendNewHour(newHour, info) {
       this.$emit("sendNewHour", newHour, info);
@@ -1067,11 +1072,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: "SpecialRegime",
-  created: function created() {
+  mounted: function mounted() {
     if (this.objArrCompo.start_period != null && this.objArrCompo.final_period != null) {
       this.propStartDate = {
         info: "Start",
@@ -1103,7 +1113,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtBreakfastAdultModel = this.objArrCompo.lodging_breakfast_adult;
 
     if (this.txtBreakfastAdultModel !== null || this.txtBreakfastChildrenModel !== null) {
-      if (this.txtBreakfastAdultModel !== "" || this.txtBreakfastChildrenModel !== "") {
+      if (this.txtBreakfastAdultModel !== 0 || this.txtBreakfastChildrenModel !== 0) {
         this.swBreakfastModel = 1;
       }
     }
@@ -1112,7 +1122,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtHalfPensionAdultModel = this.objArrCompo.half_pension_adult;
 
     if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
-      if (this.txtHalfPensionAdultModel !== "" || this.txtHalfPensionChildrenModel !== "") {
+      if (this.txtHalfPensionAdultModel !== 0 || this.txtHalfPensionChildrenModel !== 0) {
         this.swHalfPensionModel = 1;
       }
     }
@@ -1121,7 +1131,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtFullPensionAdultModel = this.objArrCompo.full_pension_adult;
 
     if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
-      if (this.txtFullPensionAdultModel !== "" || this.txtFullPensionChildrenModel !== "") {
+      if (this.txtFullPensionAdultModel !== 0 || this.txtFullPensionChildrenModel !== 0) {
         this.swFullPensionModel = 1;
       }
     }
@@ -1130,7 +1140,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtAllIncludedAdultModel = this.objArrCompo.all_included_adult;
 
     if (this.txtAllIncludedAdultModel !== null || this.txtAllIncludedChildrenModel !== null) {
-      if (this.txtAllIncludedAdultModel !== "" || this.txtAllIncludedChildrenModel !== "") {
+      if (this.txtAllIncludedAdultModel !== 0 || this.txtAllIncludedChildrenModel !== 0) {
         this.swAllIncludedModel = 1;
       }
     }
@@ -1212,10 +1222,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swBreakfastModel = model;
 
         if (model == 0) {
-          this.txtBreakfastChildrenModel = "";
-          this.txtBreakfastAdultModel = "";
-          this.objArrCompo.lodging_breakfast_children = "";
-          this.objArrCompo.lodging_breakfast_adult = "";
+          this.txtBreakfastChildrenModel = 0;
+          this.txtBreakfastAdultModel = 0;
+          this.objArrCompo.lodging_breakfast_children = 0;
+          this.objArrCompo.lodging_breakfast_adult = 0;
         }
 
         return this.swBreakfastModel;
@@ -1249,10 +1259,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swHalfPensionModel = model;
 
         if (model == 0) {
-          this.txtHalfPensionChildrenModel = "";
-          this.txtHalfPensionAdultModel = "";
-          this.objArrCompo.half_pension_children = "";
-          this.objArrCompo.half_pension_adult = "";
+          this.txtHalfPensionChildrenModel = 0;
+          this.txtHalfPensionAdultModel = 0;
+          this.objArrCompo.half_pension_children = 0;
+          this.objArrCompo.half_pension_adult = 0;
         }
 
         return this.swHalfPensionModel;
@@ -1286,10 +1296,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swFullPensionModel = model;
 
         if (model == 0) {
-          this.txtFullPensionChildrenModel = "";
-          this.txtFullPensionAdultModel = "";
-          this.objArrCompo.full_pension_children = "";
-          this.objArrCompo.full_pension_adult = "";
+          this.txtFullPensionChildrenModel = 0;
+          this.txtFullPensionAdultModel = 0;
+          this.objArrCompo.full_pension_children = 0;
+          this.objArrCompo.full_pension_adult = 0;
         }
 
         return this.swFullPensionModel;
@@ -1323,10 +1333,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swAllIncludedModel = model;
 
         if (model == 0) {
-          this.txtAllIncludedChildrenModel = "";
-          this.txtAllIncludedAdultModel = "";
-          this.objArrCompo.all_included_children = "";
-          this.objArrCompo.all_included_adult = "";
+          this.txtAllIncludedChildrenModel = 0;
+          this.txtAllIncludedAdultModel = 0;
+          this.objArrCompo.all_included_children = 0;
+          this.objArrCompo.all_included_adult = 0;
         }
 
         return this.swAllIncludedModel;
@@ -5014,6 +5024,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -5048,7 +5066,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
 
       if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
-        if (this.txtBreakfastAdultModel != "" || this.txtBreakfastChildrenModel != "") {
+        if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
           this.swBreakfastModel = 1;
         }
       }
@@ -5057,7 +5075,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
 
       if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
-        if (this.txtHalfPensionAdultModel !== "" || this.txtHalfPensionChildrenModel !== "") {
+        if (this.txtHalfPensionAdultModel !== 0 || this.txtHalfPensionChildrenModel !== 0) {
           this.swHalfPensionModel = 1;
         }
       }
@@ -5066,7 +5084,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
 
       if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
-        if (this.txtFullPensionAdultModel !== "" || this.txtFullPensionChildrenModel !== "") {
+        if (this.txtFullPensionAdultModel !== 0 || this.txtFullPensionChildrenModel !== 0) {
           this.swFullPensionModel = 1;
         }
       }
@@ -5075,7 +5093,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
 
       if (this.txtAllIncludedAdultModel !== null || this.txtAllIncludedChildrenModel !== null) {
-        if (this.txtAllIncludedAdultModel !== "" || this.txtAllIncludedChildrenModel !== "") {
+        if (this.txtAllIncludedAdultModel !== 0 || this.txtAllIncludedChildrenModel !== 0) {
           this.swAllIncludedModel = 1;
         }
       }
@@ -5108,6 +5126,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     regimes: function regimes(state) {
       return state.HotelModule.regimes;
+    },
+    errorsRegimes: function errorsRegimes(state) {
+      return state.HotelModule.errorsRegimes;
     }
   })), {}, {
     //Codigo para guardar temporalmente en el state
@@ -5151,10 +5172,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swBreakfastModel = model;
 
         if (model == 0) {
-          this.txtBreakfastChildrenModel = "";
-          this.txtBreakfastAdultModel = "";
-          this.regimes[0].lodging_breakfast_children = "";
-          this.regimes[0].lodging_breakfast_adult = "";
+          this.txtBreakfastChildrenModel = 0;
+          this.txtBreakfastAdultModel = 0;
+          this.regimes[0].lodging_breakfast_children = 0;
+          this.regimes[0].lodging_breakfast_adult = 0;
         }
 
         return this.swBreakfastModel;
@@ -5188,10 +5209,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swHalfPensionModel = model;
 
         if (model == 0) {
-          this.txtHalfPensionChildrenModel = "";
-          this.txtHalfPensionAdultModel = "";
-          this.regimes[0].half_pension_children = "";
-          this.regimes[0].half_pension_adult = "";
+          this.txtHalfPensionChildrenModel = 0;
+          this.txtHalfPensionAdultModel = 0;
+          this.regimes[0].half_pension_children = 0;
+          this.regimes[0].half_pension_adult = 0;
         }
 
         return this.swHalfPensionModel;
@@ -5225,10 +5246,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swFullPensionModel = model;
 
         if (model == 0) {
-          this.txtFullPensionChildrenModel = "";
-          this.txtFullPensionAdultModel = "";
-          this.regimes[0].full_pension_children = "";
-          this.regimes[0].full_pension_adult = "";
+          this.txtFullPensionChildrenModel = 0;
+          this.txtFullPensionAdultModel = 0;
+          this.regimes[0].full_pension_children = 0;
+          this.regimes[0].full_pension_adult = 0;
         }
 
         return this.swFullPensionModel;
@@ -5262,10 +5283,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.swAllIncludedModel = model;
 
         if (model == 0) {
-          this.txtAllIncludedChildrenModel = "";
-          this.txtAllIncludedAdultModel = "";
-          this.regimes[0].all_included_children = "";
-          this.regimes[0].all_included_adult = "";
+          this.txtAllIncludedChildrenModel = 0;
+          this.txtAllIncludedAdultModel = 0;
+          this.regimes[0].all_included_children = 0;
+          this.regimes[0].all_included_adult = 0;
         }
 
         return this.swAllIncludedModel;
@@ -5546,7 +5567,12 @@ var render = function() {
                     "v-btn",
                     {
                       attrs: { color: "primary" },
-                      on: { click: parent.okHandler }
+                      on: {
+                        click: function($event) {
+                          parent.okHandler()
+                          _vm.formatAndSendHour()
+                        }
+                      }
                     },
                     [_vm._v("Aceptar")]
                   )
@@ -6447,12 +6473,19 @@ var render = function() {
               attrs: { cols: "12", md: "5", sm: "12", xs: "12" }
             },
             [
-              _c("DateTimePicker", {
-                attrs: { dates: _vm.getStartDate },
-                on: { sendNewHour: _vm.sendNewHour }
-              })
-            ],
-            1
+              _vm.getStartDate != null
+                ? _c(
+                    "div",
+                    [
+                      _c("DateTimePicker", {
+                        attrs: { dates: _vm.getStartDate },
+                        on: { sendNewHour: _vm.sendNewHour }
+                      })
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ]
           ),
           _vm._v(" "),
           _c(
@@ -6462,12 +6495,19 @@ var render = function() {
               attrs: { cols: "12", md: "5", sm: "12", xs: "12" }
             },
             [
-              _c("DateTimePicker", {
-                attrs: { dates: _vm.getFinalDate },
-                on: { sendNewHour: _vm.sendNewHour }
-              })
-            ],
-            1
+              _vm.getFinalDate != null
+                ? _c(
+                    "div",
+                    [
+                      _c("DateTimePicker", {
+                        attrs: { dates: _vm.getFinalDate },
+                        on: { sendNewHour: _vm.sendNewHour }
+                      })
+                    ],
+                    1
+                  )
+                : _vm._e()
+            ]
           ),
           _vm._v(" "),
           _c(
@@ -7846,46 +7886,6 @@ var render = function() {
                                             }
                                           })
                                         ],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    {
-                                      staticStyle: { "margin-bottom": "1%" },
-                                      attrs: { cols: "12" }
-                                    },
-                                    [
-                                      _c(
-                                        "v-card",
-                                        {
-                                          staticStyle: { padding: "2%" },
-                                          attrs: { outlined: "" }
-                                        },
-                                        [_c("CarrouselRestaurant")],
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  ),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-col",
-                                    {
-                                      staticStyle: { "margin-bottom": "1%" },
-                                      attrs: { cols: "12" }
-                                    },
-                                    [
-                                      _c(
-                                        "v-card",
-                                        {
-                                          staticStyle: { padding: "2%" },
-                                          attrs: { outlined: "" }
-                                        },
-                                        [_c("CarrouselPool")],
                                         1
                                       )
                                     ],
@@ -12706,7 +12706,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwBreakfast == 0 ||
-                        _vm.computedSwBreakfast == false
+                        _vm.computedSwBreakfast == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["lodging_breakfast_adult"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.lodging_breakfast_adult[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtBreakfastAdult,
@@ -12732,7 +12738,14 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwBreakfast == 0 ||
-                        _vm.computedSwBreakfast == false
+                        _vm.computedSwBreakfast == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes[
+                          "lodging_breakfast_children"
+                        ] != "undefined"
+                          ? _vm.errorsRegimes.lodging_breakfast_children[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtBreakfastChildren,
@@ -12776,7 +12789,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwHalfPension == 0 ||
-                        _vm.computedSwHalfPension == false
+                        _vm.computedSwHalfPension == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["half_pension_adult"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.half_pension_adult[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtHalfPensionAdult,
@@ -12802,7 +12821,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwHalfPension == 0 ||
-                        _vm.computedSwHalfPension == false
+                        _vm.computedSwHalfPension == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["half_pension_children"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.half_pension_children[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtHalfPensionChildren,
@@ -12846,7 +12871,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwFullPension == 0 ||
-                        _vm.computedSwFullPension == false
+                        _vm.computedSwFullPension == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["full_pension_adult"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.full_pension_adult[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtFullPensionAdult,
@@ -12872,7 +12903,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwFullPension == 0 ||
-                        _vm.computedSwFullPension == false
+                        _vm.computedSwFullPension == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["full_pension_children"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.full_pension_children[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtFullPensionChildren,
@@ -12916,7 +12953,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwAllIncluded == 0 ||
-                        _vm.computedSwAllIncluded == false
+                        _vm.computedSwAllIncluded == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["all_included_adult"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.all_included_adult[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtAllIncludedAdult,
@@ -12942,7 +12985,13 @@ var render = function() {
                       required: "",
                       disabled:
                         _vm.computedSwAllIncluded == 0 ||
-                        _vm.computedSwAllIncluded == false
+                        _vm.computedSwAllIncluded == false,
+                      "error-messages":
+                        _vm.errorsRegimes != null &&
+                        typeof _vm.errorsRegimes["all_included_children"] !=
+                          "undefined"
+                          ? _vm.errorsRegimes.all_included_children[0]
+                          : ""
                     },
                     model: {
                       value: _vm.computedTxtAllIncludedChildren,

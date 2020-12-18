@@ -8,12 +8,17 @@
       </v-col>
       <!--MENU DESDE-->
       <v-col cols="12" md="5" sm="12" xs="12" class="mt-8">
-        <DateTimePicker :dates="getStartDate" @sendNewHour="sendNewHour"></DateTimePicker>
+        <div v-if="getStartDate!=null">
+          <DateTimePicker :dates="getStartDate" @sendNewHour="sendNewHour"></DateTimePicker>
+        </div>
+        
       </v-col>
 
       <!--MENU HASTA-->
       <v-col cols="12" md="5" sm="12" xs="12" class="mt-8">
-        <DateTimePicker :dates="getFinalDate" @sendNewHour="sendNewHour"></DateTimePicker>
+        <div v-if="getFinalDate!=null">
+          <DateTimePicker :dates="getFinalDate" @sendNewHour="sendNewHour"></DateTimePicker>
+        </div>
       </v-col>
 
       <v-col cols="12" md="6" sm="12" xs="12">
@@ -132,11 +137,8 @@ import DateTimePicker from "../DateTimePicker/DateTimePicker";
 
 export default {
   name: "SpecialRegime",
-  created() {
-    if (
-      this.objArrCompo.start_period != null &&
-      this.objArrCompo.final_period != null
-    ) {
+  mounted() {
+    if (this.objArrCompo.start_period != null && this.objArrCompo.final_period != null) {
       this.propStartDate = {
         info: "Start",
         prop: this.objArrCompo.start_period,
@@ -161,28 +163,28 @@ export default {
     this.txtBreakfastChildrenModel = this.objArrCompo.lodging_breakfast_children;
     this.txtBreakfastAdultModel = this.objArrCompo.lodging_breakfast_adult;
     if (this.txtBreakfastAdultModel !==null || this.txtBreakfastChildrenModel !== null) {
-      if (this.txtBreakfastAdultModel !== "" || this.txtBreakfastChildrenModel !== "") {
+      if (this.txtBreakfastAdultModel !== 0 || this.txtBreakfastChildrenModel !== 0) {
         this.swBreakfastModel = 1;
       }
     }
     this.txtHalfPensionChildrenModel = this.objArrCompo.half_pension_children;
     this.txtHalfPensionAdultModel = this.objArrCompo.half_pension_adult;
     if (this.txtHalfPensionAdultModel !==null || this.txtHalfPensionChildrenModel !== null) {
-      if (this.txtHalfPensionAdultModel !== "" || this.txtHalfPensionChildrenModel !== "") {
+      if (this.txtHalfPensionAdultModel !== 0 || this.txtHalfPensionChildrenModel !== 0) {
         this.swHalfPensionModel = 1;
       }
     }
     this.txtFullPensionChildrenModel = this.objArrCompo.full_pension_children;
     this.txtFullPensionAdultModel = this.objArrCompo.full_pension_adult;
     if (this.txtFullPensionAdultModel !==null || this.txtFullPensionChildrenModel !== null) {
-      if (this.txtFullPensionAdultModel !=="" || this.txtFullPensionChildrenModel !== "") {
+      if (this.txtFullPensionAdultModel !==0 || this.txtFullPensionChildrenModel !== 0) {
         this.swFullPensionModel = 1;
       }
     }
     this.txtAllIncludedChildrenModel = this.objArrCompo.all_included_children;
     this.txtAllIncludedAdultModel = this.objArrCompo.all_included_adult;
     if (this.txtAllIncludedAdultModel !==null || this.txtAllIncludedChildrenModel !== null) {
-      if (this.txtAllIncludedAdultModel !=="" || this.txtAllIncludedChildrenModel !== "") {
+      if (this.txtAllIncludedAdultModel !==0 || this.txtAllIncludedChildrenModel !== 0) {
         this.swAllIncludedModel = 1;
       }
     }
@@ -258,10 +260,10 @@ export default {
       set(model) {
         this.swBreakfastModel = model;
         if(model == 0){
-          this.txtBreakfastChildrenModel = "";
-          this.txtBreakfastAdultModel = "";
-          this.objArrCompo.lodging_breakfast_children = "";
-          this.objArrCompo.lodging_breakfast_adult = "";
+          this.txtBreakfastChildrenModel = 0;
+          this.txtBreakfastAdultModel = 0;
+          this.objArrCompo.lodging_breakfast_children = 0;
+          this.objArrCompo.lodging_breakfast_adult = 0;
         }
         return this.swBreakfastModel;
       },
@@ -293,10 +295,10 @@ export default {
       set(model) {
         this.swHalfPensionModel = model;
         if(model == 0){
-          this.txtHalfPensionChildrenModel = "";
-          this.txtHalfPensionAdultModel = "";
-          this.objArrCompo.half_pension_children = "";
-          this.objArrCompo.half_pension_adult = "";
+          this.txtHalfPensionChildrenModel = 0;
+          this.txtHalfPensionAdultModel = 0;
+          this.objArrCompo.half_pension_children = 0;
+          this.objArrCompo.half_pension_adult = 0;
         }
         return this.swHalfPensionModel;
       },
@@ -328,10 +330,10 @@ export default {
       set(model) {
         this.swFullPensionModel = model;
         if(model == 0){
-          this.txtFullPensionChildrenModel = "";
-          this.txtFullPensionAdultModel = "";
-          this.objArrCompo.full_pension_children = "";
-          this.objArrCompo.full_pension_adult = "";
+          this.txtFullPensionChildrenModel = 0;
+          this.txtFullPensionAdultModel = 0;
+          this.objArrCompo.full_pension_children = 0;
+          this.objArrCompo.full_pension_adult = 0;
         }
         return this.swFullPensionModel;
       },
@@ -363,10 +365,10 @@ export default {
       set(model) {
         this.swAllIncludedModel = model;
         if(model == 0){
-          this.txtAllIncludedChildrenModel = "";
-          this.txtAllIncludedAdultModel = "";
-          this.objArrCompo.all_included_children = "";
-          this.objArrCompo.all_included_adult = "";
+          this.txtAllIncludedChildrenModel = 0;
+          this.txtAllIncludedAdultModel = 0;
+          this.objArrCompo.all_included_children = 0;
+          this.objArrCompo.all_included_adult = 0;
         }
         return this.swAllIncludedModel;
       },

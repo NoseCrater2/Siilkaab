@@ -27,7 +27,9 @@ const HotelModule = {
         errorsContacts: null,
         statusContacts: null,
         errorsConditions: null,
-        statusConditions: null
+        statusConditions: null,
+        errorsRegimes: null,
+        statusRegimes: null
     },
     getters: {
         getAssignHotels(state) {
@@ -61,7 +63,9 @@ const HotelModule = {
             (state.errorsContacts = null),
             (state.statusContacts = null),
             (state.errorsConditions = null),
-            (state.statusConditions = null)
+            (state.statusConditions = null),
+            (state.errorsRegimes = null),
+            (state.statusRegimes = null)
         },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
@@ -80,6 +84,9 @@ const HotelModule = {
         setErrorsConditions(state,errors){
             state.errorsConditions = errors
         },
+        setErrorsRegimes(state,errors){
+            state.errorsRegimes = errors
+        },
         //Mutacion para el estatus
         setStatusInformation(state, status){
             state.statusInformation = status
@@ -92,6 +99,9 @@ const HotelModule = {
         },
         setStatusConditions(state, status){
             state.statusConditions = status
+        },
+        setStatusRegimes(state, status){
+            state.statusRegimes = status
         },
         //Mutacion que setea el state.regimes para asignar nuevo arreglo
         setArrayRegimes(state, payload) {
@@ -444,17 +454,22 @@ const HotelModule = {
             try {
                 let arrayRequestAddItemRegime = [];
                 newArrayPostRegimes.forEach(async itemRegime => {
-                    const requestAddItemRegime = await axios.post(
-                        `/api/regimes/`,
-                        itemRegime
-                    );
-                    arrayRequestAddItemRegime.push(requestAddItemRegime.data.data)
+                    try {
+                        const requestAddItemRegime = await axios.post(
+                            `/api/regimes/`,
+                            itemRegime
+                        );
+                        arrayRequestAddItemRegime.push(requestAddItemRegime.data.data)
+                    } catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
                 });
                 commit("postAddRegimes", arrayRequestAddItemRegime);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -462,17 +477,24 @@ const HotelModule = {
             try {
                 let arrayRequestUpdateItemRegime = [];
                 newArrayPutRegimes.forEach(async itemRegime => {
-                    const requestUpdateItemRegime = await axios.put(
-                    `/api/regimes/${itemRegime.id}`,
-                    itemRegime
-                    );
-                    arrayRequestUpdateItemRegime.push(requestUpdateItemRegime.data.data)
+                    try {
+                        const requestUpdateItemRegime = await axios.put(
+                            `/api/regimes/${itemRegime.id}`,
+                            itemRegime
+                        );
+                        arrayRequestUpdateItemRegime.push(requestUpdateItemRegime.data.data)
+                    } 
+                    catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
                 });
+                console.log(arrayRequestUpdateItemRegime)
                 commit("putUpdateRegimes", arrayRequestUpdateItemRegime);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -480,14 +502,19 @@ const HotelModule = {
             try {
                 let arrayRequestDeleteItemRegime = [];
                 arrayIDsItemsDel.forEach(async idItemRegime => {
-                    const requestDeleteItemRegime = await axios.delete(`/api/regimes/${idItemRegime}`);
-                    arrayRequestDeleteItemRegime.push(requestDeleteItemRegime.data.data)
+                    try {
+                        const requestDeleteItemRegime = await axios.delete(`/api/regimes/${idItemRegime}`);
+                        arrayRequestDeleteItemRegime.push(requestDeleteItemRegime.data.data)
+                    } catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
                 });
                 commit("deleteRegimes", arrayRequestDeleteItemRegime);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -543,6 +570,7 @@ const HotelModule = {
         //Metodo que llama a diferentes acciones de Regimes dependiendo
         //De lo que requiera hacer 
         putEditRegimes: async function({ commit, dispatch }, objRegimes) {
+            console.log(objRegimes)
             try {
                 //Si "objRegimes.newRegimes" es mayor se agregaron nuevos regimenes
                 if (objRegimes.newRegimes.length > objRegimes.currentRegimes.length) {
@@ -609,8 +637,8 @@ const HotelModule = {
                     dispatch("deleteRegimesAXIOS", arrayIDsItemsDel);
                 }
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
 

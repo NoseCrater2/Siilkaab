@@ -17,10 +17,7 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c(
     "div",
-    [
-      _vm._v("\n\n        \n\n    Aqui van unas graficas\n    \n    "),
-      _c("v-icon", { attrs: { dark: "", right: "" } }, [_vm._v("mdi-poll")])
-    ],
+    [_c("v-icon", { attrs: { dark: "", right: "" } }, [_vm._v("mdi-poll")])],
     1
   )
 }

@@ -128,7 +128,7 @@
                         ></v-select>
                       </v-card>
                     </v-col>
-                    <v-col cols="12" style="margin-bottom: 1%">
+                    <!-- <v-col cols="12" style="margin-bottom: 1%">
                       <v-card outlined style="padding: 2%">
                         <CarrouselRestaurant></CarrouselRestaurant>
                       </v-card>
@@ -137,7 +137,7 @@
                       <v-card outlined style="padding: 2%">
                         <CarrouselPool></CarrouselPool>
                       </v-card>
-                    </v-col>
+                    </v-col> -->
                   </v-row>
                 </v-expansion-panel-content>
               </v-expansion-panel>
