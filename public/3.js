@@ -1059,6 +1059,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1094,8 +1102,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtBreakfastChildrenModel = this.objArrCompo.lodging_breakfast_children;
     this.txtBreakfastAdultModel = this.objArrCompo.lodging_breakfast_adult;
 
-    if (this.txtBreakfastChildrenModel !== null) {
-      if (this.txtBreakfastChildrenModel !== "") {
+    if (this.txtBreakfastAdultModel !== null || this.txtBreakfastChildrenModel !== null) {
+      if (this.txtBreakfastAdultModel !== "" || this.txtBreakfastChildrenModel !== "") {
         this.swBreakfastModel = 1;
       }
     }
@@ -1103,8 +1111,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtHalfPensionChildrenModel = this.objArrCompo.half_pension_children;
     this.txtHalfPensionAdultModel = this.objArrCompo.half_pension_adult;
 
-    if (this.txtHalfPensionChildrenModel !== null) {
-      if (this.txtHalfPensionChildrenModel !== "") {
+    if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
+      if (this.txtHalfPensionAdultModel !== "" || this.txtHalfPensionChildrenModel !== "") {
         this.swHalfPensionModel = 1;
       }
     }
@@ -1112,8 +1120,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtFullPensionChildrenModel = this.objArrCompo.full_pension_children;
     this.txtFullPensionAdultModel = this.objArrCompo.full_pension_adult;
 
-    if (this.txtFullPensionChildrenModel !== null) {
-      if (this.txtFullPensionChildrenModel !== "") {
+    if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
+      if (this.txtFullPensionAdultModel !== "" || this.txtFullPensionChildrenModel !== "") {
         this.swFullPensionModel = 1;
       }
     }
@@ -1121,8 +1129,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.txtAllIncludedChildrenModel = this.objArrCompo.all_included_children;
     this.txtAllIncludedAdultModel = this.objArrCompo.all_included_adult;
 
-    if (this.txtAllIncludedChildrenModel !== null) {
-      if (this.txtAllIncludedChildrenModel !== "") {
+    if (this.txtAllIncludedAdultModel !== null || this.txtAllIncludedChildrenModel !== null) {
+      if (this.txtAllIncludedAdultModel !== "" || this.txtAllIncludedChildrenModel !== "") {
         this.swAllIncludedModel = 1;
       }
     }
@@ -1138,16 +1146,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       propFinalDate: null,
       swOnlyRoomModel: null,
       ddwnPriorityModel: null,
-      swBreakfastModel: null,
+      swBreakfastModel: 0,
       txtBreakfastAdultModel: null,
       txtBreakfastChildrenModel: null,
-      swHalfPensionModel: null,
+      swHalfPensionModel: 0,
       txtHalfPensionAdultModel: null,
       txtHalfPensionChildrenModel: null,
-      swFullPensionModel: null,
+      swFullPensionModel: 0,
       txtFullPensionAdultModel: null,
       txtFullPensionChildrenModel: null,
-      swAllIncludedModel: null,
+      swAllIncludedModel: 0,
       txtAllIncludedAdultModel: null,
       txtAllIncludedChildrenModel: null
     };
@@ -1202,6 +1210,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swBreakfastModel = model;
+
+        if (model == 0) {
+          this.txtBreakfastChildrenModel = "";
+          this.txtBreakfastAdultModel = "";
+          this.objArrCompo.lodging_breakfast_children = "";
+          this.objArrCompo.lodging_breakfast_adult = "";
+        }
+
         return this.swBreakfastModel;
       }
     },
@@ -1231,6 +1247,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swHalfPensionModel = model;
+
+        if (model == 0) {
+          this.txtHalfPensionChildrenModel = "";
+          this.txtHalfPensionAdultModel = "";
+          this.objArrCompo.half_pension_children = "";
+          this.objArrCompo.half_pension_adult = "";
+        }
+
         return this.swHalfPensionModel;
       }
     },
@@ -1260,6 +1284,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swFullPensionModel = model;
+
+        if (model == 0) {
+          this.txtFullPensionChildrenModel = "";
+          this.txtFullPensionAdultModel = "";
+          this.objArrCompo.full_pension_children = "";
+          this.objArrCompo.full_pension_adult = "";
+        }
+
         return this.swFullPensionModel;
       }
     },
@@ -1289,6 +1321,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swAllIncludedModel = model;
+
+        if (model == 0) {
+          this.txtAllIncludedChildrenModel = "";
+          this.txtAllIncludedAdultModel = "";
+          this.objArrCompo.all_included_children = "";
+          this.objArrCompo.all_included_adult = "";
+        }
+
         return this.swAllIncludedModel;
       }
     },
@@ -1668,6 +1708,8 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
 //
 //
 //
@@ -3286,7 +3328,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }
         }); //Setea todo a nul para antes de hacer el cambio de pestaña de hotel
 
-        this.setReinicialized(); //Ejecuta el metodo de carga del hotel
+        this.setReinicialized();
+        this.setReinicializedErrorsStatus(); //Ejecuta el metodo de carga del hotel
 
         this.chargeDataHotel();
         return this.idHotel;
@@ -3294,21 +3337,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
   }),
   methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "putEditContacts", "putEditConditions", "putEditRegimes", "putEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus"])), {}, {
-    saveChanges: function saveChanges() {
+    close: function close() {
+      this.setReinicialized();
       this.setReinicializedErrorsStatus();
-      this.postEditHotel(this.hotel); ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
-      // this.putEditConfiguration(this.configuration);
-      // this.putEditContacts(this.contacts);
-      // this.putEditConditions(this.conditions);
+      _routes__WEBPACK_IMPORTED_MODULE_1__["default"].replace({
+        path: '/hotels'
+      });
+    },
+    saveChanges: function saveChanges() {
+      var close = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : "save";
 
-      this.putEditRegimes({
-        newRegimes: this.regimes,
-        currentHotelId: this.hotel.id,
-        currentRegimes: this.hotel.idRegime
-      }); // this.putEditAditionalInfo(this.aditionalInfo);
-      // this.putEditRestaurants(this.restaurants).then(() => {
-      //   this.putEditSchedules(this.schedules);
-      // });
+      if (close == "save") {
+        this.executeSaveOnAPI();
+      }
+
+      if (close == "saveAndClose") {
+        this.executeSaveOnAPI();
+        this.setReinicialized();
+        this.setReinicializedErrorsStatus();
+        _routes__WEBPACK_IMPORTED_MODULE_1__["default"].replace({
+          path: '/hotels'
+        });
+      }
     },
     chargeDataHotel: function chargeDataHotel() {
       var _this2 = this;
@@ -3346,6 +3396,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           }
         });
       }
+    },
+    //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
+    executeSaveOnAPI: function executeSaveOnAPI() {
+      this.postEditHotel(this.hotel); ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+      // this.putEditConfiguration(this.configuration);
+      // this.putEditContacts(this.contacts);
+      // this.putEditConditions(this.conditions);
+      // this.putEditRegimes({
+      //   newRegimes: this.regimes,
+      //   currentHotelId: this.hotel.id,
+      //   currentRegimes: this.hotel.idRegime,
+      // });
+      // this.putEditAditionalInfo(this.aditionalInfo);
+      // this.putEditRestaurants(this.restaurants).then(() => {
+      //   this.putEditSchedules(this.schedules);
+      // });
     }
   }),
   props: {
@@ -4940,6 +5006,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4948,7 +5022,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var countWhile = this.regimes.length - 1;
 
     while (countWhile >= 1) {
-      console.log(this.regimes[countWhile]);
+      //console.log(this.regimes[countWhile])
       this.addCompo(this.regimes[countWhile]);
       countWhile--;
     }
@@ -4973,8 +5047,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
       this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
 
-      if (this.txtBreakfastChildrenModel !== null) {
-        if (this.txtBreakfastChildrenModel !== "") {
+      if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
+        if (this.txtBreakfastAdultModel != "" || this.txtBreakfastChildrenModel != "") {
           this.swBreakfastModel = 1;
         }
       }
@@ -4982,8 +5056,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
       this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
 
-      if (this.txtHalfPensionChildrenModel !== null) {
-        if (this.txtHalfPensionChildrenModel !== "") {
+      if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
+        if (this.txtHalfPensionAdultModel !== "" || this.txtHalfPensionChildrenModel !== "") {
           this.swHalfPensionModel = 1;
         }
       }
@@ -4991,8 +5065,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
       this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
 
-      if (this.txtFullPensionChildrenModel !== null) {
-        if (this.txtFullPensionChildrenModel !== "") {
+      if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
+        if (this.txtFullPensionAdultModel !== "" || this.txtFullPensionChildrenModel !== "") {
           this.swFullPensionModel = 1;
         }
       }
@@ -5000,8 +5074,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
       this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
 
-      if (this.txtAllIncludedChildrenModel !== null) {
-        if (this.txtAllIncludedChildrenModel !== "") {
+      if (this.txtAllIncludedAdultModel !== null || this.txtAllIncludedChildrenModel !== null) {
+        if (this.txtAllIncludedAdultModel !== "" || this.txtAllIncludedChildrenModel !== "") {
           this.swAllIncludedModel = 1;
         }
       }
@@ -5014,16 +5088,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       prioritiesModel: ["Normal", "Media", "Alta"],
       swOnlyRoomModel: null,
       ddwnPriorityModel: null,
-      swBreakfastModel: null,
+      swBreakfastModel: 0,
       txtBreakfastAdultModel: null,
       txtBreakfastChildrenModel: null,
-      swHalfPensionModel: null,
+      swHalfPensionModel: 0,
       txtHalfPensionAdultModel: null,
       txtHalfPensionChildrenModel: null,
-      swFullPensionModel: null,
+      swFullPensionModel: 0,
       txtFullPensionAdultModel: null,
       txtFullPensionChildrenModel: null,
-      swAllIncludedModel: null,
+      swAllIncludedModel: 0,
       txtAllIncludedAdultModel: null,
       txtAllIncludedChildrenModel: null
     };
@@ -5075,6 +5149,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swBreakfastModel = model;
+
+        if (model == 0) {
+          this.txtBreakfastChildrenModel = "";
+          this.txtBreakfastAdultModel = "";
+          this.regimes[0].lodging_breakfast_children = "";
+          this.regimes[0].lodging_breakfast_adult = "";
+        }
+
         return this.swBreakfastModel;
       }
     },
@@ -5104,6 +5186,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swHalfPensionModel = model;
+
+        if (model == 0) {
+          this.txtHalfPensionChildrenModel = "";
+          this.txtHalfPensionAdultModel = "";
+          this.regimes[0].half_pension_children = "";
+          this.regimes[0].half_pension_adult = "";
+        }
+
         return this.swHalfPensionModel;
       }
     },
@@ -5133,6 +5223,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swFullPensionModel = model;
+
+        if (model == 0) {
+          this.txtFullPensionChildrenModel = "";
+          this.txtFullPensionAdultModel = "";
+          this.regimes[0].full_pension_children = "";
+          this.regimes[0].full_pension_adult = "";
+        }
+
         return this.swFullPensionModel;
       }
     },
@@ -5162,6 +5260,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(model) {
         this.swAllIncludedModel = model;
+
+        if (model == 0) {
+          this.txtAllIncludedChildrenModel = "";
+          this.txtAllIncludedAdultModel = "";
+          this.regimes[0].all_included_children = "";
+          this.regimes[0].all_included_adult = "";
+        }
+
         return this.swAllIncludedModel;
       }
     },
@@ -5306,7 +5412,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\n.iconsInformation[data-v-1ae75229] {\r\n  margin-bottom: 6px;\n}\n.flexed[data-v-1ae75229] {\r\n  display: flex;\n}\n.v-expansion-panel-header[data-v-1ae75229] {\r\n  color: white;\n}\n.v-expansion-panel-content[data-v-1ae75229] {\r\n  margin-top: 2%;\n}\r\n", ""]);
+exports.push([module.i, "\n.iconsInformation[data-v-1ae75229] {\r\n  margin-bottom: 6px;\n}\n.v-expansion-panel-header[data-v-1ae75229] {\r\n  color: white;\n}\n.v-expansion-panel-content[data-v-1ae75229] {\r\n  margin-top: 2%;\n}\r\n", ""]);
 
 // exports
 
@@ -6433,7 +6539,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male",
                   label: "Adulto",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwBreakfast == 0 ||
+                    _vm.computedSwBreakfast == false
                 },
                 model: {
                   value: _vm.computedTxtBreakfastAdult,
@@ -6456,7 +6565,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male-boy",
                   label: "Niño",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwBreakfast == 0 ||
+                    _vm.computedSwBreakfast == false
                 },
                 model: {
                   value: _vm.computedTxtBreakfastChildren,
@@ -6497,7 +6609,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male",
                   label: "Adulto",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwHalfPension == 0 ||
+                    _vm.computedSwHalfPension == false
                 },
                 model: {
                   value: _vm.computedTxtHalfPensionAdult,
@@ -6520,7 +6635,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male-boy",
                   label: "Niño",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwHalfPension == 0 ||
+                    _vm.computedSwHalfPension == false
                 },
                 model: {
                   value: _vm.computedTxtHalfPensionChildren,
@@ -6561,7 +6679,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male",
                   label: "Adulto",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwFullPension == 0 ||
+                    _vm.computedSwFullPension == false
                 },
                 model: {
                   value: _vm.computedTxtFullPensionAdult,
@@ -6584,7 +6705,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male-boy",
                   label: "Niño",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwFullPension == 0 ||
+                    _vm.computedSwFullPension == false
                 },
                 model: {
                   value: _vm.computedTxtFullPensionChildren,
@@ -6625,7 +6749,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male",
                   label: "Adulto",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwAllIncluded == 0 ||
+                    _vm.computedSwAllIncluded == false
                 },
                 model: {
                   value: _vm.computedTxtAllIncludedAdult,
@@ -6648,7 +6775,10 @@ var render = function() {
                   "prepend-inner-icon": "mdi-human-male-boy",
                   label: "Niño",
                   outlined: "",
-                  required: ""
+                  required: "",
+                  disabled:
+                    _vm.computedSwAllIncluded == 0 ||
+                    _vm.computedSwAllIncluded == false
                 },
                 model: {
                   value: _vm.computedTxtAllIncludedChildren,
@@ -7054,15 +7184,17 @@ var render = function() {
           _c("v-banner", { attrs: { "single-line": "" } }, [
             _c(
               "div",
-              { staticClass: "flexed" },
+              { staticClass: "d-flex align-center ml-1" },
               [
-                _c(
-                  "v-icon",
-                  { staticClass: "iconsInformation", attrs: { left: "" } },
-                  [_vm._v("mdi-tag-multiple")]
-                ),
+                _c("v-icon", { staticClass: "mb-1", attrs: { left: "" } }, [
+                  _vm._v("mdi-tag-multiple")
+                ]),
                 _vm._v(" "),
-                _c("h3", [_vm._v("Información adicional")])
+                _c("div", { staticClass: "mt-n1" }, [
+                  _c("span", { staticClass: "text-h6 font-weight-bold" }, [
+                    _vm._v("INFORMACIÓN ADICIONAL")
+                  ])
+                ])
               ],
               1
             )
@@ -10628,7 +10760,12 @@ var render = function() {
                     "v-btn",
                     {
                       staticClass: "white--text mr-3",
-                      attrs: { depressed: "", small: "", color: "grey" }
+                      attrs: { depressed: "", small: "", color: "grey" },
+                      on: {
+                        click: function($event) {
+                          return _vm.saveChanges("saveAndClose")
+                        }
+                      }
                     },
                     [
                       _c("v-icon", { attrs: { left: "", dark: "" } }, [
@@ -10643,7 +10780,12 @@ var render = function() {
                     "v-btn",
                     {
                       staticClass: "white--text mr-3",
-                      attrs: { depressed: "", small: "", color: "red" }
+                      attrs: { depressed: "", small: "", color: "red" },
+                      on: {
+                        click: function($event) {
+                          return _vm.close()
+                        }
+                      }
                     },
                     [
                       _c("v-icon", { attrs: { left: "", dark: "" } }, [
@@ -12561,7 +12703,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male",
                       label: "Adulto",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwBreakfast == 0 ||
+                        _vm.computedSwBreakfast == false
                     },
                     model: {
                       value: _vm.computedTxtBreakfastAdult,
@@ -12584,7 +12729,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male-boy",
                       label: "Niño",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwBreakfast == 0 ||
+                        _vm.computedSwBreakfast == false
                     },
                     model: {
                       value: _vm.computedTxtBreakfastChildren,
@@ -12625,7 +12773,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male",
                       label: "Adulto",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwHalfPension == 0 ||
+                        _vm.computedSwHalfPension == false
                     },
                     model: {
                       value: _vm.computedTxtHalfPensionAdult,
@@ -12648,7 +12799,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male-boy",
                       label: "Niño",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwHalfPension == 0 ||
+                        _vm.computedSwHalfPension == false
                     },
                     model: {
                       value: _vm.computedTxtHalfPensionChildren,
@@ -12689,7 +12843,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male",
                       label: "Adulto",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwFullPension == 0 ||
+                        _vm.computedSwFullPension == false
                     },
                     model: {
                       value: _vm.computedTxtFullPensionAdult,
@@ -12712,7 +12869,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male-boy",
                       label: "Niño",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwFullPension == 0 ||
+                        _vm.computedSwFullPension == false
                     },
                     model: {
                       value: _vm.computedTxtFullPensionChildren,
@@ -12753,7 +12913,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male",
                       label: "Adulto",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwAllIncluded == 0 ||
+                        _vm.computedSwAllIncluded == false
                     },
                     model: {
                       value: _vm.computedTxtAllIncludedAdult,
@@ -12776,7 +12939,10 @@ var render = function() {
                       "prepend-inner-icon": "mdi-human-male-boy",
                       label: "Niño",
                       outlined: "",
-                      required: ""
+                      required: "",
+                      disabled:
+                        _vm.computedSwAllIncluded == 0 ||
+                        _vm.computedSwAllIncluded == false
                     },
                     model: {
                       value: _vm.computedTxtAllIncludedChildren,

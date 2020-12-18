@@ -174,7 +174,6 @@ export default {
       },
     };
   },
-
   computed: {
     ...mapState({
       hotels: (state) => state.HotelModule.allhotels,

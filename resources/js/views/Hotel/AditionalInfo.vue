@@ -4,9 +4,11 @@
       <!--Contenido del card-->
       <!--AMENIDADES-->
         <v-banner single-line>
-          <div class="flexed">
-            <v-icon class="iconsInformation" left>mdi-tag-multiple</v-icon>
-            <h3>Información adicional</h3>
+          <div class="d-flex align-center ml-1">
+            <v-icon class="mb-1" left>mdi-tag-multiple</v-icon>
+            <div class="mt-n1">
+              <span class="text-h6 font-weight-bold">INFORMACIÓN ADICIONAL</span>
+            </div>
           </div>
         </v-banner>
         <div class="pa-4">
@@ -1461,9 +1463,6 @@ export default {
 <style scoped>
 .iconsInformation {
   margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
 }
 
 .v-expansion-panel-header {

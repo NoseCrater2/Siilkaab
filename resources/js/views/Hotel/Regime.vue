@@ -35,6 +35,7 @@
             label="Adulto"
             outlined
             required
+            :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -44,6 +45,7 @@
             label="Niño"
             outlined
             required
+            :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -56,6 +58,7 @@
             label="Adulto"
             outlined
             required
+            :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -65,6 +68,7 @@
             label="Niño"
             outlined
             required
+            :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -77,6 +81,7 @@
             label="Adulto"
             outlined
             required
+            :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -86,6 +91,7 @@
             label="Niño"
             outlined
             required
+            :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -98,6 +104,7 @@
             label="Adulto"
             outlined
             required
+            :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
@@ -107,6 +114,7 @@
             label="Niño"
             outlined
             required
+            :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -154,7 +162,7 @@ export default {
   created() {
     let countWhile = this.regimes.length - 1;
     while (countWhile >= 1) {
-      console.log(this.regimes[countWhile])
+      //console.log(this.regimes[countWhile])
       this.addCompo(this.regimes[countWhile]);
       countWhile--;
     }
@@ -173,29 +181,29 @@ export default {
       }
       this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
       this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
-      if (this.txtBreakfastChildrenModel !== null) {
-        if (this.txtBreakfastChildrenModel !== "") {
+      if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
+        if (this.txtBreakfastAdultModel != "" || this.txtBreakfastChildrenModel != "") {
           this.swBreakfastModel = 1;
         }
       }
       this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
       this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
-      if (this.txtHalfPensionChildrenModel !== null) {
-        if (this.txtHalfPensionChildrenModel !== "") {
+      if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
+        if (this.txtHalfPensionAdultModel !=="" || this.txtHalfPensionChildrenModel !== "") {
           this.swHalfPensionModel = 1;
         }
       }
       this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
       this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
-      if (this.txtFullPensionChildrenModel !== null) {
-        if (this.txtFullPensionChildrenModel !== "") {
+      if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
+        if (this.txtFullPensionAdultModel !== "" || this.txtFullPensionChildrenModel !== "") {
           this.swFullPensionModel = 1;
         }
       }
       this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
       this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
-      if (this.txtAllIncludedChildrenModel !== null) {
-        if (this.txtAllIncludedChildrenModel !== "") {
+      if (this.txtAllIncludedAdultModel !==null || this.txtAllIncludedChildrenModel !== null) {
+        if (this.txtAllIncludedAdultModel !=="" || this.txtAllIncludedChildrenModel !== "") {
           this.swAllIncludedModel = 1;
         }
       }
@@ -208,16 +216,16 @@ export default {
       prioritiesModel: ["Normal", "Media", "Alta"],
       swOnlyRoomModel: null,
       ddwnPriorityModel: null,
-      swBreakfastModel: null,
+      swBreakfastModel: 0,
       txtBreakfastAdultModel: null,
       txtBreakfastChildrenModel: null,
-      swHalfPensionModel: null,
+      swHalfPensionModel: 0,
       txtHalfPensionAdultModel: null,
       txtHalfPensionChildrenModel: null,
-      swFullPensionModel: null,
+      swFullPensionModel: 0,
       txtFullPensionAdultModel: null,
       txtFullPensionChildrenModel: null,
-      swAllIncludedModel: null,
+      swAllIncludedModel: 0,
       txtAllIncludedAdultModel: null,
       txtAllIncludedChildrenModel: null,
     };
@@ -262,6 +270,12 @@ export default {
       },
       set(model) {
         this.swBreakfastModel = model;
+        if(model == 0){
+          this.txtBreakfastChildrenModel = "";
+          this.txtBreakfastAdultModel = "";
+          this.regimes[0].lodging_breakfast_children = "";
+          this.regimes[0].lodging_breakfast_adult = "";
+        }
         return this.swBreakfastModel;
       },
     },
@@ -291,6 +305,12 @@ export default {
       },
       set(model) {
         this.swHalfPensionModel = model;
+        if(model == 0){
+          this.txtHalfPensionChildrenModel = "";
+          this.txtHalfPensionAdultModel = "";
+          this.regimes[0].half_pension_children = "";
+          this.regimes[0].half_pension_adult = "";
+        }
         return this.swHalfPensionModel;
       },
     },
@@ -320,6 +340,12 @@ export default {
       },
       set(model) {
         this.swFullPensionModel = model;
+        if(model == 0){
+          this.txtFullPensionChildrenModel = "";
+          this.txtFullPensionAdultModel = "";
+          this.regimes[0].full_pension_children = "";
+          this.regimes[0].full_pension_adult = "";
+        }
         return this.swFullPensionModel;
       },
     },
@@ -349,6 +375,12 @@ export default {
       },
       set(model) {
         this.swAllIncludedModel = model;
+        if(model == 0){
+          this.txtAllIncludedChildrenModel = "";
+          this.txtAllIncludedAdultModel = "";
+          this.regimes[0].all_included_children = "";
+          this.regimes[0].all_included_adult = "";
+        }
         return this.swAllIncludedModel;
       },
     },

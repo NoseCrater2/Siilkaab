@@ -12,7 +12,7 @@ const routes = [
     {
         path: "/hotels",
         component: () => import("./views/Hotels/Hotels"),
-        name: "Hotels"
+        name: "Hotels",
     },
     {
         path: "/hotel/:id",

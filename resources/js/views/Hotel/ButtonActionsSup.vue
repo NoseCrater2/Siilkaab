@@ -12,11 +12,11 @@
           >
             <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
           </v-btn>
-          <v-btn depressed small color="grey" class="white--text mr-3">
+          <v-btn depressed small color="grey" class="white--text mr-3" @click="saveChanges('saveAndClose')">
             <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y
             cerrar
           </v-btn>
-          <v-btn depressed small color="red" class="white--text mr-3">
+          <v-btn depressed small color="red" class="white--text mr-3" @click="close()">
             <v-icon left dark>mdi-close-circle</v-icon>Cerrar
           </v-btn>
         </v-col>
@@ -82,6 +82,7 @@ export default {
         router.push({ name: "Hotel", params: { id: this.idHotel } });
         //Setea todo a nul para antes de hacer el cambio de pestaña de hotel
         this.setReinicialized();
+        this.setReinicializedErrorsStatus();
         //Ejecuta el metodo de carga del hotel
         this.chargeDataHotel();
         return this.idHotel;
@@ -110,22 +111,21 @@ export default {
       "putEditSchedules",
     ]),
     ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus"]),
-    saveChanges() {
+    close(){
+      this.setReinicialized();
       this.setReinicializedErrorsStatus();
-      this.postEditHotel(this.hotel);
-      ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
-      // this.putEditConfiguration(this.configuration);
-      // this.putEditContacts(this.contacts);
-      // this.putEditConditions(this.conditions);
-      this.putEditRegimes({
-        newRegimes: this.regimes,
-        currentHotelId: this.hotel.id,
-        currentRegimes: this.hotel.idRegime,
-      });
-      // this.putEditAditionalInfo(this.aditionalInfo);
-      // this.putEditRestaurants(this.restaurants).then(() => {
-      //   this.putEditSchedules(this.schedules);
-      // });
+      router.replace({ path: '/hotels' });
+    },
+    saveChanges(close = "save") {
+      if(close == "save"){
+        this.executeSaveOnAPI();
+      }
+      if(close == "saveAndClose"){
+        this.executeSaveOnAPI();
+        this.setReinicialized();
+        this.setReinicializedErrorsStatus();
+        router.replace({ path: '/hotels' });
+      }
     },
     chargeDataHotel() {
       if (this.$route.params.id) {
@@ -153,6 +153,23 @@ export default {
         });
       }
     },
+    //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
+    executeSaveOnAPI(){
+        this.postEditHotel(this.hotel);
+        ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+        // this.putEditConfiguration(this.configuration);
+        // this.putEditContacts(this.contacts);
+        // this.putEditConditions(this.conditions);
+        // this.putEditRegimes({
+        //   newRegimes: this.regimes,
+        //   currentHotelId: this.hotel.id,
+        //   currentRegimes: this.hotel.idRegime,
+        // });
+        // this.putEditAditionalInfo(this.aditionalInfo);
+        // this.putEditRestaurants(this.restaurants).then(() => {
+        //   this.putEditSchedules(this.schedules);
+        // });
+    }
   },
   props: {
     title: String,
