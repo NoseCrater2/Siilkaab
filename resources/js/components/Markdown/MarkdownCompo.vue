@@ -36,7 +36,14 @@ export default {
   created() {
     //Indicamos si debe de poner el texto largo del hotel o el texto de cancelacion
     if (this.containerType === "Information") {
-      this.content = this.hotel.large_text;
+      if(this.hotel.large_text != null){
+        this.content = this.hotel.large_text;
+      }
+      else{
+        this.hotel.large_text = "";
+        this.content = this.hotel.large_text;
+      }
+      
     }
     if (this.containerType === "Conditions") {
       this.content = this.conditions.cancelation_text;

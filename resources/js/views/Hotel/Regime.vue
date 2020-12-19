@@ -175,46 +175,11 @@ export default {
       countWhile--;
     }
     if (this.regimes[0] != null) {
-      this.swOnlyRoomModel = this.regimes[0].only_room;
-      if (this.regimes[0].priority != null) {
-        if (this.regimes[0].priority == "normal") {
-          this.ddwnPriorityModel = "Normal";
-        }
-        if (this.regimes[0].priority == "medium") {
-          this.ddwnPriorityModel = "Media";
-        }
-        if (this.regimes[0].priority == "high") {
-          this.ddwnPriorityModel = "Alta";
-        }
-      }
-      this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
-      this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
-      if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
-        if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
-          this.swBreakfastModel = 1;
-        }
-      }
-      this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
-      this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
-      if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
-        if (this.txtHalfPensionAdultModel !==0 || this.txtHalfPensionChildrenModel !== 0) {
-          this.swHalfPensionModel = 1;
-        }
-      }
-      this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
-      this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
-      if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
-        if (this.txtFullPensionAdultModel !== 0 || this.txtFullPensionChildrenModel !== 0) {
-          this.swFullPensionModel = 1;
-        }
-      }
-      this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
-      this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
-      if (this.txtAllIncludedAdultModel !==null || this.txtAllIncludedChildrenModel !== null) {
-        if (this.txtAllIncludedAdultModel !==0 || this.txtAllIncludedChildrenModel !== 0) {
-          this.swAllIncludedModel = 1;
-        }
-      }
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    }
+    else{
+      this.fillModel();
+      console.log("UNDEFINED", this.regimes)
     }
   },
   data() {
@@ -491,6 +456,74 @@ export default {
         )
       );
     },
+    //Metodo para llenar la vista con los datos
+    fillModel(){
+      //Con el if principal verifica si hay al menos un regimen o si es un nuevo registro
+      if(typeof(this.regimes[0]) != 'undefined'){
+        this.swOnlyRoomModel = this.regimes[0].only_room;
+        if (this.regimes[0].priority != null) {
+          if (this.regimes[0].priority == "normal") {
+            this.ddwnPriorityModel = "Normal";
+          }
+          if (this.regimes[0].priority == "medium") {
+            this.ddwnPriorityModel = "Media";
+          }
+          if (this.regimes[0].priority == "high") {
+            this.ddwnPriorityModel = "Alta";
+          }
+        }
+        this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
+        this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
+        if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
+          if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
+            this.swBreakfastModel = 1;
+          }
+        }
+        this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
+        this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
+        if (this.txtHalfPensionAdultModel != null || this.txtHalfPensionChildrenModel != null) {
+          if (this.txtHalfPensionAdultModel !=0 || this.txtHalfPensionChildrenModel != 0) {
+            this.swHalfPensionModel = 1;
+          }
+        }
+        this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
+        this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
+        if (this.txtFullPensionAdultModel != null || this.txtFullPensionChildrenModel != null) {
+          if (this.txtFullPensionAdultModel != 0 || this.txtFullPensionChildrenModel != 0) {
+            this.swFullPensionModel = 1;
+          }
+        }
+        this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
+        this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
+        if (this.txtAllIncludedAdultModel !=null || this.txtAllIncludedChildrenModel != null) {
+          if (this.txtAllIncludedAdultModel !=0 || this.txtAllIncludedChildrenModel != 0) {
+            this.swAllIncludedModel = 1;
+          }
+        }
+      }
+      else{
+        this.regimes[0] = {
+          id: "firstRegister",
+          priority: "normal",
+          only_room: 0,
+          lodging_breakfast_children: "",
+          lodging_breakfast_adult: "",
+          half_pension_children: "",
+          half_pension_adult: "",
+          full_pension_children: "",
+          full_pension_adult: "",
+          all_included_children: "",
+          all_included_adult: "",
+          hotel_id: null
+        }
+        this.ddwnPriorityModel = "Normal";
+        this.swOnlyRoomModel = this.regimes[0].only_room;
+        this.swBreakfastModel = 0;
+        this.swHalfPensionModel = 0;
+        this.swFullPensionModel = 0;
+        this.swAllIncludedModel = 0;
+      }
+    }
   },
 };
 </script>

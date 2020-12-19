@@ -125,35 +125,12 @@ export default {
   name: "Information",
   created() {
     if (this.hotel.id !== null) {
-      this.titleModel = this.hotel.title;
-      this.urlModel = this.hotel.url;
-      this.referenceCModel = this.hotel.reference_code;
-      this.numRoomsModel = this.hotel.num_rooms;
-      this.numFloorsModel = this.hotel.num_floors;
-      this.shortTModel = this.hotel.short_text;
-      if(this.hotel.image != null || this.hotel.image != ""){
-        if(typeof(this.hotel.image) == 'object'){
-          this.currentImage = this.hotel.image.temporalURL
-        }
-        else if(this.hotel.image.includes("jpeg") == true){
-          this.currentImage = "/storage/img/" + this.hotel.image;
-        }
-      }
-      else{
-        //console.log("noImage")
-      }
-      
-      if (this.hotel.type != null) {
-        if (this.hotel.type == "bungalow") {
-          this.ddwnTypeModel = "Bungalow";
-        }
-        if (this.hotel.type == "cabana") {
-          this.ddwnTypeModel = "Cabaña";
-        }
-        if (this.hotel.type == "build") {
-          this.ddwnTypeModel = "Edificio";
-        }
-      }
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+      console.log(this.hotel);
+    }
+    else{
+      this.fillModel();
+      console.log(this.hotel);
     }
   },
   mounted() {},
@@ -245,6 +222,77 @@ export default {
       console.log("this.urlTemporalSrcImage", this.urlTemporal)
       console.log("this.currentImageSrcImage", this.currentImage)
       return localSrcImage;
+    },
+    //Metodo para llenar la vista con los datos
+    fillModel(){
+      if(this.hotel.title != null){
+        this.titleModel = this.hotel.title;
+      }
+      else{
+        this.hotel.title = "";
+        this.titleModel = this.hotel.title;
+      }
+      if(this.hotel.url != null){
+        this.urlModel = this.hotel.url;
+      }
+      else{
+        this.hotel.url = "";
+        this.urlModel = this.hotel.url;
+      }
+      if(this.hotel.reference_code != null){
+        this.referenceCModel = this.hotel.reference_code;
+      }
+      else{
+        this.hotel.reference_code = "";
+        this.referenceCModel = this.hotel.reference_code;
+      }
+      if(this.hotel.num_rooms != null){
+        this.numRoomsModel = this.hotel.num_rooms;
+      }
+      else{
+        this.hotel.num_rooms = "";
+        this.numRoomsModel = this.hotel.num_rooms;
+      }
+      if(this.hotel.num_floors != null){
+        this.numFloorsModel = this.hotel.num_floors;
+      }
+      else{
+        this.hotel.num_floors = "";
+        this.numFloorsModel = this.hotel.num_floors;
+      }
+      if(this.hotel.short_text != null){
+        this.shortTModel = this.hotel.short_text;
+      }
+      else{
+        this.hotel.short_text = "";
+        this.shortTModel = this.hotel.short_text;
+      }
+      if(this.hotel.image != null || this.hotel.image != ""){
+        if(typeof(this.hotel.image) == 'object'){
+          this.currentImage = this.hotel.image.temporalURL
+        }
+        else if(this.hotel.image.includes("jpeg") == true){
+          this.currentImage = "/storage/img/" + this.hotel.image;
+        }
+      }
+      else{
+        //console.log("noImage")
+      }
+      if (this.hotel.type != null) {
+        if (this.hotel.type == "bungalow") {
+          this.ddwnTypeModel = "Bungalow";
+        }
+        if (this.hotel.type == "cabana") {
+          this.ddwnTypeModel = "Cabaña";
+        }
+        if (this.hotel.type == "build") {
+          this.ddwnTypeModel = "Edificio";
+        }
+      }
+      else{
+        this.hotel.type = "build";
+        this.ddwnTypeModel = "Edificio";
+      }
     }
   },
   computed: {

@@ -105,9 +105,12 @@ export default {
       "putEditConfiguration",
       "postEditConfiguration",
       "putEditContacts",
+      "postEditContacts",
       "putEditConditions",
+      "postEditConditions",
       "putEditRegimes",
       "putEditAditionalInfo",
+      "postEditAditionalInfo",
       "putEditRestaurants",
       "putEditSchedules",
     ]),
@@ -156,7 +159,14 @@ export default {
     },
     //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
     executeSaveOnAPI(){
-        this.postEditHotel(this.hotel);
+        //DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+        //CODIGO PARA GUARDAR INFORMACION DEL HOTEL INICIA
+        //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
+        if(this.hotel.title != null){
+            //metodo post
+            this.postEditHotel(this.hotel);
+        }
+        //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
         //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
         if(this.configuration.timezone != null){
           if(this.configuration.hotel_id == null){
@@ -171,15 +181,57 @@ export default {
           }
         }
         //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
-        ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
-        this.putEditContacts(this.contacts);
-        this.putEditConditions(this.conditions);
+        //CODIGO PARA GUARDAR CONTACTOS INICIA
+        if(this.contacts.address != null){
+          if(this.contacts.hotel_id == null){
+            //metodo post
+            this.contacts.hotel_id = this.idHotel;
+            console.log("BTN", this.contacts);
+            this.postEditContacts(this.contacts);
+          }
+          else{
+            //metodo put
+            this.putEditContacts(this.contacts);
+          }
+        }
+        //CODIGO PARA GUARDAR CONTACTOS TERMINA
+        //CODIGO PARA GUARDAR CONDICIONES INICIA
+        if(this.conditions.adults != null){
+          if(this.conditions.hotel_id == null){
+            //metodo post
+            this.conditions.hotel_id = this.idHotel;
+            console.log("BTN", this.conditions);
+            this.postEditConditions(this.conditions);
+          }
+          else{
+            //metodo put
+            this.putEditConditions(this.conditions);
+          }
+        }
+        //CODIGO PARA GUARDAR CONDICIONES TERMINA
+        //CODIGO PARA GUARDAR REGIMENES INICIA
+        console.log(this.regimes)
+        console.log("this.hotel.idRegime", this.hotel.idRegime)
         this.putEditRegimes({
           newRegimes: this.regimes,
-          currentHotelId: this.hotel.id,
+          currentHotelId: this.idHotel,
           currentRegimes: this.hotel.idRegime,
         });
-        this.putEditAditionalInfo(this.aditionalInfo);
+        //CODIGO PARA GUARDAR REGIMENES TERMINA
+        //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
+        if(this.aditionalInfo.spa != null){
+          if(this.aditionalInfo.hotel_id == null){
+            //metodo post
+            this.aditionalInfo.hotel_id = this.idHotel;
+            console.log("BTN", this.aditionalInfo);
+            this.postEditAditionalInfo(this.aditionalInfo);
+          }
+          else{
+            //metodo put
+            this.putEditAditionalInfo(this.aditionalInfo);
+          }
+        }
+        //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
         // this.putEditRestaurants(this.restaurants).then(() => {
         //   this.putEditSchedules(this.schedules);
         // });

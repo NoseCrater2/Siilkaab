@@ -1421,7 +1421,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   created: function created() {
     //Indicamos si debe de poner el texto largo del hotel o el texto de cancelacion
     if (this.containerType === "Information") {
-      this.content = this.hotel.large_text;
+      if (this.hotel.large_text != null) {
+        this.content = this.hotel.large_text;
+      } else {
+        this.hotel.large_text = "";
+        this.content = this.hotel.large_text;
+      }
     }
 
     if (this.containerType === "Conditions") {
@@ -2371,119 +2376,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: "AditionalInfo",
   created: function created() {
     if (this.hotel.idAmenity !== null) {
-      if (this.aditionalInfo.spa != null) {
-        if (this.aditionalInfo.spa == "free") {
-          this.ddwnSpaModel = "Gratis";
-        }
+      console.log("CON ID", this.aditionalInfo);
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
 
-        if (this.aditionalInfo.spa == "paid") {
-          this.ddwnSpaModel = "De Pago";
-        }
-      }
-
-      if (this.aditionalInfo.water_park != null) {
-        if (this.aditionalInfo.water_park == "free") {
-          this.ddwnAcuaticModel = "Gratis";
-        }
-
-        if (this.aditionalInfo.water_park == "paid") {
-          this.ddwnAcuaticModel = "De Pago";
-        }
-      }
-
-      if (this.aditionalInfo.beach != null) {
-        if (this.aditionalInfo.beach == "private") {
-          this.ddwnBeachModel = "Privada";
-        }
-
-        if (this.aditionalInfo.beach == "in front") {
-          this.ddwnBeachModel = "En frente";
-        }
-      }
-
-      if (this.aditionalInfo.romantic_dinners != null) {
-        if (this.aditionalInfo.romantic_dinners == "free") {
-          this.ddwnRomanticDModel = "Gratis";
-        }
-
-        if (this.aditionalInfo.romantic_dinners == "paid") {
-          this.ddwnRomanticDModel = "De Pago";
-        }
-      }
-
-      if (this.aditionalInfo.touristic_tour != null) {
-        if (this.aditionalInfo.touristic_tour == "free") {
-          this.ddwnTouristicTModel = "Gratis";
-        }
-
-        if (this.aditionalInfo.touristic_tour == "paid") {
-          this.ddwnTouristicTModel = "De Pago";
-        }
-      }
-
-      if (this.aditionalInfo.daily_housekipping != null) {
-        if (this.aditionalInfo.daily_housekipping == "free") {
-          this.ddwnDailyHModel = "Gratis";
-        }
-
-        if (this.aditionalInfo.daily_housekipping == "paid") {
-          this.ddwnDailyHModel = "De Pago";
-        }
-      }
-
-      this.swAirConditionedModel = this.aditionalInfo.air_conditioned;
-      this.swNoSmokeRoomsModel = this.aditionalInfo.no_smoke_rooms;
-      this.swAirTransferServiceModel = this.aditionalInfo.air_transfer_service;
-      this.swAirCollectServiceModel = this.aditionalInfo.air_collect_service;
-      this.swRecection_24hModel = this.aditionalInfo.recection_24h;
-      this.swGymModel = this.aditionalInfo.gym;
-      this.swRoomServiceModel = this.aditionalInfo.room_service;
-      this.swTerraceModel = this.aditionalInfo.terrace;
-      this.swBarModel = this.aditionalInfo.bar;
-      this.swGardenModel = this.aditionalInfo.garden;
-      this.swRecreationalActivitiesModel = this.aditionalInfo.recreational_activities;
-      this.swGuardedParkingModel = this.aditionalInfo.guarded_parking;
-      this.swStreetParkingModel = this.aditionalInfo.street_parking;
-      this.swGarageParkingModel = this.aditionalInfo.garage_parking;
-      this.swSpecialParkingModel = this.aditionalInfo.special_parking;
-      this.swReg_inout_privateModel = this.aditionalInfo.reg_inout_private;
-      this.swReg_inout_expressModel = this.aditionalInfo.reg_inout_express;
-      this.swTouristicInfoModel = this.aditionalInfo.touristic_info;
-      this.swParkingServiceModel = this.aditionalInfo.parking_service;
-      this.swCurrencyChangeModel = this.aditionalInfo.currency_change;
-      this.swOutdoorFurnitureModel = this.aditionalInfo.outdoor_furniture;
-      this.swTerraceSolariumModel = this.aditionalInfo.terrace_solarium;
-      this.swSharedDinnerModel = this.aditionalInfo.shared_dinner;
-      this.swSharedSalonModel = this.aditionalInfo.shared_salon;
-      this.swGameZoneModel = this.aditionalInfo.game_zone;
-      this.swLibraryModel = this.aditionalInfo.library;
-      this.swLaundryServiceModel = this.aditionalInfo.laundry_service;
-      this.swIronServiceModel = this.aditionalInfo.iron_service;
-      this.swMeetingRoomModel = this.aditionalInfo.meeting_room;
-      this.swMeetingCenterModel = this.aditionalInfo.meeting_center;
-      this.swFaxPhotocopierModel = this.aditionalInfo.fax_photocopier;
-      this.swCoffeeBreakModel = this.aditionalInfo.coffee_break;
-      this.swSouvenirsStoreModel = this.aditionalInfo.souvenirs_store;
-      this.swInclusiveServiceModel = this.aditionalInfo.inclusive_service;
-      this.swElevatorModel = this.aditionalInfo.elevator;
-      this.swSmokingZoneModel = this.aditionalInfo.smoking_zone;
-      this.swNoSmokingModel = this.aditionalInfo.no_smoking;
-      this.swPetFriendlyModel = this.aditionalInfo.pet_friendly;
-      this.swPetHouseModel = this.aditionalInfo.pet_house;
-      this.swPetBasketModel = this.aditionalInfo.pet_basket;
-      this.swOnlyAdultsModel = this.aditionalInfo.only_adults;
-      this.swSanitizedRoomsModel = this.aditionalInfo.sanitized_rooms;
-      this.swBridalSuiteModel = this.aditionalInfo.bridal_suite;
-      this.swVipServiceModel = this.aditionalInfo.vip_service;
-      this.swCalefactionModel = this.aditionalInfo.calefaction;
-      this.swKeepBagsModel = this.aditionalInfo.keep_bags;
-      this.swSecurity24hModel = this.aditionalInfo.security_24h;
-      this.swSecurityAlarmModel = this.aditionalInfo.security_alarm;
-      this.swSmookeDetectorsModel = this.aditionalInfo.smoke_detectors;
-      this.swInSecurityCamsModel = this.aditionalInfo.in_security_cams;
-      this.swOutSecurityCamsModel = this.aditionalInfo.out_security_cams;
-      this.swFireExtinguishersModel = this.aditionalInfo.fire_extinguishers;
-      this.swSafeDepositBoxModel = this.aditionalInfo.safe_deposit_box;
+      console.log("CON ID", this.aditionalInfo);
+    } else {
+      console.log("SIN ID", this.aditionalInfo);
+      this.fillModel();
+      console.log("SIN ID", this.aditionalInfo);
     }
   },
   data: function data() {
@@ -3202,6 +3102,458 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
+  methods: {
+    fillModel: function fillModel() {
+      if (this.aditionalInfo.spa != null) {
+        if (this.aditionalInfo.spa == "free") {
+          this.ddwnSpaModel = "Gratis";
+        }
+
+        if (this.aditionalInfo.spa == "paid") {
+          this.ddwnSpaModel = "De Pago";
+        }
+      } else {
+        this.aditionalInfo.spa = "free";
+        this.ddwnSpaModel = "Gratis";
+      }
+
+      if (this.aditionalInfo.water_park != null) {
+        if (this.aditionalInfo.water_park == "free") {
+          this.ddwnAcuaticModel = "Gratis";
+        }
+
+        if (this.aditionalInfo.water_park == "paid") {
+          this.ddwnAcuaticModel = "De Pago";
+        }
+      } else {
+        this.aditionalInfo.water_park = "free";
+        this.ddwnAcuaticModel = "Gratis";
+      }
+
+      if (this.aditionalInfo.beach != null) {
+        if (this.aditionalInfo.beach == "private") {
+          this.ddwnBeachModel = "Privada";
+        }
+
+        if (this.aditionalInfo.beach == "in front") {
+          this.ddwnBeachModel = "En frente";
+        }
+      } else {
+        this.aditionalInfo.beach = "private";
+        this.ddwnBeachModel = "Privada";
+      }
+
+      if (this.aditionalInfo.romantic_dinners != null) {
+        if (this.aditionalInfo.romantic_dinners == "free") {
+          this.ddwnRomanticDModel = "Gratis";
+        }
+
+        if (this.aditionalInfo.romantic_dinners == "paid") {
+          this.ddwnRomanticDModel = "De Pago";
+        }
+      } else {
+        this.aditionalInfo.romantic_dinners = "free";
+        this.ddwnRomanticDModel = "Gratis";
+      }
+
+      if (this.aditionalInfo.touristic_tour != null) {
+        if (this.aditionalInfo.touristic_tour == "free") {
+          this.ddwnTouristicTModel = "Gratis";
+        }
+
+        if (this.aditionalInfo.touristic_tour == "paid") {
+          this.ddwnTouristicTModel = "De Pago";
+        }
+      } else {
+        this.aditionalInfo.touristic_tour = "free";
+        this.ddwnTouristicTModel = "Gratis";
+      }
+
+      if (this.aditionalInfo.daily_housekipping != null) {
+        if (this.aditionalInfo.daily_housekipping == "free") {
+          this.ddwnDailyHModel = "Gratis";
+        }
+
+        if (this.aditionalInfo.daily_housekipping == "paid") {
+          this.ddwnDailyHModel = "De Pago";
+        }
+      } else {
+        this.aditionalInfo.daily_housekipping = "free";
+        this.ddwnDailyHModel = "Gratis";
+      }
+
+      if (this.aditionalInfo.air_conditioned != null) {
+        this.swAirConditionedModel = this.aditionalInfo.air_conditioned;
+      } else {
+        this.aditionalInfo.air_conditioned = 0;
+        this.swAirConditionedModel = this.aditionalInfo.air_conditioned;
+      }
+
+      if (this.aditionalInfo.no_smoke_rooms != null) {
+        this.swNoSmokeRoomsModel = this.aditionalInfo.no_smoke_rooms;
+      } else {
+        this.aditionalInfo.no_smoke_rooms = 0;
+        this.swNoSmokeRoomsModel = this.aditionalInfo.no_smoke_rooms;
+      }
+
+      if (this.aditionalInfo.air_transfer_service != null) {
+        this.swAirTransferServiceModel = this.aditionalInfo.air_transfer_service;
+      } else {
+        this.aditionalInfo.air_transfer_service = 0;
+        this.swAirTransferServiceModel = this.aditionalInfo.air_transfer_service;
+      }
+
+      if (this.aditionalInfo.air_collect_service != null) {
+        this.swAirCollectServiceModel = this.aditionalInfo.air_collect_service;
+      } else {
+        this.aditionalInfo.air_collect_service = 0;
+        this.swAirCollectServiceModel = this.aditionalInfo.air_collect_service;
+      }
+
+      if (this.aditionalInfo.recection_24h != null) {
+        this.swRecection_24hModel = this.aditionalInfo.recection_24h;
+      } else {
+        this.aditionalInfo.recection_24h = 0;
+        this.swRecection_24hModel = this.aditionalInfo.recection_24h;
+      }
+
+      if (this.aditionalInfo.gym != null) {
+        this.swGymModel = this.aditionalInfo.gym;
+      } else {
+        this.aditionalInfo.gym = 0;
+        this.swGymModel = this.aditionalInfo.gym;
+      }
+
+      if (this.aditionalInfo.room_service != null) {
+        this.swRoomServiceModel = this.aditionalInfo.room_service;
+      } else {
+        this.aditionalInfo.room_service = 0;
+        this.swRoomServiceModel = this.aditionalInfo.room_service;
+      }
+
+      if (this.aditionalInfo.terrace != null) {
+        this.swTerraceModel = this.aditionalInfo.terrace;
+      } else {
+        this.aditionalInfo.terrace = 0;
+        this.swTerraceModel = this.aditionalInfo.terrace;
+      }
+
+      if (this.aditionalInfo.bar != null) {
+        this.swBarModel = this.aditionalInfo.bar;
+      } else {
+        this.aditionalInfo.bar = 0;
+        this.swBarModel = this.aditionalInfo.bar;
+      }
+
+      if (this.aditionalInfo.garden != null) {
+        this.swGardenModel = this.aditionalInfo.garden;
+      } else {
+        this.aditionalInfo.garden = 0;
+        this.swGardenModel = this.aditionalInfo.garden;
+      }
+
+      if (this.aditionalInfo.recreational_activities != null) {
+        this.swRecreationalActivitiesModel = this.aditionalInfo.recreational_activities;
+      } else {
+        this.aditionalInfo.recreational_activities = 0;
+        this.swRecreationalActivitiesModel = this.aditionalInfo.recreational_activities;
+      }
+
+      if (this.aditionalInfo.guarded_parking != null) {
+        this.swGuardedParkingModel = this.aditionalInfo.guarded_parking;
+      } else {
+        this.aditionalInfo.guarded_parking = 0;
+        this.swGuardedParkingModel = this.aditionalInfo.guarded_parking;
+      }
+
+      if (this.aditionalInfo.street_parking != null) {
+        this.swStreetParkingModel = this.aditionalInfo.street_parking;
+      } else {
+        this.aditionalInfo.street_parking = 0;
+        this.swStreetParkingModel = this.aditionalInfo.street_parking;
+      }
+
+      if (this.aditionalInfo.garage_parking != null) {
+        this.swGarageParkingModel = this.aditionalInfo.garage_parking;
+      } else {
+        this.aditionalInfo.garage_parking = 0;
+        this.swGarageParkingModel = this.aditionalInfo.garage_parking;
+      }
+
+      if (this.aditionalInfo.special_parking != null) {
+        this.swSpecialParkingModel = this.aditionalInfo.special_parking;
+      } else {
+        this.aditionalInfo.special_parking = 0;
+        this.swSpecialParkingModel = this.aditionalInfo.special_parking;
+      }
+
+      if (this.aditionalInfo.reg_inout_private != null) {
+        this.swReg_inout_privateModel = this.aditionalInfo.reg_inout_private;
+      } else {
+        this.aditionalInfo.reg_inout_private = 0;
+        this.swReg_inout_privateModel = this.aditionalInfo.reg_inout_private;
+      }
+
+      if (this.aditionalInfo.reg_inout_express != null) {
+        this.swReg_inout_expressModel = this.aditionalInfo.reg_inout_express;
+      } else {
+        this.aditionalInfo.reg_inout_express = 0;
+        this.swReg_inout_expressModel = this.aditionalInfo.reg_inout_express;
+      }
+
+      if (this.aditionalInfo.touristic_info != null) {
+        this.swTouristicInfoModel = this.aditionalInfo.touristic_info;
+      } else {
+        this.aditionalInfo.touristic_info = 0;
+        this.swTouristicInfoModel = this.aditionalInfo.touristic_info;
+      }
+
+      if (this.aditionalInfo.parking_service != null) {
+        this.swParkingServiceModel = this.aditionalInfo.parking_service;
+      } else {
+        this.aditionalInfo.parking_service = 0;
+        this.swParkingServiceModel = this.aditionalInfo.parking_service;
+      }
+
+      if (this.aditionalInfo.currency_change != null) {
+        this.swCurrencyChangeModel = this.aditionalInfo.currency_change;
+      } else {
+        this.aditionalInfo.currency_change = 0;
+        this.swCurrencyChangeModel = this.aditionalInfo.currency_change;
+      }
+
+      if (this.aditionalInfo.outdoor_furniture != null) {
+        this.swOutdoorFurnitureModel = this.aditionalInfo.outdoor_furniture;
+      } else {
+        this.aditionalInfo.outdoor_furniture = 0;
+        this.swOutdoorFurnitureModel = this.aditionalInfo.outdoor_furniture;
+      }
+
+      if (this.aditionalInfo.terrace_solarium != null) {
+        this.swTerraceSolariumModel = this.aditionalInfo.terrace_solarium;
+      } else {
+        this.aditionalInfo.terrace_solarium = 0;
+        this.swTerraceSolariumModel = this.aditionalInfo.terrace_solarium;
+      }
+
+      if (this.aditionalInfo.shared_dinner != null) {
+        this.swSharedDinnerModel = this.aditionalInfo.shared_dinner;
+      } else {
+        this.aditionalInfo.shared_dinner = 0;
+        this.swSharedDinnerModel = this.aditionalInfo.shared_dinner;
+      }
+
+      if (this.aditionalInfo.shared_salon != null) {
+        this.swSharedSalonModel = this.aditionalInfo.shared_salon;
+      } else {
+        this.aditionalInfo.shared_salon = 0;
+        this.swSharedSalonModel = this.aditionalInfo.shared_salon;
+      }
+
+      if (this.aditionalInfo.game_zone != null) {
+        this.swGameZoneModel = this.aditionalInfo.game_zone;
+      } else {
+        this.aditionalInfo.game_zone = 0;
+        this.swGameZoneModel = this.aditionalInfo.game_zone;
+      }
+
+      if (this.aditionalInfo.library != null) {
+        this.swLibraryModel = this.aditionalInfo.library;
+      } else {
+        this.aditionalInfo.library = 0;
+        this.swLibraryModel = this.aditionalInfo.library;
+      }
+
+      if (this.aditionalInfo.laundry_service != null) {
+        this.swLaundryServiceModel = this.aditionalInfo.laundry_service;
+      } else {
+        this.aditionalInfo.laundry_service = 0;
+        this.swLaundryServiceModel = this.aditionalInfo.laundry_service;
+      }
+
+      if (this.aditionalInfo.iron_service != null) {
+        this.swIronServiceModel = this.aditionalInfo.iron_service;
+      } else {
+        this.aditionalInfo.iron_service = 0;
+        this.swIronServiceModel = this.aditionalInfo.iron_service;
+      }
+
+      if (this.aditionalInfo.meeting_room != null) {
+        this.swMeetingRoomModel = this.aditionalInfo.meeting_room;
+      } else {
+        this.aditionalInfo.meeting_room = 0;
+        this.swMeetingRoomModel = this.aditionalInfo.meeting_room;
+      }
+
+      if (this.aditionalInfo.meeting_center != null) {
+        this.swMeetingCenterModel = this.aditionalInfo.meeting_center;
+      } else {
+        this.aditionalInfo.meeting_center = 0;
+        this.swMeetingCenterModel = this.aditionalInfo.meeting_center;
+      }
+
+      if (this.aditionalInfo.fax_photocopier != null) {
+        this.swFaxPhotocopierModel = this.aditionalInfo.fax_photocopier;
+      } else {
+        this.aditionalInfo.fax_photocopier = 0;
+        this.swFaxPhotocopierModel = this.aditionalInfo.fax_photocopier;
+      }
+
+      if (this.aditionalInfo.coffee_break != null) {
+        this.swCoffeeBreakModel = this.aditionalInfo.coffee_break;
+      } else {
+        this.aditionalInfo.coffee_break = 0;
+        this.swCoffeeBreakModel = this.aditionalInfo.coffee_break;
+      }
+
+      if (this.aditionalInfo.souvenirs_store != null) {
+        this.swSouvenirsStoreModel = this.aditionalInfo.souvenirs_store;
+      } else {
+        this.aditionalInfo.souvenirs_store = 0;
+        this.swSouvenirsStoreModel = this.aditionalInfo.souvenirs_store;
+      }
+
+      if (this.aditionalInfo.inclusive_service != null) {
+        this.swInclusiveServiceModel = this.aditionalInfo.inclusive_service;
+      } else {
+        this.aditionalInfo.inclusive_service = 0;
+        this.swInclusiveServiceModel = this.aditionalInfo.inclusive_service;
+      }
+
+      if (this.aditionalInfo.elevator != null) {
+        this.swElevatorModel = this.aditionalInfo.elevator;
+      } else {
+        this.aditionalInfo.elevator = 0;
+        this.swElevatorModel = this.aditionalInfo.elevator;
+      }
+
+      if (this.aditionalInfo.smoking_zone != null) {
+        this.swSmokingZoneModel = this.aditionalInfo.smoking_zone;
+      } else {
+        this.aditionalInfo.smoking_zone = 0;
+        this.swSmokingZoneModel = this.aditionalInfo.smoking_zone;
+      }
+
+      if (this.aditionalInfo.no_smoking != null) {
+        this.swNoSmokingModel = this.aditionalInfo.no_smoking;
+      } else {
+        this.aditionalInfo.no_smoking = 0;
+        this.swNoSmokingModel = this.aditionalInfo.no_smoking;
+      }
+
+      if (this.aditionalInfo.pet_friendly != null) {
+        this.swPetFriendlyModel = this.aditionalInfo.pet_friendly;
+      } else {
+        this.aditionalInfo.pet_friendly = 0;
+        this.swPetFriendlyModel = this.aditionalInfo.pet_friendly;
+      }
+
+      if (this.aditionalInfo.pet_house != null) {
+        this.swPetHouseModel = this.aditionalInfo.pet_house;
+      } else {
+        this.aditionalInfo.pet_house = 0;
+        this.swPetHouseModel = this.aditionalInfo.pet_house;
+      }
+
+      if (this.aditionalInfo.pet_basket != null) {
+        this.swPetBasketModel = this.aditionalInfo.pet_basket;
+      } else {
+        this.aditionalInfo.pet_basket = 0;
+        this.swPetBasketModel = this.aditionalInfo.pet_basket;
+      }
+
+      if (this.aditionalInfo.only_adults != null) {
+        this.swOnlyAdultsModel = this.aditionalInfo.only_adults;
+      } else {
+        this.aditionalInfo.only_adults = 0;
+        this.swOnlyAdultsModel = this.aditionalInfo.only_adults;
+      }
+
+      if (this.aditionalInfo.sanitized_rooms != null) {
+        this.swSanitizedRoomsModel = this.aditionalInfo.sanitized_rooms;
+      } else {
+        this.aditionalInfo.sanitized_rooms = 0;
+        this.swSanitizedRoomsModel = this.aditionalInfo.sanitized_rooms;
+      }
+
+      if (this.aditionalInfo.bridal_suite != null) {
+        this.swBridalSuiteModel = this.aditionalInfo.bridal_suite;
+      } else {
+        this.aditionalInfo.bridal_suite = 0;
+        this.swBridalSuiteModel = this.aditionalInfo.bridal_suite;
+      }
+
+      if (this.aditionalInfo.vip_service != null) {
+        this.swVipServiceModel = this.aditionalInfo.vip_service;
+      } else {
+        this.aditionalInfo.vip_service = 0;
+        this.swVipServiceModel = this.aditionalInfo.vip_service;
+      }
+
+      if (this.aditionalInfo.calefaction != null) {
+        this.swCalefactionModel = this.aditionalInfo.calefaction;
+      } else {
+        this.aditionalInfo.calefaction = 0;
+        this.swCalefactionModel = this.aditionalInfo.calefaction;
+      }
+
+      if (this.aditionalInfo.keep_bags != null) {
+        this.swKeepBagsModel = this.aditionalInfo.keep_bags;
+      } else {
+        this.aditionalInfo.keep_bags = 0;
+        this.swKeepBagsModel = this.aditionalInfo.keep_bags;
+      }
+
+      if (this.aditionalInfo.security_24h != null) {
+        this.swSecurity24hModel = this.aditionalInfo.security_24h;
+      } else {
+        this.aditionalInfo.security_24h = 0;
+        this.swSecurity24hModel = this.aditionalInfo.security_24h;
+      }
+
+      if (this.aditionalInfo.security_alarm != null) {
+        this.swSecurityAlarmModel = this.aditionalInfo.security_alarm;
+      } else {
+        this.aditionalInfo.security_alarm = 0;
+        this.swSecurityAlarmModel = this.aditionalInfo.security_alarm;
+      }
+
+      if (this.aditionalInfo.smoke_detectors != null) {
+        this.swSmookeDetectorsModel = this.aditionalInfo.smoke_detectors;
+      } else {
+        this.aditionalInfo.smoke_detectors = 0;
+        this.swSmookeDetectorsModel = this.aditionalInfo.smoke_detectors;
+      }
+
+      if (this.aditionalInfo.in_security_cams != null) {
+        this.swInSecurityCamsModel = this.aditionalInfo.in_security_cams;
+      } else {
+        this.aditionalInfo.in_security_cams = 0;
+        this.swInSecurityCamsModel = this.aditionalInfo.in_security_cams;
+      }
+
+      if (this.aditionalInfo.out_security_cams != null) {
+        this.swOutSecurityCamsModel = this.aditionalInfo.out_security_cams;
+      } else {
+        this.aditionalInfo.out_security_cams = 0;
+        this.swOutSecurityCamsModel = this.aditionalInfo.out_security_cams;
+      }
+
+      if (this.aditionalInfo.fire_extinguishers != null) {
+        this.swFireExtinguishersModel = this.aditionalInfo.fire_extinguishers;
+      } else {
+        this.aditionalInfo.fire_extinguishers = 0;
+        this.swFireExtinguishersModel = this.aditionalInfo.fire_extinguishers;
+      }
+
+      if (this.aditionalInfo.safe_deposit_box != null) {
+        this.swSafeDepositBoxModel = this.aditionalInfo.safe_deposit_box;
+      } else {
+        this.aditionalInfo.safe_deposit_box = 0;
+        this.swSafeDepositBoxModel = this.aditionalInfo.safe_deposit_box;
+      }
+    }
+  },
   components: {
     CarrouselRestaurant: _components_Hotel_CarrouselRestaurant__WEBPACK_IMPORTED_MODULE_1__["default"],
     CarrouselPool: _components_Hotel_CarrouselPool__WEBPACK_IMPORTED_MODULE_2__["default"]
@@ -3346,7 +3698,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "postEditConfiguration", "putEditContacts", "putEditConditions", "putEditRegimes", "putEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus"])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "postEditConfiguration", "putEditContacts", "postEditContacts", "putEditConditions", "postEditConditions", "putEditRegimes", "putEditAditionalInfo", "postEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus"])), {}, {
     close: function close() {
       this.setReinicialized();
       this.setReinicializedErrorsStatus();
@@ -3409,7 +3761,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
     executeSaveOnAPI: function executeSaveOnAPI() {
-      this.postEditHotel(this.hotel); //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+      //DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+      //CODIGO PARA GUARDAR INFORMACION DEL HOTEL INICIA
+      //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
+      if (this.hotel.title != null) {
+        //metodo post
+        this.postEditHotel(this.hotel);
+      } //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
+      //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+
 
       if (this.configuration.timezone != null) {
         if (this.configuration.hotel_id == null) {
@@ -3422,19 +3782,61 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           this.putEditConfiguration(this.configuration);
         }
       } //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
-      ///DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+      //CODIGO PARA GUARDAR CONTACTOS INICIA
 
 
-      this.putEditContacts(this.contacts);
-      this.putEditConditions(this.conditions);
+      if (this.contacts.address != null) {
+        if (this.contacts.hotel_id == null) {
+          //metodo post
+          this.contacts.hotel_id = this.idHotel;
+          console.log("BTN", this.contacts);
+          this.postEditContacts(this.contacts);
+        } else {
+          //metodo put
+          this.putEditContacts(this.contacts);
+        }
+      } //CODIGO PARA GUARDAR CONTACTOS TERMINA
+      //CODIGO PARA GUARDAR CONDICIONES INICIA
+
+
+      if (this.conditions.adults != null) {
+        if (this.conditions.hotel_id == null) {
+          //metodo post
+          this.conditions.hotel_id = this.idHotel;
+          console.log("BTN", this.conditions);
+          this.postEditConditions(this.conditions);
+        } else {
+          //metodo put
+          this.putEditConditions(this.conditions);
+        }
+      } //CODIGO PARA GUARDAR CONDICIONES TERMINA
+      //CODIGO PARA GUARDAR REGIMENES INICIA
+
+
+      console.log(this.regimes);
+      console.log("this.hotel.idRegime", this.hotel.idRegime);
       this.putEditRegimes({
         newRegimes: this.regimes,
-        currentHotelId: this.hotel.id,
+        currentHotelId: this.idHotel,
         currentRegimes: this.hotel.idRegime
-      });
-      this.putEditAditionalInfo(this.aditionalInfo); // this.putEditRestaurants(this.restaurants).then(() => {
+      }); //CODIGO PARA GUARDAR REGIMENES TERMINA
+      //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
+
+      if (this.aditionalInfo.spa != null) {
+        if (this.aditionalInfo.hotel_id == null) {
+          //metodo post
+          this.aditionalInfo.hotel_id = this.idHotel;
+          console.log("BTN", this.aditionalInfo);
+          this.postEditAditionalInfo(this.aditionalInfo);
+        } else {
+          //metodo put
+          this.putEditAditionalInfo(this.aditionalInfo);
+        }
+      } //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
+      // this.putEditRestaurants(this.restaurants).then(() => {
       //   this.putEditSchedules(this.schedules);
       // });
+
     }
   }),
   props: {
@@ -3605,12 +4007,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: "Condition",
   created: function created() {
     if (this.hotel.idCondition !== null) {
-      this.adultsModel = this.conditions.adults;
-      this.childrenAgeModel = this.conditions.children_age;
-      this.adultsRegimenModel = this.conditions.adults_regimen;
-      this.adultsAgeModel = this.conditions.adults_age;
-      this.checkinTimeModel = this.conditions.checkin_time;
-      this.checkoutTimeModel = this.conditions.checkout_time;
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    } else {
+      this.fillModel();
+      console.log(this.conditions);
     }
   },
   data: function data() {
@@ -3689,7 +4089,56 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.conditions.checkin_time = this.checkinTimeModel;
       return this.checkinTimeModel;
     }
-  })
+  }),
+  methods: {
+    fillModel: function fillModel() {
+      if (this.conditions.adults != null) {
+        this.adultsModel = this.conditions.adults;
+      } else {
+        this.conditions.adults = 0;
+        this.adultsModel = this.conditions.adults;
+      }
+
+      if (this.conditions.children_age != null) {
+        this.childrenAgeModel = this.conditions.children_age;
+      } else {
+        this.conditions.children_age = "";
+        this.childrenAgeModel = this.conditions.children_age;
+      }
+
+      if (this.conditions.adults_regimen != null) {
+        this.adultsRegimenModel = this.conditions.adults_regimen;
+      } else {
+        this.conditions.adults_regimen = "";
+        this.adultsRegimenModel = this.conditions.adults_regimen;
+      }
+
+      if (this.conditions.adults_age != null) {
+        this.adultsAgeModel = this.conditions.adults_age;
+      } else {
+        this.conditions.adults_age = "";
+        this.adultsAgeModel = this.conditions.adults_age;
+      }
+
+      if (this.conditions.checkin_time != null) {
+        this.checkinTimeModel = this.conditions.checkin_time;
+      } else {
+        this.conditions.checkin_time = "";
+        this.checkinTimeModel = this.conditions.checkin_time;
+      }
+
+      if (this.conditions.checkout_time != null) {
+        this.checkoutTimeModel = this.conditions.checkout_time;
+      } else {
+        this.conditions.checkout_time = "";
+        this.checkoutTimeModel = this.conditions.checkout_time;
+      }
+
+      if (this.conditions.cancelation_text == null) {
+        this.conditions.cancelation_text = "";
+      }
+    }
+  }
 });
 
 /***/ }),
@@ -4171,16 +4620,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.getCountries().then(function () {});
 
     if (this.hotel.idContact !== null) {
-      this.urlModel = this.contacts.url;
-      this.emailModel = this.contacts.email;
-      this.phoneModel = this.contacts.phone;
-      this.addressModel = this.contacts.address;
-      this.zipCodeModel = this.contacts.zipcode;
-      this.cityModel = this.contacts.city;
-      this.stateModel = this.contacts.state;
-      this.countryIDModel = this.contacts.country_id;
-      this.legalRepModel = this.contacts.legal_rep;
-      this.managerNameModel = this.contacts.manager_name;
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    } else {
+      this.fillModel();
+      console.log(this.contacts);
     }
   },
   data: function data() {
@@ -4312,7 +4755,80 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
-  methods: _objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getCountries"]))
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getCountries"])), {}, {
+    //Metodo para llenar la vista con los datos
+    fillModel: function fillModel() {
+      if (this.contacts.url != null) {
+        this.urlModel = this.contacts.url;
+      } else {
+        this.contacts.url = "";
+        this.urlModel = this.contacts.url;
+      }
+
+      if (this.contacts.email != null) {
+        this.emailModel = this.contacts.email;
+      } else {
+        this.contacts.email = "";
+        this.emailModel = this.contacts.email;
+      }
+
+      if (this.contacts.phone != null) {
+        this.phoneModel = this.contacts.phone;
+      } else {
+        this.contacts.phone = "";
+        this.phoneModel = this.contacts.phone;
+      }
+
+      if (this.contacts.address != null) {
+        this.addressModel = this.contacts.address;
+      } else {
+        this.contacts.address = "";
+        this.addressModel = this.contacts.address;
+      }
+
+      if (this.contacts.zipcode != null) {
+        this.zipCodeModel = this.contacts.zipcode;
+      } else {
+        this.contacts.zipcode = "";
+        this.zipCodeModel = this.contacts.zipcode;
+      }
+
+      if (this.contacts.city != null) {
+        this.cityModel = this.contacts.city;
+      } else {
+        this.contacts.city = "";
+        this.cityModel = this.contacts.city;
+      }
+
+      if (this.contacts.state != null) {
+        this.stateModel = this.contacts.state;
+      } else {
+        this.contacts.state = "";
+        this.stateModel = this.contacts.state;
+      }
+
+      if (this.contacts.country_id != null) {
+        this.countryIDModel = this.contacts.country_id;
+      } else {
+        this.contacts.country_id = 146;
+        this.countryIDModel = this.contacts.country_id;
+      }
+
+      if (this.contacts.legal_rep != null) {
+        this.legalRepModel = this.contacts.legal_rep;
+      } else {
+        this.contacts.legal_rep = "";
+        this.legalRepModel = this.contacts.legal_rep;
+      }
+
+      if (this.contacts.manager_name != null) {
+        this.managerNameModel = this.contacts.manager_name;
+      } else {
+        this.contacts.manager_name = "";
+        this.managerNameModel = this.contacts.manager_name;
+      }
+    }
+  })
 });
 
 /***/ }),
@@ -4638,35 +5154,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
   name: "Information",
   created: function created() {
     if (this.hotel.id !== null) {
-      this.titleModel = this.hotel.title;
-      this.urlModel = this.hotel.url;
-      this.referenceCModel = this.hotel.reference_code;
-      this.numRoomsModel = this.hotel.num_rooms;
-      this.numFloorsModel = this.hotel.num_floors;
-      this.shortTModel = this.hotel.short_text;
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
 
-      if (this.hotel.image != null || this.hotel.image != "") {
-        if (_typeof(this.hotel.image) == 'object') {
-          this.currentImage = this.hotel.image.temporalURL;
-        } else if (this.hotel.image.includes("jpeg") == true) {
-          this.currentImage = "/storage/img/" + this.hotel.image;
-        }
-      } else {//console.log("noImage")
-      }
-
-      if (this.hotel.type != null) {
-        if (this.hotel.type == "bungalow") {
-          this.ddwnTypeModel = "Bungalow";
-        }
-
-        if (this.hotel.type == "cabana") {
-          this.ddwnTypeModel = "Cabaña";
-        }
-
-        if (this.hotel.type == "build") {
-          this.ddwnTypeModel = "Edificio";
-        }
-      }
+      console.log(this.hotel);
+    } else {
+      this.fillModel();
+      console.log(this.hotel);
     }
   },
   mounted: function mounted() {},
@@ -4762,6 +5255,76 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       console.log("this.urlTemporalSrcImage", this.urlTemporal);
       console.log("this.currentImageSrcImage", this.currentImage);
       return localSrcImage;
+    },
+    //Metodo para llenar la vista con los datos
+    fillModel: function fillModel() {
+      if (this.hotel.title != null) {
+        this.titleModel = this.hotel.title;
+      } else {
+        this.hotel.title = "";
+        this.titleModel = this.hotel.title;
+      }
+
+      if (this.hotel.url != null) {
+        this.urlModel = this.hotel.url;
+      } else {
+        this.hotel.url = "";
+        this.urlModel = this.hotel.url;
+      }
+
+      if (this.hotel.reference_code != null) {
+        this.referenceCModel = this.hotel.reference_code;
+      } else {
+        this.hotel.reference_code = "";
+        this.referenceCModel = this.hotel.reference_code;
+      }
+
+      if (this.hotel.num_rooms != null) {
+        this.numRoomsModel = this.hotel.num_rooms;
+      } else {
+        this.hotel.num_rooms = "";
+        this.numRoomsModel = this.hotel.num_rooms;
+      }
+
+      if (this.hotel.num_floors != null) {
+        this.numFloorsModel = this.hotel.num_floors;
+      } else {
+        this.hotel.num_floors = "";
+        this.numFloorsModel = this.hotel.num_floors;
+      }
+
+      if (this.hotel.short_text != null) {
+        this.shortTModel = this.hotel.short_text;
+      } else {
+        this.hotel.short_text = "";
+        this.shortTModel = this.hotel.short_text;
+      }
+
+      if (this.hotel.image != null || this.hotel.image != "") {
+        if (_typeof(this.hotel.image) == 'object') {
+          this.currentImage = this.hotel.image.temporalURL;
+        } else if (this.hotel.image.includes("jpeg") == true) {
+          this.currentImage = "/storage/img/" + this.hotel.image;
+        }
+      } else {//console.log("noImage")
+      }
+
+      if (this.hotel.type != null) {
+        if (this.hotel.type == "bungalow") {
+          this.ddwnTypeModel = "Bungalow";
+        }
+
+        if (this.hotel.type == "cabana") {
+          this.ddwnTypeModel = "Cabaña";
+        }
+
+        if (this.hotel.type == "build") {
+          this.ddwnTypeModel = "Edificio";
+        }
+      } else {
+        this.hotel.type = "build";
+        this.ddwnTypeModel = "Edificio";
+      }
     }
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
@@ -5127,57 +5690,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
 
     if (this.regimes[0] != null) {
-      this.swOnlyRoomModel = this.regimes[0].only_room;
-
-      if (this.regimes[0].priority != null) {
-        if (this.regimes[0].priority == "normal") {
-          this.ddwnPriorityModel = "Normal";
-        }
-
-        if (this.regimes[0].priority == "medium") {
-          this.ddwnPriorityModel = "Media";
-        }
-
-        if (this.regimes[0].priority == "high") {
-          this.ddwnPriorityModel = "Alta";
-        }
-      }
-
-      this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
-      this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
-
-      if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
-        if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
-          this.swBreakfastModel = 1;
-        }
-      }
-
-      this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
-      this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
-
-      if (this.txtHalfPensionAdultModel !== null || this.txtHalfPensionChildrenModel !== null) {
-        if (this.txtHalfPensionAdultModel !== 0 || this.txtHalfPensionChildrenModel !== 0) {
-          this.swHalfPensionModel = 1;
-        }
-      }
-
-      this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
-      this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
-
-      if (this.txtFullPensionAdultModel !== null || this.txtFullPensionChildrenModel !== null) {
-        if (this.txtFullPensionAdultModel !== 0 || this.txtFullPensionChildrenModel !== 0) {
-          this.swFullPensionModel = 1;
-        }
-      }
-
-      this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
-      this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
-
-      if (this.txtAllIncludedAdultModel !== null || this.txtAllIncludedChildrenModel !== null) {
-        if (this.txtAllIncludedAdultModel !== 0 || this.txtAllIncludedChildrenModel !== 0) {
-          this.swAllIncludedModel = 1;
-        }
-      }
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    } else {
+      this.fillModel();
+      console.log("UNDEFINED", this.regimes);
     }
   },
   data: function data() {
@@ -5458,6 +5974,84 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.setArrayRegimes([].concat(this.regimes, this.arrayComponents.map(function (el) {
         return el.objArrCompo;
       })));
+    },
+    //Metodo para llenar la vista con los datos
+    fillModel: function fillModel() {
+      //Con el if principal verifica si hay al menos un regimen o si es un nuevo registro
+      if (typeof this.regimes[0] != 'undefined') {
+        this.swOnlyRoomModel = this.regimes[0].only_room;
+
+        if (this.regimes[0].priority != null) {
+          if (this.regimes[0].priority == "normal") {
+            this.ddwnPriorityModel = "Normal";
+          }
+
+          if (this.regimes[0].priority == "medium") {
+            this.ddwnPriorityModel = "Media";
+          }
+
+          if (this.regimes[0].priority == "high") {
+            this.ddwnPriorityModel = "Alta";
+          }
+        }
+
+        this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
+        this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
+
+        if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
+          if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
+            this.swBreakfastModel = 1;
+          }
+        }
+
+        this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
+        this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
+
+        if (this.txtHalfPensionAdultModel != null || this.txtHalfPensionChildrenModel != null) {
+          if (this.txtHalfPensionAdultModel != 0 || this.txtHalfPensionChildrenModel != 0) {
+            this.swHalfPensionModel = 1;
+          }
+        }
+
+        this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
+        this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
+
+        if (this.txtFullPensionAdultModel != null || this.txtFullPensionChildrenModel != null) {
+          if (this.txtFullPensionAdultModel != 0 || this.txtFullPensionChildrenModel != 0) {
+            this.swFullPensionModel = 1;
+          }
+        }
+
+        this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
+        this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
+
+        if (this.txtAllIncludedAdultModel != null || this.txtAllIncludedChildrenModel != null) {
+          if (this.txtAllIncludedAdultModel != 0 || this.txtAllIncludedChildrenModel != 0) {
+            this.swAllIncludedModel = 1;
+          }
+        }
+      } else {
+        this.regimes[0] = {
+          id: "firstRegister",
+          priority: "normal",
+          only_room: 0,
+          lodging_breakfast_children: "",
+          lodging_breakfast_adult: "",
+          half_pension_children: "",
+          half_pension_adult: "",
+          full_pension_children: "",
+          full_pension_adult: "",
+          all_included_children: "",
+          all_included_adult: "",
+          hotel_id: null
+        };
+        this.ddwnPriorityModel = "Normal";
+        this.swOnlyRoomModel = this.regimes[0].only_room;
+        this.swBreakfastModel = 0;
+        this.swHalfPensionModel = 0;
+        this.swFullPensionModel = 0;
+        this.swAllIncludedModel = 0;
+      }
     }
   })
 });

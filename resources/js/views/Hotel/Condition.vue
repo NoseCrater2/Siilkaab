@@ -143,12 +143,11 @@ export default {
   name: "Condition",
   created() {
     if (this.hotel.idCondition !== null) {
-      this.adultsModel = this.conditions.adults;
-      this.childrenAgeModel = this.conditions.children_age;
-      this.adultsRegimenModel = this.conditions.adults_regimen;
-      this.adultsAgeModel = this.conditions.adults_age;
-      this.checkinTimeModel = this.conditions.checkin_time;
-      this.checkoutTimeModel = this.conditions.checkout_time;
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    }
+    else{
+      this.fillModel();
+      console.log(this.conditions)
     }
   },
   data() {
@@ -223,5 +222,54 @@ export default {
       return this.checkinTimeModel;
     },
   },
+  methods:{
+    fillModel(){
+    if(this.conditions.adults != null){
+        this.adultsModel = this.conditions.adults;
+    }
+    else{
+        this.conditions.adults = 0;
+        this.adultsModel = this.conditions.adults;
+    }
+    if(this.conditions.children_age != null){
+        this.childrenAgeModel = this.conditions.children_age;
+    }
+    else{
+        this.conditions.children_age = "";
+        this.childrenAgeModel = this.conditions.children_age;
+    }
+    if(this.conditions.adults_regimen != null){
+        this.adultsRegimenModel = this.conditions.adults_regimen;
+    }
+    else{
+        this.conditions.adults_regimen = "";
+        this.adultsRegimenModel = this.conditions.adults_regimen;
+    } 
+    if(this.conditions.adults_age != null){
+        this.adultsAgeModel = this.conditions.adults_age;
+    }
+    else{
+        this.conditions.adults_age = "";
+        this.adultsAgeModel = this.conditions.adults_age;
+    } 
+    if(this.conditions.checkin_time != null){
+        this.checkinTimeModel = this.conditions.checkin_time;
+    }
+    else{
+        this.conditions.checkin_time = "";
+        this.checkinTimeModel = this.conditions.checkin_time;
+    }    
+    if(this.conditions.checkout_time != null){
+        this.checkoutTimeModel = this.conditions.checkout_time;
+    }
+    else{
+        this.conditions.checkout_time = "";
+        this.checkoutTimeModel = this.conditions.checkout_time;
+    }
+    if(this.conditions.cancelation_text == null){
+        this.conditions.cancelation_text = "";
+    }
+    }
+  }
 };
 </script>

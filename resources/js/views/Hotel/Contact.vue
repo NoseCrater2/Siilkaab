@@ -139,16 +139,11 @@ export default {
   created() {
     this.getCountries().then(() => {});
     if (this.hotel.idContact !== null) {
-      this.urlModel = this.contacts.url;
-      this.emailModel = this.contacts.email;
-      this.phoneModel = this.contacts.phone;
-      this.addressModel = this.contacts.address;
-      this.zipCodeModel = this.contacts.zipcode;
-      this.cityModel = this.contacts.city;
-      this.stateModel = this.contacts.state;
-      this.countryIDModel = this.contacts.country_id;
-      this.legalRepModel = this.contacts.legal_rep;
-      this.managerNameModel = this.contacts.manager_name;
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    }
+    else{
+      this.fillModel();
+      console.log(this.contacts)
     }
   },
   data() {
@@ -275,6 +270,79 @@ export default {
   },
   methods: {
     ...mapActions(["getCountries"]),
+    //Metodo para llenar la vista con los datos
+    fillModel(){
+    if(this.contacts.url != null){
+        this.urlModel = this.contacts.url;
+    }
+    else{
+        this.contacts.url = "";
+        this.urlModel = this.contacts.url;
+    }
+    if(this.contacts.email != null){
+        this.emailModel = this.contacts.email;
+    }
+    else{
+        this.contacts.email = "";
+        this.emailModel = this.contacts.email;
+    }
+    if(this.contacts.phone != null){
+        this.phoneModel = this.contacts.phone;
+    }
+    else{
+        this.contacts.phone = "";
+        this.phoneModel = this.contacts.phone;
+    }
+    if(this.contacts.address != null){
+        this.addressModel = this.contacts.address;
+    }
+    else{
+        this.contacts.address = "";
+        this.addressModel = this.contacts.address;
+    }
+    if(this.contacts.zipcode != null){
+        this.zipCodeModel = this.contacts.zipcode;
+    }
+    else{
+        this.contacts.zipcode = "";
+        this.zipCodeModel = this.contacts.zipcode;
+    }
+    if(this.contacts.city != null){
+        this.cityModel = this.contacts.city;
+    }
+    else{
+        this.contacts.city = "";
+        this.cityModel = this.contacts.city;
+    }
+    if(this.contacts.state != null){
+        this.stateModel = this.contacts.state;
+    }
+    else{
+        this.contacts.state = "";
+        this.stateModel = this.contacts.state;
+    }
+    if(this.contacts.country_id != null){
+        this.countryIDModel = this.contacts.country_id;
+    }
+    else{
+        this.contacts.country_id = 146;
+        this.countryIDModel = this.contacts.country_id;
+    }
+    if(this.contacts.legal_rep != null){
+        this.legalRepModel = this.contacts.legal_rep;
+    }
+    else{
+        this.contacts.legal_rep = "";
+        this.legalRepModel = this.contacts.legal_rep;
+    }
+    if(this.contacts.manager_name != null){
+        this.managerNameModel = this.contacts.manager_name;
+    }
+    else{
+        this.contacts.manager_name = "";
+        this.managerNameModel = this.contacts.manager_name;
+    }
+    }
   },
 };
 </script>

@@ -7,7 +7,17 @@ const HotelModule = {
         chargeView: false, //Variable que carga las vistas de componentes de submenus de hotel
         assignHotels: null,
         iditemsListOptions: 0,
-        hotel: null,
+        hotel: {
+            id: null,
+            title: null,
+            url: null,
+            reference_code: null,
+            num_rooms: null,
+            num_floors: null,
+            type: null,
+            short_text: null,
+            large_text: null
+        },
         currencies: null,
         timezones: null,
         countries: null,
@@ -21,13 +31,95 @@ const HotelModule = {
             currency_id: null,
             hotel_id: null,
         },
-        contacts: null,
-        conditions: null,
-        regimes: null,
+        contacts: {
+            url: null,
+            email: null,
+            phone: null,
+            address: null,
+            zipcode: null,
+            city: null,
+            state: null,
+            manager_name: null,
+            legal_rep: null,
+            country_id: null,
+            hotel_id: null,
+        },
+        conditions: {
+            adults: null,
+            children_age: null,
+            adults_age: null,
+            adults_regimen: null,
+            checkin_time: null,
+            checkout_time: null,
+            cancelation_text: null,
+            hotel_id: null
+        },
+        regimes: [],
         restaurants: null,
         schedules: null,
         pools: null,
-        aditionalInfo: null,
+        aditionalInfo: {
+            spa: null,
+            air_conditioned: null,
+            no_smoke_rooms: null,
+            air_transfer_service: null,
+            air_collect_service: null,
+            recection_24h: null,
+            gym: null,
+            room_service: null,
+            terrace: null,
+            bar: null,
+            garden: null,
+            water_park: null,
+            beach: null,
+            recreational_activities: null,
+            romantic_dinners: null,
+            touristic_tour: null,
+            guarded_parking: null,
+            street_parking: null,
+            garage_parking: null,
+            special_parking: null,
+            reg_inout_private: null,
+            reg_inout_express: null,
+            touristic_info: null,
+            parking_service: null,
+            currency_change: null,
+            outdoor_furniture: null,
+            terrace_solarium: null,
+            shared_dinner: null,
+            shared_salon: null,
+            game_zone: null,
+            library: null,
+            daily_housekipping: null,
+            laundry_service: null,
+            iron_service: null,
+            meeting_room: null,
+            meeting_center: null,
+            fax_photocopier: null,
+            coffee_break: null,
+            souvenirs_store: null,
+            inclusive_service: null,
+            elevator: null,
+            smoking_zone: null,
+            no_smoking: null,
+            pet_friendly: null,
+            pet_house: null,
+            pet_basket: null,
+            only_adults: null,
+            sanitized_rooms: null,
+            bridal_suite: null,
+            vip_service: null,
+            calefaction: null,
+            keep_bags: null,
+            security_24h: null,
+            security_alarm: null,
+            smoke_detectors: null,
+            in_security_cams: null,
+            out_security_cams: null,
+            fire_extinguishers: null,
+            safe_deposit_box: null,
+            hotel_id: null,
+        },
 
         errorsInformation: null,
         statusInformation: null,
@@ -51,7 +143,16 @@ const HotelModule = {
             (state.iditemsListOptions = 0),
             (state.setReinicializedVar = null),
             (state.chargeView = false),
-                (state.hotel = null),
+                (state.hotel = {
+                    title: null,
+                    url: null,
+                    reference_code: null,
+                    num_rooms: null,
+                    num_floors: null,
+                    type: null,
+                    short_text: null,
+                    large_text: null
+                }),
                 (state.currencies = null),
                 (state.timezones = null),
                 (state.countries = null),
@@ -65,13 +166,95 @@ const HotelModule = {
                     currency_id: null,
                     hotel_id: null,
                 }),
-                (state.contacts = null),
-                (state.conditions = null),
-                (state.regimes = null),
+                (state.contacts = {
+                    url: null,
+                    email: null,
+                    phone: null,
+                    address: null,
+                    zipcode: null,
+                    city: null,
+                    state: null,
+                    manager_name: null,
+                    legal_rep: null,
+                    country_id: null,
+                    hotel_id: null,
+                }),
+                (state.conditions = {
+                    adults: null,
+                    children_age: null,
+                    adults_age: null,
+                    adults_regimen: null,
+                    checkin_time: null,
+                    checkout_time: null,
+                    cancelation_text: null,
+                    hotel_id: null
+                }),
+                (state.regimes = []),
                 (state.restaurants = null),
                 (state.schedules = null),
                 (state.pools = null),
-                (state.aditionalInfo = null);
+                (state.aditionalInfo = {
+                    spa: null,
+                    air_conditioned: null,
+                    no_smoke_rooms: null,
+                    air_transfer_service: null,
+                    air_collect_service: null,
+                    recection_24h: null,
+                    gym: null,
+                    room_service: null,
+                    terrace: null,
+                    bar: null,
+                    garden: null,
+                    water_park: null,
+                    beach: null,
+                    recreational_activities: null,
+                    romantic_dinners: null,
+                    touristic_tour: null,
+                    guarded_parking: null,
+                    street_parking: null,
+                    garage_parking: null,
+                    special_parking: null,
+                    reg_inout_private: null,
+                    reg_inout_express: null,
+                    touristic_info: null,
+                    parking_service: null,
+                    currency_change: null,
+                    outdoor_furniture: null,
+                    terrace_solarium: null,
+                    shared_dinner: null,
+                    shared_salon: null,
+                    game_zone: null,
+                    library: null,
+                    daily_housekipping: null,
+                    laundry_service: null,
+                    iron_service: null,
+                    meeting_room: null,
+                    meeting_center: null,
+                    fax_photocopier: null,
+                    coffee_break: null,
+                    souvenirs_store: null,
+                    inclusive_service: null,
+                    elevator: null,
+                    smoking_zone: null,
+                    no_smoking: null,
+                    pet_friendly: null,
+                    pet_house: null,
+                    pet_basket: null,
+                    only_adults: null,
+                    sanitized_rooms: null,
+                    bridal_suite: null,
+                    vip_service: null,
+                    calefaction: null,
+                    keep_bags: null,
+                    security_24h: null,
+                    security_alarm: null,
+                    smoke_detectors: null,
+                    in_security_cams: null,
+                    out_security_cams: null,
+                    fire_extinguishers: null,
+                    safe_deposit_box: null,
+                    hotel_id: null,
+                });
         },
         setReinicializedErrorsStatus(state){
             (state.errorsInformation = null),
@@ -462,12 +645,23 @@ const HotelModule = {
             formDataHotel.append("_method", "put");
 
             try {
-                const request = await axios.post(
-                    `/api/hotels/${newHotel.id}`,
-                    formDataHotel
-                );
-                console.log(request.data.data)
-                commit("postEditHotel", request.data.data);
+                //Verifica si se esta insertando o modificando un hotel
+                if(newHotel.id != null){
+                    const request = await axios.post(
+                        `/api/hotels/${newHotel.id}`,
+                        formDataHotel
+                    );
+                    console.log(request.data.data)
+                    commit("postEditHotel", request.data.data);
+                }
+                else{
+                    const request = await axios.post(
+                        `/api/hotels`,
+                        formDataHotel
+                    );
+                    console.log(request.data.data)
+                    commit("postEditHotel", request.data.data);
+                }
                 // commit('setStatus',request.status);
             } catch (error) {
                 console.log(error.response.data)
@@ -578,6 +772,20 @@ const HotelModule = {
             }
         },
 
+        postEditContacts: async function({ commit }, newContacts) {
+            try {
+                const request = await axios.post(
+                    `/api/contacts`,
+                    newContacts
+                );
+                commit("putEditContacts", request.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrorsContacts", error.response.data);
+                commit("setStatusContacts", error.response.status);
+            }
+        },
+
         putEditContacts: async function({ commit }, newContacts) {
             try {
                 const request = await axios.put(
@@ -589,6 +797,25 @@ const HotelModule = {
             } catch (error) {
                 commit("setErrorsContacts", error.response.data);
                 commit("setStatusContacts", error.response.status);
+            }
+        },
+
+        postEditConditions: async function({ commit }, newConditions) {
+            console.log("newConditions", newConditions)
+            try {
+                const request = await axios.post(
+                    `/api/conditions`,
+                    newConditions
+                );
+                let conditions = request.data.data;
+                console.log("conditions", conditions)
+                conditions.checkin_time = conditions.checkin_time.slice(0, -3);
+                conditions.checkout_time = conditions.checkout_time.slice(0, -3);
+                commit("putEditConditions", conditions);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrorsConditions", error.response.data);
+                commit("setStatusConditions", error.response.status);
             }
         },
 
@@ -614,12 +841,18 @@ const HotelModule = {
         //Metodo que llama a diferentes acciones de Regimes dependiendo
         //De lo que requiera hacer 
         putEditRegimes: async function({ commit, dispatch }, objRegimes) {
-            console.log(objRegimes)
             try {
                 //Si "objRegimes.newRegimes" es mayor se agregaron nuevos regimenes
                 if (objRegimes.newRegimes.length > objRegimes.currentRegimes.length) {
                     let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
-                        if(itemRegime.id === "NEW"){
+                        if(itemRegime.id === "firstRegister"){
+                            //Se elimina el id "NEW", ya que se añadira un nuevo elemento
+                            delete itemRegime.id;
+                            //Se agrega el id del hotel actual al que hara referencia para agregarse
+                            itemRegime.hotel_id = objRegimes.currentHotelId;
+                            return itemRegime;
+                        }
+                        else if(itemRegime.id === "NEW"){
                             //Se elimina el id "NEW", ya que se añadira un nuevo elemento
                             delete itemRegime.id;
                             //Se agrega el id del hotel actual al que hara referencia para agregarse
@@ -683,6 +916,21 @@ const HotelModule = {
             } catch (error) {
                 commit("setErrorsRegimes", error.response.data);
                 commit("setStatusRegimes", error.response.status);
+            }
+        },
+
+
+        postEditAditionalInfo: async function({ commit }, newAditionalInfo) {
+            try {
+                const requestEditAditionalInfo = await axios.post(
+                    `/api/amenities`,
+                    newAditionalInfo
+                );
+                commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrors", error.response.data);
+                commit("setStatus", error.response.status);
             }
         },
 
