@@ -1,6 +1,7 @@
 import axios from "axios";
 const HotelModule = {
     state: {
+        snackbar: false,
         allhotels: [],
         hotels: [],
         setReinicializedVar: null,
@@ -140,6 +141,7 @@ const HotelModule = {
     mutations: {
         //Se reinician los estados (principalmente por el problema del router-link)
         setReinicialized(state) {
+            (state.snackbar = false),
             (state.iditemsListOptions = 0),
             (state.setReinicializedVar = null),
             (state.chargeView = false),
@@ -268,6 +270,15 @@ const HotelModule = {
             (state.errorsRegimes = null),
             (state.statusRegimes = null)
         },
+        //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
+        setSnackbar(state, flag){
+            state.snackbar = flag;
+        },
+        //Este metodo se llama para cambiar el estado de la variable 'chargeView' en caso de que
+        //sea un nuevo registro de hotel
+        setChargeView(state, flag){
+            state.chargeView = flag;
+        },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
             state.iditemsListOptions = index;
@@ -371,6 +382,7 @@ const HotelModule = {
         },
 
         postEditHotel(state, hotel) {
+            state.hotel = hotel;
             state.hotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
                     Object.assign(currentHotel, hotel);
@@ -412,6 +424,7 @@ const HotelModule = {
         },
 
         editHotel(state, hotel) {
+            state.hotel = hotel;
             state.allhotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
                     Object.assign(currentHotel, hotel);
@@ -642,8 +655,16 @@ const HotelModule = {
                 }
             }
 
-            formDataHotel.append("_method", "put");
-
+            //Debido a que aqui se modifica el tipo de metodo
+            //Se tiene que checar si el hotel que se guarda ya existe
+            //O es uno nuevo
+            if(newHotel.id == null){
+                formDataHotel.append("_method", "post");
+            }
+            else if(newHotel.id != null){
+                formDataHotel.append("_method", "put");
+            }
+            
             try {
                 //Verifica si se esta insertando o modificando un hotel
                 if(newHotel.id != null){
@@ -654,7 +675,7 @@ const HotelModule = {
                     console.log(request.data.data)
                     commit("postEditHotel", request.data.data);
                 }
-                else{
+                else if(newHotel.id == null){
                     const request = await axios.post(
                         `/api/hotels`,
                         formDataHotel

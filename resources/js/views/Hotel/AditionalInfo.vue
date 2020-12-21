@@ -653,7 +653,7 @@ export default {
   name: "AditionalInfo",
   created() {
     if (this.hotel.idAmenity !== null) {
-      console.log("CON ID",this.aditionalInfo)
+      console.log("CON ID",this.aditionalInfo, this.hotel)
       this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
       console.log("CON ID",this.aditionalInfo)
     }

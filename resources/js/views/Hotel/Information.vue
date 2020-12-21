@@ -268,11 +268,13 @@ export default {
         this.shortTModel = this.hotel.short_text;
       }
       if(this.hotel.image != null || this.hotel.image != ""){
-        if(typeof(this.hotel.image) == 'object'){
+        if(this.hotel.image != null && typeof(this.hotel.image) == 'object'){
           this.currentImage = this.hotel.image.temporalURL
         }
-        else if(this.hotel.image.includes("jpeg") == true){
-          this.currentImage = "/storage/img/" + this.hotel.image;
+        else if(this.hotel.image != null && typeof(this.hotel.image) != 'undefined'){
+          if(this.hotel.image.includes("jpeg") == true){
+            this.currentImage = "/storage/img/" + this.hotel.image;
+          }
         }
       }
       else{

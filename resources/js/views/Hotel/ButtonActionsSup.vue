@@ -72,6 +72,7 @@ export default {
       aditionalInfo: (state) => state.HotelModule.aditionalInfo,
       restaurants: (state) => state.HotelModule.restaurants,
       schedules: (state) => state.HotelModule.schedules,
+      snackbar: (state) => state.HotelModule.snackbar,
     }),
     computedTitleHotel: {
       get() {
@@ -114,7 +115,7 @@ export default {
       "putEditRestaurants",
       "putEditSchedules",
     ]),
-    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus"]),
+    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar"]),
     close(){
       this.setReinicialized();
       this.setReinicializedErrorsStatus();
@@ -164,14 +165,36 @@ export default {
         //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
         if(this.hotel.title != null){
             //metodo post
-            this.postEditHotel(this.hotel);
+            if(this.hotel.id == null){
+              this.postEditHotel(this.hotel).then(()=>{
+                console.log("this.hotel.id", this.hotel);
+                //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
+                this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
+                  this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
+                  this.setSnackbar(true);
+                }); 
+              });
+            }
+            else if(this.hotel.id != null){
+              this.postEditHotel(this.hotel);
+              //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
+              this.executeSaveOnAPIAfterHotel(this.idHotel).then(()=>{
+                this.setSnackbar(true);
+              }); 
+            }
         }
         //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
+    },
+    //Debido a que debe de existir un hotel para guardar la demas informacion
+    //Este metodo se ejecutara despues de la llamada then del metodo 'this.postEditHotel'
+    //Este metodo cotiene los demas metodos que se ejecutaran y que dependen del hotel
+    //Ademas es un metodo asincrono ya que se deben de ejecutar ciertas acciones cuando finalizan todas las peticiones
+    executeSaveOnAPIAfterHotel: async function(idHotel){
         //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
         if(this.configuration.timezone != null){
           if(this.configuration.hotel_id == null){
             //metodo post
-            this.configuration.hotel_id = this.idHotel;
+            this.configuration.hotel_id = idHotel;
             console.log("BTN", this.configuration);
             this.postEditConfiguration(this.configuration);
           }
@@ -185,7 +208,7 @@ export default {
         if(this.contacts.address != null){
           if(this.contacts.hotel_id == null){
             //metodo post
-            this.contacts.hotel_id = this.idHotel;
+            this.contacts.hotel_id = idHotel;
             console.log("BTN", this.contacts);
             this.postEditContacts(this.contacts);
           }
@@ -199,7 +222,7 @@ export default {
         if(this.conditions.adults != null){
           if(this.conditions.hotel_id == null){
             //metodo post
-            this.conditions.hotel_id = this.idHotel;
+            this.conditions.hotel_id = idHotel;
             console.log("BTN", this.conditions);
             this.postEditConditions(this.conditions);
           }
@@ -210,19 +233,20 @@ export default {
         }
         //CODIGO PARA GUARDAR CONDICIONES TERMINA
         //CODIGO PARA GUARDAR REGIMENES INICIA
-        console.log(this.regimes)
-        console.log("this.hotel.idRegime", this.hotel.idRegime)
-        this.putEditRegimes({
-          newRegimes: this.regimes,
-          currentHotelId: this.idHotel,
-          currentRegimes: this.hotel.idRegime,
-        });
+        console.log("this.hotel.idRegime", this.regimes)
+        if(typeof(this.regimes[0]) !='undefined'){
+          this.putEditRegimes({
+            newRegimes: this.regimes,
+            currentHotelId: idHotel,
+            currentRegimes: this.hotel.idRegime,
+          });
+        }
         //CODIGO PARA GUARDAR REGIMENES TERMINA
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
         if(this.aditionalInfo.spa != null){
           if(this.aditionalInfo.hotel_id == null){
             //metodo post
-            this.aditionalInfo.hotel_id = this.idHotel;
+            this.aditionalInfo.hotel_id = idHotel;
             console.log("BTN", this.aditionalInfo);
             this.postEditAditionalInfo(this.aditionalInfo);
           }
@@ -235,7 +259,7 @@ export default {
         // this.putEditRestaurants(this.restaurants).then(() => {
         //   this.putEditSchedules(this.schedules);
         // });
-    }
+    },
   },
   props: {
     title: String,

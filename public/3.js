@@ -2376,7 +2376,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: "AditionalInfo",
   created: function created() {
     if (this.hotel.idAmenity !== null) {
-      console.log("CON ID", this.aditionalInfo);
+      console.log("CON ID", this.aditionalInfo, this.hotel);
       this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
 
       console.log("CON ID", this.aditionalInfo);
@@ -3571,8 +3571,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../../routes */ "./resources/js/routes.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../routes */ "./resources/js/routes.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -3639,7 +3647,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       idHotel: null
     };
   },
-  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapState"])({
     setReinicializedVar: function setReinicializedVar(state) {
       return state.HotelModule.setReinicializedVar;
     },
@@ -3675,6 +3683,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     schedules: function schedules(state) {
       return state.HotelModule.schedules;
+    },
+    snackbar: function snackbar(state) {
+      return state.HotelModule.snackbar;
     }
   })), {}, {
     computedTitleHotel: {
@@ -3683,7 +3694,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       },
       set: function set(idHotel) {
         this.idHotel = idHotel;
-        _routes__WEBPACK_IMPORTED_MODULE_1__["default"].push({
+        _routes__WEBPACK_IMPORTED_MODULE_2__["default"].push({
           name: "Hotel",
           params: {
             id: this.idHotel
@@ -3698,11 +3709,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   }),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "postEditConfiguration", "putEditContacts", "postEditContacts", "putEditConditions", "postEditConditions", "putEditRegimes", "putEditAditionalInfo", "postEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus"])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapActions"])(["getHotels", "getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo", "postEditHotel", "putEditConfiguration", "postEditConfiguration", "putEditContacts", "postEditContacts", "putEditConditions", "postEditConditions", "putEditRegimes", "putEditAditionalInfo", "postEditAditionalInfo", "putEditRestaurants", "putEditSchedules"])), Object(vuex__WEBPACK_IMPORTED_MODULE_1__["mapMutations"])(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar"])), {}, {
     close: function close() {
       this.setReinicialized();
       this.setReinicializedErrorsStatus();
-      _routes__WEBPACK_IMPORTED_MODULE_1__["default"].replace({
+      _routes__WEBPACK_IMPORTED_MODULE_2__["default"].replace({
         path: '/hotels'
       });
     },
@@ -3717,7 +3728,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         this.executeSaveOnAPI();
         this.setReinicialized();
         this.setReinicializedErrorsStatus();
-        _routes__WEBPACK_IMPORTED_MODULE_1__["default"].replace({
+        _routes__WEBPACK_IMPORTED_MODULE_2__["default"].replace({
           path: '/hotels'
         });
       }
@@ -3761,83 +3772,133 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
     executeSaveOnAPI: function executeSaveOnAPI() {
+      var _this3 = this;
+
       //DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
       //CODIGO PARA GUARDAR INFORMACION DEL HOTEL INICIA
       //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
       if (this.hotel.title != null) {
         //metodo post
-        this.postEditHotel(this.hotel);
+        if (this.hotel.id == null) {
+          this.postEditHotel(this.hotel).then(function () {
+            console.log("this.hotel.id", _this3.hotel); //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
+
+            _this3.executeSaveOnAPIAfterHotel(_this3.hotel.id).then(function () {
+              _this3.$router.replace({
+                name: "Hotel",
+                params: {
+                  id: _this3.hotel.id
+                }
+              });
+
+              _this3.setSnackbar(true);
+            });
+          });
+        } else if (this.hotel.id != null) {
+          this.postEditHotel(this.hotel); //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
+
+          this.executeSaveOnAPIAfterHotel(this.idHotel).then(function () {
+            _this3.setSnackbar(true);
+          });
+        }
       } //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
-      //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+
+    },
+    //Debido a que debe de existir un hotel para guardar la demas informacion
+    //Este metodo se ejecutara despues de la llamada then del metodo 'this.postEditHotel'
+    //Este metodo cotiene los demas metodos que se ejecutaran y que dependen del hotel
+    //Ademas es un metodo asincrono ya que se deben de ejecutar ciertas acciones cuando finalizan todas las peticiones
+    executeSaveOnAPIAfterHotel: function () {
+      var _executeSaveOnAPIAfterHotel = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee(idHotel) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+                if (this.configuration.timezone != null) {
+                  if (this.configuration.hotel_id == null) {
+                    //metodo post
+                    this.configuration.hotel_id = idHotel;
+                    console.log("BTN", this.configuration);
+                    this.postEditConfiguration(this.configuration);
+                  } else {
+                    //metodo put
+                    this.putEditConfiguration(this.configuration);
+                  }
+                } //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
+                //CODIGO PARA GUARDAR CONTACTOS INICIA
 
 
-      if (this.configuration.timezone != null) {
-        if (this.configuration.hotel_id == null) {
-          //metodo post
-          this.configuration.hotel_id = this.idHotel;
-          console.log("BTN", this.configuration);
-          this.postEditConfiguration(this.configuration);
-        } else {
-          //metodo put
-          this.putEditConfiguration(this.configuration);
-        }
-      } //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
-      //CODIGO PARA GUARDAR CONTACTOS INICIA
+                if (this.contacts.address != null) {
+                  if (this.contacts.hotel_id == null) {
+                    //metodo post
+                    this.contacts.hotel_id = idHotel;
+                    console.log("BTN", this.contacts);
+                    this.postEditContacts(this.contacts);
+                  } else {
+                    //metodo put
+                    this.putEditContacts(this.contacts);
+                  }
+                } //CODIGO PARA GUARDAR CONTACTOS TERMINA
+                //CODIGO PARA GUARDAR CONDICIONES INICIA
 
 
-      if (this.contacts.address != null) {
-        if (this.contacts.hotel_id == null) {
-          //metodo post
-          this.contacts.hotel_id = this.idHotel;
-          console.log("BTN", this.contacts);
-          this.postEditContacts(this.contacts);
-        } else {
-          //metodo put
-          this.putEditContacts(this.contacts);
-        }
-      } //CODIGO PARA GUARDAR CONTACTOS TERMINA
-      //CODIGO PARA GUARDAR CONDICIONES INICIA
+                if (this.conditions.adults != null) {
+                  if (this.conditions.hotel_id == null) {
+                    //metodo post
+                    this.conditions.hotel_id = idHotel;
+                    console.log("BTN", this.conditions);
+                    this.postEditConditions(this.conditions);
+                  } else {
+                    //metodo put
+                    this.putEditConditions(this.conditions);
+                  }
+                } //CODIGO PARA GUARDAR CONDICIONES TERMINA
+                //CODIGO PARA GUARDAR REGIMENES INICIA
 
 
-      if (this.conditions.adults != null) {
-        if (this.conditions.hotel_id == null) {
-          //metodo post
-          this.conditions.hotel_id = this.idHotel;
-          console.log("BTN", this.conditions);
-          this.postEditConditions(this.conditions);
-        } else {
-          //metodo put
-          this.putEditConditions(this.conditions);
-        }
-      } //CODIGO PARA GUARDAR CONDICIONES TERMINA
-      //CODIGO PARA GUARDAR REGIMENES INICIA
+                console.log("this.hotel.idRegime", this.regimes);
+
+                if (typeof this.regimes[0] != 'undefined') {
+                  this.putEditRegimes({
+                    newRegimes: this.regimes,
+                    currentHotelId: idHotel,
+                    currentRegimes: this.hotel.idRegime
+                  });
+                } //CODIGO PARA GUARDAR REGIMENES TERMINA
+                //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
 
 
-      console.log(this.regimes);
-      console.log("this.hotel.idRegime", this.hotel.idRegime);
-      this.putEditRegimes({
-        newRegimes: this.regimes,
-        currentHotelId: this.idHotel,
-        currentRegimes: this.hotel.idRegime
-      }); //CODIGO PARA GUARDAR REGIMENES TERMINA
-      //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
+                if (this.aditionalInfo.spa != null) {
+                  if (this.aditionalInfo.hotel_id == null) {
+                    //metodo post
+                    this.aditionalInfo.hotel_id = idHotel;
+                    console.log("BTN", this.aditionalInfo);
+                    this.postEditAditionalInfo(this.aditionalInfo);
+                  } else {
+                    //metodo put
+                    this.putEditAditionalInfo(this.aditionalInfo);
+                  }
+                } //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
+                // this.putEditRestaurants(this.restaurants).then(() => {
+                //   this.putEditSchedules(this.schedules);
+                // });
 
-      if (this.aditionalInfo.spa != null) {
-        if (this.aditionalInfo.hotel_id == null) {
-          //metodo post
-          this.aditionalInfo.hotel_id = this.idHotel;
-          console.log("BTN", this.aditionalInfo);
-          this.postEditAditionalInfo(this.aditionalInfo);
-        } else {
-          //metodo put
-          this.putEditAditionalInfo(this.aditionalInfo);
-        }
-      } //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
-      // this.putEditRestaurants(this.restaurants).then(() => {
-      //   this.putEditSchedules(this.schedules);
-      // });
 
-    }
+              case 6:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function executeSaveOnAPIAfterHotel(_x) {
+        return _executeSaveOnAPIAfterHotel.apply(this, arguments);
+      }
+
+      return executeSaveOnAPIAfterHotel;
+    }()
   }),
   props: {
     title: String
@@ -4922,6 +4983,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4953,44 +5025,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     iditemsListOptions: function iditemsListOptions(state) {
       return state.HotelModule.iditemsListOptions;
+    },
+    snackbar: function snackbar(state) {
+      return state.HotelModule.snackbar;
     }
   })),
-  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized"])), {}, {
+  methods: _objectSpread(_objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotel", "getConfiguration", "getContacts", "getConditions", "getRegimes", "getRestaurants", "getSchedules", "getPools", "getAditionalInfo"])), Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapMutations"])(["setReinicialized", "setChargeView", "setSnackbar"])), {}, {
     chargeDataHotel: function chargeDataHotel() {
       var _this = this;
 
       if (this.$route.params.id) {
         this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
 
-        this.getHotel(this.$route.params.id).then(function () {
-          _this.hotelTitle = _this.hotel.title;
+        if (this.$route.params.id != 'new') {
+          this.getHotel(this.$route.params.id).then(function () {
+            _this.hotelTitle = _this.hotel.title;
 
-          if (_this.hotel.idConfiguration !== null) {
-            _this.getConfiguration(_this.hotel.idConfiguration).then(function () {});
-          }
+            if (_this.hotel.idConfiguration !== null) {
+              _this.getConfiguration(_this.hotel.idConfiguration).then(function () {});
+            }
 
-          if (_this.hotel.idContact !== null) {
-            _this.getContacts(_this.hotel.idContact).then(function () {});
-          }
+            if (_this.hotel.idContact !== null) {
+              _this.getContacts(_this.hotel.idContact).then(function () {});
+            }
 
-          if (_this.hotel.idCondition !== null) {
-            _this.getConditions(_this.hotel.idCondition).then(function () {});
-          }
+            if (_this.hotel.idCondition !== null) {
+              _this.getConditions(_this.hotel.idCondition).then(function () {});
+            }
 
-          if (_this.hotel.idRegime !== null) {
-            _this.getRegimes(_this.hotel.idRegime).then(function () {});
-          }
+            if (_this.hotel.idRegime !== null) {
+              _this.getRegimes(_this.hotel.idRegime).then(function () {});
+            }
 
-          if (_this.hotel.idAmenity !== null) {
-            _this.getAditionalInfo(_this.hotel.idAmenity).then(function () {});
+            if (_this.hotel.idAmenity !== null) {
+              _this.getAditionalInfo(_this.hotel.idAmenity).then(function () {}); // this.getPools(this.hotel.id).then(() => {});
+              // this.getRestaurants(this.hotel.id).then(() => {});
+              // this.getSchedules(this.hotel.id).then(() => {});
 
-            _this.getPools(_this.hotel.id).then(function () {});
-
-            _this.getRestaurants(_this.hotel.id).then(function () {});
-
-            _this.getSchedules(_this.hotel.id).then(function () {});
-          }
-        });
+            }
+          });
+        } else if (this.$route.params.id == 'new') {
+          //Se manda llamar la mutacion para cambiar el estado de la varibale 'chargeView"
+          //Debido a que es un nuevo registro de hotel y no hay datos previos que cargar
+          this.setChargeView(true);
+        }
       }
     }
   }),
@@ -5301,10 +5379,12 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
       }
 
       if (this.hotel.image != null || this.hotel.image != "") {
-        if (_typeof(this.hotel.image) == 'object') {
+        if (this.hotel.image != null && _typeof(this.hotel.image) == 'object') {
           this.currentImage = this.hotel.image.temporalURL;
-        } else if (this.hotel.image.includes("jpeg") == true) {
-          this.currentImage = "/storage/img/" + this.hotel.image;
+        } else if (this.hotel.image != null && typeof this.hotel.image != 'undefined') {
+          if (this.hotel.image.includes("jpeg") == true) {
+            this.currentImage = "/storage/img/" + this.hotel.image;
+          }
         }
       } else {//console.log("noImage")
       }
@@ -12759,6 +12839,22 @@ var render = function() {
                             ])
                           : _vm._e()
                       ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "v-snackbar",
+                      {
+                        attrs: {
+                          timeout: -1,
+                          value: _vm.snackbar,
+                          right: "",
+                          color: "success",
+                          rounded: "pill",
+                          timeout: "3500",
+                          bottom: ""
+                        }
+                      },
+                      [_vm._v("\n      Registro guardado exitosamente\n    ")]
                     )
                   ],
                   1
