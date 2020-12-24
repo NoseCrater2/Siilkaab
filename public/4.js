@@ -150,8 +150,8 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
     //Metodo que lleva la logica para crear y cargar los datos de fechas en la tabla de fechas
     loadDates: function loadDates() {
       var arrayDatesCalendar = []; //Variable que sera el arreglo de objetos de fecha, utilizado para insertarse en el arreglo general "this.arrayItemsCalendar"
+      // console.log("TODAY", this.generalCurrentDay)
 
-      console.log("TODAY", this.generalCurrentDay);
       var today = this.generalCurrentDay; //Variable que guarda el dia actual (sera el dia que aparezca en la primera columna de la tabla)
 
       var daysNextMonth = 30 - (31 - today); //Variable que guarda la cantidad de dias del siguiente mes que seran mostrados en la tabla
@@ -210,7 +210,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
           dateYYYYMMDD: dateYYYYMMDD,
           price: null,
           numberRooms: null,
-          idRoom: null
+          idRoom: []
         };
         arrayDatesCalendar.push(objDate); //Se introduce el objeto recien creado en el arreglo
       }
@@ -271,24 +271,25 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
         case "dic.":
           this.generalCurrentMonth = 11;
           break;
-      }
+      } // console.log(this.arrayItemsCalendar);
 
-      console.log(this.arrayItemsCalendar);
+
       var start = new Date(2012, 0, 15);
       var end = new Date(2012, 4, 23);
-      var range = moment.range(start, end);
-      console.log(range);
+      var range = moment.range(start, end); // console.log(range);
     },
     priority: function priority(objDate, objRoom, indexRoom, indexTDColumnsDate) {
       var _this = this;
 
       var globalCheckPriorityHigh = false;
       var globalCheckPriorityMedium = false;
+      var globalCheckPriorityLow = false;
+      var foundDayAndRange;
       var indexRates = -1;
       var isThereARate = false;
       var rack = this.rates.map(function (itemRate, index) {
         var countWhile = 0;
-        var foundDayAndRange = '';
+        foundDayAndRange = '';
 
         if (itemRate.room_id == objRoom.id) {
           while (countWhile < _this.rates.length) {
@@ -297,7 +298,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
                 foundDayAndRange += 'day';
               }
 
-              if (_this.rates[countWhile].start != null) {
+              if (_this.rates[countWhile].start != null && _this.rates[countWhile].end != null) {
                 foundDayAndRange += 'AndRange';
               }
             }
@@ -313,9 +314,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
               return itemRate.rack;
             }
           } else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start, itemRate.end, null, "[]") == true && globalCheckPriorityHigh == false) {
-            if (foundDayAndRange != 'dayAndRange') {
-              objRoom.cellColor = 'red darken-1';
-              objDate.idRoom = objRoom.id;
+            if (foundDayAndRange == 'AndRangeday') {
               indexRates = index;
               isThereARate = true;
               globalCheckPriorityMedium = true; //pintar el color
@@ -327,18 +326,139 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
           } else if (itemRate[objDate.nameDayEnglish] > 0 && globalCheckPriorityHigh == false && globalCheckPriorityMedium == false) {
             indexRates = index;
             isThereARate = true;
+            globalCheckPriorityLow = true;
             return itemRate[objDate.nameDayEnglish];
           }
         }
       });
 
       if (isThereARate == true) {
-        //objDate.idRoom = rack[indexRates].id
-        //objRoom.cellColor = 'blue';
+        var localIndex = 0;
+        var findedID;
+        var findedColor; //console.log(objRoom)
+        //console.log(flagDay, flagRange, flagWeekday)
+
+        if (globalCheckPriorityHigh == true) {
+          findedID = objDate.idRoom.filter(function (item) {
+            return item.idRoom == objRoom.id;
+          });
+
+          if (findedID.length == 0) {
+            objDate.idRoom.push({
+              idRoom: objRoom.id,
+              priorityColor: 1
+            });
+          }
+
+          if (typeof objRoom.cellColor == 'undefined') {
+            objRoom.cellColor = [];
+          }
+
+          findedColor = objRoom.cellColor.filter(function (item) {
+            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3') {
+              return item;
+            }
+          });
+
+          if (findedColor.length <= 3 && !findedColor.includes('blue lighten-2')) {
+            objRoom.cellColor.push({
+              color: 'blue lighten-2',
+              priority: 1
+            });
+          }
+        }
+
+        if (globalCheckPriorityMedium == true) {
+          findedID = objDate.idRoom.filter(function (item) {
+            return item.idRoom == objRoom.id;
+          });
+
+          if (findedID.length == 0) {
+            objDate.idRoom.push({
+              idRoom: objRoom.id,
+              priorityColor: 2
+            });
+          }
+
+          if (typeof objRoom.cellColor == 'undefined') {
+            objRoom.cellColor = [];
+          }
+
+          findedColor = objRoom.cellColor.filter(function (item) {
+            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3') {
+              return item;
+            }
+          });
+
+          if (findedColor.length <= 3 && !findedColor.includes('red darken-1')) {
+            objRoom.cellColor.push({
+              color: 'red darken-1',
+              priority: 2
+            });
+          }
+        }
+
+        if (globalCheckPriorityLow == true) {
+          findedID = objDate.idRoom.filter(function (item) {
+            return item.idRoom == objRoom.id;
+          });
+
+          if (findedID.length == 0) {
+            objDate.idRoom.push({
+              idRoom: objRoom.id,
+              priorityColor: 3
+            });
+          }
+
+          if (typeof objRoom.cellColor == 'undefined') {
+            objRoom.cellColor = [];
+          }
+
+          findedColor = objRoom.cellColor.filter(function (item) {
+            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3') {
+              return item;
+            }
+          });
+
+          if (findedColor.length <= 3 && !findedColor.includes('deep-purple lighten-3')) {
+            objRoom.cellColor.push({
+              color: 'deep-purple lighten-3',
+              priority: 3
+            });
+          }
+        } //console.log(objRoom.cellColor)
+
+
         return rack[indexRates];
       } else {
         return objRoom.rack_rate;
       }
+    },
+    //Metodo que es llamado por la tabla para asignar un color de celda
+    setCellColor: function setCellColor(objRoom, objDate) {
+      var setCellColorClass = '';
+      var index = 0;
+      var lengthRooms = this.arrEndpointRooms.length;
+
+      while (index < lengthRooms) {
+        if (typeof objDate.idRoom[index] != 'undefined') {
+          if (objRoom.id == objDate.idRoom[index].idRoom) {
+            var indexInter = 0;
+
+            while (indexInter < objRoom.cellColor.length) {
+              if (objRoom.cellColor[indexInter].priority == objDate.idRoom[index].priorityColor) {
+                setCellColorClass = objRoom.cellColor[indexInter].color;
+              }
+
+              indexInter++;
+            }
+          }
+        }
+
+        index++;
+      }
+
+      return setCellColorClass;
     }
   },
   props: {
@@ -1173,10 +1293,7 @@ var render = function() {
                                 "td",
                                 {
                                   key: index,
-                                  class:
-                                    objRoom.id == objDate.idRoom
-                                      ? objRoom.cellColor
-                                      : ""
+                                  class: _vm.setCellColor(objRoom, objDate)
                                 },
                                 [
                                   _c("input", {

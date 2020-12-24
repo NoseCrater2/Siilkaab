@@ -40,7 +40,7 @@
         <tbody>
         <tr v-for="(objRoom, indexRoom) in arrEndpointRooms" :key="indexRoom">
           <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br><span class="text-uppercase">{{objRoom.room_type}}</span></td>
-          <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="objRoom.id == objDate.idRoom ? objRoom.cellColor: ''">
+          <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="setCellColor(objRoom, objDate)">
             <!-- <div v-if="typeof(rates[indexRoom])!='undefined'">
                       <input v-model="rates[indexRoom].rack" placeholder="$ Precio"/><br />
                   </div> -->
@@ -138,7 +138,7 @@ export default {
     //Metodo que lleva la logica para crear y cargar los datos de fechas en la tabla de fechas
     loadDates() {
       let arrayDatesCalendar = []; //Variable que sera el arreglo de objetos de fecha, utilizado para insertarse en el arreglo general "this.arrayItemsCalendar"
-      console.log("TODAY", this.generalCurrentDay)
+      // console.log("TODAY", this.generalCurrentDay)
       let today = this.generalCurrentDay; //Variable que guarda el dia actual (sera el dia que aparezca en la primera columna de la tabla)
       let daysNextMonth = 30 - (31 - today); //Variable que guarda la cantidad de dias del siguiente mes que seran mostrados en la tabla
       let totalDaysCalendar = daysNextMonth + 31; //Variable que lleva el total de dias que se mostraran en la tabla (por defecto "30")
@@ -198,7 +198,7 @@ export default {
           dateYYYYMMDD: dateYYYYMMDD,
           price: null,
           numberRooms: null,
-          idRoom: null
+          idRoom: []
         };
         arrayDatesCalendar.push(objDate); //Se introduce el objeto recien creado en el arreglo
       }
@@ -245,25 +245,27 @@ export default {
           this.generalCurrentMonth = 11;
           break;
       }
-      console.log(this.arrayItemsCalendar);
+      // console.log(this.arrayItemsCalendar);
 
       
 
       const start = new Date(2012, 0, 15);
       const end = new Date(2012, 4, 23);
       const range = moment.range(start, end);
-      console.log(range);
+      // console.log(range);
     },
 
     priority(objDate, objRoom, indexRoom, indexTDColumnsDate) {
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
-
+      let globalCheckPriorityLow = false;
+      let foundDayAndRange
       let indexRates = -1;
       let isThereARate = false;
+
       let rack = this.rates.map((itemRate, index) => {
           let countWhile = 0;
-          let foundDayAndRange = '';
+          foundDayAndRange= '';
           
         if (itemRate.room_id == objRoom.id) {
             while (countWhile < this.rates.length) {
@@ -271,7 +273,7 @@ export default {
                     if(this.rates[countWhile].day != null){
                         foundDayAndRange+='day'
                     }
-                    if(this.rates[countWhile].start != null){
+                    if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
                         foundDayAndRange+='AndRange'
                     }
                 }
@@ -286,9 +288,7 @@ export default {
                 }
             }
             else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
-                if(foundDayAndRange != 'dayAndRange'){
-                    objRoom.cellColor = 'red darken-1';
-                    objDate.idRoom = objRoom.id;
+                if(foundDayAndRange == 'AndRangeday'){
                     indexRates = index;
                     isThereARate = true;
                     globalCheckPriorityMedium = true;
@@ -302,19 +302,98 @@ export default {
             else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
                 indexRates = index;
                 isThereARate = true;
+                globalCheckPriorityLow = true;
                 return itemRate[objDate.nameDayEnglish];
           }
         }
       });
       if (isThereARate == true) {
-        //objDate.idRoom = rack[indexRates].id
-        //objRoom.cellColor = 'blue';
+        let localIndex = 0;
+        let findedID;
+        let findedColor;
+        //console.log(objRoom)
+        //console.log(flagDay, flagRange, flagWeekday)
+        if(globalCheckPriorityHigh == true){
+          findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
+          if(findedID.length == 0){
+            objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 1})
+          }
+          if(typeof(objRoom.cellColor)=='undefined'){
+            objRoom.cellColor = [];
+          }
+          findedColor = objRoom.cellColor.filter((item)=>{
+            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3'){
+              return item;
+            }
+          });
+          if(findedColor.length <= 3 && !findedColor.includes('blue lighten-2')){
+            objRoom.cellColor.push({color: 'blue lighten-2', priority: 1});
+          }
+        }
+        if(globalCheckPriorityMedium == true){
+          findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
+          if(findedID.length == 0){
+            objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 2})
+          }
+          if(typeof(objRoom.cellColor)=='undefined'){
+            objRoom.cellColor = [];
+          }
+
+          findedColor = objRoom.cellColor.filter((item)=>{
+            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3'){
+              return item;
+            }
+          });
+          if(findedColor.length <= 3 && !findedColor.includes('red darken-1')){
+            objRoom.cellColor.push({color: 'red darken-1', priority: 2});
+          }
+        }
+        if(globalCheckPriorityLow == true){
+          findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
+          if(findedID.length == 0){
+            objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 3})
+          }
+          if(typeof(objRoom.cellColor)=='undefined'){
+            objRoom.cellColor = [];
+          }
+
+          findedColor = objRoom.cellColor.filter((item)=>{
+            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3'){
+              return item;
+            }
+          });
+          if(findedColor.length <= 3 && !findedColor.includes('deep-purple lighten-3')){
+            objRoom.cellColor.push({color: 'deep-purple lighten-3', priority: 3});
+          }
+        }
+        //console.log(objRoom.cellColor)
         return rack[indexRates];
       }
       else {
         return objRoom.rack_rate;
       }
     },
+    //Metodo que es llamado por la tabla para asignar un color de celda
+    setCellColor(objRoom, objDate){
+      let setCellColorClass = '';
+      let index = 0;
+      let lengthRooms = this.arrEndpointRooms.length;
+      while (index < lengthRooms) {
+        if(typeof(objDate.idRoom[index])!='undefined'){
+          if(objRoom.id == objDate.idRoom[index].idRoom){
+            let indexInter = 0;
+            while (indexInter < objRoom.cellColor.length) {
+                if(objRoom.cellColor[indexInter].priority == objDate.idRoom[index].priorityColor){
+                  setCellColorClass = objRoom.cellColor[indexInter].color;
+                }
+              indexInter++;
+            }
+          }
+        }
+        index++;
+      }
+      return setCellColorClass;
+    }
   },
   props: {
     arrEndpointRooms: Array,
