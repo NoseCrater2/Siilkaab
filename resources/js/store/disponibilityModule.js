@@ -18,7 +18,11 @@ const disponibilityMoule = {
 
         setRates(state, payload) {
             state.rates = payload;
-        }
+        },
+
+        putEditRates(state, rates) {
+            state.rates = rates;
+        },
     },
     actions: {
         getHotelsForAdmin: async function({ commit }) {
@@ -59,7 +63,44 @@ const disponibilityMoule = {
                 commit("setErrors", error.response.data);
                 commit("setStatus", error.response.status);
             }
-        }
+        },
+        putEditRates: async function({ commit }, newArrayPutRates) {
+            console.log("newArrayPutRates", newArrayPutRates)
+            newArrayPutRates.map(el=>{
+                if(el.day == null){
+                    delete el.day;
+                }
+                if(el.start == null){
+                    delete el.start;
+                }
+                if(el.end == null){
+                    delete el.end;
+                }
+                return el;
+            })
+            try {
+                let arrayRequestItemRate = [];
+                newArrayPutRates.forEach(async itemRate => {
+                    try {
+                        const requestItemRate = await axios.put(
+                            `/api/rates/${itemRate.id}`,
+                            itemRate
+                        );
+                        arrayRequestItemRate.push(requestItemRate.data.data)
+                    } 
+                    catch (error) {
+                        //commit("setErrorsRegimes", error.response.data);
+                        //commit("setStatusRegimes", error.response.status);
+                    }
+                });
+                console.log(arrayRequestItemRate)
+                commit("putEditRates", arrayRequestItemRate);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                //commit("setErrorsRegimes", error.response.data);
+                //commit("setStatusRegimes", error.response.status);
+            }
+        },
     }
 };
 

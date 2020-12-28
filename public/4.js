@@ -75,6 +75,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 //Instalar moment.js con npm e importar
 //npm install moment
 //Instalar plugin de rangos moment; "moment-range"
@@ -165,7 +167,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
         //Variable que guarda la fecha actual de la actual iteracion
         var currentDate = moment().year(this.generalYear).month(this.generalCurrentMonth).date(i).format("dddd, DD MMM YYYY"); //Variable que guarda la fecha actual de la actual iteracion en formato "YYYY-M-DD"
 
-        var dateYYYYMMDD = moment().year(this.generalYear).month(this.generalCurrentMonth).date(i).format("YYYY-M-DD"); //Cortamos la fecha actual mediante una expresion regular, para separarla por "nombreDia, numeroDia, mes, año"
+        var dateYYYYMMDD = moment().year(this.generalYear).month(this.generalCurrentMonth).date(i).format("YYYY-MM-DD"); //Cortamos la fecha actual mediante una expresion regular, para separarla por "nombreDia, numeroDia, mes, año"
 
         var splitCurrentDate = currentDate.split(/[ ,]+/); //Construimos un objeto con el arreglo "splitCurrentDate" y este sera el objeto de fechas que se introducira en el arreglo "arrayDatesCalendar"
 
@@ -482,6 +484,13 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var vuex__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuex */ "./node_modules/vuex/dist/vuex.esm.js");
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -508,11 +517,66 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'PeriodConfig',
+  data: function data() {
+    return {
+      rateModel: null
+    };
+  },
+  created: function created() {},
+  computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
+    rates: function rates(state) {
+      return state.disponibilityMoule.rates;
+    }
+  })), {}, {
+    computedRate: {
+      get: function get() {
+        return this.rateModel;
+      },
+      set: function set(model) {
+        var _this = this;
+
+        this.rateModel = model;
+        this.rates.map(function (rateItem) {
+          if (rateItem.room_id == _this.idRoomCompo) {
+            if (_this.arrayDaysSelected.length > 0) {
+              var countDay = 0;
+
+              var _loop = function _loop() {
+                var daySelected = _this.arrayDaysSelected[countDay];
+                Object.keys(rateItem).forEach(function (ratePropertyDay) {
+                  if (daySelected == ratePropertyDay) {
+                    rateItem[daySelected] = parseInt(_this.rateModel);
+
+                    if (rateItem[daySelected] == "") {
+                      rateItem[daySelected] = null;
+                    }
+                  }
+                });
+                countDay++;
+              };
+
+              while (countDay < _this.arrayDaysSelected.length) {
+                _loop();
+              }
+            }
+
+            return rateItem;
+          }
+        });
+        return this.rateModel;
+      }
+    }
+  }),
   props: {
     idCompo: Number,
-    objArrCompo: Object
+    objArrCompo: Object,
+    idRoomCompo: Number,
+    arrayRangePeriod: Array,
+    arrayDaysSelected: Array
   }
 });
 
@@ -673,6 +737,33 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -682,22 +773,48 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       hotelSelected: null,
       loadingRooms: false,
       roomSelected: null,
-      select: [],
+      arrayDays: [{
+        "id": "monday",
+        "day": "Lunes"
+      }, {
+        "id": "tuesday",
+        "day": "Martes"
+      }, {
+        "id": "wednesday",
+        "day": "Miércoles"
+      }, {
+        "id": "thursday",
+        "day": "Jueves"
+      }, {
+        "id": "friday",
+        "day": "Viernes"
+      }, {
+        "id": "saturday",
+        "day": "Sábado"
+      }, {
+        "id": "sunday",
+        "day": "Domingo"
+      }],
+      allCheckboxesSelected: false,
+      daysIds: [],
       arrayRoomIDs: [],
       daySelected: null,
       arrayComponents: [],
       countIdCompo: -1,
-      isFilledArrayComponents: false
+      isFilledArrayComponents: false,
+      modalRangePeriod: false,
+      rangePeriodTimeModel: []
     };
   },
   mounted: function mounted() {
     this.getHotelsForAdmin();
   },
-  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotelsForAdmin", "getRoomsForAdmin", "getRates"])), {}, {
+  methods: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapActions"])(["getHotelsForAdmin", "getRoomsForAdmin", "getRates", "putEditRates"])), {}, {
     searchRoom: function searchRoom(idHotel) {
       var _this = this;
 
       this.loadingRooms = true;
+      this.isFilledArrayComponents = false;
       this.getRoomsForAdmin(idHotel).then(function () {
         _this.arrayRoomIDs = _this.rooms.map(function (el) {
           return el.id;
@@ -709,6 +826,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
     },
     fillArrayComponents: function fillArrayComponents() {
+      this.arrayComponents = [];
       var countWhile = 0;
 
       while (countWhile < this.rooms.length) {
@@ -723,8 +841,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagPeriodConfig: _components_Disponibility_PeriodConfig__WEBPACK_IMPORTED_MODULE_2__["default"],
-        objArrCompo: obj
+        objArrCompo: obj,
+        idRoomCompo: obj.id
       });
+    },
+    selectAllCheckboxes: function selectAllCheckboxes() {
+      this.daysIds = [];
+
+      if (this.allCheckboxesSelected) {
+        for (var day in this.arrayDays) {
+          this.daysIds.push(this.arrayDays[day].id.toString());
+        }
+      }
+    },
+    selectBtnCheckbox: function selectBtnCheckbox() {
+      this.allCheckboxesSelected = false;
+    },
+    btnApplyCheckPriority: function btnApplyCheckPriority() {
+      this.putEditRates(this.rates);
     }
   }),
   components: {
@@ -744,6 +878,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   })), {}, {
     computedArrayComponents: function computedArrayComponents() {
       return this.arrayComponents;
+    },
+    rangePeriodTimeSaveState: function rangePeriodTimeSaveState() {
+      return this.rangePeriodTimeModel;
+    },
+    computedRangePeriodText: function computedRangePeriodText() {
+      return this.rangePeriodTimeModel.join(' - ');
     }
   })
 });
@@ -762,7 +902,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "\ntable[data-v-110d6e06] {\r\n  border-collapse: collapse;\r\n  border-spacing: 0;\r\n  table-layout: auto;\n}\ntd[data-v-110d6e06],\r\nth[data-v-110d6e06] {\r\n  /* margin: 0; */\r\n  /* border: 1px solid black; */\r\n  white-space: nowrap;\r\n  display: table-cell;\r\n  text-align: center;\r\n  vertical-align: middle;\n}\n.dateCol[data-v-110d6e06] {\r\n  background-color: #dadada;\n}\n.centerContent[data-v-110d6e06] {\r\n  display: table-cell;\r\n  text-align: center;\r\n  vertical-align: middle;\r\n  width: 4.5em;\r\n  margin-left: -1.4em;\r\n  margin-right: -1.4em;\n}\n.headcol[data-v-110d6e06] {\r\n  position: -webkit-sticky;\r\n  position: sticky;\r\n  left: 0;\r\n  background-color: white;\r\n  border-right: 1px solid  #dadada;\r\n  /* padding-left: 0.85em;\r\n  padding-right: 0.85em; */\r\n  white-space: pre;\r\n  text-align: left;\n}\n.empty-col[data-v-110d6e06] {\r\n  border: none;\r\n  background-color: white;\n}\r\n", ""]);
+exports.push([module.i, "\ntable[data-v-110d6e06] {\r\n  border-collapse: collapse;\r\n  border-spacing: 0;\r\n  table-layout: auto;\n}\ntd[data-v-110d6e06],\r\nth[data-v-110d6e06] {\r\n  /* margin: 0; */\r\n  /* border: 1px solid black; */\r\n  white-space: nowrap;\r\n  display: table-cell;\r\n  text-align: center;\r\n  vertical-align: middle;\n}\n.dateCol[data-v-110d6e06] {\r\n  background-color: #dadada;\n}\n.centerContent[data-v-110d6e06] {\r\n  display: table-cell;\r\n  text-align: center;\r\n  vertical-align: middle;\r\n  width: 4.5em;\r\n  margin-left: -1.4em;\r\n  margin-right: -1.07em;\n}\n.headcol[data-v-110d6e06] {\r\n  position: -webkit-sticky;\r\n  position: sticky;\r\n  left: 0;\r\n  background-color: white;\r\n  border-right: 1px solid  #dadada;\r\n  /* padding-left: 0.85em;\r\n  padding-right: 0.85em; */\r\n  white-space: pre;\r\n  text-align: left;\n}\n.empty-col[data-v-110d6e06] {\r\n  border: none;\r\n  background-color: white;\n}\r\n", ""]);
 
 // exports
 
@@ -1278,10 +1418,7 @@ var render = function() {
                             _c("span", { staticClass: "font-weight-bold" }, [
                               _vm._v(_vm._s(objRoom.name))
                             ]),
-                            _c("br"),
-                            _c("span", { staticClass: "text-uppercase" }, [
-                              _vm._v(_vm._s(objRoom.room_type))
-                            ])
+                            _c("br")
                           ]),
                           _vm._v(" "),
                           _vm._l(
@@ -1321,20 +1458,33 @@ var render = function() {
                                     }
                                   }),
                                   _vm._v(" "),
-                                  _c("div", [
-                                    _c("input", {
-                                      staticClass: "centerContent",
-                                      domProps: {
-                                        value: _vm.priority(
-                                          objDate,
-                                          objRoom,
-                                          indexRoom,
-                                          index
-                                        )
-                                      }
-                                    }),
-                                    _c("br")
-                                  ])
+                                  _c(
+                                    "div",
+                                    [
+                                      _c(
+                                        "v-icon",
+                                        {
+                                          staticClass: "ml-n4 mr-4",
+                                          attrs: { "x-small": "" }
+                                        },
+                                        [_vm._v("mdi-currency-usd")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("input", {
+                                        staticClass: "centerContent",
+                                        domProps: {
+                                          value: _vm.priority(
+                                            objDate,
+                                            objRoom,
+                                            indexRoom,
+                                            index
+                                          )
+                                        }
+                                      }),
+                                      _c("br")
+                                    ],
+                                    1
+                                  )
                                 ]
                               )
                             }
@@ -1425,6 +1575,13 @@ var render = function() {
                   label: "Tarifa",
                   "prepend-inner-icon": "mdi-currency-usd-circle",
                   dense: ""
+                },
+                model: {
+                  value: _vm.computedRate,
+                  callback: function($$v) {
+                    _vm.computedRate = $$v
+                  },
+                  expression: "computedRate"
                 }
               })
             ],
@@ -1536,114 +1693,257 @@ var render = function() {
                     "v-card",
                     { staticClass: "pa-4", attrs: { outlined: "", tile: "" } },
                     [
+                      _c("div", { staticClass: "d-flex justify-start mb-2" }, [
+                        _c(
+                          "span",
+                          {
+                            staticClass:
+                              "text-h4 text-uppercase font-weight-bold"
+                          },
+                          [_vm._v("Actualizar Periodo")]
+                        )
+                      ]),
+                      _vm._v(" "),
                       _c(
-                        "span",
-                        { staticClass: "text-h4 overline font-weight-bold" },
-                        [_vm._v("Actualizar periodo")]
+                        "v-row",
+                        { attrs: { align: "center" } },
+                        [
+                          _c(
+                            "v-col",
+                            {
+                              attrs: { cols: "12", sm: "12", md: "4", lg: "4" }
+                            },
+                            [
+                              _c(
+                                "span",
+                                {
+                                  staticClass:
+                                    "text-center font-weight-bold overline"
+                                },
+                                [_vm._v("Periodo")]
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            {
+                              staticClass: "mt-6",
+                              attrs: { cols: "12", sm: "12", md: "8", lg: "8" }
+                            },
+                            [
+                              _c(
+                                "v-dialog",
+                                {
+                                  ref: "dialogRangePeriod",
+                                  attrs: {
+                                    "return-value": _vm.rangePeriodTimeModel,
+                                    persistent: "",
+                                    width: "290px"
+                                  },
+                                  on: {
+                                    "update:returnValue": function($event) {
+                                      _vm.rangePeriodTimeModel = $event
+                                    },
+                                    "update:return-value": function($event) {
+                                      _vm.rangePeriodTimeModel = $event
+                                    }
+                                  },
+                                  scopedSlots: _vm._u(
+                                    [
+                                      {
+                                        key: "activator",
+                                        fn: function(ref) {
+                                          var on = ref.on
+                                          var attrs = ref.attrs
+                                          return [
+                                            _c(
+                                              "v-text-field",
+                                              _vm._g(
+                                                _vm._b(
+                                                  {
+                                                    attrs: {
+                                                      "prepend-inner-icon":
+                                                        "mdi-calendar",
+                                                      outlined: "",
+                                                      required: "",
+                                                      dense: "",
+                                                      readonly: ""
+                                                    },
+                                                    model: {
+                                                      value:
+                                                        _vm.computedRangePeriodText,
+                                                      callback: function($$v) {
+                                                        _vm.computedRangePeriodText = $$v
+                                                      },
+                                                      expression:
+                                                        "computedRangePeriodText"
+                                                    }
+                                                  },
+                                                  "v-text-field",
+                                                  attrs,
+                                                  false
+                                                ),
+                                                on
+                                              )
+                                            )
+                                          ]
+                                        }
+                                      }
+                                    ],
+                                    null,
+                                    false,
+                                    2669261153
+                                  ),
+                                  model: {
+                                    value: _vm.modalRangePeriod,
+                                    callback: function($$v) {
+                                      _vm.modalRangePeriod = $$v
+                                    },
+                                    expression: "modalRangePeriod"
+                                  }
+                                },
+                                [
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-date-picker",
+                                    {
+                                      attrs: { range: "", scrollable: "" },
+                                      model: {
+                                        value: _vm.rangePeriodTimeModel,
+                                        callback: function($$v) {
+                                          _vm.rangePeriodTimeModel = $$v
+                                        },
+                                        expression: "rangePeriodTimeModel"
+                                      }
+                                    },
+                                    [
+                                      _c("v-spacer"),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: { text: "", color: "primary" },
+                                          on: {
+                                            click: function($event) {
+                                              _vm.modalRangePeriod = false
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                  Cancelar\n                "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: { text: "", color: "primary" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.$refs.dialogRangePeriod.save(
+                                                _vm.rangePeriodTimeSaveState
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                  Aceptar\n                "
+                                          )
+                                        ]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
                       ),
                       _vm._v(" "),
                       _c(
                         "v-row",
-                        {
-                          staticClass: "ml-1 mt-4",
-                          attrs: { justify: "start" }
-                        },
+                        { attrs: { align: "center" } },
                         [
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Todos", value: "all" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
+                          _c(
+                            "v-col",
+                            {
+                              attrs: { cols: "12", sm: "12", md: "4", lg: "4" }
+                            },
+                            [
+                              _c(
+                                "span",
+                                {
+                                  staticClass:
+                                    "text-center font-weight-bold overline"
+                                },
+                                [_vm._v("Dias")]
+                              )
+                            ]
+                          ),
                           _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Lunes", value: "lunes" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Martes", value: "martes" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Miércoles", value: "miércoles" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Jueves", value: "jueves" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Viernes", value: "viernes" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Sábado", value: "sábado" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          }),
-                          _vm._v(" "),
-                          _c("v-checkbox", {
-                            staticClass: "mr-3",
-                            attrs: { label: "Domingo", value: "domingo" },
-                            model: {
-                              value: _vm.select,
-                              callback: function($$v) {
-                                _vm.select = $$v
-                              },
-                              expression: "select"
-                            }
-                          })
+                          _c(
+                            "v-col",
+                            {
+                              attrs: { cols: "12", sm: "12", md: "8", lg: "8" }
+                            },
+                            [
+                              _c(
+                                "v-row",
+                                {
+                                  staticClass: "ml-1 mt-4",
+                                  attrs: { justify: "start" }
+                                },
+                                [
+                                  _c("v-checkbox", {
+                                    staticClass: "mr-3",
+                                    attrs: { label: "Todos" },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.selectAllCheckboxes()
+                                      }
+                                    },
+                                    model: {
+                                      value: _vm.allCheckboxesSelected,
+                                      callback: function($$v) {
+                                        _vm.allCheckboxesSelected = $$v
+                                      },
+                                      expression: "allCheckboxesSelected"
+                                    }
+                                  }),
+                                  _vm._v(" "),
+                                  _vm._l(_vm.arrayDays, function(day, index) {
+                                    return _c("v-checkbox", {
+                                      key: index,
+                                      staticClass: "mr-3",
+                                      attrs: { label: day.day, value: day.id },
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.selectBtnCheckbox()
+                                        }
+                                      },
+                                      model: {
+                                        value: _vm.daysIds,
+                                        callback: function($$v) {
+                                          _vm.daysIds = $$v
+                                        },
+                                        expression: "daysIds"
+                                      }
+                                    })
+                                  })
+                                ],
+                                2
+                              )
+                            ],
+                            1
+                          )
                         ],
                         1
                       ),
@@ -1665,7 +1965,11 @@ var render = function() {
                                       tag: "component",
                                       attrs: {
                                         idCompo: component.idCompo,
-                                        objArrCompo: component.objArrCompo
+                                        objArrCompo: component.objArrCompo,
+                                        idRoomCompo: component.idRoomCompo,
+                                        arrayRangePeriod:
+                                          _vm.rangePeriodTimeModel,
+                                        arrayDaysSelected: _vm.daysIds
                                       }
                                     })
                                   }),
@@ -1680,7 +1984,14 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "v-btn",
-                    { attrs: { color: "primary", large: "", block: "" } },
+                    {
+                      attrs: { color: "primary", large: "", block: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.btnApplyCheckPriority()
+                        }
+                      }
+                    },
                     [_vm._v("Aplicar")]
                   ),
                   _vm._v(" "),

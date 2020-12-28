@@ -15,6 +15,7 @@ class RateIndexResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'id' => $this->id,
             'type' => $this->type,
             'bed_rooms' => $this->bed_rooms,
             'rack' => $this->rack,

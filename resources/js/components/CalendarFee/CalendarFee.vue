@@ -39,7 +39,7 @@
         </thead>
         <tbody>
         <tr v-for="(objRoom, indexRoom) in arrEndpointRooms" :key="indexRoom">
-          <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br><span class="text-uppercase">{{objRoom.room_type}}</span></td>
+          <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br></td>
           <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="setCellColor(objRoom, objDate)">
             <!-- <div v-if="typeof(rates[indexRoom])!='undefined'">
                       <input v-model="rates[indexRoom].rack" placeholder="$ Precio"/><br />
@@ -47,6 +47,8 @@
             <!-- <v-icon x-small class="ml-n3 mr-n1">mdi-pencil</v-icon> -->
             <input v-model="objRoom.bed_rooms" class="centerContent"/>
             <div>
+               <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
+              <!-- Debe de haber de menos un rate para que sea disponible quantity en endpoints rooms-->
               <!-- <v-icon x-small class="ml-n3 mr-n1">mdi-currency-usd</v-icon> -->
               <input :value="priority(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
             </div>
@@ -157,7 +159,7 @@ export default {
           .year(this.generalYear)
           .month(this.generalCurrentMonth)
           .date(i)
-          .format("YYYY-M-DD");
+          .format("YYYY-MM-DD");
 
         //Cortamos la fecha actual mediante una expresion regular, para separarla por "nombreDia, numeroDia, mes, año"
         let splitCurrentDate = currentDate.split(/[ ,]+/);
@@ -434,7 +436,7 @@ th {
   vertical-align: middle;
   width: 4.5em;
   margin-left: -1.4em;
-  margin-right: -1.4em;
+  margin-right: -1.07em;
 }
 
 .headcol {

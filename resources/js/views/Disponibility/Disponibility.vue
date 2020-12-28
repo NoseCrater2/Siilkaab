@@ -63,56 +63,80 @@
             </v-alert> -->
 
         <v-card class="pa-4" outlined tile>
-          <span class="text-h4 overline font-weight-bold">Actualizar periodo</span>
-          <v-row justify="start" class="ml-1 mt-4">
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Todos"
-              value="all"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Lunes"
-              value="lunes"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Martes"
-              value="martes"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Miércoles"
-              value="miércoles"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Jueves"
-              value="jueves"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Viernes"
-              value="viernes"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Sábado"
-              value="sábado"
-            ></v-checkbox>
-            <v-checkbox
-              class="mr-3"
-              v-model="select"
-              label="Domingo"
-              value="domingo"
-            ></v-checkbox>
+          <div class="d-flex justify-start mb-2">
+            <span class="text-h4 text-uppercase font-weight-bold">Actualizar Periodo</span>
+          </div>
+          <v-row align="center">
+            <v-col cols="12" sm="12" md="4" lg="4">
+              <span class="text-center font-weight-bold overline">Periodo</span>
+            </v-col>
+            <v-col cols="12" sm="12" md="8" lg="8" class="mt-6">
+              <v-dialog
+                ref="dialogRangePeriod"
+                v-model="modalRangePeriod"
+                :return-value.sync="rangePeriodTimeModel"
+                persistent
+                width="290px"
+              >
+                <template v-slot:activator="{ on, attrs }">
+                  <v-text-field
+                    v-model="computedRangePeriodText"
+                    prepend-inner-icon="mdi-calendar"
+                    v-bind="attrs"
+                    v-on="on"
+                    outlined
+                    required
+                    dense
+                    readonly
+                  ></v-text-field>
+                </template>
+                <v-date-picker
+                  v-model="rangePeriodTimeModel"
+                  range
+                  scrollable
+                >
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="modalRangePeriod = false"
+                  >
+                    Cancelar
+                  </v-btn>
+                  <v-btn
+                    text
+                    color="primary"
+                    @click="$refs.dialogRangePeriod.save(rangePeriodTimeSaveState)"
+                  >
+                    Aceptar
+                  </v-btn>
+                </v-date-picker>
+              </v-dialog>
+            </v-col>
+          </v-row>
+          <v-row align="center">
+            <v-col cols="12" sm="12" md="4" lg="4">
+              <span class="text-center font-weight-bold overline">Dias</span>
+            </v-col>
+            <v-col cols="12" sm="12" md="8" lg="8">
+              <v-row justify="start" class="ml-1 mt-4">
+                <v-checkbox
+                  class="mr-3"
+                  v-model="allCheckboxesSelected"
+                  label="Todos"
+                  @click="selectAllCheckboxes()"
+                ></v-checkbox>
+                <v-checkbox
+                v-for="(day, index) in arrayDays"
+                :key="index"
+                  class="mr-3"
+                  v-model="daysIds"
+                  :label="day.day"
+                  :value="day.id"
+                  @click="selectBtnCheckbox()"
+                ></v-checkbox>
+              </v-row>
+            </v-col>
           </v-row>
           <div v-if="(rooms.length > 0 && isFilledArrayComponents == false) ? fillArrayComponents() : ' '">
             <div v-if="(computedArrayComponents.length > 0 && isFilledArrayComponents == true)">
@@ -121,13 +145,16 @@
                 :idCompo="component.idCompo"
                 :key="component.idCompo"
                 :objArrCompo="component.objArrCompo"
+                :idRoomCompo="component.idRoomCompo"
+                :arrayRangePeriod="rangePeriodTimeModel"
+                :arrayDaysSelected="daysIds"
                 :is="component.TagPeriodConfig"
               ></component>
             </div>
           </div>
           <!-- <PeriodConfig></PeriodConfig> -->
         </v-card>
-        <v-btn color="primary" large block>Aplicar</v-btn>
+        <v-btn color="primary" large block @click="btnApplyCheckPriority()">Aplicar</v-btn>
         <v-spacer></v-spacer>
       </v-form>
     </v-container>
@@ -146,14 +173,27 @@ export default {
       hotelSelected: null,
       loadingRooms: false,
       roomSelected: null,
-      select: [],
+      arrayDays: [ 
+            { "id": "monday", "day": "Lunes" }, 
+            { "id": "tuesday", "day": "Martes" }, 
+            { "id": "wednesday", "day": "Miércoles" }, 
+            { "id": "thursday", "day": "Jueves" }, 
+            { "id": "friday", "day": "Viernes" },
+            { "id": "saturday", "day": "Sábado" },
+            { "id": "sunday", "day": "Domingo" }
+      ],
+      allCheckboxesSelected: false,
+      daysIds: [],
 
       arrayRoomIDs: [],
       daySelected: null,
 
       arrayComponents: [],
       countIdCompo: -1,
-      isFilledArrayComponents: false
+      isFilledArrayComponents: false,
+
+      modalRangePeriod: false,
+      rangePeriodTimeModel: [],
     };
   },
 
@@ -162,9 +202,10 @@ export default {
   },
 
   methods: {
-    ...mapActions(["getHotelsForAdmin", "getRoomsForAdmin", "getRates"]),
+    ...mapActions(["getHotelsForAdmin", "getRoomsForAdmin", "getRates", "putEditRates"]),
     searchRoom(idHotel) {
       this.loadingRooms = true;
+      this.isFilledArrayComponents = false;
       this.getRoomsForAdmin(idHotel).then(() => {
         this.arrayRoomIDs = this.rooms.map((el) => {
           return el.id;
@@ -175,6 +216,7 @@ export default {
       });
     },
     fillArrayComponents(){
+      this.arrayComponents = [];
       let countWhile = 0;
       while (countWhile < this.rooms.length) {
         this.addCompo(this.rooms[countWhile]);
@@ -188,8 +230,23 @@ export default {
         idCompo: this.countIdCompo,
         TagPeriodConfig: PeriodConfig,
         objArrCompo: obj,
+        idRoomCompo: obj.id
       });
     },
+    selectAllCheckboxes() {
+      this.daysIds = [];
+      if (this.allCheckboxesSelected) {
+        for (let day in this.arrayDays) {
+          this.daysIds.push(this.arrayDays[day].id.toString());
+        }
+      }
+    },
+    selectBtnCheckbox() {
+      this.allCheckboxesSelected = false;
+    },
+    btnApplyCheckPriority(){
+      this.putEditRates(this.rates);
+    }
   },
 
   components: {
@@ -206,6 +263,12 @@ export default {
     computedArrayComponents() {
       return this.arrayComponents;
     },
+    rangePeriodTimeSaveState() {
+      return this.rangePeriodTimeModel;
+    },
+    computedRangePeriodText(){
+      return this.rangePeriodTimeModel.join(' - ')
+    }
   },
 };
 </script>
