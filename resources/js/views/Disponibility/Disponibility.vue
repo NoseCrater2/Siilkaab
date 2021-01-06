@@ -154,7 +154,7 @@
           </div>
           <!-- <PeriodConfig></PeriodConfig> -->
         </v-card>
-        <v-btn color="primary" large block @click="btnApplyCheckPriority()">Aplicar</v-btn>
+        <v-btn color="primary" large block @click="btnApplyCheckPriority()" :loading="loadingButton" :disabled="loadingButton">Aplicar</v-btn>
         <v-spacer></v-spacer>
       </v-form>
     </v-container>
@@ -194,6 +194,7 @@ export default {
 
       modalRangePeriod: false,
       rangePeriodTimeModel: [],
+      loadingButton: false
     };
   },
 
@@ -245,7 +246,10 @@ export default {
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority(){
-      this.putEditRates(this.rates);
+      this.loadingButton = true;
+      this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
+        this.loadingButton = false;
+      });
     }
   },
 

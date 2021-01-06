@@ -268,8 +268,7 @@ export default {
       let rack = this.rates.map((itemRate, index) => {
           let countWhile = 0;
           foundDayAndRange= '';
-          
-        if (itemRate.room_id == objRoom.id) {
+        if ((itemRate.room_id == objRoom.id) ) {
             while (countWhile < this.rates.length) {
                 if(this.rates[countWhile].room_id == objRoom.id){
                     if(this.rates[countWhile].day != null){
@@ -290,7 +289,8 @@ export default {
                 }
             }
             else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
-                if(foundDayAndRange == 'AndRangeday'){
+                //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
+                if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
                     indexRates = index;
                     isThereARate = true;
                     globalCheckPriorityMedium = true;

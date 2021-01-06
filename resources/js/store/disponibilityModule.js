@@ -23,6 +23,14 @@ const disponibilityMoule = {
         putEditRates(state, rates) {
             state.rates = rates;
         },
+
+        // postAddRates(state, rates) {
+        //     state.rates = rates;
+        // },
+
+        // putUpdateRates(state, rates) {
+        //     state.rates = rates;
+        // },
     },
     actions: {
         getHotelsForAdmin: async function({ commit }) {
@@ -45,7 +53,7 @@ const disponibilityMoule = {
 
         getRates: async function({ commit }, arrayRoomsID) {
             try {
-                const response = await axios.get(`/api/rates/`);
+                const response = await axios.get(`/api/rates`);
                 let rates = response.data.data;
                 let filteredRates = rates.filter((el)=>{
                     let cont = 0;
@@ -64,9 +72,9 @@ const disponibilityMoule = {
                 commit("setStatus", error.response.status);
             }
         },
-        putEditRates: async function({ commit }, newArrayPutRates) {
-            console.log("newArrayPutRates", newArrayPutRates)
-            newArrayPutRates.map(el=>{
+        putEditRates: async function({ commit, dispatch }, newArrayPutRates) {
+            let flagNewRates = false;
+            newArrayPutRates.arrayRates.map(el=>{
                 if(el.day == null){
                     delete el.day;
                 }
@@ -77,7 +85,61 @@ const disponibilityMoule = {
                     delete el.end;
                 }
                 return el;
-            })
+            });
+            let newRates = [];
+            let oldRates = newArrayPutRates.arrayRates.filter((el)=>{
+                if(el.id != "NEWDAYS"){
+                    return el;
+                }
+                else if(el.id == "NEWDAYS"){
+                    flagNewRates = true;
+                    delete el.id;
+                    newRates.push(el);
+                }
+            });
+            try {
+                if(flagNewRates == true){
+                    dispatch("postAddRatesAXIOS", newRates).then(()=>{
+                        dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                            dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                        });
+                    });
+                }
+                else{
+                    dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                        dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                    });
+                }
+            } catch (error) {
+                //commit("setErrorsRegimes", error.response.data);
+                //commit("setStatusRegimes", error.response.status);
+            }
+        },
+
+        postAddRatesAXIOS: async function({ commit }, newArrayPostRates) {
+            try {
+                let arrayRequestAddItemRate = [];
+                newArrayPostRates.forEach(async itemRate => {
+                    try {
+                        const requestAddItemRate = await axios.post(
+                            `/api/rates`,
+                            itemRate
+                        );
+                        arrayRequestAddItemRate.push(requestAddItemRate.data.data)
+                    } catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
+                });
+                // commit("postAddRates", arrayRequestAddItemRate);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
+            }
+        },
+
+        putUpdateRatesAXIOS: async function({ commit }, newArrayPutRates) {
             try {
                 let arrayRequestItemRate = [];
                 newArrayPutRates.forEach(async itemRate => {
@@ -93,12 +155,12 @@ const disponibilityMoule = {
                         //commit("setStatusRegimes", error.response.status);
                     }
                 });
-                console.log(arrayRequestItemRate)
-                commit("putEditRates", arrayRequestItemRate);
+                // commit("putUpdateRates", arrayRequestItemRate);
+                // commit('setStatus',request.status);
                 // commit('setStatus',request.status);
             } catch (error) {
-                //commit("setErrorsRegimes", error.response.data);
-                //commit("setStatusRegimes", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
     }

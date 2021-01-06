@@ -316,7 +316,8 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
               return itemRate.rack;
             }
           } else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start, itemRate.end, null, "[]") == true && globalCheckPriorityHigh == false) {
-            if (foundDayAndRange == 'AndRangeday') {
+            //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
+            if (foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange') {
               indexRates = index;
               isThereARate = true;
               globalCheckPriorityMedium = true; //pintar el color
@@ -539,20 +540,69 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       set: function set(model) {
         var _this = this;
 
+        var bandera = false;
         this.rateModel = model;
         this.rates.map(function (rateItem) {
-          if (rateItem.room_id == _this.idRoomCompo) {
-            if (_this.arrayDaysSelected.length > 0) {
+          if (rateItem.room_id == _this.idRoomCompo || rateItem.id == "NEW") {
+            if (rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0) {
+              bandera = true;
+
+              if (_this.arrayDaysSelected.length > 0) {
+                var countDay = 0;
+
+                var _loop = function _loop() {
+                  var daySelected = _this.arrayDaysSelected[countDay];
+                  Object.keys(rateItem).forEach(function (ratePropertyDay) {
+                    if (daySelected == ratePropertyDay) {
+                      if (model != "") {
+                        rateItem[daySelected] = parseInt(_this.rateModel);
+                      } else {
+                        rateItem[daySelected] = 0;
+                      }
+                    }
+                  });
+                  countDay++;
+                };
+
+                while (countDay < _this.arrayDaysSelected.length) {
+                  _loop();
+                }
+              }
+            }
+
+            return rateItem;
+          }
+        });
+
+        if (bandera == false) {
+          if (this.arrayDaysSelected.length > 0) {
+            (function () {
               var countDay = 0;
+              var obj = {
+                id: "NEWDAYS",
+                type: "room",
+                bed_rooms: 0,
+                rack: 0,
+                monday: 0,
+                tuesday: 0,
+                wednesday: 0,
+                thursday: 0,
+                friday: 0,
+                saturday: 0,
+                sunday: 0,
+                room_id: _this.idRoomCompo
+              };
 
-              var _loop = function _loop() {
+              var _loop2 = function _loop2() {
                 var daySelected = _this.arrayDaysSelected[countDay];
-                Object.keys(rateItem).forEach(function (ratePropertyDay) {
+                Object.keys(obj).forEach(function (ratePropertyDay) {
                   if (daySelected == ratePropertyDay) {
-                    rateItem[daySelected] = parseInt(_this.rateModel);
+                    obj[daySelected] = parseInt(_this.rateModel);
 
-                    if (rateItem[daySelected] == "") {
-                      rateItem[daySelected] = null;
+                    if (model != "") {
+                      obj[daySelected] = parseInt(_this.rateModel);
+                    } else {
+                      obj[daySelected] = 0;
                     }
                   }
                 });
@@ -560,13 +610,14 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               };
 
               while (countDay < _this.arrayDaysSelected.length) {
-                _loop();
+                _loop2();
               }
-            }
 
-            return rateItem;
+              _this.rates.push(obj);
+            })();
           }
-        });
+        }
+
         return this.rateModel;
       }
     }
@@ -803,7 +854,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       countIdCompo: -1,
       isFilledArrayComponents: false,
       modalRangePeriod: false,
-      rangePeriodTimeModel: []
+      rangePeriodTimeModel: [],
+      loadingButton: false
     };
   },
   mounted: function mounted() {
@@ -858,7 +910,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority: function btnApplyCheckPriority() {
-      this.putEditRates(this.rates);
+      var _this2 = this;
+
+      this.loadingButton = true;
+      this.putEditRates({
+        arrayRates: this.rates,
+        arrayIdRooms: this.arrayRoomIDs
+      }).then(function () {
+        _this2.loadingButton = false;
+      });
     }
   }),
   components: {
@@ -1553,7 +1613,7 @@ var render = function() {
               _c("v-text-field", {
                 attrs: {
                   outlined: "",
-                  label: "Unidades",
+                  label: "Disponibilidad",
                   "prepend-inner-icon": "mdi-pencil",
                   dense: ""
                 }
@@ -1985,7 +2045,13 @@ var render = function() {
                   _c(
                     "v-btn",
                     {
-                      attrs: { color: "primary", large: "", block: "" },
+                      attrs: {
+                        color: "primary",
+                        large: "",
+                        block: "",
+                        loading: _vm.loadingButton,
+                        disabled: _vm.loadingButton
+                      },
                       on: {
                         click: function($event) {
                           return _vm.btnApplyCheckPriority()
