@@ -24,6 +24,7 @@ Route::get('payments/cancelled', 'PaymentController@cancelled')->name('cancelled
 Route::post('payments/success/', 'PaymentController@approval')->name('approval');
 Route::post('payments/getCode', 'PaymentController@getSellerCode')->name('getCode');
 Route::post('payments/updateCode', 'PaymentController@updateCredentials')->name('updateCode');
+Route::get('currentHotelRooms/{hotel}', 'Api\RoomController@currentHotelRooms');
 
 
 
@@ -70,6 +71,7 @@ Route::apiResource('discounts','Api\DiscountController')->only('index','show','s
 Route::apiResource('extras','Api\ExtraController')->only('index','show','store','update','destroy');
 
 Route::apiResource('bedrooms','Api\BedroomController')->only('index','show','store','update','destroy');
+Route::apiResource('beds','Api\BedController')->only('index','show','store','update','destroy');
 Route::apiResource('room_amenities','Api\RoomAmenityController')->only('index','show','store','update','destroy');
 
 Route::apiResource('amenities','Api\AmenityController')->only('index','show','store','update','destroy');

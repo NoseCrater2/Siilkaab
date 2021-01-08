@@ -1,28 +1,41 @@
 <template>
   <div>
     <v-banner single-line>
-      <v-btn small color="info" class="white--text" @click="saveChanges()">
-        <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
-      </v-btn>
-      <v-btn small color="grey" class="white--text">
-        <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y cerrar
-      </v-btn>
-      <v-btn small color="red" class="white--text">
-        <v-icon left dark>mdi-close-circle</v-icon>Cerrar
-      </v-btn>
+      <v-row class="d-flex align-center justify-end">
+        <v-col cols="12" md="8" sm="8" xs="12" class="d-flex justify-start">
+          <v-btn
+            depressed
+            small
+            color="info"
+            class="white--text mr-3"
+            @click="saveChanges()"
+          >
+            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
+          </v-btn>
+          <v-btn depressed small color="grey" class="white--text mr-3" @click="saveChanges('saveAndClose')">
+            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y
+            cerrar
+          </v-btn>
+          <v-btn depressed small color="red" class="white--text mr-3" @click="close()">
+            <v-icon left dark>mdi-close-circle</v-icon>Cerrar
+          </v-btn>
+        </v-col>
 
-      <template v-slot:actions>
-        <v-autocomplete
-          :items="listItemHotels"
-          item-text="title"
-          item-value="id"
-          v-model="computedTitleHotel"
-          dense
-          outlined
-          label="Hoteles"
-        ></v-autocomplete>
-        <v-icon id="iconHotel">mdi-domain</v-icon>
-      </template>
+        <v-col cols="12" md="4" sm="4" xs="12" class="d-flex justify-end my-n8">
+          <v-autocomplete
+            :items="listItemHotels"
+            item-text="title"
+            item-value="id"
+            v-model="computedTitleHotel"
+            dense
+            outlined
+            prepend-inner-icon="mdi-domain"
+            label="Hoteles"
+            class="mt-7"
+            background-color="white"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
     </v-banner>
   </div>
 </template>
@@ -59,6 +72,7 @@ export default {
       aditionalInfo: (state) => state.HotelModule.aditionalInfo,
       restaurants: (state) => state.HotelModule.restaurants,
       schedules: (state) => state.HotelModule.schedules,
+      snackbar: (state) => state.HotelModule.snackbar,
     }),
     computedTitleHotel: {
       get() {
@@ -69,6 +83,7 @@ export default {
         router.push({ name: "Hotel", params: { id: this.idHotel } });
         //Setea todo a nul para antes de hacer el cambio de pestaña de hotel
         this.setReinicialized();
+        this.setReinicializedErrorsStatus();
         //Ejecuta el metodo de carga del hotel
         this.chargeDataHotel();
         return this.idHotel;
@@ -89,28 +104,33 @@ export default {
       "getAditionalInfo",
       "postEditHotel",
       "putEditConfiguration",
+      "postEditConfiguration",
       "putEditContacts",
+      "postEditContacts",
       "putEditConditions",
+      "postEditConditions",
       "putEditRegimes",
       "putEditAditionalInfo",
+      "postEditAditionalInfo",
       "putEditRestaurants",
       "putEditSchedules",
     ]),
-    ...mapMutations(["setReinicialized"]),
-    saveChanges() {
-      this.postEditHotel(this.hotel);
-      this.putEditConfiguration(this.configuration);
-      this.putEditContacts(this.contacts);
-      this.putEditConditions(this.conditions);
-      this.putEditRegimes({
-        newRegimes: this.regimes,
-        currentHotelId: this.hotel.id,
-        currentRegimes: this.hotel.idRegime,
-      });
-      this.putEditAditionalInfo(this.aditionalInfo);
-      this.putEditRestaurants(this.restaurants).then(() => {
-        this.putEditSchedules(this.schedules);
-      });
+    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar"]),
+    close(){
+      this.setReinicialized();
+      this.setReinicializedErrorsStatus();
+      router.replace({ path: '/hotels' });
+    },
+    saveChanges(close = "save") {
+      if(close == "save"){
+        this.executeSaveOnAPI();
+      }
+      if(close == "saveAndClose"){
+        this.executeSaveOnAPI();
+        this.setReinicialized();
+        this.setReinicializedErrorsStatus();
+        router.replace({ path: '/hotels' });
+      }
     },
     chargeDataHotel() {
       if (this.$route.params.id) {
@@ -138,16 +158,111 @@ export default {
         });
       }
     },
+    //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
+    executeSaveOnAPI(){
+        //DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
+        //CODIGO PARA GUARDAR INFORMACION DEL HOTEL INICIA
+        //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
+        if(this.hotel.title != null){
+            //metodo post
+            if(this.hotel.id == null){
+              this.postEditHotel(this.hotel).then(()=>{
+                console.log("this.hotel.id", this.hotel);
+                //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
+                this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
+                  this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
+                  this.setSnackbar(true);
+                }); 
+              });
+            }
+            else if(this.hotel.id != null){
+              this.postEditHotel(this.hotel);
+              //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
+              this.executeSaveOnAPIAfterHotel(this.idHotel).then(()=>{
+                this.setSnackbar(true);
+              }); 
+            }
+        }
+        //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
+    },
+    //Debido a que debe de existir un hotel para guardar la demas informacion
+    //Este metodo se ejecutara despues de la llamada then del metodo 'this.postEditHotel'
+    //Este metodo cotiene los demas metodos que se ejecutaran y que dependen del hotel
+    //Ademas es un metodo asincrono ya que se deben de ejecutar ciertas acciones cuando finalizan todas las peticiones
+    executeSaveOnAPIAfterHotel: async function(idHotel){
+        //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
+        if(this.configuration.timezone != null){
+          if(this.configuration.hotel_id == null){
+            //metodo post
+            this.configuration.hotel_id = idHotel;
+            console.log("BTN", this.configuration);
+            this.postEditConfiguration(this.configuration);
+          }
+          else{
+            //metodo put
+            this.putEditConfiguration(this.configuration);
+          }
+        }
+        //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
+        //CODIGO PARA GUARDAR CONTACTOS INICIA
+        if(this.contacts.address != null){
+          if(this.contacts.hotel_id == null){
+            //metodo post
+            this.contacts.hotel_id = idHotel;
+            console.log("BTN", this.contacts);
+            this.postEditContacts(this.contacts);
+          }
+          else{
+            //metodo put
+            this.putEditContacts(this.contacts);
+          }
+        }
+        //CODIGO PARA GUARDAR CONTACTOS TERMINA
+        //CODIGO PARA GUARDAR CONDICIONES INICIA
+        if(this.conditions.adults != null){
+          if(this.conditions.hotel_id == null){
+            //metodo post
+            this.conditions.hotel_id = idHotel;
+            console.log("BTN", this.conditions);
+            this.postEditConditions(this.conditions);
+          }
+          else{
+            //metodo put
+            this.putEditConditions(this.conditions);
+          }
+        }
+        //CODIGO PARA GUARDAR CONDICIONES TERMINA
+        //CODIGO PARA GUARDAR REGIMENES INICIA
+        console.log("this.hotel.idRegime", this.regimes)
+        if(typeof(this.regimes[0]) !='undefined'){
+          this.putEditRegimes({
+            newRegimes: this.regimes,
+            currentHotelId: idHotel,
+            currentRegimes: this.hotel.idRegime,
+          });
+        }
+        //CODIGO PARA GUARDAR REGIMENES TERMINA
+        //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
+        if(this.aditionalInfo.spa != null){
+          if(this.aditionalInfo.hotel_id == null){
+            //metodo post
+            this.aditionalInfo.hotel_id = idHotel;
+            console.log("BTN", this.aditionalInfo);
+            this.postEditAditionalInfo(this.aditionalInfo);
+          }
+          else{
+            //metodo put
+            this.putEditAditionalInfo(this.aditionalInfo);
+          }
+        }
+        //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
+        // this.putEditRestaurants(this.restaurants).then(() => {
+        //   this.putEditSchedules(this.schedules);
+        // });
+    },
   },
   props: {
     title: String,
   },
 };
 </script>
-
-<style scoped>
-#iconHotel {
-  margin-right: 0px;
-  margin-bottom: 6px;
-}
-</style>

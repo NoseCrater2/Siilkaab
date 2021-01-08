@@ -14,7 +14,7 @@
         <v-icon>mdi-clock</v-icon>
       </template>
       <template slot="actions" slot-scope="{ parent }">
-        <v-btn color="primary" @click="parent.okHandler">Aceptar</v-btn>
+        <v-btn color="primary" @click="parent.okHandler(); formatAndSendHour()">Aceptar</v-btn>
       </template>
     </v-datetime-picker>
   </div>
@@ -35,16 +35,14 @@ export default {
       this.datetime = this.dates.prop.toString().slice(0, -3);
     }
   },
-  updated() {
-      this.formatDate(this.datetime)
-      this.sendNewHour(this.datetime, this.dates.info)
-  },
   data() {
     return {
       dato: null,
       datetime: null,
       textFieldProps: {
-        prependIcon: "mdi-calendar-month"
+        prependInnerIcon: "mdi-calendar-month",
+        backgroundColor: 'white',
+        outlined: true
       },
       dateProps: {
         headerColor: "primary"
@@ -57,11 +55,20 @@ export default {
   },
   methods: {
     formatDate(val) {
+      console.log(val)
         let lastDate = new Date(val).getTime();
         let tzoffset = new Date().getTimezoneOffset() * 60000; //offset in milliseconds
         let localISOTime = new Date(lastDate - tzoffset).toISOString().slice(0, -8);
+        console.log(lastDate)
+        console.log(tzoffset)
         const date = localISOTime.replace(/T/, " ");
         this.datetime = date;
+    },
+    formatAndSendHour(){
+      console.log(this.datetime)
+      this.formatDate(this.datetime)
+      console.log(this.datetime)
+      this.sendNewHour(this.datetime, this.dates.info)
     },
     sendNewHour(newHour, info) {
       this.$emit("sendNewHour", newHour, info);

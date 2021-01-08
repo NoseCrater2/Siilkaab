@@ -1,48 +1,35 @@
-import "@mdi/font/css/materialdesignicons.css";
-import Vuetify from "vuetify/lib";
+import Vue from 'vue';
+import store from "./store/store";
 import router from "./routes";
-import VueRouter from "vue-router";
+import vuetify from './plugins/vuetify'
+
+//Estas importaciones son de TipTap para usar componente MarkdwonCompo
+import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
+import 'tiptap-vuetify/dist/main.css'
+
 import Vuex from "vuex";
 import Index from "./views/Index/Index";
 import Payments from "./views/Reservations/Payments";
 import Reservations from "./views/Reservations/Reservations";
 import Calendar from "./components/HorizontalCalendar/Calendar";
-import storeDefinition from "./store/store";
+
 
 window.Vue = require("vue");
 
-Vue.use(VueRouter);
-Vue.use(Vuetify, {
-    iconfont: "mdi"
-});
+Vue.use(Vuex)
+Vue.use(TiptapVuetifyPlugin, {
+    // the next line is important! You need to provide the Vuetify Object to this place.
+    vuetify, // same as "vuetify: vuetify"
+    // optional, default to 'md' (default vuetify icons before v2.0.0)
+    iconsGroup: 'mdi'
+  });
 
-
-// Translation provided by Vuetify (typescript)
-import es from "../../node_modules/vuetify/src/locale/es.ts";
-
-Vue.use(Vuex);
-
-
-
-import Vue from "vue";
-
-const store = new Vuex.Store(storeDefinition);
 
 const app = new Vue({
     el: "#app",
-
-    vuetify: new Vuetify({
-        lang: {
-            locales: { es },
-            current: "es"
-        }
-    }),
-
-    props: {
-        source: String
-    },
     router,
     store,
+    vuetify,
     components: {
         index: Index,
         payments: Payments,

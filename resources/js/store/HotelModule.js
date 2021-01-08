@@ -1,24 +1,137 @@
 import axios from "axios";
 const HotelModule = {
     state: {
+        snackbar: false,
         allhotels: [],
         hotels: [],
         setReinicializedVar: null,
         chargeView: false, //Variable que carga las vistas de componentes de submenus de hotel
         assignHotels: null,
         iditemsListOptions: 0,
-        hotel: null,
+        hotel: {
+            id: null,
+            title: null,
+            url: null,
+            reference_code: null,
+            num_rooms: null,
+            num_floors: null,
+            type: null,
+            short_text: null,
+            large_text: null
+        },
         currencies: null,
         timezones: null,
         countries: null,
-        configuration: null,
-        contacts: null,
-        conditions: null,
-        regimes: null,
+        configuration: {
+            notification_details: null,
+            notification_voucher: null,
+            notification_card: null,
+            timezone: null,
+            payment_place: null,
+            payment_type: null,
+            currency_id: null,
+            hotel_id: null,
+        },
+        contacts: {
+            url: null,
+            email: null,
+            phone: null,
+            address: null,
+            zipcode: null,
+            city: null,
+            state: null,
+            manager_name: null,
+            legal_rep: null,
+            country_id: null,
+            hotel_id: null,
+        },
+        conditions: {
+            adults: null,
+            children_age: null,
+            adults_age: null,
+            adults_regimen: null,
+            checkin_time: null,
+            checkout_time: null,
+            cancelation_text: null,
+            hotel_id: null
+        },
+        regimes: [],
         restaurants: null,
         schedules: null,
         pools: null,
-        aditionalInfo: null
+        aditionalInfo: {
+            spa: null,
+            air_conditioned: null,
+            no_smoke_rooms: null,
+            air_transfer_service: null,
+            air_collect_service: null,
+            recection_24h: null,
+            gym: null,
+            room_service: null,
+            terrace: null,
+            bar: null,
+            garden: null,
+            water_park: null,
+            beach: null,
+            recreational_activities: null,
+            romantic_dinners: null,
+            touristic_tour: null,
+            guarded_parking: null,
+            street_parking: null,
+            garage_parking: null,
+            special_parking: null,
+            reg_inout_private: null,
+            reg_inout_express: null,
+            touristic_info: null,
+            parking_service: null,
+            currency_change: null,
+            outdoor_furniture: null,
+            terrace_solarium: null,
+            shared_dinner: null,
+            shared_salon: null,
+            game_zone: null,
+            library: null,
+            daily_housekipping: null,
+            laundry_service: null,
+            iron_service: null,
+            meeting_room: null,
+            meeting_center: null,
+            fax_photocopier: null,
+            coffee_break: null,
+            souvenirs_store: null,
+            inclusive_service: null,
+            elevator: null,
+            smoking_zone: null,
+            no_smoking: null,
+            pet_friendly: null,
+            pet_house: null,
+            pet_basket: null,
+            only_adults: null,
+            sanitized_rooms: null,
+            bridal_suite: null,
+            vip_service: null,
+            calefaction: null,
+            keep_bags: null,
+            security_24h: null,
+            security_alarm: null,
+            smoke_detectors: null,
+            in_security_cams: null,
+            out_security_cams: null,
+            fire_extinguishers: null,
+            safe_deposit_box: null,
+            hotel_id: null,
+        },
+
+        errorsInformation: null,
+        statusInformation: null,
+        errorsConfiguration: null,
+        statusConfiguration: null,
+        errorsContacts: null,
+        statusContacts: null,
+        errorsConditions: null,
+        statusConditions: null,
+        errorsRegimes: null,
+        statusRegimes: null
     },
     getters: {
         getAssignHotels(state) {
@@ -28,25 +141,179 @@ const HotelModule = {
     mutations: {
         //Se reinician los estados (principalmente por el problema del router-link)
         setReinicialized(state) {
+            (state.snackbar = false),
             (state.iditemsListOptions = 0),
             (state.setReinicializedVar = null),
             (state.chargeView = false),
-                (state.hotel = null),
+                (state.hotel = {
+                    title: null,
+                    url: null,
+                    reference_code: null,
+                    num_rooms: null,
+                    num_floors: null,
+                    type: null,
+                    short_text: null,
+                    large_text: null
+                }),
                 (state.currencies = null),
                 (state.timezones = null),
                 (state.countries = null),
-                (state.configuration = null),
-                (state.contacts = null),
-                (state.conditions = null),
-                (state.regimes = null),
+                (state.configuration = {
+                    notification_details: null,
+                    notification_voucher: null,
+                    notification_card: null,
+                    timezone: null,
+                    payment_place: null,
+                    payment_type: null,
+                    currency_id: null,
+                    hotel_id: null,
+                }),
+                (state.contacts = {
+                    url: null,
+                    email: null,
+                    phone: null,
+                    address: null,
+                    zipcode: null,
+                    city: null,
+                    state: null,
+                    manager_name: null,
+                    legal_rep: null,
+                    country_id: null,
+                    hotel_id: null,
+                }),
+                (state.conditions = {
+                    adults: null,
+                    children_age: null,
+                    adults_age: null,
+                    adults_regimen: null,
+                    checkin_time: null,
+                    checkout_time: null,
+                    cancelation_text: null,
+                    hotel_id: null
+                }),
+                (state.regimes = []),
                 (state.restaurants = null),
                 (state.schedules = null),
                 (state.pools = null),
-                (state.aditionalInfo = null);
+                (state.aditionalInfo = {
+                    spa: null,
+                    air_conditioned: null,
+                    no_smoke_rooms: null,
+                    air_transfer_service: null,
+                    air_collect_service: null,
+                    recection_24h: null,
+                    gym: null,
+                    room_service: null,
+                    terrace: null,
+                    bar: null,
+                    garden: null,
+                    water_park: null,
+                    beach: null,
+                    recreational_activities: null,
+                    romantic_dinners: null,
+                    touristic_tour: null,
+                    guarded_parking: null,
+                    street_parking: null,
+                    garage_parking: null,
+                    special_parking: null,
+                    reg_inout_private: null,
+                    reg_inout_express: null,
+                    touristic_info: null,
+                    parking_service: null,
+                    currency_change: null,
+                    outdoor_furniture: null,
+                    terrace_solarium: null,
+                    shared_dinner: null,
+                    shared_salon: null,
+                    game_zone: null,
+                    library: null,
+                    daily_housekipping: null,
+                    laundry_service: null,
+                    iron_service: null,
+                    meeting_room: null,
+                    meeting_center: null,
+                    fax_photocopier: null,
+                    coffee_break: null,
+                    souvenirs_store: null,
+                    inclusive_service: null,
+                    elevator: null,
+                    smoking_zone: null,
+                    no_smoking: null,
+                    pet_friendly: null,
+                    pet_house: null,
+                    pet_basket: null,
+                    only_adults: null,
+                    sanitized_rooms: null,
+                    bridal_suite: null,
+                    vip_service: null,
+                    calefaction: null,
+                    keep_bags: null,
+                    security_24h: null,
+                    security_alarm: null,
+                    smoke_detectors: null,
+                    in_security_cams: null,
+                    out_security_cams: null,
+                    fire_extinguishers: null,
+                    safe_deposit_box: null,
+                    hotel_id: null,
+                });
+        },
+        setReinicializedErrorsStatus(state){
+            (state.errorsInformation = null),
+            (state.statusInformation = null),
+            (state.errorsConfiguration = null),
+            (state.statusConfiguration = null),
+            (state.errorsContacts = null),
+            (state.statusContacts = null),
+            (state.errorsConditions = null),
+            (state.statusConditions = null),
+            (state.errorsRegimes = null),
+            (state.statusRegimes = null)
+        },
+        //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
+        setSnackbar(state, flag){
+            state.snackbar = flag;
+        },
+        //Este metodo se llama para cambiar el estado de la variable 'chargeView' en caso de que
+        //sea un nuevo registro de hotel
+        setChargeView(state, flag){
+            state.chargeView = flag;
         },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
             state.iditemsListOptions = index;
+        },
+        //Mutacion para los errores
+        setErrorsInformation(state,errors){
+            state.errorsInformation = errors
+          },
+        setErrorsConfiguration(state,errors){
+            state.errorsConfiguration = errors
+        },
+        setErrorsContacts(state,errors){
+            state.errorsContacts = errors
+        },
+        setErrorsConditions(state,errors){
+            state.errorsConditions = errors
+        },
+        setErrorsRegimes(state,errors){
+            state.errorsRegimes = errors
+        },
+        //Mutacion para el estatus
+        setStatusInformation(state, status){
+            state.statusInformation = status
+        },
+        setStatusConfiguration(state, status){
+            state.statusConfiguration = status
+        },
+        setStatusContacts(state, status){
+            state.statusContacts = status
+        },
+        setStatusConditions(state, status){
+            state.statusConditions = status
+        },
+        setStatusRegimes(state, status){
+            state.statusRegimes = status
         },
         //Mutacion que setea el state.regimes para asignar nuevo arreglo
         setArrayRegimes(state, payload) {
@@ -115,7 +382,13 @@ const HotelModule = {
         },
 
         postEditHotel(state, hotel) {
+            state.hotel = hotel;
             state.hotels.map(function(currentHotel) {
+                if (currentHotel.id === hotel.id) {
+                    Object.assign(currentHotel, hotel);
+                }
+            });
+            state.allhotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
                     Object.assign(currentHotel, hotel);
                 }
@@ -151,6 +424,7 @@ const HotelModule = {
         },
 
         editHotel(state, hotel) {
+            state.hotel = hotel;
             state.allhotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
                     Object.assign(currentHotel, hotel);
@@ -327,7 +601,7 @@ const HotelModule = {
 
         getHotelsForAdmin: async function({ commit }) {
             try {
-                const request = await axios.get(`/api/adminhotels/`);
+                const request = await axios.get(`/api/adminhotels`);
                 let hotels = request.data.data;
                 commit("setHotels", hotels);
             } catch (error) {}
@@ -361,6 +635,7 @@ const HotelModule = {
         },
 
         postEditHotel: async function({ commit }, newHotel) {
+            console.log(newHotel)
             let formDataHotel = new FormData();
 
             for (let attrib in newHotel) {
@@ -368,8 +643,10 @@ const HotelModule = {
                 if(attrib === "image"){
                     //Si la imagen.result es diferente de "undefined" es por que se editó la imagen
                     //Y se modificó la propiedad donde se guardaria temporalmente el "comprimido"
-                    if(typeof(newHotel[attrib].result) !== "undefined"){
-                        formDataHotel.append(attrib, newHotel[attrib].result);
+                    if(typeof(newHotel[attrib].compressImage) !== 'undefined'){
+                        if(typeof(newHotel[attrib]["compressImage"].result) !== 'undefined'){
+                            formDataHotel.append(attrib, newHotel[attrib]["compressImage"].result);
+                        }
                     }
                 }
                 //Sino, se sigue agregando como normalmente se agrega
@@ -378,18 +655,40 @@ const HotelModule = {
                 }
             }
 
-            formDataHotel.append("_method", "put");
-
+            //Debido a que aqui se modifica el tipo de metodo
+            //Se tiene que checar si el hotel que se guarda ya existe
+            //O es uno nuevo
+            if(newHotel.id == null){
+                formDataHotel.append("_method", "post");
+            }
+            else if(newHotel.id != null){
+                formDataHotel.append("_method", "put");
+            }
+            
             try {
-                const request = await axios.post(
-                    `/api/hotels/${newHotel.id}`,
-                    formDataHotel
-                );
-                commit("postEditHotel", request.data.data);
+                //Verifica si se esta insertando o modificando un hotel
+                if(newHotel.id != null){
+                    const request = await axios.post(
+                        `/api/hotels/${newHotel.id}`,
+                        formDataHotel
+                    );
+                    console.log(request.data.data)
+                    commit("postEditHotel", request.data.data);
+                }
+                else if(newHotel.id == null){
+                    const request = await axios.post(
+                        `/api/hotels`,
+                        formDataHotel
+                    );
+                    console.log(request.data.data)
+                    commit("postEditHotel", request.data.data);
+                }
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                console.log(error.response.data)
+                console.log(error.response.status)
+                commit("setErrorsInformation", error.response.data);
+                commit("setStatusInformation", error.response.status);
             }
         },
 
@@ -397,17 +696,22 @@ const HotelModule = {
             try {
                 let arrayRequestAddItemRegime = [];
                 newArrayPostRegimes.forEach(async itemRegime => {
-                    const requestAddItemRegime = await axios.post(
-                        `/api/regimes/`,
-                        itemRegime
-                    );
-                    arrayRequestAddItemRegime.push(requestAddItemRegime.data.data)
+                    try {
+                        const requestAddItemRegime = await axios.post(
+                            `/api/regimes`,
+                            itemRegime
+                        );
+                        arrayRequestAddItemRegime.push(requestAddItemRegime.data.data)
+                    } catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
                 });
                 commit("postAddRegimes", arrayRequestAddItemRegime);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -415,17 +719,24 @@ const HotelModule = {
             try {
                 let arrayRequestUpdateItemRegime = [];
                 newArrayPutRegimes.forEach(async itemRegime => {
-                    const requestUpdateItemRegime = await axios.put(
-                    `/api/regimes/${itemRegime.id}`,
-                    itemRegime
-                    );
-                    arrayRequestUpdateItemRegime.push(requestUpdateItemRegime.data.data)
+                    try {
+                        const requestUpdateItemRegime = await axios.put(
+                            `/api/regimes/${itemRegime.id}`,
+                            itemRegime
+                        );
+                        arrayRequestUpdateItemRegime.push(requestUpdateItemRegime.data.data)
+                    } 
+                    catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
                 });
+                console.log(arrayRequestUpdateItemRegime)
                 commit("putUpdateRegimes", arrayRequestUpdateItemRegime);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -433,16 +744,38 @@ const HotelModule = {
             try {
                 let arrayRequestDeleteItemRegime = [];
                 arrayIDsItemsDel.forEach(async idItemRegime => {
-                    const requestDeleteItemRegime = await axios.delete(`/api/regimes/${idItemRegime}`);
-                    arrayRequestDeleteItemRegime.push(requestDeleteItemRegime.data.data)
+                    try {
+                        const requestDeleteItemRegime = await axios.delete(`/api/regimes/${idItemRegime}`);
+                        arrayRequestDeleteItemRegime.push(requestDeleteItemRegime.data.data)
+                    } catch (error) {
+                        commit("setErrorsRegimes", error.response.data);
+                        commit("setStatusRegimes", error.response.status);
+                    }
                 });
                 commit("deleteRegimes", arrayRequestDeleteItemRegime);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
             }
         },
+
+        postEditConfiguration: async function({ commit }, newConfiguration) {
+            try {
+                const request = await axios.post(
+                    `/api/configurations`,
+                    newConfiguration
+                );
+                commit("putEditConfiguration", request.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                console.log(error.response.data)
+                console.log(error.response.status)
+                commit("setErrorsConfiguration", error.response.data);
+                commit("setStatusConfiguration", error.response.status);
+            }
+        },
+
 
         putEditConfiguration: async function({ commit }, newConfiguration) {
             try {
@@ -453,8 +786,24 @@ const HotelModule = {
                 commit("putEditConfiguration", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                console.log(error.response.data)
+                console.log(error.response.status)
+                commit("setErrorsConfiguration", error.response.data);
+                commit("setStatusConfiguration", error.response.status);
+            }
+        },
+
+        postEditContacts: async function({ commit }, newContacts) {
+            try {
+                const request = await axios.post(
+                    `/api/contacts`,
+                    newContacts
+                );
+                commit("putEditContacts", request.data.data);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrorsContacts", error.response.data);
+                commit("setStatusContacts", error.response.status);
             }
         },
 
@@ -467,25 +816,46 @@ const HotelModule = {
                 commit("putEditContacts", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsContacts", error.response.data);
+                commit("setStatusContacts", error.response.status);
+            }
+        },
+
+        postEditConditions: async function({ commit }, newConditions) {
+            console.log("newConditions", newConditions)
+            try {
+                const request = await axios.post(
+                    `/api/conditions`,
+                    newConditions
+                );
+                let conditions = request.data.data;
+                console.log("conditions", conditions)
+                conditions.checkin_time = conditions.checkin_time.slice(0, -3);
+                conditions.checkout_time = conditions.checkout_time.slice(0, -3);
+                commit("putEditConditions", conditions);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                commit("setErrorsConditions", error.response.data);
+                commit("setStatusConditions", error.response.status);
             }
         },
 
         putEditConditions: async function({ commit }, newConditions) {
+            console.log("newConditions", newConditions)
             try {
                 const request = await axios.put(
                     `/api/conditions/${newConditions.id}`,
                     newConditions
                 );
                 let conditions = request.data.data;
+                console.log("conditions", conditions)
                 conditions.checkin_time = conditions.checkin_time.slice(0, -3);
                 conditions.checkout_time = conditions.checkout_time.slice(0, -3);
                 commit("putEditConditions", conditions);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsConditions", error.response.data);
+                commit("setStatusConditions", error.response.status);
             }
         },
 
@@ -496,7 +866,14 @@ const HotelModule = {
                 //Si "objRegimes.newRegimes" es mayor se agregaron nuevos regimenes
                 if (objRegimes.newRegimes.length > objRegimes.currentRegimes.length) {
                     let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
-                        if(itemRegime.id === "NEW"){
+                        if(itemRegime.id === "firstRegister"){
+                            //Se elimina el id "NEW", ya que se añadira un nuevo elemento
+                            delete itemRegime.id;
+                            //Se agrega el id del hotel actual al que hara referencia para agregarse
+                            itemRegime.hotel_id = objRegimes.currentHotelId;
+                            return itemRegime;
+                        }
+                        else if(itemRegime.id === "NEW"){
                             //Se elimina el id "NEW", ya que se añadira un nuevo elemento
                             delete itemRegime.id;
                             //Se agrega el id del hotel actual al que hara referencia para agregarse
@@ -557,6 +934,21 @@ const HotelModule = {
                     //De hacer la peticion AXIOS
                     dispatch("deleteRegimesAXIOS", arrayIDsItemsDel);
                 }
+            } catch (error) {
+                commit("setErrorsRegimes", error.response.data);
+                commit("setStatusRegimes", error.response.status);
+            }
+        },
+
+
+        postEditAditionalInfo: async function({ commit }, newAditionalInfo) {
+            try {
+                const requestEditAditionalInfo = await axios.post(
+                    `/api/amenities`,
+                    newAditionalInfo
+                );
+                commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
+                // commit('setStatus',request.status);
             } catch (error) {
                 commit("setErrors", error.response.data);
                 commit("setStatus", error.response.status);
@@ -638,7 +1030,7 @@ const HotelModule = {
 
         deleteHotels: async function({ commit }, ids) {
             try {
-                const request = await axios.post("/api/deletehotels/", ids);
+                const request = await axios.post("/api/deletehotels", ids);
                 commit("deleteHotel", request.data);
                 // commit('setStatus',request.status);
             } catch (error) {

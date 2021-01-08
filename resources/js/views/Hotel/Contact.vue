@@ -3,63 +3,130 @@
     <v-card class="pa-2" outlined tile>
       <!--Contenido del card-->
       <!--DIRECCION-->
-        <v-banner single-line>
-          <div class="flexed">
-            <v-icon class="iconsInformation" left>mdi-email</v-icon>
-            <h3>Direccion</h3>
+      <v-banner single-line>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-email</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">DIRECCIÓN</span>
           </div>
-        </v-banner>
-        <v-row class="pa-6">
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedUrl" label="URL del sitio web" required></v-text-field>
-          </v-col>
+        </div>
+      </v-banner>
+      <v-row class="pa-6">
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedUrl"
+            prepend-inner-icon="mdi-web"
+            label="URL del sitio web"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['url']) != 'undefined') ? errorsContacts.url[0] : ''"
+          ></v-text-field>
+        </v-col>
 
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedEmail" label="Email" required></v-text-field>
-          </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedEmail"
+            prepend-inner-icon="mdi-email"
+            label="Email"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['email']) != 'undefined') ? errorsContacts.email[0] : ''"
+          ></v-text-field>
+        </v-col>
 
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedPhone" label="Telefono" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedAddress" label="Direccion" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedZipCode" label="Codigo postal" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedCity" label="Ciudad" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedState" label="Provincia" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-autocomplete
-              :items="countries"
-              item-text="name"
-              item-value="id"
-              v-model="computedCountryID"
-              dense
-              filled
-              label="Pais"
-            ></v-autocomplete>
-          </v-col>
-        </v-row>
-        <!--LOCALIZACION-->
-        <v-banner single-line>
-          <div class="flexed">
-            <v-icon class="iconsInformation" left>mdi-map-marker</v-icon>
-            <h3>Localizacion</h3>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedPhone"
+            prepend-inner-icon="mdi-phone"
+            label="Telefono"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['phone']) != 'undefined') ? errorsContacts.phone[0] : ''"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedAddress"
+            prepend-inner-icon="mdi-card-text"
+            label="Direccion"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['address']) != 'undefined') ? errorsContacts.address[0] : ''"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedZipCode"
+            prepend-inner-icon="mdi-map"
+            label="Codigo postal"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['zipcode']) != 'undefined') ? errorsContacts.zipcode[0] : ''"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedCity"
+            prepend-inner-icon="mdi-map"
+            label="Ciudad"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['city']) != 'undefined') ? errorsContacts.city[0] : ''"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedState"
+            prepend-inner-icon="mdi-map"
+            label="Provincia"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['state']) != 'undefined') ? errorsContacts.state[0] : ''"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-autocomplete
+            :items="countries"
+            item-text="name"
+            item-value="id"
+            v-model="computedCountryID"
+            outlined
+            prepend-inner-icon="mdi-map"
+            label="Pais"
+          ></v-autocomplete>
+        </v-col>
+      </v-row>
+      <!--LOCALIZACION-->
+      <v-banner single-line>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-map-marker</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">LOCALIZACIÓN</span>
           </div>
-        </v-banner>
-        <v-row class="pa-6">
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedLegalRep" label="Representante legal" required></v-text-field>
-          </v-col>
-          <v-col cols="12" md="6">
-            <v-text-field v-model="computedManagerName" label="Nombre de gerente" required></v-text-field>
-          </v-col>
-        </v-row>
+        </div>
+      </v-banner>
+      <v-row class="pa-6">
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedLegalRep"
+            prepend-inner-icon="mdi-form-textbox"
+            label="Representante legal"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['legal_rep']) != 'undefined') ? errorsContacts.legal_rep[0] : ''"
+          ></v-text-field>
+        </v-col>
+        <v-col cols="12" md="6" sm="12" xs="12">
+          <v-text-field
+            v-model="computedManagerName"
+            prepend-inner-icon="mdi-form-textbox"
+            label="Nombre de gerente"
+            outlined
+            required
+            :error-messages="(errorsContacts != null && typeof(errorsContacts['manager_name']) != 'undefined') ? errorsContacts.manager_name[0] : ''"
+          ></v-text-field>
+        </v-col>
+      </v-row>
     </v-card>
   </div>
 </template>
@@ -72,16 +139,11 @@ export default {
   created() {
     this.getCountries().then(() => {});
     if (this.hotel.idContact !== null) {
-      this.urlModel = this.contacts.url;
-      this.emailModel = this.contacts.email;
-      this.phoneModel = this.contacts.phone;
-      this.addressModel = this.contacts.address;
-      this.zipCodeModel = this.contacts.zipcode;
-      this.cityModel = this.contacts.city;
-      this.stateModel = this.contacts.state;
-      this.countryIDModel = this.contacts.country_id;
-      this.legalRepModel = this.contacts.legal_rep;
-      this.managerNameModel = this.contacts.manager_name;
+      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
+    }
+    else{
+      this.fillModel();
+      console.log(this.contacts)
     }
   },
   data() {
@@ -103,6 +165,7 @@ export default {
       hotel: (state) => state.HotelModule.hotel,
       contacts: (state) => state.HotelModule.contacts,
       countries: (state) => state.HotelModule.countries,
+      errorsContacts: (state) => state.HotelModule.errorsContacts
     }),
     computedUrl: {
       get() {
@@ -207,15 +270,79 @@ export default {
   },
   methods: {
     ...mapActions(["getCountries"]),
+    //Metodo para llenar la vista con los datos
+    fillModel(){
+    if(this.contacts.url != null){
+        this.urlModel = this.contacts.url;
+    }
+    else{
+        this.contacts.url = "";
+        this.urlModel = this.contacts.url;
+    }
+    if(this.contacts.email != null){
+        this.emailModel = this.contacts.email;
+    }
+    else{
+        this.contacts.email = "";
+        this.emailModel = this.contacts.email;
+    }
+    if(this.contacts.phone != null){
+        this.phoneModel = this.contacts.phone;
+    }
+    else{
+        this.contacts.phone = "";
+        this.phoneModel = this.contacts.phone;
+    }
+    if(this.contacts.address != null){
+        this.addressModel = this.contacts.address;
+    }
+    else{
+        this.contacts.address = "";
+        this.addressModel = this.contacts.address;
+    }
+    if(this.contacts.zipcode != null){
+        this.zipCodeModel = this.contacts.zipcode;
+    }
+    else{
+        this.contacts.zipcode = "";
+        this.zipCodeModel = this.contacts.zipcode;
+    }
+    if(this.contacts.city != null){
+        this.cityModel = this.contacts.city;
+    }
+    else{
+        this.contacts.city = "";
+        this.cityModel = this.contacts.city;
+    }
+    if(this.contacts.state != null){
+        this.stateModel = this.contacts.state;
+    }
+    else{
+        this.contacts.state = "";
+        this.stateModel = this.contacts.state;
+    }
+    if(this.contacts.country_id != null){
+        this.countryIDModel = this.contacts.country_id;
+    }
+    else{
+        this.contacts.country_id = 146;
+        this.countryIDModel = this.contacts.country_id;
+    }
+    if(this.contacts.legal_rep != null){
+        this.legalRepModel = this.contacts.legal_rep;
+    }
+    else{
+        this.contacts.legal_rep = "";
+        this.legalRepModel = this.contacts.legal_rep;
+    }
+    if(this.contacts.manager_name != null){
+        this.managerNameModel = this.contacts.manager_name;
+    }
+    else{
+        this.contacts.manager_name = "";
+        this.managerNameModel = this.contacts.manager_name;
+    }
+    }
   },
 };
 </script>
-
-<style scoped>
-.iconsInformation {
-  margin-bottom: 6px;
-}
-.flexed {
-  display: flex;
-}
-</style>
