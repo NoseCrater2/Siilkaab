@@ -3,7 +3,7 @@
 
             
 
-        Aqui van unas graficas
+        <!-- Aqui van unas graficas -->
         
         <v-icon dark right>mdi-poll</v-icon>
         </div>

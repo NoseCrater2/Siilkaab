@@ -15,8 +15,7 @@ class CreateBedroomsTable extends Migration
     {
         Schema::create('bedrooms', function (Blueprint $table) {
             $table->bigIncrements('id')->unsigned();
-            // $table->enum('type',['twin','full','queen','king','triple','quad']);
-            // $table->integer('quantity')->required();
+            $table->tinyInteger('private_bathroom')->default(0);
             $table->double('adult_extra')->nullable();
             $table->double('child_extra')->nullable();
             $table->double('baby_extra')->nullable();

@@ -16,8 +16,7 @@ class BedroomIndexResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'type' => $this->type,
-            'quantity' => $this->quantity,
+            'private_bathroom' => $this->private_bathroom,
             'adult_extra' => $this->adult_extra,
             'child_extra' => $this->child_extra,
             'baby_extra' => $this->baby_extra,

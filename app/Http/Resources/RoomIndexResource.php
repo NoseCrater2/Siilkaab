@@ -25,7 +25,7 @@ class RoomIndexResource extends JsonResource
         'large_text' => $this->large_text,
         'short_text' => $this->short_text,
         'smoking_policy' => $this->smoking_policy,
-        'pool-near' => $this->pool_near,
+        'pool_near' => $this->pool_near,
         'floor_near' => $this->floor_near,
         'size' => $this->size,
         'size_type' => $this->size_type,

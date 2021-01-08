@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Bedroom extends Model
 {
     protected $fillable = [
-        'type',
-        'quantity',
+        'private_bathroom',
         'adult_extra',
         'child_extra',
         'baby_extra',
@@ -25,4 +24,8 @@ class Bedroom extends Model
         return $this->morphMany(Binnacle::class,'bedrooms', 'binnacleable_type','binnacleable_id');
     }
 
+    public function beds()
+    {
+        return $this->hasMany(Bed::class);
+    }
 }

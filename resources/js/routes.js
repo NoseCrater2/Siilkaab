@@ -1,68 +1,73 @@
-import Hotels from "./views/Hotels/Hotels";
-import Hotel from "./views/Hotel/Hotel";
-import Users from "./users/Users";
-import Binnacles from "./binnacle/Binnacles";
-import Binnacle from "./binnacle/Binnacle";
-import Dashboard from "./views/Panel/Dashboard";
-
-
+import Vue from 'vue'
 import VueRouter from "vue-router";
+
+Vue.use(VueRouter);
 
 const routes = [
     {
         path: "/",
-        component: Dashboard,
+        component: () => import("./views/Panel/Dashboard"),
         name: "home"
     },
     {
         path: "/hotels",
-        component: Hotels,
-        name: "Hotels"
+        component: () => import("./views/Hotels/Hotels"),
+        name: "Hotels",
     },
     {
         path: "/hotel/:id",
-        component: Hotel,
+        component: () => import("./views/Hotel/Hotel"),
         name: "Hotel"
     },
     {
+        path: "/rooms-home",
+        component: () => import("./views/Rooms/RoomsHome"),
+        name: "RoomsHome"
+    },
+    {
+        path: "/roomDetails/:id",
+        component: () => import("./views/Rooms/RoomDetails"),
+        name: "RoomDetails"
+    },
+    {
         path: "/users/",
-        component: Users,
+        component: () => import("./users/Users"),
         name: "users"
     },
     {
         path: "/binnacles/",
-        component: Binnacles,
+        component: () => import("./binnacle/Binnacles"),
         name: "binnacles"
     },
     {
         path: "/binnacle/:id",
-        component: Binnacle,
+        component: () => import("./binnacle/Binnacle"),
         name: "binnacle"
     },
     {
         path: "/panel/",
-        component: Dashboard,
+        component: () => import("./views/Panel/Dashboard"),
         name: "panel"
     },
     {
         path: "/payments",
-        component: require("./views/Reservations/Payments").default,
+        component: () => import("./views/Reservations/Payments"),
         name: "payments"
     },
     {
         path: "/payment-options",
-        component: require("./views/payments/Payments").default,
+        component: () => import("./views/payments/Payments"),
         name: "payment-options"
     },
 
     {
         path: "/disponibility",
-        component: require("./views/Disponibility/Disponibility").default,
+        component: ()=> import("./views/Disponibility/Disponibility"),
         name: "disponibility"
     },
     {
         path: "/calendar",
-        component: require("./components/HorizontalCalendar/Calendar").default,
+        component: ()=> import("./components/HorizontalCalendar/Calendar"),
         name: "calendar"
     },
 ];

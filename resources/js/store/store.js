@@ -1,3 +1,8 @@
+import Vue from 'vue';
+import Vuex from 'vuex';
+
+Vue.use(Vuex);
+
 import UsersModule from './UsersModule';
 import BinnacleModule from './BinnacleModule';
 import HotelModule from './HotelModule';
@@ -6,7 +11,7 @@ import RoomModule from './RoomModule';
 import CredentialsModule from './CredentialsModule';
 import  disponibilityMoule from './disponibilityModule';
 
-export default {
+const store = new Vuex.Store({
 
   modules:{
     UsersModule,
@@ -18,7 +23,9 @@ export default {
     disponibilityMoule,
   },
  
-}
+})
+
+export default store;
 
 /*import Vue from 'vue'
 import Vuex from 'vuex'

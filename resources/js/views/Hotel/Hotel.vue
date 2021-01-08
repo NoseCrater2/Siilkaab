@@ -6,56 +6,67 @@
         <ButtonActionsSup :title="hotelTitle"></ButtonActionsSup>
         <v-container>
           <v-row no-gutters>
-            <v-col id="columMenu" cols="6" md="3" sm="12">
+            <v-col cols="12" md="3" sm="12" xs="12">
               <!--Usamos componente LateralMenu-->
               <LateralMenu></LateralMenu>
             </v-col>
             <v-col cols="12" sm="auto" md="9">
               <div class="ml-8">
                 <v-text-field
-                  style="text-align:right"
+                  style="text-align: right"
                   color="primary"
                   loading
                   disabled
                   label="Obteniendo información..."
-                  v-if="chargeView===false"
+                  v-if="chargeView === false"
                 ></v-text-field>
               </div>
-              <div v-if="iditemsListOptions===0 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 0 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Information></Information>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===1 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 1 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Configuration></Configuration>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===2 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 2 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Contact></Contact>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===3 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 3 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Condition></Condition>
                 </div>
               </div>
 
-              <div v-if="iditemsListOptions===4 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 4 && chargeView === true">
+                <div v-if="hotel !== null">
                   <Regime></Regime>
                 </div>
               </div>
-              <div v-if="iditemsListOptions===5 && chargeView===true">
-                <div v-if="hotel!==null">
+              <div v-if="iditemsListOptions === 5 && chargeView === true">
+                <div v-if="hotel !== null">
                   <AditionalInfo></AditionalInfo>
                 </div>
               </div>
             </v-col>
+            <v-snackbar
+        :timeout="-1"
+        :value="snackbar"
+        right
+        color="success"
+        rounded="pill"
+        timeout="3500"
+        bottom
+      >
+        Registro guardado exitosamente
+      </v-snackbar>
           </v-row>
         </v-container>
       </v-app>
@@ -91,6 +102,7 @@ export default {
       chargeView: (state) => state.HotelModule.chargeView,
       setReinicializedVar: (state) => state.HotelModule.setReinicializedVar,
       iditemsListOptions: (state) => state.HotelModule.iditemsListOptions,
+      snackbar: (state) => state.HotelModule.snackbar,
     }),
   },
   methods: {
@@ -105,31 +117,38 @@ export default {
       "getPools",
       "getAditionalInfo",
     ]),
-    ...mapMutations(["setReinicialized"]),
+    ...mapMutations(["setReinicialized", "setChargeView", "setSnackbar"]),
     chargeDataHotel() {
       if (this.$route.params.id) {
         this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
-        this.getHotel(this.$route.params.id).then(() => {
-          this.hotelTitle = this.hotel.title;
-          if (this.hotel.idConfiguration !== null) {
-            this.getConfiguration(this.hotel.idConfiguration).then(() => {});
-          }
-          if (this.hotel.idContact !== null) {
-            this.getContacts(this.hotel.idContact).then(() => {});
-          }
-          if (this.hotel.idCondition !== null) {
-            this.getConditions(this.hotel.idCondition).then(() => {});
-          }
-          if (this.hotel.idRegime !== null) {
-            this.getRegimes(this.hotel.idRegime).then(() => {});
-          }
-          if (this.hotel.idAmenity !== null) {
-            this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
-            this.getPools(this.hotel.id).then(() => {});
-            this.getRestaurants(this.hotel.id).then(() => {});
-            this.getSchedules(this.hotel.id).then(() => {});
-          }
-        });
+        if(this.$route.params.id != 'new'){
+          this.getHotel(this.$route.params.id).then(() => {
+            this.hotelTitle = this.hotel.title;
+            if (this.hotel.idConfiguration !== null) {
+              this.getConfiguration(this.hotel.idConfiguration).then(() => {});
+            }
+            if (this.hotel.idContact !== null) {
+              this.getContacts(this.hotel.idContact).then(() => {});
+            }
+            if (this.hotel.idCondition !== null) {
+              this.getConditions(this.hotel.idCondition).then(() => {});
+            }
+            if (this.hotel.idRegime !== null) {
+              this.getRegimes(this.hotel.idRegime).then(() => {});
+            }
+            if (this.hotel.idAmenity !== null) {
+              this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
+              // this.getPools(this.hotel.id).then(() => {});
+              // this.getRestaurants(this.hotel.id).then(() => {});
+              // this.getSchedules(this.hotel.id).then(() => {});
+            }
+          });
+        }
+        else if(this.$route.params.id == 'new'){
+          //Se manda llamar la mutacion para cambiar el estado de la varibale 'chargeView"
+          //Debido a que es un nuevo registro de hotel y no hay datos previos que cargar
+          this.setChargeView(true);
+        }
       }
     },
   },

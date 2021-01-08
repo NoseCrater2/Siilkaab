@@ -35,8 +35,7 @@ class BedroomController extends Controller
     {
         $data = $request->all();
         $rules = [
-             'type' => 'required|in:twin,full,queen,king,triple,quad',
-             'quantity' => 'required|Integer|min:0',
+             'private_bathroom' => 'Integer|in:0,1',
              'adult_extra' => 'Integer|min:0',
              'child_extra' => 'Integer|min:0',
              'baby_extra' => 'Integer|min:0',
@@ -78,8 +77,7 @@ class BedroomController extends Controller
     {
         $data = $request->all();
         $rules = [
-             'type' => 'in:twin,full,queen,king,triple,quad',
-             'quantity' => 'Integer|min:0',
+             'private_bathroom' => 'Integer|in:0,1',
              'adult_extra' => 'Integer|min:0',
              'child_extra' => 'Integer|min:0',
              'baby_extra' => 'Integer|min:0',

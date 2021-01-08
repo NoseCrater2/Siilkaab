@@ -42,7 +42,7 @@ class RoomController extends Controller
             'large_text' => 'string',
             'short_text' => 'string',
             'smoking_policy' => 'in:yes,no,both',
-            'pool-near' => 'in:all,some,none',
+            'pool_near' => 'in:all,some,none',
             'floor_near' => 'in:ground,upper,both',
             'size' => 'required|numeric|min:0',
             'size_type' => 'required|in:meters,feets',
@@ -97,7 +97,7 @@ class RoomController extends Controller
             'large_text' => 'string',
             'short_text' => 'string',
             'smoking_policy' => 'in:yes,no,both',
-            'pool-near' => 'in:all,some,none',
+            'pool_near' => 'in:all,some,none',
             'floor_near' => 'in:ground,upper,both',
             'size' => 'numeric|min:0',
             'size_type' => 'in:meters,feets',
@@ -143,6 +143,13 @@ class RoomController extends Controller
     {
         return RoomViewResource::collection(
             Hotel::findOrFail($id)->rooms
+        );
+    }
+
+    public function currentHotelRooms(Hotel $hotel)
+    {
+        return RoomIndexResource::collection(
+            $hotel->rooms
         );
     }
 
