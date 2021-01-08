@@ -31,7 +31,16 @@ export default {
     name: 'PeriodConfig',
     data(){
       return{
-        rateModel: null
+        rateModel: null,
+        localArrayDays: [
+          "monday",
+          "tuesday",
+          "wednesday",
+          "thursday",
+          "friday",
+          "saturday",
+          "sunday"
+        ]
       }
     },
     created(){
@@ -40,6 +49,7 @@ export default {
     computed:{
       ...mapState({
         rates: (state) => state.disponibilityMoule.rates,
+        rooms: (state) => state.disponibilityMoule.arooms,
       }),
       computedRate: {
         get() {
@@ -47,6 +57,12 @@ export default {
         },
         set(model) {
           let bandera = false;
+          let arrayFilteredDays = this.localArrayDays.filter((el)=>{
+            if(!this.arrayDaysSelected.includes(el)){
+              return el;
+            }
+          });
+          console.log("arrayFilteredDays", arrayFilteredDays)
           this.rateModel = model;
           this.rates.map(rateItem => {
             if(rateItem.room_id == this.idRoomCompo || rateItem.id == "NEW"){
@@ -54,20 +70,19 @@ export default {
                 bandera = true;
                 if(this.arrayDaysSelected.length > 0){
                   let countDay = 0;
-                  while (countDay < this.arrayDaysSelected.length) {
-                    let daySelected = this.arrayDaysSelected[countDay];
-                    Object.keys(rateItem).forEach(ratePropertyDay=>{
-                      if(daySelected == ratePropertyDay){
-                        if(model != ""){
-                          rateItem[daySelected] = parseInt(this.rateModel);
-                        }
-                        else{
-                          rateItem[daySelected] = 0;
-                        }
+                  this.localArrayDays.forEach((el)=>{
+                    if(this.arrayDaysSelected.includes(el)){
+                      if(model != ""){
+                        rateItem[el] = parseInt(this.rateModel);
                       }
-                    })
-                    countDay++;
-                  }
+                      else{
+                        rateItem[el] = 0;
+                      }
+                    }
+                    else if(!this.arrayDaysSelected.includes(el)){
+                      rateItem[el] = 0;
+                    }
+                  })
                 }
               }
               return rateItem;
@@ -90,21 +105,20 @@ export default {
                 sunday: 0,
                 room_id: this.idRoomCompo
               }
-              while (countDay < this.arrayDaysSelected.length) {
-                let daySelected = this.arrayDaysSelected[countDay];
-                Object.keys(obj).forEach(ratePropertyDay=>{
-                  if(daySelected == ratePropertyDay){
-                    obj[daySelected] = parseInt(this.rateModel);
-                      if(model != ""){
-                        obj[daySelected] = parseInt(this.rateModel);
-                      }
-                      else{
-                        obj[daySelected] = 0;
-                      }
+              this.localArrayDays.forEach((el)=>{
+                if(this.arrayDaysSelected.includes(el)){
+                  obj[el] = parseInt(this.rateModel);
+                  if(model != ""){
+                    obj[el] = parseInt(this.rateModel);
                   }
-                })
-                countDay++;
-              }
+                  else{
+                    obj[el] = 0;
+                  }
+                }
+                else if(!this.arrayDaysSelected.includes(el)){
+                  obj[el] = 0;
+                }
+              })
               this.rates.push(obj)
             }
           }

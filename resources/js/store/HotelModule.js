@@ -601,7 +601,7 @@ const HotelModule = {
 
         getHotelsForAdmin: async function({ commit }) {
             try {
-                const request = await axios.get(`/api/adminhotels/`);
+                const request = await axios.get(`/api/adminhotels`);
                 let hotels = request.data.data;
                 commit("setHotels", hotels);
             } catch (error) {}
@@ -698,7 +698,7 @@ const HotelModule = {
                 newArrayPostRegimes.forEach(async itemRegime => {
                     try {
                         const requestAddItemRegime = await axios.post(
-                            `/api/regimes/`,
+                            `/api/regimes`,
                             itemRegime
                         );
                         arrayRequestAddItemRegime.push(requestAddItemRegime.data.data)
@@ -1030,7 +1030,7 @@ const HotelModule = {
 
         deleteHotels: async function({ commit }, ids) {
             try {
-                const request = await axios.post("/api/deletehotels/", ids);
+                const request = await axios.post("/api/deletehotels", ids);
                 commit("deleteHotel", request.data);
                 // commit('setStatus',request.status);
             } catch (error) {

@@ -246,10 +246,11 @@ export default {
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority(){
-      this.loadingButton = true;
-      this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
-        this.loadingButton = false;
-      });
+      // this.loadingButton = true;
+      // this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
+      //   this.loadingButton = false;
+      // });
+      console.log(this.rates)
     }
   },
 

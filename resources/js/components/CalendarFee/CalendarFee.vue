@@ -258,6 +258,7 @@ export default {
     },
 
     priority(objDate, objRoom, indexRoom, indexTDColumnsDate) {
+
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
       let globalCheckPriorityLow = false;
@@ -266,9 +267,11 @@ export default {
       let isThereARate = false;
 
       let rack = this.rates.map((itemRate, index) => {
-          let countWhile = 0;
-          foundDayAndRange= '';
-        if ((itemRate.room_id == objRoom.id) ) {
+        let countWhile = 0;
+        foundDayAndRange= '';
+
+        
+        if ((itemRate.room_id == objRoom.id)) {
             while (countWhile < this.rates.length) {
                 if(this.rates[countWhile].room_id == objRoom.id){
                     if(this.rates[countWhile].day != null){
@@ -320,11 +323,11 @@ export default {
           if(findedID.length == 0){
             objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 1})
           }
-          if(typeof(objRoom.cellColor)=='undefined'){
+          if(typeof(objRoom.cellColor) =='undefined'){
             objRoom.cellColor = [];
           }
           findedColor = objRoom.cellColor.filter((item)=>{
-            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3'){
+            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
               return item;
             }
           });
@@ -342,7 +345,7 @@ export default {
           }
 
           findedColor = objRoom.cellColor.filter((item)=>{
-            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3'){
+            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
               return item;
             }
           });
@@ -360,7 +363,7 @@ export default {
           }
 
           findedColor = objRoom.cellColor.filter((item)=>{
-            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3'){
+            if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
               return item;
             }
           });
@@ -372,6 +375,12 @@ export default {
         return rack[indexRates];
       }
       else {
+        // if(objDate.idRoom.length > 1){
+        //   console.log("SHI")
+        //   objDate.idRoom = []
+          
+        // }
+
         return objRoom.rack_rate;
       }
     },
@@ -395,7 +404,7 @@ export default {
         index++;
       }
       return setCellColorClass;
-    }
+    },
   },
   props: {
     arrEndpointRooms: Array,

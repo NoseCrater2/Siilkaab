@@ -35,7 +35,7 @@ const disponibilityMoule = {
     actions: {
         getHotelsForAdmin: async function({ commit }) {
             try {
-                const response = await axios.get(`/api/adminhotels/`);
+                const response = await axios.get(`/api/adminhotels`);
                 let hotels = responde.data.data;
                 commit("setHotels", hotels);
             } catch (error) {}

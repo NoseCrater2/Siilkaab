@@ -358,7 +358,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
           }
 
           findedColor = objRoom.cellColor.filter(function (item) {
-            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3') {
+            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white') {
               return item;
             }
           });
@@ -388,7 +388,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
           }
 
           findedColor = objRoom.cellColor.filter(function (item) {
-            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3') {
+            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white') {
               return item;
             }
           });
@@ -418,7 +418,7 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
           }
 
           findedColor = objRoom.cellColor.filter(function (item) {
-            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3') {
+            if (item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white') {
               return item;
             }
           });
@@ -434,6 +434,10 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
 
         return rack[indexRates];
       } else {
+        // if(objDate.idRoom.length > 1){
+        //   console.log("SHI")
+        //   objDate.idRoom = []
+        // }
         return objRoom.rack_rate;
       }
     },
@@ -524,13 +528,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   name: 'PeriodConfig',
   data: function data() {
     return {
-      rateModel: null
+      rateModel: null,
+      localArrayDays: ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     };
   },
   created: function created() {},
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
     rates: function rates(state) {
       return state.disponibilityMoule.rates;
+    },
+    rooms: function rooms(state) {
+      return state.disponibilityMoule.arooms;
     }
   })), {}, {
     computedRate: {
@@ -541,6 +549,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         var _this = this;
 
         var bandera = false;
+        var arrayFilteredDays = this.localArrayDays.filter(function (el) {
+          if (!_this.arrayDaysSelected.includes(el)) {
+            return el;
+          }
+        });
+        console.log("arrayFilteredDays", arrayFilteredDays);
         this.rateModel = model;
         this.rates.map(function (rateItem) {
           if (rateItem.room_id == _this.idRoomCompo || rateItem.id == "NEW") {
@@ -550,23 +564,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               if (_this.arrayDaysSelected.length > 0) {
                 var countDay = 0;
 
-                var _loop = function _loop() {
-                  var daySelected = _this.arrayDaysSelected[countDay];
-                  Object.keys(rateItem).forEach(function (ratePropertyDay) {
-                    if (daySelected == ratePropertyDay) {
-                      if (model != "") {
-                        rateItem[daySelected] = parseInt(_this.rateModel);
-                      } else {
-                        rateItem[daySelected] = 0;
-                      }
+                _this.localArrayDays.forEach(function (el) {
+                  if (_this.arrayDaysSelected.includes(el)) {
+                    if (model != "") {
+                      rateItem[el] = parseInt(_this.rateModel);
+                    } else {
+                      rateItem[el] = 0;
                     }
-                  });
-                  countDay++;
-                };
-
-                while (countDay < _this.arrayDaysSelected.length) {
-                  _loop();
-                }
+                  } else if (!_this.arrayDaysSelected.includes(el)) {
+                    rateItem[el] = 0;
+                  }
+                });
               }
             }
 
@@ -576,45 +584,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
         if (bandera == false) {
           if (this.arrayDaysSelected.length > 0) {
-            (function () {
-              var countDay = 0;
-              var obj = {
-                id: "NEWDAYS",
-                type: "room",
-                bed_rooms: 0,
-                rack: 0,
-                monday: 0,
-                tuesday: 0,
-                wednesday: 0,
-                thursday: 0,
-                friday: 0,
-                saturday: 0,
-                sunday: 0,
-                room_id: _this.idRoomCompo
-              };
+            var countDay = 0;
+            var obj = {
+              id: "NEWDAYS",
+              type: "room",
+              bed_rooms: 0,
+              rack: 0,
+              monday: 0,
+              tuesday: 0,
+              wednesday: 0,
+              thursday: 0,
+              friday: 0,
+              saturday: 0,
+              sunday: 0,
+              room_id: this.idRoomCompo
+            };
+            this.localArrayDays.forEach(function (el) {
+              if (_this.arrayDaysSelected.includes(el)) {
+                obj[el] = parseInt(_this.rateModel);
 
-              var _loop2 = function _loop2() {
-                var daySelected = _this.arrayDaysSelected[countDay];
-                Object.keys(obj).forEach(function (ratePropertyDay) {
-                  if (daySelected == ratePropertyDay) {
-                    obj[daySelected] = parseInt(_this.rateModel);
-
-                    if (model != "") {
-                      obj[daySelected] = parseInt(_this.rateModel);
-                    } else {
-                      obj[daySelected] = 0;
-                    }
-                  }
-                });
-                countDay++;
-              };
-
-              while (countDay < _this.arrayDaysSelected.length) {
-                _loop2();
+                if (model != "") {
+                  obj[el] = parseInt(_this.rateModel);
+                } else {
+                  obj[el] = 0;
+                }
+              } else if (!_this.arrayDaysSelected.includes(el)) {
+                obj[el] = 0;
               }
-
-              _this.rates.push(obj);
-            })();
+            });
+            this.rates.push(obj);
           }
         }
 
@@ -910,15 +908,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority: function btnApplyCheckPriority() {
-      var _this2 = this;
-
-      this.loadingButton = true;
-      this.putEditRates({
-        arrayRates: this.rates,
-        arrayIdRooms: this.arrayRoomIDs
-      }).then(function () {
-        _this2.loadingButton = false;
-      });
+      // this.loadingButton = true;
+      // this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
+      //   this.loadingButton = false;
+      // });
+      console.log(this.rates);
     }
   }),
   components: {
