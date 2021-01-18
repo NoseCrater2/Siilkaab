@@ -58,7 +58,7 @@ class HotelController extends Controller
             return $validator->errors();
         }else{
             if($request->hasFile('image')){
-                $image= $request->image->store('');
+                $image= $request->image->store('hotels');
                 $data['image']=$image;
             } 
             $hotel = Hotel::create($data);
@@ -97,7 +97,7 @@ class HotelController extends Controller
         }else{
             if($request->hasFile('image')){
                 Storage::delete($hotel->image);
-                $data['image'] = $request->image->store('');
+                $data['image'] = $request->image->store('hotels');
             }
             $hotel->update($data);
             return new HotelShowResource(Hotel::findOrFail($hotel->id));

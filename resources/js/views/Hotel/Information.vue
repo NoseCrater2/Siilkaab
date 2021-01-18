@@ -124,6 +124,7 @@ import Compressor from "compressorjs";
 export default {
   name: "Information",
   created() {
+    console.log("this.errorsInformation",this.errorsInformation);
     if (this.hotel.id !== null) {
       this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
       console.log(this.hotel);
@@ -133,7 +134,9 @@ export default {
       console.log(this.hotel);
     }
   },
-  mounted() {},
+  mounted() {
+    
+  },
   data() {
     return {
       currentImage: null,
@@ -273,7 +276,7 @@ export default {
         }
         else if(this.hotel.image != null && typeof(this.hotel.image) != 'undefined'){
           if(this.hotel.image.includes("jpeg") == true){
-            this.currentImage = "/storage/img/" + this.hotel.image;
+            this.currentImage = "/img/" + this.hotel.image;
           }
         }
       }
