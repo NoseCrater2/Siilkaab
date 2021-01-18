@@ -1,94 +1,66 @@
 <template>
-    <div>
-        <v-app id="inspire">
-           <div v-if="!aRooms">
+  
+    <v-row justify="space-around" >
+      <v-col cols="3">
+        <v-card flat>
+          <v-img class="ma-3" src="https://partourcaleta.com/images/chpanel/hotels/100001-med.jpg">
+
+          </v-img>
+          <v-card-title>{{hotel.title}}</v-card-title>
+          <v-card-text>
+             <v-icon>mdi-map-marker</v-icon>
+             {{contact.address +', '+ contact.zipcode +' '+  contact.city +' '+ contact.state +', '+ contact.country}}
+          </v-card-text>
+          <v-divider></v-divider>
+         
+        </v-card>
+      </v-col>
+      <v-col cols="9">
+        <v-col cols="12">
+          <v-card-actions style="background-color: #F0F2F5">
+            <v-btn-toggle v-model="selectedview" mandatory borderless>
+              <v-btn icon ><v-icon>mdi-view-list</v-icon></v-btn>
+              <v-btn icon><v-icon>mdi-view-grid</v-icon></v-btn>
+            </v-btn-toggle>
+            <v-spacer></v-spacer>
+          </v-card-actions>
+        </v-col>
+        <v-col cols="12">
+
+            <v-tabs color="black" left v-model="tab">
+              <v-tab v-for="(room, index) in aRooms" :key="index">
+                Habitación {{index + 1}}
+              </v-tab>
+            </v-tabs>
+
+            <v-tabs-items v-model="tab">
+
+           
+            <v-tab-item  v-for="(room, index) in aRooms" :key="index">
+              <ListAvailabilityRoom v-if="selectedview == 0" :room="room"/>
+              <GridAvailabilityRoom v-if="selectedview == 1" :room="room"/>
+            </v-tab-item>
+             </v-tabs-items>
+
+        </v-col>
+      </v-col>
+    
+    </v-row>
+ 
+           <!-- <div v-if="!aRooms">
                NO HAY HABITACIONES
-           </div>
-           <div v-else>
-               <v-container fluid>
-                   <v-row dense>
-                       <v-col
-                        v-for="room in aRooms"
-                        :key="room.id"
-                        :cols="flex"
-                       >
-                    <v-card
-                   
-                    class="mx-auto my-12"
-                    max-width="500"
-                    >
-                        <v-img
-                        height="250"
-                        :src="`${room.default_image}`"
-                        ></v-img>
-
-                        <v-card-title>{{room.name}}</v-card-title>
-                        <v-card-text>
-                            <v-row
-                              align="center"
-                              class="mx-0"
-                            >
-                                 <v-rating
-                                   :value="4.5"
-                                   color="amber"
-                                   dense
-                                   half-increments
-                                   readonly
-                                   size="14"
-                                 ></v-rating>
-  
-                                <div class="grey--text ml-4">4.5 (413)</div>
-                            </v-row>
-  
-                            <div class="my-4 subtitle-1">
-                              $ {{room.rack_rate}}
-                            </div>
-  
-                            <div>{{room.short_text}}</div>
-                        </v-card-text>
-  
-                        <v-divider class="mx-4"></v-divider>
-  
-                        <v-card-title>Tonight's availability</v-card-title>
-  
-                        <v-card-text>
-                          <v-chip-group
-                            v-model="selection"
-                            active-class="deep-purple accent-4 white--text"
-                            column
-                          >
-                            <v-chip>5:30PM</v-chip>
-
-                            <v-chip>7:30PM</v-chip>
-
-                            <v-chip>8:00PM</v-chip>
-
-                            <v-chip>9:00PM</v-chip>
-                          </v-chip-group>
-                        </v-card-text>
-
-                        <v-card-actions>
-                          <v-btn
-                            color="deep-purple lighten-2"
-                            text
-                          >
-                            Reserve
-                          </v-btn>
-                        </v-card-actions>
-                     </v-card>
-                 </v-col>
-                 </v-row>
-                </v-container>
-           </div>
-        </v-app>
-    </div>
+           </div> -->
 </template>
 <script >
 
 import { mapActions, mapState } from 'vuex';
+import ListAvailabilityRoom from '../../components/CustomCards/ListAvailabilityRoom';
+import GridAvailabilityRoom from '../../components/CustomCards/GridAvailabilityRoom';
 export default {
      data(){
     return {
+      selectedview: 0,
+      tab: null,
      selection: 1,
      flex: 3,
     };
@@ -97,14 +69,17 @@ export default {
   computed:{
       ...mapState({
       aRooms: state => state.RoomModule.availableRooms,
+      hotel: (state) => state.HotelModule.hotel,
+      contact: state => state.HotelModule.contacts,
     }),
   },
 
-  mounted(){
-      if(this.aRooms===null){
-          console.log('No hay habitaciones')
-      }
-  },
+
+
+  components:{
+    ListAvailabilityRoom,
+    GridAvailabilityRoom,
+  }
 
 }
 </script>

@@ -27,6 +27,8 @@ Route::post('payments/updateCode', 'PaymentController@updateCredentials')->name(
 Route::get('currentHotelRooms/{hotel}', 'Api\RoomController@currentHotelRooms');
 
 
+Route::post('searchRooms/{hotel}', 'Api\HotelController@searchRooms');
+
 
 
 Route::group(['prefix' => 'events'], function ()
@@ -62,7 +64,7 @@ Route::name('hotelsadmin')->get('adminhotels/','Api\HotelController@getHotelsFor
 Route::name('roomsadmin')->get('adminrooms/{id}','Api\RoomController@getRoomsForAdmin');
 
 Route::apiResource('rooms','Api\RoomController')->only('index','show','store','update','destroy');
-Route::get('rooms/{hotel}/availability','Api\RoomAvailabilityController')->name('rooms.availability.show');
+Route::post('rooms/{hotel}/availability','Api\RoomAvailabilityController@getAvailabilityRooms')->name('rooms.availability.show');
 
 Route::apiResource('rates','Api\RateController')->only('index','show','store','update','destroy');
 Route::name('ratesByRoom')->get('ratesByRoom/{room}','Api\RateController@getRatesByRoom');

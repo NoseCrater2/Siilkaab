@@ -158,6 +158,7 @@ export default {
             {
               icon: "mdi-image-multiple",
               text: "Fotos",
+               route: "/images",
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #cba818; padding-left: 3px"

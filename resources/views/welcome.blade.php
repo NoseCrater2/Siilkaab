@@ -12,7 +12,7 @@
 
 <body>
     <div id="app">
-        <index></index>
+        <app></app>
     </div>
     
 </body>

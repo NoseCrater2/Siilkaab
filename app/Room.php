@@ -28,7 +28,6 @@ class Room extends Model
         'baby_extra',
         'hotel_id',
         'discount_id',
-        'rate_id',
         'extra_id',
     ];
 
