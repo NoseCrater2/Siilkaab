@@ -6,9 +6,14 @@ const RoomModule = {
         currentHotelRooms: null,
         roomDetails: null,
         bedrooms: null,
-        beds: null
+        beds: null,
+        searchErrors: []
     },
-    getters: {},
+    getters: {
+        getSearchErrors(state){
+            return state.searchErrors
+        },
+    },
     mutations: {
         //Mutacion que setea el state.beds para asignar nuevo arreglo
         setArrayBeds(state, payload) {
@@ -28,18 +33,24 @@ const RoomModule = {
         },
         setBeds(state, beds) {
             state.beds = beds;
+        },
+        setSearchErrors(state, errors) {
+            state.searchErrors = errors;
         }
+
     },
     actions: {
         //NO TOQUES ESTE MÉTODO
-        getAvailabilityRooms: async function({ commit, state }, idHotel) {
-            const request = await axios
-                // .get(`/api/rooms/1/availability?from=${this.date}&to=${this.date2}`)
-                .get(`/api/rooms/${idHotel}/availability`)
-                .then(response => {
-                    //   console.log(response);
-                    commit("setAvailableRooms", response.data);
-                });
+        getAvailabilityRooms: async function({ commit, state }, terms) {
+            try {
+                const request = await axios
+                 .post(`/api/rooms/${terms.id}/availability?from=${terms.from}&to=${terms.to}`, {rooms: terms.rooms});
+                    commit("setAvailableRooms", request.data);
+              
+            } catch (error) {
+                commit("setSearchErrors", error.response.data)
+            }
+           
         },
         getCurrentHotelRooms: async function({ commit }, idHotel) {
             try {

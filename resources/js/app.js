@@ -8,10 +8,9 @@ import { TiptapVuetifyPlugin } from 'tiptap-vuetify'
 import 'tiptap-vuetify/dist/main.css'
 
 import Vuex from "vuex";
-import Index from "./views/Index/Index";
-import Payments from "./views/Reservations/Payments";
-import Reservations from "./views/Reservations/Reservations";
-import Calendar from "./components/HorizontalCalendar/Calendar";
+import App from "./views/App";
+// import Payments from "./views/Reservations/Payments";
+// import Calendar from "./components/HorizontalCalendar/Calendar";
 
 
 window.Vue = require("vue");
@@ -31,10 +30,9 @@ const app = new Vue({
     store,
     vuetify,
     components: {
-        index: Index,
-        payments: Payments,
-        reservations: Reservations,
-        calendar: Calendar,
+        App,
+        // payments: Payments,
+        // calendar: Calendar,
     },
     
 });
