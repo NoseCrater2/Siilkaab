@@ -6,44 +6,78 @@ Vue.use(VueRouter);
 const routes = [
     {
         path: "/",
-        component: () => import("./views/Panel/Dashboard"),
-        name: "home"
+        component: () => import("./views/Index/Index"),
+        children: [
+            {
+                path: "",
+                component: () => import("./views/Panel/Dashboard"),
+                name: "Home",
+            },
+            {
+                path: "/hotels",
+                component: () => import("./views/Hotels/Hotels"),
+                name: "Hotels",
+            },
+            {
+                path: "/hotel/:id",
+                component: () => import("./views/Hotel/Hotel"),
+                name: "Hotel"
+            },
+            {
+                path: "/rooms-home",
+                component: () => import("./views/Rooms/RoomsHome"),
+                name: "RoomsHome"
+            },
+            {
+                path: "/roomDetails/:id",
+                component: () => import("./views/Rooms/RoomDetails"),
+                name: "RoomDetails"
+            },{
+                path: "/images",
+                component: () => import("./views/Images/ImagesRooms"),
+                name: "Images"
+            },
+            {
+                path: "/users/",
+                component: () => import("./users/Users"),
+                name: "users"
+            },
+            {
+                path: "/binnacles/",
+                component: () => import("./binnacle/Binnacles"),
+                name: "binnacles"
+            },
+            {
+                path: "/binnacle/:id",
+                component: () => import("./binnacle/Binnacle"),
+                name: "binnacle"
+            },
+            {
+                path: "/disponibility",
+                component: ()=> import("./views/Disponibility/Disponibility"),
+                name: "disponibility"
+            },
+            {
+                path: "/calendar",
+                component: ()=> import("./components/HorizontalCalendar/Calendar"),
+                name: "calendar"
+            },
+            {
+                path: "/payment-options",
+                component: () => import("./views/payments/Payments"),
+                name: "payment-options"
+            },
+        ],
     },
     {
-        path: "/hotels",
-        component: () => import("./views/Hotels/Hotels"),
-        name: "Hotels",
+        path: "/bookings/:id",
+        component: () => import("./views/Reservations/Reservations"),
+        name: "Bookings",
+        props: true,
     },
-    {
-        path: "/hotel/:id",
-        component: () => import("./views/Hotel/Hotel"),
-        name: "Hotel"
-    },
-    {
-        path: "/rooms-home",
-        component: () => import("./views/Rooms/RoomsHome"),
-        name: "RoomsHome"
-    },
-    {
-        path: "/roomDetails/:id",
-        component: () => import("./views/Rooms/RoomDetails"),
-        name: "RoomDetails"
-    },
-    {
-        path: "/users/",
-        component: () => import("./users/Users"),
-        name: "users"
-    },
-    {
-        path: "/binnacles/",
-        component: () => import("./binnacle/Binnacles"),
-        name: "binnacles"
-    },
-    {
-        path: "/binnacle/:id",
-        component: () => import("./binnacle/Binnacle"),
-        name: "binnacle"
-    },
+    
+    
+    
     {
         path: "/panel/",
         component: () => import("./views/Panel/Dashboard"),
@@ -54,22 +88,9 @@ const routes = [
         component: () => import("./views/Reservations/Payments"),
         name: "payments"
     },
-    {
-        path: "/payment-options",
-        component: () => import("./views/payments/Payments"),
-        name: "payment-options"
-    },
+    
 
-    {
-        path: "/disponibility",
-        component: ()=> import("./views/Disponibility/Disponibility"),
-        name: "disponibility"
-    },
-    {
-        path: "/calendar",
-        component: ()=> import("./components/HorizontalCalendar/Calendar"),
-        name: "calendar"
-    },
+   
 ];
 
 const router = new VueRouter({

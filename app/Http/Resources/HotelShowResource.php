@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Collection;
 
 class HotelShowResource extends JsonResource
 {
@@ -14,6 +15,7 @@ class HotelShowResource extends JsonResource
      */
     public function toArray($request)
     {
+        
         return [
             'id' => $this->id,
             'idConfiguration' => isset ($this->configuration) ? $this->configuration->id : null,
@@ -31,7 +33,38 @@ class HotelShowResource extends JsonResource
             'num_rooms' => $this->num_rooms,
             'num_floors' => $this->num_floors,
             'enabled' => $this->enabled,
+            'children_age' => isset ($this->condition)?$this->condition->children_age:null,
+            'only_adults' => isset ($this->condition)?$this->condition->adults:null,
+            'max_adults' => $this->maxAdultsOcupancy(),
+            'max_children' => $this->maxChildrenOcupancy(),
+
             
         ];
+    }
+
+    public function maxAdultsOcupancy()
+    {
+        if(isset($this->rooms)){
+            $ocuppanciesA = new Collection();
+            $this->rooms->map(function($room) use($ocuppanciesA){
+             $ocuppanciesA->push($room->max_adults);
+            });
+            return $ocuppanciesA->max();
+        }else{
+            return 0;
+        }
+    }
+
+    public function maxChildrenOcupancy()
+    {
+        if(isset($this->rooms)){
+            $ocuppanciesC = new Collection();
+            $this->rooms->map(function($room) use($ocuppanciesC){
+             $ocuppanciesC->push($room->max_children);
+            });
+            return $ocuppanciesC->max();
+        }else{
+            return 0;
+        }
     }
 }

@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\HotelShowResource;
 use App\Http\Resources\HotelIndexResource;
 use App\Http\Resources\HotelViewResource;
+use App\Http\Resources\RoomViewResource;
 
 
 class HotelController extends Controller
@@ -55,7 +56,7 @@ class HotelController extends Controller
         
            
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
             if($request->hasFile('image')){
                 $image= $request->image->store('');
@@ -198,9 +199,25 @@ class HotelController extends Controller
     public function getHotelsForAdmin()
     {
         return HotelViewResource::collection(
-           
            Hotel::all()
         );
+    }
+
+    public function searchRooms(Request $request, Hotel $hotel)
+    {
+        $data = $request->all();
+        $rules = [
+            'start' => 'required|date_format:Y-m-d',
+            'end' => 'required|date_format:Y-m-d|after:start',
+        ];
+        $validator= Validator::make($data,$rules, Messages::getMessages());
+
+        if($validator->fails()){
+            return response($validator->errors(),422);
+        }else{
+        
+          //  return new RoomViewResource(Hotel::findOrFail($hotel->id));
+        }   
     }
 
     
