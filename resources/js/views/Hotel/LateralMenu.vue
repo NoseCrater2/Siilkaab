@@ -2,7 +2,7 @@
   <div>
     <v-card class="pa-2" outlined tile>
       <v-list dense>
-        <v-list-item-group :value.sync="iditemsListOptions" mandatory color="primary">
+        <v-list-item-group :value.sync="iditemsListOptions" mandatory :color="setColor()">
           <v-list-item
             v-for="(item, i) in itemsListOptions"
             :key="i"
@@ -34,16 +34,25 @@ export default {
         { text: "Condiciones", icon: "mdi-gavel" },
         { text: "Regimenes", icon: "mdi-silverware-fork-knife" },
         { text: "Información adicional", icon: "mdi-tag-multiple" }
-      ]
+      ],
     };
   },
   computed: {
     ...mapState({
-      iditemsListOptions: state => state.HotelModule.iditemsListOptions
+      iditemsListOptions: state => state.HotelModule.iditemsListOptions,
+      errorsInformation: (state) => state.HotelModule.errorsInformation
     })
   },
   methods: {
-    ...mapMutations(["countIditemsListOptions"])
+    ...mapMutations(["countIditemsListOptions"]),
+    setColor(){
+      if(this.errorsInformation != null){
+        return "red darken-1";
+      }
+      else if(this.errorsInformation == null){
+        return "primary";
+      }
+    }
   }
 };
 </script>

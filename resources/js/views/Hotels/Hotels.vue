@@ -1,5 +1,6 @@
 <template>
   <div>
+    <v-container class="elevation-1 outlined" fluid>
     <div v-if="hotels === []">
       <v-app id="inspire">
         <v-data-table
@@ -13,31 +14,11 @@
 
     <div v-else>
       <v-app id="inspire">
-        <v-bottom-navigation grow>
-          <div v-show="selected==! []?false:true">
-            <div class="d-flex align-center mt-1">
-              <v-btn @click="showDeleteDialog()">
-                <span class="black--text">ELIMINAR SELECCIÓN</span>
-                <v-icon size="32" color="error">mdi-delete-sweep</v-icon>
-              </v-btn>
-              <v-divider inset vertical></v-divider>
-            </div>
-          </div>
-
-          <v-spacer></v-spacer>
-          <div class="d-flex align-center">
-            <span class="text-h4 font-weight-bold">HOTELES</span>
-          </div>
-          <v-spacer></v-spacer>
-          <v-divider inset vertical></v-divider>
-          <div class="d-flex align-center mt-n1">
-            <v-btn @click="newHotel()">
-              <span class="black--text">NUEVO HOTEL</span>
-              <v-icon size="32" color="primary">mdi-plus</v-icon>
-            </v-btn>
-          </div>
-        </v-bottom-navigation>
-        <v-card>
+        <div class="text-center mb-7">
+          <span class="text-h4 text-uppercase font-weight-bold">Hoteles</span>
+        </div>
+        
+        <v-card outlined tile>
           <v-data-table
             v-model="selected"
             item-key="id"
@@ -47,26 +28,40 @@
             :items-per-page="20"
             :single-select="singleSelect"
             multi-sort
-            class="elevation-1"
             :search="search"
           >
             <template v-slot:top>
               <v-toolbar flat color="white">
-                <v-spacer></v-spacer>
-                <v-text-field
-                  v-model="search"
-                  append-icon="mdi-magnify"
-                  label="Buscar hotel"
-                  single-line
-                  hide-details
-                  outlined
-                  dense
-                ></v-text-field>
-                <v-spacer></v-spacer>
-
+                  <v-col cols="12" lg="3" md="3" sm="3" xs="12" class="mt-3">
+                    <div v-show="selected==! []?false:true">
+                        <v-btn small depressed rounded outlined block color="red" @click="showDeleteDialog()">
+                          <!-- <span class="black--text">ELIMINAR SELECCIÓN</span> -->
+                          <v-icon dark>mdi-delete-sweep</v-icon>ELIMINAR
+                        </v-btn>
+                    </div>
+                  </v-col>
+                  <v-col cols="12" lg="6" md="6" sm="6" xs="12" class="mt-3">
+                    <v-text-field
+                      v-model="search"
+                      append-icon="mdi-magnify"
+                      label="Buscar hotel"
+                      single-line
+                      hide-details
+                      outlined
+                      dense
+                    ></v-text-field>
+                  </v-col>
+                  <v-col cols="12" lg="3" md="3" sm="3" xs="12" class="mt-3">
+                    <div class="d-flex justify-end">
+                      <v-btn small depressed rounded outlined block color="info" @click="newHotel()">
+                        <!-- <span class="black--text">NUEVO HOTEL</span> -->
+                        <v-icon left dark>mdi-plus</v-icon>NUEVO HOTEL
+                      </v-btn>
+                    </div>
+                  </v-col>
                 <v-dialog v-model="deleteDialog" persistent max-width="290">
                   <v-card>
-                    <v-card-title class="headline">¿Eliminar hoteles?</v-card-title>
+                    <v-card-title class="headline">¿Eliminar hotel(es)?</v-card-title>
                     <v-card-text>
                       Está a punto de eliminar uno o más registros de hotel.
                       Esta acción no se puede deshacer. ¿Continuar?
@@ -80,7 +75,7 @@
                 </v-dialog>
               </v-toolbar>
               <div class="d-flex align-center ml-2 my-n4">
-                <v-switch v-model="singleSelect" label="Selección única" class="pa-3" inset></v-switch>
+                <v-switch v-model="singleSelect" label="Selección única" class="pa-3" dense inset></v-switch>
               </div>
             </template>
 
@@ -92,13 +87,13 @@
               </div>
             </template>
 
-            <template v-slot:item.rates="{item}">
+            <!-- <template v-slot:item.rates="{item}">
               <div class="d-flex align-center justify-start ml-1">
                 <v-badge :content="item.rates" :value="item.rates" color="red" overlap>
                   <v-icon>mdi-cash-multiple</v-icon>
                 </v-badge>
               </div>
-            </template>
+            </template> -->
 
             <template v-slot:item.discounts="{item}">
               <div class="d-flex align-center justify-start ml-5">
@@ -139,11 +134,27 @@
         </v-card>
       </v-app>
     </div>
+    <v-snackbar
+      :value="snackbar.stateSnackbar"
+      right
+      :color="snackbar.colorSnackbar"
+      rounded="pill"
+      :timeout="timeoutSnackbar"
+      bottom
+    >
+      <v-icon
+        color="white"
+      >
+        mdi-content-save
+      </v-icon>
+      <span class="font-weight-bold">{{snackbar.messaggeSnackbar}}</span>
+    </v-snackbar>
+    </v-container>
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapState, mapMutations } from "vuex";
 import router from "../../routes";
 export default {
   data() {
@@ -158,13 +169,12 @@ export default {
       headers: [
         {
           text: "Título",
-          align: "start",
           sortable: true,
           value: "title",
         },
-        { text: "Código de referencia", align: "center", value: "reference_code" },
+        { text: "Código de referencia", value: "reference_code" },
         { text: "Habitaciones", value: "rooms" },
-        { text: "Tarifas", value: "rates" },
+        // { text: "Tarifas", value: "rates" },
         { text: "Descuentos", value: "discounts" },
         { text: "Extras", value: "extras" },
         { text: "ID", value: "id" },
@@ -178,6 +188,9 @@ export default {
   computed: {
     ...mapState({
       hotels: (state) => state.HotelModule.allhotels,
+      snackbar: (state) => state.HotelModule.snackbar,
+      timeoutSnackbar: (state) => state.HotelModule.timeoutSnackbar,
+      errorsInformation: (state) => state.HotelModule.errorsInformation,
     }),
     windowSize() {
       switch (this.$vuetify.breakpoint.name) {
@@ -200,6 +213,7 @@ export default {
   },
 
   methods: {
+    ...mapMutations(["setSnackbar"]),
     editItem(item) {},
 
     deleteItem(item) {},

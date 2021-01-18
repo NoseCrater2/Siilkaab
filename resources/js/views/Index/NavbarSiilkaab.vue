@@ -7,8 +7,17 @@
       flat
       :clipped-left="$vuetify.breakpoint.xlAndUp || $vuetify.breakpoint.lgAndUp || $vuetify.breakpoint.mdAndUp || $vuetify.breakpoint.smAndUp || $vuetify.breakpoint.xsOnly"
     >
-      <v-toolbar-title class="ml-0 pl-4" style="width: 200px">
-        <span class="hidden-sm-and-down">Siilkaab Panel</span>
+      <v-toolbar-title class="ml-n6 pl-4" style="width: 200px">
+        <div class="d-flex align-center">
+          <v-img
+              src="/img/logolidhber/lidhberpng.png"
+              height="43"
+              width="43"
+              contain
+          ></v-img>
+          <span class="hidden-sm-and-down ml-2">Siilkaab Panel</span>
+        </div>
+
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <!--
