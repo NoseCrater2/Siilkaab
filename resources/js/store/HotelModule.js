@@ -1,7 +1,12 @@
 import axios from "axios";
 const HotelModule = {
     state: {
-        snackbar: false,
+        snackbar: {
+            stateSnackbar: false,
+            messaggeSnackbar: "",
+            colorSnackbar: ""
+        },
+        timeoutSnackbar: 3500,
         allhotels: [],
         hotels: [],
         setReinicializedVar: null,
@@ -141,7 +146,12 @@ const HotelModule = {
     mutations: {
         //Se reinician los estados (principalmente por el problema del router-link)
         setReinicialized(state) {
-            (state.snackbar = false),
+            (state.snackbar = {
+                stateSnackbar: false,
+                messaggeSnackbar: "",
+                colorSnackbar: ""
+            }),
+            (state.timeoutSnackbar= 3500),
             (state.iditemsListOptions = 0),
             (state.setReinicializedVar = null),
             (state.chargeView = false),
@@ -274,6 +284,10 @@ const HotelModule = {
         setSnackbar(state, flag){
             state.snackbar = flag;
         },
+        //Metodo que cambia de estado la variable que controla el tiempo de un snackbar (mensaje)
+        setTimeoutSnackbar(state, time){
+            state.timeoutSnackbar = time;
+        },
         //Este metodo se llama para cambiar el estado de la variable 'chargeView' en caso de que
         //sea un nuevo registro de hotel
         setChargeView(state, flag){
@@ -382,6 +396,14 @@ const HotelModule = {
         },
 
         postEditHotel(state, hotel) {
+            //En caso de que se inserta un hotel nuevo, directamente se inserta el hotel en las variables
+            if(typeof(hotel.new)!="undefined"){
+                if(hotel.new == "NEW"){
+                    delete hotel.new
+                    state.hotels.push(hotel)
+                    state.allhotels.push(hotel)
+                }
+            }
             state.hotel = hotel;
             state.hotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
@@ -425,6 +447,11 @@ const HotelModule = {
 
         editHotel(state, hotel) {
             state.hotel = hotel;
+            state.hotels.map(function(currentHotel) {
+                if (currentHotel.id === hotel.id) {
+                    Object.assign(currentHotel, hotel);
+                }
+            });
             state.allhotels.map(function(currentHotel) {
                 if (currentHotel.id === hotel.id) {
                     Object.assign(currentHotel, hotel);
@@ -680,8 +707,10 @@ const HotelModule = {
                         `/api/hotels`,
                         formDataHotel
                     );
-                    console.log(request.data.data)
-                    commit("postEditHotel", request.data.data);
+                    let newHotel = request.data.data;
+                    newHotel.new ="NEW";
+                    console.log(newHotel)
+                    commit("postEditHotel", newHotel);
                 }
                 // commit('setStatus',request.status);
             } catch (error) {

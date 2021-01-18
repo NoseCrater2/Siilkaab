@@ -4,17 +4,32 @@
       <v-row class="d-flex align-center justify-end">
         <v-col cols="12" md="8" sm="8" xs="12" class="d-flex justify-start">
           <v-btn
+            :loading="isLoadingSavingChangesSave"
+            :disabled="isLoadingSavingChangesSave"
             depressed
             small
             color="info"
             class="white--text mr-3"
-            @click="saveChanges()"
+            @click="loader = 'isLoadingSavingChangesSave'; saveChanges();"
           >
             <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
+            <template v-slot:loader>
+              <v-icon class="custom-loader" light>mdi-cached</v-icon>Guardar
+            </template>
           </v-btn>
-          <v-btn depressed small color="grey" class="white--text mr-3" @click="saveChanges('saveAndClose')">
-            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y
-            cerrar
+          <v-btn 
+            :loading="isLoadingSavingChangesSaveAndClose"
+            :disabled="isLoadingSavingChangesSaveAndClose"
+            depressed 
+            small 
+            color="grey" 
+            class="white--text mr-3" 
+            @click="loader = 'isLoadingSavingChangesSaveAndClose'; saveChanges('saveAndClose')"
+          >
+            <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y cerrar
+            <template v-slot:loader>
+              <v-icon class="custom-loader" light>mdi-cached</v-icon>Guardar y cerrar
+            </template>
           </v-btn>
           <v-btn depressed small color="red" class="white--text mr-3" @click="close()">
             <v-icon left dark>mdi-close-circle</v-icon>Cerrar
@@ -48,7 +63,7 @@ export default {
   name: "ButtonActionsSup",
   created() {
     this.getHotels().then(() => {
-      this.idHotel = this.$route.params.id;
+      this.idHotel = parseInt(this.$route.params.id);
       this.listItemHotels = this.hotels;
     });
   },
@@ -56,6 +71,10 @@ export default {
     return {
       listItemHotels: null,
       idHotel: null,
+
+      isLoadingSavingChangesSave: false,
+      isLoadingSavingChangesSaveAndClose: false,
+      loader: null,
     };
   },
   computed: {
@@ -73,6 +92,8 @@ export default {
       restaurants: (state) => state.HotelModule.restaurants,
       schedules: (state) => state.HotelModule.schedules,
       snackbar: (state) => state.HotelModule.snackbar,
+
+      errorsInformation: (state) => state.HotelModule.errorsInformation
     }),
     computedTitleHotel: {
       get() {
@@ -80,7 +101,7 @@ export default {
       },
       set(idHotel) {
         this.idHotel = idHotel;
-        router.push({ name: "Hotel", params: { id: this.idHotel } });
+        router.replace({ name: "Hotel", params: { id: this.idHotel } });
         //Setea todo a nul para antes de hacer el cambio de pestaña de hotel
         this.setReinicialized();
         this.setReinicializedErrorsStatus();
@@ -115,21 +136,23 @@ export default {
       "putEditRestaurants",
       "putEditSchedules",
     ]),
-    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar"]),
+    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar", "setTimeoutSnackbar"]),
     close(){
       this.setReinicialized();
       this.setReinicializedErrorsStatus();
       router.replace({ path: '/hotels' });
     },
     saveChanges(close = "save") {
+      this.setReinicializedErrorsStatus();
+      this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
+      this.setTimeoutSnackbar(3500);
       if(close == "save"){
-        this.executeSaveOnAPI();
+        this.isLoadingSavingChangesSave = true;
+        this.executeSaveOnAPI("save");
       }
-      if(close == "saveAndClose"){
-        this.executeSaveOnAPI();
-        this.setReinicialized();
-        this.setReinicializedErrorsStatus();
-        router.replace({ path: '/hotels' });
+      else if(close == "saveAndClose"){
+        this.isLoadingSavingChangesSaveAndClose = true;
+        this.executeSaveOnAPI("saveAndClose");
       }
     },
     chargeDataHotel() {
@@ -159,7 +182,7 @@ export default {
       }
     },
     //Metodo que se llama desde los metodos de los botones para guardar los datos en la bd
-    executeSaveOnAPI(){
+    executeSaveOnAPI(close = "save"){
         //DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
         //CODIGO PARA GUARDAR INFORMACION DEL HOTEL INICIA
         //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
@@ -167,20 +190,47 @@ export default {
             //metodo post
             if(this.hotel.id == null){
               this.postEditHotel(this.hotel).then(()=>{
+                let returnedErrorObj = this.verifyErrors();
                 console.log("this.hotel.id", this.hotel);
                 //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
                   this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
-                  this.setSnackbar(true);
-                }); 
+                  this.loader = null;
+                  this.isLoadingSavingChangesSave = false;
+                  this.isLoadingSavingChangesSaveAndClose = false;
+                  this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
+                  if(close == "saveAndClose"){
+                    this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
+                    if(returnedErrorObj.color == "green darken-1"){
+                      this.setReinicialized();
+                      this.setReinicializedErrorsStatus();
+                      this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
+                      router.replace({ path: '/hotels' });
+                    }
+                  }
+                });
               });
             }
             else if(this.hotel.id != null){
-              this.postEditHotel(this.hotel);
-              //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
-              this.executeSaveOnAPIAfterHotel(this.idHotel).then(()=>{
-                this.setSnackbar(true);
-              }); 
+              this.postEditHotel(this.hotel).then(()=>{
+                let returnedErrorObj = this.verifyErrors();
+                //Se ejecuta el método que llama a los demas metodos de API que dependen del resultado de hotel.id
+                this.executeSaveOnAPIAfterHotel(this.idHotel).then(()=>{
+                  this.loader = null;
+                  this.isLoadingSavingChangesSave = false;
+                  this.isLoadingSavingChangesSaveAndClose = false;
+                  this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
+                  if(close == "saveAndClose"){
+                    this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
+                    if(returnedErrorObj.color == "green darken-1"){
+                      this.setReinicialized();
+                      this.setReinicializedErrorsStatus();
+                      this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
+                      router.replace({ path: '/hotels' });
+                    }
+                  }
+                }); 
+              });
             }
         }
         //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
@@ -260,9 +310,29 @@ export default {
         //   this.putEditSchedules(this.schedules);
         // });
     },
+    //Metodo que verifica si existen errores al momento de guardar la informacion
+    verifyErrors(){
+      let obj = {};
+      if(this.errorsInformation != null){
+        obj.messagge = "Ocurrió un error al guardar";
+        obj.color = "red darken-1";
+      }
+      else{
+        obj.messagge = "El registro se guardó con exito";
+        obj.color = "green darken-1";
+      }
+      return obj;
+    }
   },
   props: {
     title: String,
   },
 };
 </script>
+
+<style scoped>
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+</style>

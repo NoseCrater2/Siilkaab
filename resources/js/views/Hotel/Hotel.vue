@@ -57,16 +57,20 @@
               </div>
             </v-col>
             <v-snackbar
-        :timeout="-1"
-        :value="snackbar"
-        right
-        color="success"
-        rounded="pill"
-        timeout="3500"
-        bottom
-      >
-        Registro guardado exitosamente
-      </v-snackbar>
+              :value="snackbar.stateSnackbar"
+              right
+              :color="snackbar.colorSnackbar"
+              rounded="pill"
+              :timeout="timeoutSnackbar"
+              bottom
+            >
+              <v-icon
+                color="white"
+              >
+                mdi-content-save
+              </v-icon>
+              <span class="font-weight-bold">{{snackbar.messaggeSnackbar}}</span>
+            </v-snackbar>
           </v-row>
         </v-container>
       </v-app>
@@ -103,6 +107,7 @@ export default {
       setReinicializedVar: (state) => state.HotelModule.setReinicializedVar,
       iditemsListOptions: (state) => state.HotelModule.iditemsListOptions,
       snackbar: (state) => state.HotelModule.snackbar,
+      timeoutSnackbar: (state) => state.HotelModule.timeoutSnackbar,
     }),
   },
   methods: {
