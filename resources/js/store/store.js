@@ -10,6 +10,7 @@ import PaymentModule from './PaymentModule';
 import RoomModule from './RoomModule';
 import CredentialsModule from './CredentialsModule';
 import  disponibilityMoule from './disponibilityModule';
+import bookingsModule from './bookingsModule';
 
 const store = new Vuex.Store({
 
@@ -21,6 +22,7 @@ const store = new Vuex.Store({
     RoomModule,
     CredentialsModule,
     disponibilityMoule,
+    bookingsModule,
   },
  
 })

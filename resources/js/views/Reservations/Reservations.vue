@@ -1,5 +1,5 @@
 <template>
-  <v-app id="inspire">
+  <v-app >
     <v-row justify="center" >
     <v-form ref="form" v-model="valid" lazy-validation style="width: 1366px">
     <v-card color="black"  >
@@ -145,10 +145,91 @@
     </v-card>
     </v-form>
     </v-row>
-
-    <v-row justify="center">
+    <v-row justify="center" class="px-0 mx-0" v-if="availablerooms.length > 0" >
+      <v-breadcrumbs  :items="items">
+        <template v-slot:divider>
+            <v-icon>mdi-chevron-right</v-icon>
+        </template>
+      </v-breadcrumbs>
+    </v-row>
+    <v-row class="mx-0 px-0">
       <v-container style="max-width: 1366px">
-      <AvailabilityRooms></AvailabilityRooms>
+        <v-alert
+        v-if="$route.name === 'PersonalData'"
+        dense
+        text
+        class="text-center"
+        color="success"
+      >
+        Estás a un paso de completar tu reserva.
+      </v-alert>
+      </v-container>
+    </v-row>
+    <v-row  class="mx-0 px-0">
+      <v-container style="max-width: 1366px">
+        <v-row justify="space-around">
+            <v-col cols="3">
+        <v-card flat>
+          <v-img class="ma-3" :src="`/img/${hotel.image}`">
+
+          </v-img>
+          <v-card-title>{{hotel.title}}</v-card-title>
+          <v-card-text>
+             <v-icon>mdi-map-marker</v-icon>
+             {{contact.address +', '+ contact.zipcode +' '+  contact.city +' '+ contact.state +', '+ contact.country}}
+          </v-card-text>
+          <v-divider></v-divider>
+          
+            <v-list dense>
+              <v-list-item>
+                <v-list-item-icon>Estancia</v-list-item-icon>
+                <v-list-item-title> {{ bookings.rooms.length }} Habitación(es) para {{ bookings.nights }} noche(s)</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>Entrada</v-list-item-icon>
+                <v-list-item-title> {{ $moment(bookings.from).format("Do dddd MMM gggg") }}</v-list-item-title>
+              </v-list-item>
+              <v-list-item>
+                <v-list-item-icon>Salida</v-list-item-icon>
+                <v-list-item-title>{{ $moment(bookings.to).format("Do dddd MMM gggg")}}</v-list-item-title>
+              </v-list-item>
+            </v-list>
+            <v-divider></v-divider>
+            <v-list dense>
+              <v-list-item  v-for="(room, index) in bookings.rooms" :key="index">
+                <v-list-item-content>
+                  <v-list-item-title v-if="room">{{room.name}}</v-list-item-title>
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-list-item-action-text v-if="room">
+                    {{configuration.currency_symbol + room.rack_rate +' '+ configuration.currency_code}}
+                  </v-list-item-action-text>
+                </v-list-item-action>
+              </v-list-item>
+              <v-divider></v-divider>
+            </v-list>
+            <v-list dense>
+              <v-list-item >
+                <v-list-item-content>
+                  <v-list-item-title>Total Reserva</v-list-item-title>
+                 
+                </v-list-item-content>
+                <v-list-item-action>
+                   {{configuration.currency_symbol + $store.getters.totalPrice+' '+ configuration.currency_code}}
+                </v-list-item-action>
+              </v-list-item>
+            </v-list>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" depressed :to="{name:'PersonalData'}" >Reservar</v-btn>
+            </v-card-actions>
+         
+        </v-card>
+      </v-col>
+      <v-col cols="9">
+        <router-view :key="$route.path"></router-view>
+      </v-col>
+        </v-row>
       </v-container>
     </v-row>
   </v-app>
@@ -156,22 +237,37 @@
 
 
 <script >
-import { mapActions, mapGetters, mapState } from 'vuex';
-import AvailabilityRooms from './AvailabilityRooms';
-import Moment from "moment"; //Importamos moment.js
-import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
-const moment = extendMoment(Moment);
+import {mapGetters, mapState } from 'vuex';
+// import Moment from "moment"; //Importamos moment.js
+// import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
+// const moment = extendMoment(Moment);
 export default {
   data () {
     return {
-      cualquiera: moment(),
+      items: [
+        {
+          text: 'Selecciona habitación',
+
+          to: {name: 'selectRoom'}
+        },
+        {
+          text: 'Datos personales',
+
+          to: {name: 'PersonalData'}
+        },
+        {
+          text: 'Reserva confirmada',
+
+          to: {name: 'Confirmation'}
+        }
+      ],
       valid: true,
       maxChildrenSelected: 0,
       selectedChildren: 0,
       selectedRooms: 0,
       form:[],
-      date: moment().format('YYYY-MM-DD'),
-      date2: moment().date( moment().date() + 1).format('YYYY-MM-DD'),
+      date: this.$moment().format('YYYY-MM-DD'),
+      date2: this.$moment().date( this.$moment().date() + 1).format('YYYY-MM-DD'),
       menu: false,
       menu2: false,
       menu3: false,
@@ -192,9 +288,6 @@ export default {
   },
 
   methods:{
-    printSearchTerms(){
-      console.log(this.form)
-    },
     changeCoutRooms(){
       this.form = []
        for (let index = 0; index < parseInt(this.selectedRooms); index++) {
@@ -204,7 +297,9 @@ export default {
 
     search(){
       if(this.$refs.form.validate()){
+        this.showRooms = false
         // this.loading = true;
+        this.$store.dispatch('resetRooms')
         this.errors = null;
         let terms = {id: 0, from: null, to: null, rooms: []}
         terms.id = this.id
@@ -213,23 +308,13 @@ export default {
         terms.rooms = this.form
         this.$store.dispatch('getAvailabilityRooms',terms).then(()=>{
           this.showRooms = true;
-          // this.loading = false;
+          terms.nights = this.$moment(this.date2).diff(this.$moment(this.date),'days')
+          this.$store.dispatch('addGeneralInformation',terms)
+          if(this.$route.name !== 'selectRoom'){
+            this.$router.push({name: 'selectRoom'})
+          }
         })
       }
-     
-
-     /*axios
-     .get(`/api/rooms/1/availability?from=${this.date}&to=${this.date2}`)
-     .then(response => {
-       this.status = response.status;
-      })
-     .catch(error =>{
-       if(422=== error.response.status){
-         this.errors = error.response.data.errors; 
-       }
-
-       this.status = error.response.status;
-     }).then(() => {this.loading = false});*/
     },
 
     errorFor(field){
@@ -243,7 +328,12 @@ export default {
 
   computed:{
      ...mapState({
-      hotel: (state) => state.HotelModule.hotel,
+        hotel: (state) => state.HotelModule.hotel,
+        availablerooms: (state) => state.RoomModule.availableRooms,
+        bookings: state => state.bookingsModule.bookings,
+        hotel: (state) => state.HotelModule.hotel,
+        contact: state => state.HotelModule.contacts,
+        configuration: state => state.HotelModule.configuration,
     }),
 
    ...mapGetters(["getSearchErrors"]),
@@ -330,24 +420,20 @@ export default {
 
 
   mounted(){
-    this.$store.dispatch('getHotel', this.id)
-    this.$store.dispatch('getContacts', this.id)
-    let start, end
-    start = moment(this.date)
-    end = moment(this.date2)
 
-    console.log(end.diff(start, 'days'))
+    this.$store.dispatch('getHotel', this.id).then(() => {
+        this.$store.dispatch('getContacts', this.hotel.idContact)
+        this.$store.dispatch('getConfiguration', this.hotel.idConfiguration)
+    })
+  
+    
   },
 
   props:['id'],
 
-  components:{
-    AvailabilityRooms,
-  },
-
 }
 </script>
 
-<style>
+<style scoped>
 
 </style>

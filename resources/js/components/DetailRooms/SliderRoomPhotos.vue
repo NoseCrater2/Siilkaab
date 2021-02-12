@@ -1,8 +1,8 @@
 <template>
     <v-carousel hide-delimiters height="450">
         <v-carousel-item
-        v-for="(item, i) in items" 
-        :key="i" :src="item.src" 
+        v-for="(item, i) in additionalImages" 
+        :key="i" :src="`/img/${item.name}`" 
         reverse-transition="fade-transition" 
         transition="fade-transition"
         
@@ -11,24 +11,28 @@
 </template>
 
 <script>
+import { mapActions, mapState } from "vuex";
 export default {
     data(){
         return{
-            items: [
-                {
-                  src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg',
-                },
-                {
-                  src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg',
-                },
-                {
-                  src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg',
-                },
-                {
-                  src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg',
-                },
-            ],
         }
+    },
+
+     computed:{
+        ...mapState({
+            additionalImages: (state) => state.RoomModule.additionalImages,
+        }),
+    },
+
+    props: {
+        id:{
+            type: Number,
+            required: true,
+        },
+    },
+
+     mounted(){
+        this.$store.dispatch('getAdditionalImages', this.id)
     }
 }
 </script>

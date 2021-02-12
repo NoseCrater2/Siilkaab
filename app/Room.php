@@ -65,9 +65,9 @@ class Room extends Model
         return $this->belongsTo(Extra::class);
     }
 
-    public function image()
+    public function images()
     {
-        return $this->hasOne(Image::class);
+        return $this->hasMany(Image::class);
     }
 
     public function bookings()
