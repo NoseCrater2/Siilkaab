@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-container class="elevation-1 outlined" fluid>
-      <div class="d-flex justify-center mb-2">
+        <div class="d-flex justify-center mb-2">
           <span class="text-h4 text-uppercase font-weight-bold"
             >Disponibilidad y tarifas</span>
         </div>
@@ -133,7 +133,7 @@
                   v-model="daysIds"
                   :label="day.day"
                   :value="day.id"
-                  @click="selectBtnCheckbox()"
+                  @click="selectBtnCheckbox(day.day)"
                 ></v-checkbox>
               </v-row>
             </v-col>
@@ -242,7 +242,8 @@ export default {
         }
       }
     },
-    selectBtnCheckbox() {
+    selectBtnCheckbox(day) {
+      console.log(day)
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority(){

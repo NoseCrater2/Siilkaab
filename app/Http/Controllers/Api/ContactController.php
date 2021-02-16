@@ -35,7 +35,7 @@ class ContactController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'url' => 'url|required',
+            'url' => 'required|url',
             'email' => 'required|email',
             'phone' => 'required|alpha_num',
             'address' => 'required|string',

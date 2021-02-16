@@ -19,7 +19,7 @@
             label="URL del sitio web"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['url']) != 'undefined') ? errorsContacts.url[0] : ''"
+            :error-messages="errorsContacts.url"
           ></v-text-field>
         </v-col>
 
@@ -30,7 +30,8 @@
             label="Email"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['email']) != 'undefined') ? errorsContacts.email[0] : ''"
+            :rules="[rules.validEmail]"
+            :error-messages="errorsContacts.email"
           ></v-text-field>
         </v-col>
 
@@ -41,7 +42,10 @@
             label="Telefono"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['phone']) != 'undefined') ? errorsContacts.phone[0] : ''"
+            maxlength="10"
+            @keydown="keyhandlerPhone" 
+            :rules="[rules.validPhone]"
+            :error-messages="errorsContacts.phone"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -51,7 +55,8 @@
             label="Direccion"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['address']) != 'undefined') ? errorsContacts.address[0] : ''"
+            maxlength="40"
+            :error-messages="errorsContacts.address"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -61,7 +66,10 @@
             label="Codigo postal"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['zipcode']) != 'undefined') ? errorsContacts.zipcode[0] : ''"
+            maxlength="5"
+            @keydown="keyhandlerZip" 
+            :rules="[rules.validZip]"
+            :error-messages="errorsContacts.zipcode"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -71,7 +79,8 @@
             label="Ciudad"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['city']) != 'undefined') ? errorsContacts.city[0] : ''"
+            maxlength="40"
+            :error-messages="errorsContacts.city"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -81,7 +90,8 @@
             label="Provincia"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['state']) != 'undefined') ? errorsContacts.state[0] : ''"
+            maxlength="40"
+            :error-messages="errorsContacts.state"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -113,7 +123,8 @@
             label="Representante legal"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['legal_rep']) != 'undefined') ? errorsContacts.legal_rep[0] : ''"
+            maxlength="30"
+            :error-messages="errorsContacts.legal_rep"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -123,7 +134,8 @@
             label="Nombre de gerente"
             outlined
             required
-            :error-messages="(errorsContacts != null && typeof(errorsContacts['manager_name']) != 'undefined') ? errorsContacts.manager_name[0] : ''"
+            maxlength="30"
+            :error-messages="errorsContacts.manager_name"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -158,6 +170,20 @@ export default {
       countryIDModel: null,
       legalRepModel: null,
       managerNameModel: null,
+      rules: {
+        validEmail: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Dirección de email inválida'
+        },
+        validPhone: value => {
+          const pattern = /^([0-9]\d{0,10})$/
+          return pattern.test(value) || 'Solo se aceptan numeros'
+        },
+        validZip: value => {
+          const pattern = /^([0-9]\d{0,6})$/
+          return pattern.test(value) || 'Solo se aceptan numeros'
+        },
+      },
     };
   },
   computed: {
@@ -272,76 +298,90 @@ export default {
     ...mapActions(["getCountries"]),
     //Metodo para llenar la vista con los datos
     fillModel(){
-    if(this.contacts.url != null){
-        this.urlModel = this.contacts.url;
-    }
-    else{
-        this.contacts.url = "";
-        this.urlModel = this.contacts.url;
-    }
-    if(this.contacts.email != null){
-        this.emailModel = this.contacts.email;
-    }
-    else{
-        this.contacts.email = "";
-        this.emailModel = this.contacts.email;
-    }
-    if(this.contacts.phone != null){
-        this.phoneModel = this.contacts.phone;
-    }
-    else{
-        this.contacts.phone = "";
-        this.phoneModel = this.contacts.phone;
-    }
-    if(this.contacts.address != null){
-        this.addressModel = this.contacts.address;
-    }
-    else{
-        this.contacts.address = "";
-        this.addressModel = this.contacts.address;
-    }
-    if(this.contacts.zipcode != null){
-        this.zipCodeModel = this.contacts.zipcode;
-    }
-    else{
-        this.contacts.zipcode = "";
-        this.zipCodeModel = this.contacts.zipcode;
-    }
-    if(this.contacts.city != null){
-        this.cityModel = this.contacts.city;
-    }
-    else{
-        this.contacts.city = "";
-        this.cityModel = this.contacts.city;
-    }
-    if(this.contacts.state != null){
-        this.stateModel = this.contacts.state;
-    }
-    else{
-        this.contacts.state = "";
-        this.stateModel = this.contacts.state;
-    }
-    if(this.contacts.country_id != null){
-        this.countryIDModel = this.contacts.country_id;
-    }
-    else{
-        this.contacts.country_id = 146;
-        this.countryIDModel = this.contacts.country_id;
-    }
-    if(this.contacts.legal_rep != null){
-        this.legalRepModel = this.contacts.legal_rep;
-    }
-    else{
-        this.contacts.legal_rep = "";
-        this.legalRepModel = this.contacts.legal_rep;
-    }
-    if(this.contacts.manager_name != null){
-        this.managerNameModel = this.contacts.manager_name;
-    }
-    else{
-        this.contacts.manager_name = "";
-        this.managerNameModel = this.contacts.manager_name;
-    }
+      if(this.contacts.url != null){
+          this.urlModel = this.contacts.url;
+      }
+      else{
+          this.contacts.url = "";
+          this.urlModel = this.contacts.url;
+      }
+      if(this.contacts.email != null){
+          this.emailModel = this.contacts.email;
+      }
+      else{
+          this.contacts.email = "";
+          this.emailModel = this.contacts.email;
+      }
+      if(this.contacts.phone != null){
+          this.phoneModel = this.contacts.phone;
+      }
+      else{
+          this.contacts.phone = "";
+          this.phoneModel = this.contacts.phone;
+      }
+      if(this.contacts.address != null){
+          this.addressModel = this.contacts.address;
+      }
+      else{
+          this.contacts.address = "";
+          this.addressModel = this.contacts.address;
+      }
+      if(this.contacts.zipcode != null){
+          this.zipCodeModel = this.contacts.zipcode;
+      }
+      else{
+          this.contacts.zipcode = "";
+          this.zipCodeModel = this.contacts.zipcode;
+      }
+      if(this.contacts.city != null){
+          this.cityModel = this.contacts.city;
+      }
+      else{
+          this.contacts.city = "";
+          this.cityModel = this.contacts.city;
+      }
+      if(this.contacts.state != null){
+          this.stateModel = this.contacts.state;
+      }
+      else{
+          this.contacts.state = "";
+          this.stateModel = this.contacts.state;
+      }
+      if(this.contacts.country_id != null){
+          this.countryIDModel = this.contacts.country_id;
+      }
+      else{
+          this.contacts.country_id = 146;
+          this.countryIDModel = this.contacts.country_id;
+      }
+      if(this.contacts.legal_rep != null){
+          this.legalRepModel = this.contacts.legal_rep;
+      }
+      else{
+          this.contacts.legal_rep = "";
+          this.legalRepModel = this.contacts.legal_rep;
+      }
+      if(this.contacts.manager_name != null){
+          this.managerNameModel = this.contacts.manager_name;
+      }
+      else{
+          this.contacts.manager_name = "";
+          this.managerNameModel = this.contacts.manager_name;
+      }
+    },
+    keyhandlerPhone(event) {
+      const pattern = /^([0-9]\d{0,10})$/
+      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
+        console.log(event.key)
+        event.preventDefault();
+      }
+    },
+    keyhandlerZip(event) {
+      const pattern = /^([0-9]\d{0,6})$/
+      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
+        console.log(event.key)
+        event.preventDefault();
+      }
     }
   },
 };

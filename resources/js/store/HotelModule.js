@@ -127,21 +127,33 @@ const HotelModule = {
             hotel_id: null,
         },
 
-        errorsInformation: null,
-        statusInformation: null,
-        errorsConfiguration: null,
-        statusConfiguration: null,
-        errorsContacts: null,
-        statusContacts: null,
-        errorsConditions: null,
-        statusConditions: null,
-        errorsRegimes: null,
-        statusRegimes: null
+        errorsInformation: [],
+        statusInformation: 0,
+        errorsConfiguration: [],
+        statusConfiguration: 0,
+        errorsContacts: [],
+        statusContacts: 0,
+        errorsConditions: [],
+        statusConditions: 0,
+        errorsRegimes: [],
+        statusRegimes: 0,
     },
     getters: {
         getAssignHotels(state) {
             return state.assignHotels;
-        }
+        },
+
+        getArrayErrors(state){
+            return [
+                state.statusInformation,
+                state.statusConfiguration,
+                state.statusContacts,
+                state.statusConditions,
+                state.statusRegimes,
+                0,
+            ]
+        },
+
     },
     mutations: {
         //Se reinician los estados (principalmente por el problema del router-link)
@@ -269,16 +281,16 @@ const HotelModule = {
                 });
         },
         setReinicializedErrorsStatus(state){
-            (state.errorsInformation = null),
-            (state.statusInformation = null),
-            (state.errorsConfiguration = null),
-            (state.statusConfiguration = null),
-            (state.errorsContacts = null),
-            (state.statusContacts = null),
-            (state.errorsConditions = null),
-            (state.statusConditions = null),
-            (state.errorsRegimes = null),
-            (state.statusRegimes = null)
+            (state.errorsInformation = []),
+            (state.statusInformation = 0),
+            (state.errorsConfiguration = []),
+            (state.statusConfiguration = 0),
+            (state.errorsContacts = []),
+            (state.statusContacts = 0),
+            (state.errorsConditions = []),
+            (state.statusConditions = 0),
+            (state.errorsRegimes = []),
+            (state.statusRegimes = 0)
         },
         //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
         setSnackbar(state, flag){
@@ -418,15 +430,23 @@ const HotelModule = {
         },
 
         postAddRegimes(state, regimes) {
-            state.regimes = regimes;
+            regimes.forEach(itemRegime => {
+                for (const stateRegime of state.regimes) {
+                    if(stateRegime.componentID === itemRegime.componentID){
+                        Object.assign(stateRegime, itemRegime);
+                    }
+                }
+            });
         },
 
         putUpdateRegimes(state, regimes) {
-            state.regimes = regimes;
-        },
-
-        deleteRegimes(state, regimes) {
-            state.regimes = regimes;
+            regimes.forEach(itemRegime => {
+                for (const stateRegime of state.regimes) {
+                    if(stateRegime.id == itemRegime.id){
+                        Object.assign(stateRegime, itemRegime);
+                    }
+                }
+            });
         },
 
         putEditConfiguration(state, configuration) {
@@ -485,7 +505,7 @@ const HotelModule = {
                 let hotel = request.data.data;
                 commit("setHotel", hotel);
             } catch (error) {
-                //
+                
             }
         },
 
@@ -495,7 +515,7 @@ const HotelModule = {
                 let currencies = request.data.data;
                 commit("setCurrencies", currencies);
             } catch (error) {
-                //
+                
             }
         },
         getTimezones: async function({ commit }) {
@@ -504,7 +524,7 @@ const HotelModule = {
                 let timezones = request.data;
                 commit("setTimezones", timezones);
             } catch (error) {
-                //
+
             }
         },
         getCountries: async function({ commit }) {
@@ -513,7 +533,7 @@ const HotelModule = {
                 let countries = request.data.data;
                 commit("setCountries", countries);
             } catch (error) {
-                //
+
             }
         },
         getConfiguration: async function({ commit }, id) {
@@ -541,6 +561,7 @@ const HotelModule = {
         },
         getRegimes: async function({ commit }, id) {
             try {
+                
                 const promiseRequest = await Promise.all(
                     id.map(elID => {
                         const requestRegime = axios.get(`/api/regimes/${elID}`);
@@ -554,8 +575,8 @@ const HotelModule = {
                 })
                 
                 //Ordenamos el arreglo de regimenes de manera desc
-                mapArray.sort(function(a,b) {return (a.id < b.id) ? 1 : ((b.id < a.id) ? -1 : 0);} );
-
+                mapArray.sort(function(a,b) {return (a.id < b.id) ? 1 : ((b.id < a.id) ? -1 : 0);});
+                
                 //Creamos e inicializamos una variable donde se guardara el indice del arreglo
                 //Y que servirá para cortar del arreglo el regimen que no tenga fecha
                 let indexSplice = 0;
@@ -569,7 +590,6 @@ const HotelModule = {
                     }
                     return itemArray;
                 })
-
                 //Creamos una variable llamada "tempRegimeCuted" que guardara el elemento cortado del array
                 //Cabe señalar que el metodo Javascript "splice" tambien afecta directamente al array al que se
                 //Le aplica y por lo tanto, si elimina tambien el elemento señalado. Es por eso que el elemento
@@ -578,16 +598,15 @@ const HotelModule = {
                 //Agregamos a "arrayRegimes" el elemento cortado como primer elemento del array de la siguiente manera
                 //Posicion donde se agrega, numero de elementos a eliminar en el proceso, elemento a insertar/eliminar
                 arrayRegimes.splice(0, 0, tempRegimeCuted[0]);
-                
-                commit("setRegimes", arrayRegimes);
+                //Se eliminan del arreglo los objetos indefinidos
+                let arrayRegimesFiltered = arrayRegimes.filter((el)=>typeof(el)!='undefined')
+                commit("setRegimes", arrayRegimesFiltered);
             } catch (error) {}
         },
         getRestaurants: async function({ commit }, idHotel) {
             try {
                 const request = await axios.get("/api/restaurants");
-                let restaurants = request.data.data.filter(
-                    element => element.hotel_id === idHotel
-                );
+                let restaurants = request.data.data.filter(element => element.hotel_id === idHotel);
                 commit("setRestaurants", restaurants);
             } catch (error) {}
         },
@@ -662,17 +681,25 @@ const HotelModule = {
         },
 
         postEditHotel: async function({ commit }, newHotel) {
-            console.log(newHotel)
+            for (const propertyHotel in newHotel) {
+                if(propertyHotel == 'type'){
+                    if(newHotel[propertyHotel] == 'bungalow' || newHotel[propertyHotel] == 'cabana'){
+                        newHotel['num_rooms'] = 0;
+                        newHotel['num_floors'] = 0;
+                    }
+                }
+            }
             let formDataHotel = new FormData();
-
             for (let attrib in newHotel) {
                 //Si la propiedad a agregar al FormData es la imagen
                 if(attrib === "image"){
-                    //Si la imagen.result es diferente de "undefined" es por que se editó la imagen
-                    //Y se modificó la propiedad donde se guardaria temporalmente el "comprimido"
-                    if(typeof(newHotel[attrib].compressImage) !== 'undefined'){
-                        if(typeof(newHotel[attrib]["compressImage"].result) !== 'undefined'){
-                            formDataHotel.append(attrib, newHotel[attrib]["compressImage"].result);
+                    if(newHotel[attrib] != null){
+                        //Si la imagen.result es diferente de "undefined" es por que se editó la imagen
+                        //Y se modificó la propiedad donde se guardaria temporalmente el "comprimido"
+                        if(typeof(newHotel[attrib].compressImage) !== 'undefined'){
+                            if(typeof(newHotel[attrib]["compressImage"].result) !== 'undefined'){
+                                formDataHotel.append(attrib, newHotel[attrib]["compressImage"].result);
+                            }
                         }
                     }
                 }
@@ -699,7 +726,6 @@ const HotelModule = {
                         `/api/hotels/${newHotel.id}`,
                         formDataHotel
                     );
-                    console.log(request.data.data)
                     commit("postEditHotel", request.data.data);
                 }
                 else if(newHotel.id == null){
@@ -709,84 +735,75 @@ const HotelModule = {
                     );
                     let newHotel = request.data.data;
                     newHotel.new ="NEW";
-                    console.log(newHotel)
                     commit("postEditHotel", newHotel);
                 }
                 // commit('setStatus',request.status);
             } catch (error) {
-                console.log(error.response.data)
-                console.log(error.response.status)
                 commit("setErrorsInformation", error.response.data);
                 commit("setStatusInformation", error.response.status);
             }
         },
 
         postAddRegimesAXIOS: async function({ commit }, newArrayPostRegimes) {
-            try {
-                let arrayRequestAddItemRegime = [];
-                newArrayPostRegimes.forEach(async itemRegime => {
-                    try {
-                        const requestAddItemRegime = await axios.post(
-                            `/api/regimes`,
-                            itemRegime
-                        );
-                        arrayRequestAddItemRegime.push(requestAddItemRegime.data.data)
-                    } catch (error) {
-                        commit("setErrorsRegimes", error.response.data);
-                        commit("setStatusRegimes", error.response.status);
-                    }
-                });
+            let arrayRequestAddItemRegime = [];
+            let arrayErrors = []
+            let status;
+            for (const itemRegime of newArrayPostRegimes) {
+                try {
+                    const requestAddItemRegime = await axios.post(`/api/regimes`, itemRegime);
+                    let trasformedRequest = requestAddItemRegime.data.data;
+                    trasformedRequest.componentID = itemRegime.componentID;
+                    arrayRequestAddItemRegime.push(trasformedRequest);
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemRegime.componentID})
+                }
+            }
+            if(arrayErrors == 0){
                 commit("postAddRegimes", arrayRequestAddItemRegime);
-                // commit('setStatus',request.status);
-            } catch (error) {
-                commit("setErrorsRegimes", error.response.data);
-                commit("setStatusRegimes", error.response.status);
+            }
+            else{
+                commit("setErrorsRegimes", arrayErrors);
+                commit("setStatusRegimes", status);
             }
         },
 
         putUpdateRegimesAXIOS: async function({ commit }, newArrayPutRegimes) {
-            try {
-                let arrayRequestUpdateItemRegime = [];
-                newArrayPutRegimes.forEach(async itemRegime => {
-                    try {
-                        const requestUpdateItemRegime = await axios.put(
-                            `/api/regimes/${itemRegime.id}`,
-                            itemRegime
-                        );
-                        arrayRequestUpdateItemRegime.push(requestUpdateItemRegime.data.data)
-                    } 
-                    catch (error) {
-                        commit("setErrorsRegimes", error.response.data);
-                        commit("setStatusRegimes", error.response.status);
-                    }
-                });
-                console.log(arrayRequestUpdateItemRegime)
+            let arrayRequestUpdateItemRegime = [];
+            let arrayErrors = []
+            let status;
+            for (const itemRegime of newArrayPutRegimes) {
+                try {
+                    const requestUpdateItemRegime = await axios.put(
+                        `/api/regimes/${itemRegime.id}`,
+                        itemRegime
+                    );
+                    let trasformedRequest = requestUpdateItemRegime.data.data;
+                    trasformedRequest.componentID = itemRegime.componentID;
+                    arrayRequestUpdateItemRegime.push(trasformedRequest)
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemRegime.componentID})
+                }
+            }
+            if(arrayErrors == 0){
                 commit("putUpdateRegimes", arrayRequestUpdateItemRegime);
-                // commit('setStatus',request.status);
-            } catch (error) {
-                commit("setErrorsRegimes", error.response.data);
-                commit("setStatusRegimes", error.response.status);
+            }
+            else{
+                commit("setErrorsRegimes", arrayErrors);
+                commit("setStatusRegimes", status);
             }
         },
 
         deleteRegimesAXIOS: async function({ commit }, arrayIDsItemsDel) {
-            try {
-                let arrayRequestDeleteItemRegime = [];
-                arrayIDsItemsDel.forEach(async idItemRegime => {
-                    try {
-                        const requestDeleteItemRegime = await axios.delete(`/api/regimes/${idItemRegime}`);
-                        arrayRequestDeleteItemRegime.push(requestDeleteItemRegime.data.data)
-                    } catch (error) {
-                        commit("setErrorsRegimes", error.response.data);
-                        commit("setStatusRegimes", error.response.status);
-                    }
-                });
-                commit("deleteRegimes", arrayRequestDeleteItemRegime);
-                // commit('setStatus',request.status);
-            } catch (error) {
-                commit("setErrorsRegimes", error.response.data);
-                commit("setStatusRegimes", error.response.status);
-            }
+            arrayIDsItemsDel.forEach(async idItemRegime => {
+                try {
+                    const requestDeleteItemRegime = await axios.delete(`/api/regimes/${idItemRegime}`);
+                } catch (error) {
+                    commit("setErrorsRegimes", error.response.data);
+                    commit("setStatusRegimes", error.response.status);
+                }
+            });
         },
 
         postEditConfiguration: async function({ commit }, newConfiguration) {
@@ -798,8 +815,6 @@ const HotelModule = {
                 commit("putEditConfiguration", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
-                console.log(error.response.data)
-                console.log(error.response.status)
                 commit("setErrorsConfiguration", error.response.data);
                 commit("setStatusConfiguration", error.response.status);
             }
@@ -815,8 +830,6 @@ const HotelModule = {
                 commit("putEditConfiguration", request.data.data);
                 // commit('setStatus',request.status);
             } catch (error) {
-                console.log(error.response.data)
-                console.log(error.response.status)
                 commit("setErrorsConfiguration", error.response.data);
                 commit("setStatusConfiguration", error.response.status);
             }
@@ -851,14 +864,12 @@ const HotelModule = {
         },
 
         postEditConditions: async function({ commit }, newConditions) {
-            console.log("newConditions", newConditions)
             try {
                 const request = await axios.post(
                     `/api/conditions`,
                     newConditions
                 );
                 let conditions = request.data.data;
-                console.log("conditions", conditions)
                 conditions.checkin_time = conditions.checkin_time.slice(0, -3);
                 conditions.checkout_time = conditions.checkout_time.slice(0, -3);
                 commit("putEditConditions", conditions);
@@ -870,14 +881,12 @@ const HotelModule = {
         },
 
         putEditConditions: async function({ commit }, newConditions) {
-            console.log("newConditions", newConditions)
             try {
                 const request = await axios.put(
                     `/api/conditions/${newConditions.id}`,
                     newConditions
                 );
                 let conditions = request.data.data;
-                console.log("conditions", conditions)
                 conditions.checkin_time = conditions.checkin_time.slice(0, -3);
                 conditions.checkout_time = conditions.checkout_time.slice(0, -3);
                 commit("putEditConditions", conditions);
@@ -891,56 +900,188 @@ const HotelModule = {
         //Metodo que llama a diferentes acciones de Regimes dependiendo
         //De lo que requiera hacer 
         putEditRegimes: async function({ commit, dispatch }, objRegimes) {
+            let methodsRegime = "";
+            objRegimes.newRegimes = objRegimes.newRegimes.filter((itemRegime)=>{
+                if(itemRegime.id === "firstRegister" || itemRegime.id === "NEW"){
+                    methodsRegime = "POST"
+                }
+                for (const property in itemRegime) {
+                    if(itemRegime[property] == null){
+                        delete itemRegime[property];
+                    }
+                    // if(itemRegime[property] === ""){
+                    //     itemRegime[property] = 0;
+                    // }
+                }
+                return itemRegime;
+            })
             try {
                 //Si "objRegimes.newRegimes" es mayor se agregaron nuevos regimenes
                 if (objRegimes.newRegimes.length > objRegimes.currentRegimes.length) {
+                    let flagDeleteRegimes = false;
+                    let idsNewRegimes = objRegimes.newRegimes.map((itemNewRegime)=>{
+                        if(itemNewRegime.id != 'NEW' && itemNewRegime.id != 'firstRegister'){
+                            return itemNewRegime.id
+                        }
+                    });
+                    idsNewRegimes = idsNewRegimes.filter((items)=> typeof(items) != 'undefined')
+                    let deletedItems = [];
+                    for (const itemIDRegime of objRegimes.currentRegimes) {
+                        if(!idsNewRegimes.includes(itemIDRegime)){
+                            deletedItems.push(itemIDRegime)
+                        }
+                    }
+                    if(deletedItems.length > 0){
+                        flagDeleteRegimes = true;
+                    }
+                    if(flagDeleteRegimes == true){
+                        //Se llama a la accion "deleteRegimesAXIOS" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("deleteRegimesAXIOS", deletedItems);
+                    }
+                    let newArrayPutRegimes = [];
                     let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
                         if(itemRegime.id === "firstRegister"){
                             //Se elimina el id "NEW", ya que se añadira un nuevo elemento
-                            delete itemRegime.id;
+                            // delete itemRegime.id;
                             //Se agrega el id del hotel actual al que hara referencia para agregarse
                             itemRegime.hotel_id = objRegimes.currentHotelId;
                             return itemRegime;
                         }
                         else if(itemRegime.id === "NEW"){
                             //Se elimina el id "NEW", ya que se añadira un nuevo elemento
-                            delete itemRegime.id;
+                            // delete itemRegime.id;
                             //Se agrega el id del hotel actual al que hara referencia para agregarse
                             itemRegime.hotel_id = objRegimes.currentHotelId;
                             //El endopoint solo acepta HH:MM, por lo tanto se cambia
                             //de HH:MM:SS a HH:MM
-                            itemRegime.start_period = itemRegime.start_period.slice(0,-3);
-                            itemRegime.final_period = itemRegime.final_period.slice(0,-3);
+                            if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                            }
                             return itemRegime;
+                        }
+                        else{
+                            newArrayPutRegimes.push(itemRegime);
                         }
                     });
                     //Se llama a la accion "postAddRegimes" que se encargara
                     //De hacer la peticion AXIOS
                     dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
-                }
-                //Si "objRegimes.newRegimes" es igual a los elementos existentes, solamente se da formato a los datos
-                else if (objRegimes.newRegimes.length == objRegimes.currentRegimes.length) {
                     //Se formatean los regimenes con las siguientes caracteristicas...
-                    let newArrayPutRegimes = objRegimes.newRegimes.map(itemRegime=>{
+                    newArrayPutRegimes = newArrayPutRegimes.map(itemRegime=>{
                         //Se elimina el id del hotel por que en este caso no se ocupa insertar
                         delete itemRegime.hotel_id;
                         //Si los periodos start y final no son null, se da formato a la fecha
                         //Para que sea aceptada por el endpoint (HH:MM)
-                        if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                            itemRegime.start_period = itemRegime.start_period.slice(0,-3)
-                            itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                        if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
+                            if(itemRegime.start_period !== null && itemRegime.final_period !== null){
+                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                }
+                            }
                         }
-                        else{
-                            //Si son null, se eliminan las propiedades del itemRegime
-                            //Para que no cause error al momento de "PUT"
-                            delete itemRegime.start_period;
-                            delete itemRegime.final_period;
-                        } 
                         return itemRegime;
                     });
                     //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                     //De hacer la peticion AXIOS
                     dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                }
+                //Si "objRegimes.newRegimes" es igual a los elementos existentes, solamente se da formato a los datos
+                else if (objRegimes.newRegimes.length == objRegimes.currentRegimes.length) {
+                    let flagDeleteRegimes = false;
+                    let idsNewRegimes = objRegimes.newRegimes.map((itemNewRegime)=>{
+                        if(itemNewRegime.id != 'NEW' && itemNewRegime.id != 'firstRegister'){
+                            return itemNewRegime.id
+                        }
+                    });
+                    idsNewRegimes = idsNewRegimes.filter((items)=> typeof(items) != 'undefined')
+                    let deletedItems = [];
+                    for (const itemIDRegime of objRegimes.currentRegimes) {
+                        if(!idsNewRegimes.includes(itemIDRegime)){
+                            deletedItems.push(itemIDRegime)
+                        }
+                    }
+                    if(deletedItems.length > 0){
+                        flagDeleteRegimes = true;
+                    }
+                    if(flagDeleteRegimes == true){
+                        //Se llama a la accion "deleteRegimesAXIOS" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("deleteRegimesAXIOS", deletedItems);
+                    }
+                    let newArrayPutRegimes = [];
+                    if(methodsRegime == "POST"){
+                        let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
+                            if(itemRegime.id === "firstRegister"){
+                                //Se elimina el id "NEW", ya que se añadira un nuevo elemento
+                                // delete itemRegime.id;
+                                //Se agrega el id del hotel actual al que hara referencia para agregarse
+                                itemRegime.hotel_id = objRegimes.currentHotelId;
+                                return itemRegime;
+                            }
+                            else if(itemRegime.id === "NEW"){
+                                //Se elimina el id "NEW", ya que se añadira un nuevo elemento
+                                // delete itemRegime.id;
+                                //Se agrega el id del hotel actual al que hara referencia para agregarse
+                                itemRegime.hotel_id = objRegimes.currentHotelId;
+                                //El endopoint solo acepta HH:MM, por lo tanto se cambia
+                                //de HH:MM:SS a HH:MM
+                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                }
+                                return itemRegime;
+                            }
+                            else{
+                                newArrayPutRegimes.push(itemRegime)
+                            }
+                        });
+                        //Se llama a la accion "postAddRegimes" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
+                        //Se formatean los regimenes con las siguientes caracteristicas...
+                        newArrayPutRegimes = newArrayPutRegimes.map(itemRegime=>{
+                            //Se elimina el id del hotel por que en este caso no se ocupa insertar
+                            delete itemRegime.hotel_id;
+                            //Si los periodos start y final no son null, se da formato a la fecha
+                            //Para que sea aceptada por el endpoint (HH:MM)
+                            if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
+                                if(itemRegime.start_period !== null && itemRegime.final_period !== null){
+                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                        itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                        itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                    }
+                                }
+                            }
+                            return itemRegime;
+                        });
+                        //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                    }
+                    else{
+                        //Se formatean los regimenes con las siguientes caracteristicas...
+                        newArrayPutRegimes = objRegimes.newRegimes.map(itemRegime=>{
+                            //Se elimina el id del hotel por que en este caso no se ocupa insertar
+                            delete itemRegime.hotel_id;
+                            //Si los periodos start y final no son null, se da formato a la fecha
+                            //Para que sea aceptada por el endpoint (HH:MM)
+                            if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
+                                if(itemRegime.start_period !== null && itemRegime.final_period !== null){
+                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                        itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                        itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                    }
+                                }
+                            }
+                            return itemRegime;
+                        });
+                        //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                    }
                 }
                 else {
                     //Creamos la variable donde se guardaran los IDs de los elementos que se eliminaran
@@ -962,6 +1103,78 @@ const HotelModule = {
                     //Se llama a la accion "deleteRegimesAXIOS" que se encargara
                     //De hacer la peticion AXIOS
                     dispatch("deleteRegimesAXIOS", arrayIDsItemsDel);
+                    let newArrayPutRegimes = [];
+                    if(methodsRegime == "POST"){
+                        let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
+                            if(itemRegime.id === "firstRegister"){
+                                //Se elimina el id "NEW", ya que se añadira un nuevo elemento
+                                // delete itemRegime.id;
+                                //Se agrega el id del hotel actual al que hara referencia para agregarse
+                                itemRegime.hotel_id = objRegimes.currentHotelId;
+                                return itemRegime;
+                            }
+                            else if(itemRegime.id === "NEW"){
+                                //Se elimina el id "NEW", ya que se añadira un nuevo elemento
+                                // delete itemRegime.id;
+                                //Se agrega el id del hotel actual al que hara referencia para agregarse
+                                itemRegime.hotel_id = objRegimes.currentHotelId;
+                                //El endopoint solo acepta HH:MM, por lo tanto se cambia
+                                //de HH:MM:SS a HH:MM
+                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                }
+                                return itemRegime;
+                            }
+                            else{
+                                newArrayPutRegimes.push(itemRegime)
+                            }
+                        });
+                        //Se llama a la accion "postAddRegimes" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
+                        //Se formatean los regimenes con las siguientes caracteristicas...
+                        newArrayPutRegimes = newArrayPutRegimes.map(itemRegime=>{
+                            //Se elimina el id del hotel por que en este caso no se ocupa insertar
+                            delete itemRegime.hotel_id;
+                            //Si los periodos start y final no son null, se da formato a la fecha
+                            //Para que sea aceptada por el endpoint (HH:MM)
+                            if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
+                                if(itemRegime.start_period !== null && itemRegime.final_period !== null){
+                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                        itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                        itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                    }
+                                } 
+                            }
+                            return itemRegime;
+                        });
+                        //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                    }
+                    else{
+                        //Se formatean los regimenes con las siguientes caracteristicas...
+                        newArrayPutRegimes = objRegimes.newRegimes.map(itemRegime=>{
+                            //Se elimina el id del hotel por que en este caso no se ocupa insertar
+                            delete itemRegime.hotel_id;
+                            //Si los periodos start y final no son null, se da formato a la fecha
+                            //Para que sea aceptada por el endpoint (HH:MM)
+                            if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
+                                if(itemRegime.start_period !== null && itemRegime.final_period !== null){
+                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                        itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                        itemRegime.final_period = itemRegime.final_period.slice(0,-3)
+                                    }
+                                }
+                            }
+                            return itemRegime;
+                        });
+                        //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
+                        //De hacer la peticion AXIOS
+                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                    }
+
                 }
             } catch (error) {
                 commit("setErrorsRegimes", error.response.data);
@@ -976,8 +1189,8 @@ const HotelModule = {
                     `/api/amenities`,
                     newAditionalInfo
                 );
+
                 commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
-                // commit('setStatus',request.status);
             } catch (error) {
                 commit("setErrors", error.response.data);
                 commit("setStatus", error.response.status);
@@ -996,7 +1209,6 @@ const HotelModule = {
                     newAditionalInfo
                 );
                 commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
-                // commit('setStatus',request.status);
             } catch (error) {
                 commit("setErrors", error.response.data);
                 commit("setStatus", error.response.status);

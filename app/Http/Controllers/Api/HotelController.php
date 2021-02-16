@@ -81,12 +81,14 @@ class HotelController extends Controller
         $data = $request->all();
 
         $rules = [
-            'title'=>'unique:hotels,id,'.'$hotel->id',
+            'title'=>'required|unique:hotels,id,'.'$hotel->id',
             'url'=>'url',
+            'reference_code'=>'required',
             'image'=>'image|nullable',
             'type' => 'in:bungalow,cabana,build',
             'num_rooms' => 'required_if:type,build',
             'num_floors' => 'required_if:type,build',
+            'short_text' => 'required',
             'enabled' => 'in:0,1',
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());

@@ -14,6 +14,7 @@
       <v-row class="pa-6">
         <v-col cols="12" md="6">
           <v-autocomplete
+            :error-messages="errorsConfiguration.currency_id"
             :items="currencies"
             item-text="currency"
             item-value="currency_id"
@@ -25,6 +26,7 @@
         </v-col>
         <v-col cols="12" md="6">
           <v-autocomplete
+            :error-messages="errorsConfiguration.timezone"
             :items="timezones"
             v-model="computedTimezone"
             outlined
@@ -37,8 +39,8 @@
             <span>
               <strong>Formas de pago</strong>
             </span>
-            <v-checkbox v-model="computedSelectPaymentsPlace" label="Online" value="online"></v-checkbox>
-            <v-checkbox v-model="computedSelectPaymentsPlace" label="Offline" value="offline"></v-checkbox>
+            <v-checkbox :error-messages="errorsConfiguration.payment_place" v-model="computedSelectPaymentsPlace" label="Online" value="online"></v-checkbox>
+            <v-checkbox :error-messages="errorsConfiguration.payment_place" v-model="computedSelectPaymentsPlace" label="Offline" value="offline"></v-checkbox>
           </v-card>
         </v-col>
         <v-col cols="12" md="6">
@@ -47,6 +49,7 @@
               <strong>Tipo de pago</strong>
             </div>
             <v-select
+              :error-messages="errorsConfiguration.payment_type"
               class="ml-auto mt-5"
               :items="paymentTypeItems"
               v-model="computedDdwnPaymentType"
@@ -74,7 +77,8 @@
             label="Notificacion voucher reservas"
             outlined
             required
-            :error-messages="(errorsConfiguration != null && typeof(errorsConfiguration['notification_voucher'])!='undefined') ? errorsConfiguration.notification_voucher[0] : ''"
+            :rules="[rules.validEmail]"
+            :error-messages="errorsConfiguration.notification_voucher"
           ></v-text-field>
         </v-col>
 
@@ -85,7 +89,8 @@
             label="Notificacion detalles de la reserva"
             outlined
             required
-            :error-messages="(errorsConfiguration != null && typeof(errorsConfiguration['notification_details'])!='undefined') ? errorsConfiguration.notification_details[0] : ''"
+            :rules="[rules.validEmail]"
+            :error-messages="errorsConfiguration.notification_details"
           ></v-text-field>
         </v-col>
 
@@ -96,7 +101,8 @@
             label="Notificación datos de tarjeta"
             outlined
             required
-            :error-messages="(errorsConfiguration != null && typeof(errorsConfiguration['notification_card'])!='undefined') ? errorsConfiguration.notification_card[0] : ''"
+            :rules="[rules.validEmail]"
+            :error-messages="errorsConfiguration.notification_card"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -119,6 +125,12 @@ export default {
       notificationVoucherModel: null,
       notificationDetailsModel: null,
       notificationCardModel: null,
+      rules: {
+        validEmail: value => {
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          return pattern.test(value) || 'Dirección de email inválida'
+        },
+      },
     };
   },
   created() {
