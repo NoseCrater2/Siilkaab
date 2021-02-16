@@ -24,6 +24,8 @@ class ConfigurationIndexResource extends JsonResource
             'payment_type' => $this->payment_type,
             'currency_id' => isset($this->currency)?$this->currency->id:null,
             'currency' => isset($this->currency)?$this->currency->name.' | '.$this->currency->code.' | '.$this->currency->symbol:null,
+            'currency_code' => $this->currency->code,
+            'currency_symbol' => $this->currency->symbol,
             'hotel_id'=> isset($this->hotel)?$this->hotel->id:null,
             'hotel'=> isset($this->hotel)?$this->hotel->title:null,
             

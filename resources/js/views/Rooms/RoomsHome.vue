@@ -1,7 +1,4 @@
 <template>
-  <div>
-    <v-app id="inspire">
-      <div>
         <v-container class="elevation-1 outlined" fluid>
           <div class="text-center mb-4">
             <span class="text-h4 text-uppercase font-weight-bold"
@@ -23,16 +20,30 @@
           <div v-if="flagActiveRooms == true">
             <v-row dense>
               <v-col
-                v-for="(room, index) in currentRooms"
+                v-for="(room, index) in  currentHotelRooms"
                 :key="room.id"
-                :cols="flexRoomsCardsSize"
+                cols="12"
+                md="3"
+                sm="12"
               >
                 <v-card :class="mxAutomyAuto" width="370" outlined :hover="true">
                   <v-img
                     height="250"
                     class="white--text align-end"
-                    :src="roomImageRoute[index]"
+                    :src="`/img/${room.default_image}`"
                   >
+                  <template v-slot:placeholder>
+                        <v-row
+                        class="fill-height ma-0"
+                        align="center"
+                        justify="center"
+                        >
+                        <v-progress-circular
+                        indeterminate
+                        color="grey"
+                        ></v-progress-circular>
+                      </v-row>
+                  </template>
                     <div style="background-color: rgba(0, 0, 0, 0.6)">
                       <v-card-title class="mb-n3">{{ room.name }}</v-card-title>
                       <span class="ml-4">({{ room.type }})</span>
@@ -71,13 +82,13 @@
                         >
                       </v-btn>
                       <v-btn color="red" text>Eliminar</v-btn>
-                      <v-btn color="blue" text>Subir fotos</v-btn>
+                      <v-btn color="blue" @click="openPhotosDialog(room.id)" text>Subir fotos</v-btn>
                     </div>
                   </v-card-actions>
                 </v-card>
               </v-col>
 
-              <v-col :cols="flexRoomsCardsSize" >
+              <v-col cols="12" md="3" sm="6" >
                 <router-link
                   to="/roomDetails"
                   style="text-decoration: none; color: black"
@@ -104,13 +115,15 @@
               </v-col>
             </v-row>
           </div>
+
+          <DialogAdditionalImages :dialog="photosDialog" @close="photosDialog = false" v-if="photosDialog" :id="selectedId" />
+         
         </v-container>
-      </div>
-    </v-app>
-  </div>
+        
 </template>
 
 <script>
+import DialogAdditionalImages from '../../components/Rooms/DialogAdditionalImages'
 import { mapActions, mapState } from "vuex";
 export default {
   name: "RoomsHome",
@@ -128,12 +141,14 @@ export default {
       //6, sm
       //4, md, lg
       //3, xl
+
+      photosDialog: false,
       flexModel: null,
       currentRooms: null,
       roomImageRoute: null,
       mxAutomyAuto: null,
       heightCard: "380",
-
+      selectedId: 0,
       hotelSelected: null,
       loadingRooms: false,
       flagActiveRooms: false
@@ -141,22 +156,24 @@ export default {
   },
 
   methods: {
+    closeDialog(){
+      this.photosDialog = false
+    },
+    openPhotosDialog(id){
+      this.photosDialog = true
+      this.selectedId = id
+    
+    },
+    
     ...mapActions(["getHotelsForAdmin", "getCurrentHotelRooms"]),
     searchRoom(idHotel) {
       this.loadingRooms = true;
       this.flagActiveRooms = false;
       //AQUI TENGO QUE DEFINIR A QUE HOTEL ESTOY ACCEDIENDO
       this.getCurrentHotelRooms(idHotel).then(() => {
-        this.currentRooms = this.currentHotelRooms;
-        this.roomImageRoute = this.currentRooms.map((itemCurrentRoom) => {
-          if (!itemCurrentRoom.default_image.includes("http")) {
-            itemCurrentRoom.default_image =
-              "/storage/img/" + itemCurrentRoom.default_image;
-          }
-          this.loadingRooms = false;
-          this.flagActiveRooms = true;
-          return itemCurrentRoom.default_image;
-        });
+
+         this.flagActiveRooms = true;
+         this.loadingRooms = false;
       });
     },
     handleResize() {
@@ -171,11 +188,17 @@ export default {
     },
   },
 
+  mounted(){
+  
+  },
+
   computed: {
     ...mapState({
       hotels: (state) => state.disponibilityMoule.ahotels,
       currentHotelRooms: (state) => state.RoomModule.currentHotelRooms,
     }),
+        
+    },
     //Propiedad computada que controla la responsividad de las cards de habitaciones
     flexRoomsCardsSize() {
       //1430 - 1903
@@ -203,6 +226,10 @@ export default {
           return this.flexModel;
       }
     },
-  },
+
+    components:{
+      DialogAdditionalImages,
+    }
+  
 };
 </script>

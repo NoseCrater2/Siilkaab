@@ -21,7 +21,7 @@ class RoomIndexResource extends JsonResource
         'quantity' => $this->quantity,
         'bed_rooms' => $this->bedrooms->count(),
         'rack_rate' => $this->rack_rate,
-        'default_image' => $this->default_image,
+        'default_image' => $this->images->count()?$this->images[0]->name:null,
         'large_text' => $this->large_text,
         'short_text' => $this->short_text,
         'smoking_policy' => $this->smoking_policy,
@@ -39,7 +39,6 @@ class RoomIndexResource extends JsonResource
         'discount_id' => isset($this->discount)?$this->discount->id:null,
         'rate_id'=> isset($this->rate)?$this->rate->id:null,
         'extra_id'=> isset($this->extra)?$this->extra->id:null,
-        'image_id'=> isset($this->image)?$this->image->id:null,
         ];
     }
 }

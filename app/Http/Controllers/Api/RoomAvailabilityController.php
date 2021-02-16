@@ -8,6 +8,7 @@ use App\Hotel;
 use App\Messages;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Validator;
+use  App\Http\Resources\RoomIndexResource;
 
 class RoomAvailabilityController extends Controller
 {
@@ -41,12 +42,41 @@ class RoomAvailabilityController extends Controller
             if($hotel->rooms()->has('rates')->count() > 0){
 
             }else{
+
+                $omittedIds = [];
+                $disponibilities = new Collection();
+                
                foreach ($data['rooms'] as $key => $room) {
-                $result = $hotel->rooms()->where('max_adults','>=', intval($room['adults']))->where('max_children','>=', intval($room['children']))->get();
-                 $results->put($key, $result);
+
+                $result =  RoomIndexResource::collection(
+                    $hotel->rooms()
+                    ->where('max_adults','>=', intval($room['adults']))
+                    ->where('max_children','>=', intval($room['children']))
+                    ->whereNotIn('id',$omittedIds)
+                    ->get()
+                );
+                
+                if( isset($result[0])){
+                   
+                    if(isset($disponibilities[$result[0]->id])){
+                        $disponibilities[$result[0]->id] = $disponibilities[$result[0]->id] - 1 ;
+                    }else{
+                        $disponibilities->put($result[0]->id, $result[0]->quantity);
+                        $disponibilities[$result[0]->id] = $disponibilities[$result[0]->id] - 1 ;
+                    }
+                    if($disponibilities->search(0))
+                    array_push($omittedIds, $disponibilities->search(0));
+                   
+                    $results->put($key, $result);
+                }
+
                }
+
+            //    dd($omittedIds);
+
             };
             return  response($results,200);
         }
     }
+
 }

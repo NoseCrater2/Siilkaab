@@ -44,6 +44,9 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::post('UploadImages/{room}','Api\ImageController@store');
+Route::get('images/{room}','Api\ImageController@index');
+Route::delete('images/{image}','Api\ImageController@destroy');
 
 Route::post('/login', 'AuthController@login');
 

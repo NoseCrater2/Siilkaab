@@ -134,13 +134,13 @@ export default {
                 "border-left: 2px solid #cba818; padding-left: 3px",
               route: "/rooms-home"
             },
-            {
-              icon: "mdi-cash-multiple",
-              text: "Tarifas",
-              borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #cba818; padding-left: 3px"
-            },
+            // {
+            //   icon: "mdi-cash-multiple",
+            //   text: "Tarifas",
+            //   borderStyle: "padding-left: 37px; text-decoration: none;",
+            //   borderStyleSub:
+            //     "border-left: 2px solid #cba818; padding-left: 3px"
+            // },
             {
               icon: "mdi-label-percent",
               text: "Descuentos",
@@ -155,14 +155,14 @@ export default {
               borderStyleSub:
                 "border-left: 2px solid #cba818; padding-left: 3px"
             },
-            {
-              icon: "mdi-image-multiple",
-              text: "Fotos",
-               route: "/images",
-              borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #cba818; padding-left: 3px"
-            }
+            // {
+            //   icon: "mdi-image-multiple",
+            //   text: "Fotos",
+            //    route: "/images",
+            //   borderStyle: "padding-left: 37px; text-decoration: none;",
+            //   borderStyleSub:
+            //     "border-left: 2px solid #cba818; padding-left: 3px"
+            // }
           ]
         },
         {

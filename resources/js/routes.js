@@ -72,9 +72,29 @@ const routes = [
     },
     {
         path: "/bookings/:id",
-        component: () => import("./views/Reservations/Reservations"),
         name: "Bookings",
         props: true,
+        component: () => import("./views/Reservations/Reservations"),
+        children: [
+            {
+                path: 'select-room',
+                name: 'selectRoom',
+                props: true,
+                component:  () => import("./views/Reservations/AvailabilityRooms"),
+            },
+            {
+                path: 'personal-data',
+                name: 'PersonalData',
+                props: true,
+                component:  () => import("./views/Reservations/FormPersonalData"),
+            },
+            {
+                path: 'confirmation',
+                name: 'Confirmation',
+                props: true,
+                component:  () => import("./views/Reservations/DetailsConfirmed"),
+            }
+        ],
     },
     
     
