@@ -7,7 +7,7 @@
       <v-col cols="12" sm="12" md="4" lg="4" class="mt-6">
         <v-text-field
           outlined
-          label="Disponibilidad"
+          label="Unidades"
           prepend-inner-icon="mdi-pencil"
           dense
         ></v-text-field>
