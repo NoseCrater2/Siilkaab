@@ -7,7 +7,8 @@ const RoomModule = {
         roomDetails: null,
         bedrooms: null,
         beds: null,
-        searchErrors: []
+        searchErrors: [],
+        additionalImages: [],
     },
     getters: {
         getSearchErrors(state){
@@ -34,9 +35,19 @@ const RoomModule = {
         setBeds(state, beds) {
             state.beds = beds;
         },
+       
         setSearchErrors(state, errors) {
             state.searchErrors = errors;
-        }
+        },
+
+        setAdditionalImages(state, additionalImages) {
+            state.additionalImages = additionalImages;
+        },
+
+        deleteAdditionalImage(state, deleteImage) {
+            let  i = state.additionalImages.find((image => image.id === deleteImage.name))
+            state.additionalImages.splice(state.additionalImages.indexOf(i),1) 
+        },
 
     },
     actions: {
@@ -100,7 +111,24 @@ const RoomModule = {
                 }
                 commit("setBeds", reformatedArrBeds);
             } catch (error) {}
-        }
+        },
+
+        getAdditionalImages: async function({ commit }, roomId){
+            try {
+                const request = await axios.get('/api/images/'+roomId);
+                let images = request.data.data;
+                commit("setAdditionalImages", images);
+            } catch (error) {}  
+        },
+
+        deleteImage: async function({ commit }, roomId){
+            try {
+                const request = await axios.delete('/api/images/'+roomId);
+                let image = request.data;
+                console.log(image)
+                commit("deleteAdditionalImage", image);
+            } catch (error) {}  
+        },
     }
 };
 
