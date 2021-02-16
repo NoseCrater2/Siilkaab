@@ -13,16 +13,18 @@
       </v-banner>
       <v-row class="pa-6">
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
+          <v-switch :error-messages="computedErrorOnlyRoom" v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
           <v-select
             :items="prioritiesModel"
+            :error-messages="computedErrorPriority"
             v-model="computedDdwnPriority"
             prepend-inner-icon="mdi-pen"
             label="Prioridad"
             :menu-props="{ bottom: true, offsetY: true }"
             outlined
+            
           ></v-select>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -30,24 +32,28 @@
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtBreakfastAdult"
+            v-model.number="computedTxtBreakfastAdult"
             prepend-inner-icon="mdi-human-male"
             label="Adulto"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['lodging_breakfast_adult']) != 'undefined') ? errorsRegimes.lodging_breakfast_adult[0] : ''"
+            :error-messages="computedErrorLodgingBreakfastAdult"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtBreakfastChildren"
+            v-model.number="computedTxtBreakfastChildren"
             prepend-inner-icon="mdi-human-male-boy"
             label="Niño"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['lodging_breakfast_children']) != 'undefined') ? errorsRegimes.lodging_breakfast_children[0] : ''"
+            :error-messages="computedErrorLodgingBreakfastChildren"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -55,24 +61,28 @@
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtHalfPensionAdult"
+            v-model.number="computedTxtHalfPensionAdult"
             prepend-inner-icon="mdi-human-male"
             label="Adulto"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['half_pension_adult']) != 'undefined') ? errorsRegimes.half_pension_adult[0] : ''"
+            :error-messages="computedErrorHalfPensionAdult"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtHalfPensionChildren"
+            v-model.number="computedTxtHalfPensionChildren"
             prepend-inner-icon="mdi-human-male-boy"
             label="Niño"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['half_pension_children']) != 'undefined') ? errorsRegimes.half_pension_children[0] : ''"
+            :error-messages="computedErrorHalfPensionChildren"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -80,24 +90,28 @@
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtFullPensionAdult"
+            v-model.number="computedTxtFullPensionAdult"
             prepend-inner-icon="mdi-human-male"
             label="Adulto"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['full_pension_adult']) != 'undefined') ? errorsRegimes.full_pension_adult[0] : ''"
+            :error-messages="computedErrorFullPensionAdult"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtFullPensionChildren"
+            v-model.number="computedTxtFullPensionChildren"
             prepend-inner-icon="mdi-human-male-boy"
             label="Niño"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['full_pension_children']) != 'undefined') ? errorsRegimes.full_pension_children[0] : ''"
+            :error-messages="computedErrorFullPensionChildren"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -105,24 +119,28 @@
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtAllIncludedAdult"
+            v-model.number="computedTxtAllIncludedAdult"
             prepend-inner-icon="mdi-human-male"
             label="Adulto"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['all_included_adult']) != 'undefined') ? errorsRegimes.all_included_adult[0] : ''"
+            :error-messages="computedErrorAllIncludedAdult"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
-            v-model="computedTxtAllIncludedChildren"
+            v-model.number="computedTxtAllIncludedChildren"
             prepend-inner-icon="mdi-human-male-boy"
             label="Niño"
             outlined
             required
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
             :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
-            :error-messages="(errorsRegimes != null && typeof(errorsRegimes['all_included_children']) != 'undefined') ? errorsRegimes.all_included_children[0] : ''"
+            :error-messages="computedErrorAllIncludedChildren"
           ></v-text-field>
         </v-col>
       </v-row>
@@ -170,7 +188,6 @@ export default {
   created() {
     let countWhile = this.regimes.length - 1;
     while (countWhile >= 1) {
-      //console.log(this.regimes[countWhile])
       this.addCompo(this.regimes[countWhile]);
       countWhile--;
     }
@@ -179,7 +196,6 @@ export default {
     }
     else{
       this.fillModel();
-      console.log("UNDEFINED", this.regimes)
     }
   },
   data() {
@@ -201,6 +217,12 @@ export default {
       swAllIncludedModel: 0,
       txtAllIncludedAdultModel: null,
       txtAllIncludedChildrenModel: null,
+      rules: {
+        validNumericInputs: value => {
+          const pattern = /^(1|[0-9]\d{0,3})$/
+          return pattern.test(value) || 'Solo se aceptan numeros'
+        },
+      },
     };
   },
   computed: {
@@ -258,6 +280,9 @@ export default {
         return this.txtBreakfastAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtBreakfastAdultModel = model;
         this.regimes[0].lodging_breakfast_adult = this.txtBreakfastAdultModel;
         return this.txtBreakfastAdultModel;
@@ -268,6 +293,9 @@ export default {
         return this.txtBreakfastChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtBreakfastChildrenModel = model;
         this.regimes[0].lodging_breakfast_children = this.txtBreakfastChildrenModel;
         return this.txtBreakfastChildrenModel;
@@ -293,6 +321,9 @@ export default {
         return this.txtHalfPensionAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtHalfPensionAdultModel = model;
         this.regimes[0].half_pension_adult = this.txtHalfPensionAdultModel;
         return this.txtHalfPensionAdultModel;
@@ -303,6 +334,9 @@ export default {
         return this.txtHalfPensionChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtHalfPensionChildrenModel = model;
         this.regimes[0].half_pension_children = this.txtHalfPensionChildrenModel;
         return this.txtHalfPensionChildrenModel;
@@ -328,6 +362,9 @@ export default {
         return this.txtFullPensionAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtFullPensionAdultModel = model;
         this.regimes[0].full_pension_adult = this.txtFullPensionAdultModel;
         return this.txtFullPensionAdultModel;
@@ -338,6 +375,9 @@ export default {
         return this.txtFullPensionChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtFullPensionChildrenModel = model;
         this.regimes[0].full_pension_children = this.txtFullPensionChildrenModel;
         return this.txtFullPensionChildrenModel;
@@ -363,6 +403,9 @@ export default {
         return this.txtAllIncludedAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtAllIncludedAdultModel = model;
         this.regimes[0].all_included_adult = this.txtAllIncludedAdultModel;
         return this.txtAllIncludedAdultModel;
@@ -373,6 +416,9 @@ export default {
         return this.txtAllIncludedChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtAllIncludedChildrenModel = model;
         this.regimes[0].all_included_children = this.txtAllIncludedChildrenModel;
         return this.txtAllIncludedChildrenModel;
@@ -391,6 +437,167 @@ export default {
     computedArrayComponents() {
       return this.arrayComponents;
     },
+    //CODIGO DE PROPIEDADES COMPUTADAS PARA ERRORES
+    computedErrorOnlyRoom: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegimes || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.only_room;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorPriority: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegimes || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.priority;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorLodgingBreakfastAdult: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.lodging_breakfast_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorLodgingBreakfastChildren: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.lodging_breakfast_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorHalfPensionAdult: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.half_pension_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorHalfPensionChildren: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.half_pension_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorFullPensionAdult:{
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.full_pension_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorFullPensionChildren:{
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.full_pension_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorAllIncludedAdult: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.all_included_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorAllIncludedChildren: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.regimes[0].id == itemErrorRegime.idRegime || this.regimes[0].id == 'firstRegister'){
+              error = itemErrorRegime.error.all_included_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
   },
 
   components: {
@@ -406,21 +613,22 @@ export default {
         TagSRegimes: SpecialRegime,
         objArrCompo: {
           id: "NEW", //Se pone "NEW" para identificarlo en el posterior metodo PUT
+          idCompo: this.countIdCompo,
           priority: "normal",
           only_room: 0,
           start_period:
             new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00",
           final_period:
             new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00",
-          lodging_breakfast_children: null,
-          lodging_breakfast_adult: null,
-          half_pension_children: null,
-          half_pension_adult: null,
-          full_pension_children: null,
-          full_pension_adult: null,
-          all_included_children: null,
-          all_included_adult: null,
-          hotel_id: null,
+          lodging_breakfast_children: 0,
+          lodging_breakfast_adult: 0,
+          half_pension_children: 0,
+          half_pension_adult: 0,
+          full_pension_children: 0,
+          full_pension_adult: 0,
+          all_included_children: 0,
+          all_included_adult: 0,
+          hotel_id: 0,
         },
       });
       this.regimes.push(
@@ -429,6 +637,7 @@ export default {
     },
     addCompo(obj) {
       this.countIdCompo++;
+      obj.idCompo = this.countIdCompo;
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagSRegimes: SpecialRegime,
@@ -502,26 +711,42 @@ export default {
         }
       }
       else{
-        this.regimes[0] = {
+        let obj = {
           id: "firstRegister",
           priority: "normal",
           only_room: 0,
-          lodging_breakfast_children: "",
-          lodging_breakfast_adult: "",
-          half_pension_children: "",
-          half_pension_adult: "",
-          full_pension_children: "",
-          full_pension_adult: "",
-          all_included_children: "",
-          all_included_adult: "",
+          lodging_breakfast_children: 0,
+          lodging_breakfast_adult: 0,
+          half_pension_children: 0,
+          half_pension_adult: 0,
+          full_pension_children: 0,
+          full_pension_adult: 0,
+          all_included_children: 0,
+          all_included_adult: 0,
           hotel_id: null
         }
+        this.regimes.push(obj);
         this.ddwnPriorityModel = "Normal";
         this.swOnlyRoomModel = this.regimes[0].only_room;
         this.swBreakfastModel = 0;
         this.swHalfPensionModel = 0;
         this.swFullPensionModel = 0;
         this.swAllIncludedModel = 0;
+        this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
+        this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
+        this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
+        this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
+        this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
+        this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
+        this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
+        this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
+      }
+    },
+    keyhandler(event) {
+      const pattern = /^(1|[0-9]\d{0,3})$/
+      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
+        console.log(event.key)
+        event.preventDefault();
       }
     }
   },

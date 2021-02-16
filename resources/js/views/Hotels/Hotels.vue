@@ -53,7 +53,7 @@
                   </v-col>
                   <v-col cols="12" lg="3" md="3" sm="3" xs="12" class="mt-3">
                     <div class="d-flex justify-end">
-                      <v-btn small depressed rounded outlined block color="info" @click="newHotel()">
+                      <v-btn small depressed rounded outlined block color="info" :to="{name: 'Hotel'}">
                         <!-- <span class="black--text">NUEVO HOTEL</span> -->
                         <v-icon left dark>mdi-plus</v-icon>NUEVO HOTEL
                       </v-btn>
@@ -209,7 +209,7 @@ export default {
   },
 
   mounted() {
-    this.$store.dispatch("getHotels");
+
   },
 
   methods: {
@@ -220,10 +220,6 @@ export default {
 
     showDeleteDialog() {
       this.deleteDialog = true;
-    },
-
-    newHotel(){
-      router.push({ name: 'Hotel', params: { id: 'new' } })
     },
 
     deleteItem() {

@@ -13,7 +13,7 @@
       </v-banner>
       <v-row class="pa-6">
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch class="ml-3" v-model="computedAdults" inset label="Solo adultos"></v-switch>
+          <v-switch class="ml-3" :error-messages="errorsConditions.adults" v-model="computedAdults" inset label="Solo adultos"></v-switch>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
           <v-text-field
@@ -23,7 +23,9 @@
             outlined
             required
             v-if="computedAdults == false"
-            :error-messages="(errorsConditions != null && typeof(errorsConditions['children_age']) != 'undefined') ? errorsConditions.children_age[0] : ''"
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validAges]"
+            :error-messages="errorsConditions.children_age"
           ></v-text-field>
         </v-col>
 
@@ -34,7 +36,9 @@
             label="Regimen adulto desde"
             outlined
             required
-            :error-messages="(errorsConditions != null && typeof(errorsConditions['adults_regimen']) != 'undefined') ? errorsConditions.adults_regimen[0] : ''"
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validAges]"
+            :error-messages="errorsConditions.adults_regimen"
           ></v-text-field>
         </v-col>
 
@@ -45,7 +49,9 @@
             label="Adulto desde"
             outlined
             required
-            :error-messages="(errorsConditions != null && typeof(errorsConditions['adults_age']) != 'undefined') ? errorsConditions.adults_age[0] : ''"
+            maxlength="3"
+            @keydown="keyhandler" :rules="[rules.validAges]"
+            :error-messages="errorsConditions.adults_age"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
@@ -59,13 +65,14 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="checkinTimeModel"
+                :readonly="true"
                 label="Check-in"
                 prepend-inner-icon="mdi-clock"
                 v-bind="attrs"
                 v-on="on"
                 outlined
                 required
-                :error-messages="(errorsConditions != null && typeof(errorsConditions['checkin_time']) != 'undefined') ? errorsConditions.checkin_time[0] : ''"
+                :error-messages="errorsConditions.checkin_time"
               ></v-text-field>
             </template>
             <v-time-picker v-if="modalCheckin" v-model="checkinTimeModel" format="24hr" full-width>
@@ -90,13 +97,14 @@
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
                 v-model="checkoutTimeModel"
+                :readonly="true"
                 label="Check-out"
                 prepend-inner-icon="mdi-clock"
                 v-bind="attrs"
                 v-on="on"
                 outlined
                 required
-                :error-messages="(errorsConditions != null && typeof(errorsConditions['checkout_time']) != 'undefined') ? errorsConditions.checkout_time[0] : ''"
+                :error-messages="errorsConditions.checkout_time"
               ></v-text-field>
             </template>
             <v-time-picker
@@ -130,6 +138,9 @@
           <!--<v-textarea outlined no-resize rows="13" row-height="30" v-model="textoLargo"></v-textarea>-->
           <!--<vue-markdown :source="textoLargo" :html="false" :toc="false" show="show"></vue-markdown>-->
           <MarkdownCompo containerType="Conditions"></MarkdownCompo>
+          <div class="ml-3">
+            <span class="red--text text-caption">{{typeof(errorsConditions.cancelation_text) != 'undefined' ? (errorsConditions.cancelation_text).toString() : ''}}</span>
+          </div>
         </v-col>
       </div>
     </v-card>
@@ -147,7 +158,6 @@ export default {
     }
     else{
       this.fillModel();
-      console.log(this.conditions)
     }
   },
   data() {
@@ -160,6 +170,12 @@ export default {
       checkinTimeModel: null,
       modalCheckout: false,
       checkoutTimeModel: null,
+      rules: {
+        validAges: value => {
+          const pattern = /^(1|[0-9]\d{0,3})$/
+          return pattern.test(value) || 'Solo se aceptan numeros'
+        },
+      },
     };
   },
   components: {
@@ -175,9 +191,17 @@ export default {
     //Codigo para guardar temporalmente en el state
     computedAdults: {
       get() {
+        if(this.adultsModel == 1 || this.adultsModel == true){
+          this.childrenAgeModel = 0;
+          this.conditions.children_age = this.childrenAgeModel;
+        }
         return this.adultsModel;
       },
       set(model) {
+        if(model == 1 || model == true){
+          this.childrenAgeModel = 0;
+          this.conditions.children_age = this.childrenAgeModel;
+        }
         this.adultsModel = model;
         this.conditions.adults = this.adultsModel;
         return this.adultsModel;
@@ -224,51 +248,58 @@ export default {
   },
   methods:{
     fillModel(){
-    if(this.conditions.adults != null){
-        this.adultsModel = this.conditions.adults;
-    }
-    else{
-        this.conditions.adults = 0;
-        this.adultsModel = this.conditions.adults;
-    }
-    if(this.conditions.children_age != null){
-        this.childrenAgeModel = this.conditions.children_age;
-    }
-    else{
-        this.conditions.children_age = "";
-        this.childrenAgeModel = this.conditions.children_age;
-    }
-    if(this.conditions.adults_regimen != null){
-        this.adultsRegimenModel = this.conditions.adults_regimen;
-    }
-    else{
-        this.conditions.adults_regimen = "";
-        this.adultsRegimenModel = this.conditions.adults_regimen;
-    } 
-    if(this.conditions.adults_age != null){
-        this.adultsAgeModel = this.conditions.adults_age;
-    }
-    else{
-        this.conditions.adults_age = "";
-        this.adultsAgeModel = this.conditions.adults_age;
-    } 
-    if(this.conditions.checkin_time != null){
-        this.checkinTimeModel = this.conditions.checkin_time;
-    }
-    else{
-        this.conditions.checkin_time = "";
-        this.checkinTimeModel = this.conditions.checkin_time;
-    }    
-    if(this.conditions.checkout_time != null){
-        this.checkoutTimeModel = this.conditions.checkout_time;
-    }
-    else{
-        this.conditions.checkout_time = "";
-        this.checkoutTimeModel = this.conditions.checkout_time;
-    }
-    if(this.conditions.cancelation_text == null){
-        this.conditions.cancelation_text = "";
-    }
+      if(this.conditions.adults != null){
+          this.adultsModel = this.conditions.adults;
+      }
+      else{
+          this.conditions.adults = 0;
+          this.adultsModel = this.conditions.adults;
+      }
+      if(this.conditions.children_age != null){
+          this.childrenAgeModel = this.conditions.children_age;
+      }
+      else{
+          this.conditions.children_age = "";
+          this.childrenAgeModel = this.conditions.children_age;
+      }
+      if(this.conditions.adults_regimen != null){
+          this.adultsRegimenModel = this.conditions.adults_regimen;
+      }
+      else{
+          this.conditions.adults_regimen = "";
+          this.adultsRegimenModel = this.conditions.adults_regimen;
+      } 
+      if(this.conditions.adults_age != null){
+          this.adultsAgeModel = this.conditions.adults_age;
+      }
+      else{
+          this.conditions.adults_age = "";
+          this.adultsAgeModel = this.conditions.adults_age;
+      } 
+      if(this.conditions.checkin_time != null){
+          this.checkinTimeModel = this.conditions.checkin_time;
+      }
+      else{
+          this.conditions.checkin_time = "";
+          this.checkinTimeModel = this.conditions.checkin_time;
+      }    
+      if(this.conditions.checkout_time != null){
+          this.checkoutTimeModel = this.conditions.checkout_time;
+      }
+      else{
+          this.conditions.checkout_time = "";
+          this.checkoutTimeModel = this.conditions.checkout_time;
+      }
+      if(this.conditions.cancelation_text == null){
+          this.conditions.cancelation_text = "";
+      }
+    },
+    keyhandler(event) {
+      const pattern = /^(1|[0-9]\d{0,3})$/
+      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
+        console.log(event.key)
+        event.preventDefault();
+      }
     }
   }
 };

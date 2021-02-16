@@ -35,7 +35,7 @@ class ContactController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'url' => 'url|required',
+            'url' => 'required|url',
             'email' => 'required|email',
             'phone' => 'required|alpha_num',
             'address' => 'required|string',
@@ -50,7 +50,7 @@ class ContactController extends Controller
                   
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
             $contact = Contact::create($data);
              return new ContactIndexResource(Contact::findOrFail($contact->id));

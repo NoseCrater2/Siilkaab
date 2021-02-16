@@ -19,7 +19,8 @@ const routes = [
                 name: "Hotels",
             },
             {
-                path: "/hotel/:id",
+                path: "/hotel/:id?",
+                props: true,
                 component: () => import("./views/Hotel/Hotel"),
                 name: "Hotel"
             },

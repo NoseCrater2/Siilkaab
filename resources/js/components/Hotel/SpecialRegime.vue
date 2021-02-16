@@ -11,7 +11,6 @@
         <div v-if="getStartDate!=null">
           <DateTimePicker :dates="getStartDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </div>
-        
       </v-col>
 
       <!--MENU HASTA-->
@@ -22,11 +21,12 @@
       </v-col>
 
       <v-col cols="12" md="6" sm="12" xs="12">
-        <v-switch v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
+        <v-switch :error-messages="computedErrorOnlyRoom" v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
         <v-select
           :items="prioritiesModel"
+          :error-messages="computedErrorPriority"
           v-model="computedDdwnPriority"
           prepend-inner-icon="mdi-pen"
           label="Prioridad"
@@ -39,22 +39,28 @@
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtBreakfastAdult"
+          v-model.number="computedTxtBreakfastAdult"
           prepend-inner-icon="mdi-human-male"
           label="Adulto"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
+          :error-messages="computedErrorLodgingBreakfastAdult"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtBreakfastChildren"
+          v-model.number="computedTxtBreakfastChildren"
           prepend-inner-icon="mdi-human-male-boy"
           label="Niño"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
+          :error-messages="computedErrorLodgingBreakfastChildren"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
@@ -62,22 +68,28 @@
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtHalfPensionAdult"
+          v-model.number="computedTxtHalfPensionAdult"
           prepend-inner-icon="mdi-human-male"
           label="Adulto"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
+          :error-messages="computedErrorHalfPensionAdult"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtHalfPensionChildren"
+          v-model.number="computedTxtHalfPensionChildren"
           prepend-inner-icon="mdi-human-male-boy"
           label="Niño"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
+          :error-messages="computedErrorHalfPensionChildren"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
@@ -85,22 +97,28 @@
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtFullPensionAdult"
+          v-model.number="computedTxtFullPensionAdult"
           prepend-inner-icon="mdi-human-male"
           label="Adulto"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
+          :error-messages="computedErrorFullPensionAdult"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtFullPensionChildren"
+          v-model.number="computedTxtFullPensionChildren"
           prepend-inner-icon="mdi-human-male-boy"
           label="Niño"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
+          :error-messages="computedErrorFullPensionChildren"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
@@ -108,12 +126,15 @@
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
-          v-model="computedTxtAllIncludedAdult"
+          v-model.number="computedTxtAllIncludedAdult"
           prepend-inner-icon="mdi-human-male"
           label="Adulto"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
+          :error-messages="computedErrorAllIncludedAdult"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
@@ -123,7 +144,10 @@
           label="Niño"
           outlined
           required
+          maxlength="3"
+          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
           :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
+          :error-messages="computedErrorAllIncludedChildren"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -138,6 +162,8 @@ import DateTimePicker from "../DateTimePicker/DateTimePicker";
 export default {
   name: "SpecialRegime",
   mounted() {
+    //componentID es utilizado como key unica para el proceso de muestra de errores
+    this.objArrCompo.componentID = this.componentID;
     if (this.objArrCompo.start_period != null && this.objArrCompo.final_period != null) {
       this.propStartDate = {
         info: "Start",
@@ -192,6 +218,7 @@ export default {
   data() {
     return {
       //DATOS DEL FORMULARIO
+      componentID: this.idCompo + "" + this.objArrCompo.id,
       id: this.idCompo,
       noLast: false,
       countIdCompo: -1,
@@ -212,11 +239,18 @@ export default {
       swAllIncludedModel: 0,
       txtAllIncludedAdultModel: null,
       txtAllIncludedChildrenModel: null,
+      rules: {
+        validNumericInputs: value => {
+          const pattern = /^(1|[0-9]\d{0,3})$/
+          return pattern.test(value) || 'Solo se aceptan numeros'
+        },
+      },
     };
   },
   computed: {
     ...mapState({
       regimes: (state) => state.HotelModule.regimes,
+      errorsRegimes: (state) => state.HotelModule.errorsRegimes
     }),
     getStartDate() {
       return this.propStartDate;
@@ -273,6 +307,9 @@ export default {
         return this.txtBreakfastAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtBreakfastAdultModel = model;
         this.objArrCompo.lodging_breakfast_adult = this.txtBreakfastAdultModel;
         return this.txtBreakfastAdultModel;
@@ -283,6 +320,9 @@ export default {
         return this.txtBreakfastChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtBreakfastChildrenModel = model;
         this.objArrCompo.lodging_breakfast_children = this.txtBreakfastChildrenModel;
         return this.txtBreakfastChildrenModel;
@@ -308,6 +348,9 @@ export default {
         return this.txtHalfPensionAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtHalfPensionAdultModel = model;
         this.objArrCompo.half_pension_adult = this.txtHalfPensionAdultModel;
         return this.txtHalfPensionAdultModel;
@@ -318,6 +361,9 @@ export default {
         return this.txtHalfPensionChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtHalfPensionChildrenModel = model;
         this.objArrCompo.half_pension_children = this.txtHalfPensionChildrenModel;
         return this.txtHalfPensionChildrenModel;
@@ -343,6 +389,9 @@ export default {
         return this.txtFullPensionAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtFullPensionAdultModel = model;
         this.objArrCompo.full_pension_adult = this.txtFullPensionAdultModel;
         return this.txtFullPensionAdultModel;
@@ -353,6 +402,9 @@ export default {
         return this.txtFullPensionChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtFullPensionChildrenModel = model;
         this.objArrCompo.full_pension_children = this.txtFullPensionChildrenModel;
         return this.txtFullPensionChildrenModel;
@@ -378,6 +430,9 @@ export default {
         return this.txtAllIncludedAdultModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtAllIncludedAdultModel = model;
         this.objArrCompo.all_included_adult = this.txtAllIncludedAdultModel;
         return this.txtAllIncludedAdultModel;
@@ -388,10 +443,174 @@ export default {
         return this.txtAllIncludedChildrenModel;
       },
       set(model) {
+        if(model != ""){
+          model = parseInt(model)
+        }
         this.txtAllIncludedChildrenModel = model;
         this.objArrCompo.all_included_children = this.txtAllIncludedChildrenModel;
         return this.txtAllIncludedChildrenModel;
       },
+    },
+    //CODIGO DE PROPIEDADES COMPUTADAS PARA ERRORES
+    computedErrorOnlyRoom: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.only_room;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorPriority: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.priority;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorLodgingBreakfastAdult: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.lodging_breakfast_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorLodgingBreakfastChildren: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.lodging_breakfast_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorHalfPensionAdult: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.half_pension_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorHalfPensionChildren: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.half_pension_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorFullPensionAdult:{
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.full_pension_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorFullPensionChildren:{
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.full_pension_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorAllIncludedAdult: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.all_included_adult;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorAllIncludedChildren: {
+      get() {
+        let error = '';
+        this.errorsRegimes.forEach((itemErrorRegime)=>{
+          if(typeof(itemErrorRegime) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRegime.componentID){
+              error = itemErrorRegime.error.all_included_children;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
     },
   },
   methods: {
@@ -408,6 +627,13 @@ export default {
         this.propFinalDate.prop = this.objArrCompo.final_period;
       }
     },
+    keyhandler(event) {
+      const pattern = /^(1|[0-9]\d{0,3})$/
+      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
+        console.log(event.key)
+        event.preventDefault();
+      }
+    }
   },
   components: {
     DateTimePicker,

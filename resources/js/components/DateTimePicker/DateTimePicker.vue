@@ -22,6 +22,7 @@
 
 <script>
 import Vue from "vue";
+import {mapState} from 'vuex'
 import DatetimePicker from "vuetify-datetime-picker";
 Vue.use(DatetimePicker);
 
@@ -42,7 +43,8 @@ export default {
       textFieldProps: {
         prependInnerIcon: "mdi-calendar-month",
         backgroundColor: 'white',
-        outlined: true
+        outlined: true,
+        errorMessages: this.errorsRegimes
       },
       dateProps: {
         headerColor: "primary"
@@ -52,6 +54,18 @@ export default {
         ampmInTitle: true
       }
     };
+  },
+  computed:{
+    ...mapState({
+      errorsRegimes: (state) => state.HotelModule.errorsRegimes
+    }),
+  },
+  watch: {
+	  errorsRegimes(nuevoValor, valorAnterior){
+      if(this.dates.info == "Final"){
+        this.textFieldProps.errorMessages = this.errorsRegimes.final_period;
+      }
+    }
   },
   methods: {
     formatDate(val) {

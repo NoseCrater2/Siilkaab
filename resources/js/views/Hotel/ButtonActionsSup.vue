@@ -14,21 +14,21 @@
           >
             <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar
             <template v-slot:loader>
-              <v-icon class="custom-loader" light>mdi-cached</v-icon>Guardar
+              <v-icon left size="22" class="custom-loader" light>mdi-cached</v-icon>Guardar
             </template>
           </v-btn>
           <v-btn 
             :loading="isLoadingSavingChangesSaveAndClose"
             :disabled="isLoadingSavingChangesSaveAndClose"
             depressed 
-            small 
-            color="grey" 
-            class="white--text mr-3" 
+            small
+            color="grey"
+            class="white--text mr-3"
             @click="loader = 'isLoadingSavingChangesSaveAndClose'; saveChanges('saveAndClose')"
           >
             <v-icon left dark>mdi-check-underline-circle</v-icon>Guardar y cerrar
             <template v-slot:loader>
-              <v-icon class="custom-loader" light>mdi-cached</v-icon>Guardar y cerrar
+              <v-icon left size="22" class="custom-loader" light>mdi-cached</v-icon>Guardar y cerrar
             </template>
           </v-btn>
           <v-btn depressed small color="red" class="white--text mr-3" @click="close()">
@@ -38,7 +38,7 @@
 
         <v-col cols="12" md="4" sm="4" xs="12" class="d-flex justify-end my-n8">
           <v-autocomplete
-            :items="listItemHotels"
+            :items.sync="hotels"
             item-text="title"
             item-value="id"
             v-model="computedTitleHotel"
@@ -62,10 +62,8 @@ import router from "../../routes";
 export default {
   name: "ButtonActionsSup",
   created() {
-    this.getHotels().then(() => {
-      this.idHotel = parseInt(this.$route.params.id);
-      this.listItemHotels = this.hotels;
-    });
+    this.idHotel = parseInt(this.$route.params.id);
+    this.listItemHotels = this.hotels;
   },
   data() {
     return {
@@ -93,7 +91,12 @@ export default {
       schedules: (state) => state.HotelModule.schedules,
       snackbar: (state) => state.HotelModule.snackbar,
 
-      errorsInformation: (state) => state.HotelModule.errorsInformation
+      errorsInformation: (state) => state.HotelModule.errorsInformation,
+      statusInformation: (state) => state.HotelModule.statusInformation,
+      statusConfiguration: (state) => state.HotelModule.statusConfiguration,
+      statusContacts: (state) => state.HotelModule.statusContacts,
+      statusConditions: (state) => state.HotelModule.statusConditions,
+      statusRegimes: (state) => state.HotelModule.statusRegimes,
     }),
     computedTitleHotel: {
       get() {
@@ -102,7 +105,7 @@ export default {
       set(idHotel) {
         this.idHotel = idHotel;
         router.replace({ name: "Hotel", params: { id: this.idHotel } });
-        //Setea todo a nul para antes de hacer el cambio de pestaña de hotel
+        //Setea todo a null para antes de hacer el cambio de pestaña de hotel
         this.setReinicialized();
         this.setReinicializedErrorsStatus();
         //Ejecuta el metodo de carga del hotel
@@ -186,15 +189,13 @@ export default {
         //DESCOMENTAR ESTE CODIGOOOOOOOOOOOOOOOOO
         //CODIGO PARA GUARDAR INFORMACION DEL HOTEL INICIA
         //La edicion de info de hotel es la unica que se maneja de las dos formas con POST
-        if(this.hotel.title != null){
             //metodo post
             if(this.hotel.id == null){
               this.postEditHotel(this.hotel).then(()=>{
-                let returnedErrorObj = this.verifyErrors();
-                console.log("this.hotel.id", this.hotel);
+                let returnedErrorObj = this.verifyErrorsPostHotel();
                 //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
-                  this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
+                  // this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
                   this.loader = null;
                   this.isLoadingSavingChangesSave = false;
                   this.isLoadingSavingChangesSaveAndClose = false;
@@ -213,7 +214,7 @@ export default {
             }
             else if(this.hotel.id != null){
               this.postEditHotel(this.hotel).then(()=>{
-                let returnedErrorObj = this.verifyErrors();
+                let returnedErrorObj = this.verifyErrorsPostHotel();
                 //Se ejecuta el método que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.idHotel).then(()=>{
                   this.loader = null;
@@ -232,7 +233,6 @@ export default {
                 }); 
               });
             }
-        }
         //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
     },
     //Debido a que debe de existir un hotel para guardar la demas informacion
@@ -242,13 +242,12 @@ export default {
     executeSaveOnAPIAfterHotel: async function(idHotel){
         //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
         if(this.configuration.timezone != null){
-          if(this.configuration.hotel_id == null){
+          if(this.hotel.idConfiguration == null){
             //metodo post
             this.configuration.hotel_id = idHotel;
-            console.log("BTN", this.configuration);
             this.postEditConfiguration(this.configuration);
           }
-          else{
+          else if(this.hotel.idConfiguration != null){
             //metodo put
             this.putEditConfiguration(this.configuration);
           }
@@ -256,13 +255,12 @@ export default {
         //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
         //CODIGO PARA GUARDAR CONTACTOS INICIA
         if(this.contacts.address != null){
-          if(this.contacts.hotel_id == null){
+          if(this.hotel.idContact == null){
             //metodo post
             this.contacts.hotel_id = idHotel;
-            console.log("BTN", this.contacts);
             this.postEditContacts(this.contacts);
           }
-          else{
+          else if(this.hotel.idContact != null){
             //metodo put
             this.putEditContacts(this.contacts);
           }
@@ -270,20 +268,18 @@ export default {
         //CODIGO PARA GUARDAR CONTACTOS TERMINA
         //CODIGO PARA GUARDAR CONDICIONES INICIA
         if(this.conditions.adults != null){
-          if(this.conditions.hotel_id == null){
+          if(this.hotel.idCondition == null){
             //metodo post
             this.conditions.hotel_id = idHotel;
-            console.log("BTN", this.conditions);
             this.postEditConditions(this.conditions);
           }
-          else{
+          else if(this.hotel.idCondition != null){
             //metodo put
             this.putEditConditions(this.conditions);
           }
         }
         //CODIGO PARA GUARDAR CONDICIONES TERMINA
         //CODIGO PARA GUARDAR REGIMENES INICIA
-        console.log("this.hotel.idRegime", this.regimes)
         if(typeof(this.regimes[0]) !='undefined'){
           this.putEditRegimes({
             newRegimes: this.regimes,
@@ -310,10 +306,23 @@ export default {
         //   this.putEditSchedules(this.schedules);
         // });
     },
-    //Metodo que verifica si existen errores al momento de guardar la informacion
-    verifyErrors(){
+    //Metodo que verifica si existen errores al momento de guardar la informacion en PostHotel
+    verifyErrorsPostHotel(){
       let obj = {};
-      if(this.errorsInformation != null){
+      if(this.statusInformation == 422){
+        obj.messagge = "Ocurrió un error al guardar";
+        obj.color = "red darken-1";
+      }
+      else{
+        obj.messagge = "El registro se guardó con exito";
+        obj.color = "green darken-1";
+      }
+      return obj;
+    },
+    //Metodo que verifica si existen errores al momento de guardar en los demas endpoints
+    verifyErrorsEndpoints(){
+      let obj = {};
+      if(this.statusConfiguration == 422 || this.statusConfiguration == 422 || this.statusConditions == 422 || this.statusRegimes == 422){
         obj.messagge = "Ocurrió un error al guardar";
         obj.color = "red darken-1";
       }
@@ -335,4 +344,41 @@ export default {
   animation: loader 1s infinite;
   display: flex;
 }
+
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 </style>
