@@ -124,9 +124,8 @@ export default {
     ]),
     ...mapMutations(["setReinicialized", "setChargeView", "setSnackbar"]),
     chargeDataHotel() {
-      if (this.$route.params.id) {
         this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
-        if(this.$route.params.id != 'new'){
+        if(typeof(this.id)!='undefined'){
           this.getHotel(this.$route.params.id).then(() => {
             this.hotelTitle = this.hotel.title;
             if (this.hotel.idConfiguration !== null) {
@@ -149,12 +148,11 @@ export default {
             }
           });
         }
-        else if(this.$route.params.id == 'new'){
+        else {
           //Se manda llamar la mutacion para cambiar el estado de la varibale 'chargeView"
           //Debido a que es un nuevo registro de hotel y no hay datos previos que cargar
           this.setChargeView(true);
         }
-      }
     },
   },
   components: {
@@ -167,5 +165,6 @@ export default {
     Regime,
     AditionalInfo,
   },
+  props: ['id']
 };
 </script>

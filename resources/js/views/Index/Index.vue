@@ -22,6 +22,9 @@ import NavbarSiilkaab from "./NavbarSiilkaab";
 import NavigationDashboard from "./NavigationDashboard";
 
 export default {
+  mounted(){
+    this.$store.dispatch("getHotels");
+  },
   data() {
     return {
       lastStorage: this.$store.state.lastStorage,

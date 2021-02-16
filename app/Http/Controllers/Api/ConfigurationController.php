@@ -50,7 +50,7 @@ class ConfigurationController extends Controller
          
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
             $configuration = Configuration::create($data);
             return new ConfigurationIndexResource(Configuration::findOrFail($configuration->id));
@@ -86,8 +86,8 @@ class ConfigurationController extends Controller
             'notification_details' => 'email',
             'notification_card' => 'email',
             'timezone' => 'timezone',
-            'payment_place' => 'in:online,offline,both',
-            'payment_type' => 'in:one,all',
+            'payment_place' => 'required|in:online,offline,both',
+            'payment_type' => 'required|in:one,all',
             'currency_id' => 'exists:currencies,id',
             'hotel_id' => 'exists:hotels,id'
         ];
