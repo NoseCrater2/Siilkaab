@@ -4,7 +4,13 @@ const disponibilityMoule = {
     state: {
         ahotels: [],
         arooms: [],
-        rates: []
+        rates: [],
+        snackbar: {
+            stateSnackbar: false,
+            messaggeSnackbar: "",
+            colorSnackbar: ""
+        },
+        timeoutSnackbar: 3500,
     },
     getters: {},
     mutations: {
@@ -23,7 +29,14 @@ const disponibilityMoule = {
         putEditRates(state, rates) {
             state.rates = rates;
         },
-
+        //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
+        setSnackbar(state, flag){
+            state.snackbar = flag;
+        },
+        //Metodo que cambia de estado la variable que controla el tiempo de un snackbar (mensaje)
+        setTimeoutSnackbar(state, time){
+            state.timeoutSnackbar = time;
+        },
         // postAddRates(state, rates) {
         //     state.rates = rates;
         // },

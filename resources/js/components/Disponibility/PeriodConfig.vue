@@ -10,6 +10,9 @@
           label="Unidades"
           prepend-inner-icon="mdi-pencil"
           dense
+          maxlength="3"
+          @keydown="keyhandlerUnity" 
+          :rules="[rules.validUnity]"
         ></v-text-field>
       </v-col>
       <v-col cols="12" sm="12" md="4" lg="4" class="mt-6">
@@ -19,6 +22,8 @@
           prepend-inner-icon="mdi-currency-usd-circle"
           dense
           v-model="computedRate"
+          @keydown="keyhandlerRate" 
+          :rules="[rules.validRate]"
         ></v-text-field>
       </v-col>
     </v-row>
@@ -40,11 +45,37 @@ export default {
           "friday",
           "saturday",
           "sunday"
-        ]
+        ],
+        rules: {
+          validUnity: value => {
+            const pattern = /^([0-9]\d{0,3})$/
+            return pattern.test(value) || 'Solo se aceptan numeros'
+          },
+          validRate: value => {
+            const pattern = /^\s*?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/
+            return pattern.test(value) || 'Solo valores monetarios'
+          },
+        },
       }
     },
     created(){
 
+    },
+    methods: {
+      keyhandlerUnity(event) {
+        const pattern = /^([0-9]\d{0,3})$/
+        if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
+          console.log(event.key)
+          event.preventDefault();
+        }
+      },
+      keyhandlerRate(event) {
+        const pattern = /^\s*?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/
+        if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab' && event.key != '.'){
+          console.log(event.key)
+          event.preventDefault();
+        }
+      }
     },
     computed:{
       ...mapState({
@@ -64,6 +95,7 @@ export default {
           });
           console.log("arrayFilteredDays", arrayFilteredDays)
           this.rateModel = model;
+          console.log(this.rates)
           this.rates.map(rateItem => {
             if(rateItem.room_id == this.idRoomCompo || rateItem.id == "NEW"){
               if((rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0)){

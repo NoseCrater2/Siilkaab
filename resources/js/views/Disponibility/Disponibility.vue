@@ -124,7 +124,7 @@
                   class="mr-3"
                   v-model="allCheckboxesSelected"
                   label="Todos"
-                  @click="selectAllCheckboxes()"
+                  @change="selectAllCheckboxes($event)"
                 ></v-checkbox>
                 <v-checkbox
                 v-for="(day, index) in arrayDays"
@@ -133,7 +133,7 @@
                   v-model="daysIds"
                   :label="day.day"
                   :value="day.id"
-                  @click="selectBtnCheckbox(day.day)"
+                  @change="selectBtnCheckbox($event)"
                 ></v-checkbox>
               </v-row>
             </v-col>
@@ -158,12 +158,27 @@
         <v-spacer></v-spacer>
       </v-form>
     </v-container>
+    <v-snackbar
+      :value="snackbar.stateSnackbar"
+      right
+      :color="snackbar.colorSnackbar"
+      rounded="pill"
+      :timeout="timeoutSnackbar"
+      bottom
+    >
+      <v-icon
+        color="white"
+      >
+        mdi-content-save
+      </v-icon>
+      <span class="font-weight-bold">{{snackbar.messaggeSnackbar}}</span>
+    </v-snackbar>
   </div>
 </template>
 
 
 <script >
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 import CalendarFee from "../../components/CalendarFee/CalendarFee";
 import PeriodConfig from "../../components/Disponibility/PeriodConfig"
 
@@ -194,7 +209,10 @@ export default {
 
       modalRangePeriod: false,
       rangePeriodTimeModel: [],
-      loadingButton: false
+      loadingButton: false,
+
+      copyArrayRates: [],
+
     };
   },
 
@@ -204,6 +222,7 @@ export default {
 
   methods: {
     ...mapActions(["getHotelsForAdmin", "getRoomsForAdmin", "getRates", "putEditRates"]),
+    ...mapMutations(["setSnackbar", "setTimeoutSnackbar"]),
     searchRoom(idHotel) {
       this.loadingRooms = true;
       this.isFilledArrayComponents = false;
@@ -212,6 +231,7 @@ export default {
           return el.id;
         });
         this.getRates(this.arrayRoomIDs).then(() => {
+          this.copyArrayRates = this.rates;
           this.loadingRooms = false;
         });
       });
@@ -234,7 +254,8 @@ export default {
         idRoomCompo: obj.id
       });
     },
-    selectAllCheckboxes() {
+    selectAllCheckboxes(event) {
+      console.log(event)
       this.daysIds = [];
       if (this.allCheckboxesSelected) {
         for (let day in this.arrayDays) {
@@ -242,15 +263,38 @@ export default {
         }
       }
     },
-    selectBtnCheckbox(day) {
-      console.log(day)
+    selectBtnCheckbox(event) {
+      console.log(event)
+      // this.rates.forEach((itemRates)=>{
+      //   let localDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+      //   for (const propertyItemRates in itemRates) {
+      //     if(event.length > 0){
+      //       event.forEach((itemEvent)=>{
+      //         if(localDays.includes(itemEvent)){
+      //           this.copyArrayRates.forEach((itemCopyRates)=>{
+      //             if(itemCopyRates.room_id == itemRates.room_id){
+      //               if(propertyItemRates == itemEvent){
+      //                 itemRates[propertyItemRates] = 777;
+      //               }
+      //             }
+      //           })
+      //         }
+      //       })
+      //     }
+      //   }
+      // })
+      this.copyArrayRates = this.rates;
+      console.log(this.rates)
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority(){
-      // this.loadingButton = true;
-      // this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
-      //   this.loadingButton = false;
-      // });
+      this.loadingButton = true;
+      this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
+      this.setTimeoutSnackbar(3500);
+      this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
+        this.setSnackbar({stateSnackbar: true, messaggeSnackbar: "El registro se guardó con exito", colorSnackbar: "green darken-1"});
+        this.loadingButton = false;
+      });
       console.log(this.rates)
     }
   },
@@ -265,6 +309,8 @@ export default {
       hotels: (state) => state.disponibilityMoule.ahotels,
       rooms: (state) => state.disponibilityMoule.arooms,
       rates: (state) => state.disponibilityMoule.rates,
+      snackbar: (state) => state.disponibilityMoule.snackbar,
+      timeoutSnackbar: (state) => state.disponibilityMoule.timeoutSnackbar,
     }),
     computedArrayComponents() {
       return this.arrayComponents;

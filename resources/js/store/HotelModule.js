@@ -955,8 +955,10 @@ const HotelModule = {
                             itemRegime.hotel_id = objRegimes.currentHotelId;
                             //El endopoint solo acepta HH:MM, por lo tanto se cambia
                             //de HH:MM:SS a HH:MM
-                            if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                            if(itemRegime.start_period.length > 16){
                                 itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                            }
+                            if(itemRegime.final_period.length > 16){
                                 itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                             }
                             return itemRegime;
@@ -976,8 +978,10 @@ const HotelModule = {
                         //Para que sea aceptada por el endpoint (HH:MM)
                         if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                             if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                if(itemRegime.start_period.length > 16){
                                     itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                }
+                                if(itemRegime.final_period.length > 16){
                                     itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                 }
                             }
@@ -1028,8 +1032,10 @@ const HotelModule = {
                                 itemRegime.hotel_id = objRegimes.currentHotelId;
                                 //El endopoint solo acepta HH:MM, por lo tanto se cambia
                                 //de HH:MM:SS a HH:MM
-                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                if(itemRegime.start_period.length > 16){
                                     itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                }
+                                if(itemRegime.final_period.length > 16){
                                     itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                 }
                                 return itemRegime;
@@ -1049,8 +1055,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 }
@@ -1070,8 +1078,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 }
@@ -1080,6 +1090,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
+                        console.log("newArrayPutRegimes", newArrayPutRegimes)
                         dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
                 }
@@ -1120,8 +1131,10 @@ const HotelModule = {
                                 itemRegime.hotel_id = objRegimes.currentHotelId;
                                 //El endopoint solo acepta HH:MM, por lo tanto se cambia
                                 //de HH:MM:SS a HH:MM
-                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                if(itemRegime.start_period.length > 16){
                                     itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                }
+                                if(itemRegime.final_period.length > 16){
                                     itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                 }
                                 return itemRegime;
@@ -1141,8 +1154,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 } 
@@ -1162,8 +1177,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 }

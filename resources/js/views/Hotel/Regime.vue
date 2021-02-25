@@ -183,6 +183,11 @@ import SpecialRegime from "../../components/Hotel/SpecialRegime";
 
 import { mapState, mapMutations } from "vuex";
 
+import Moment from "moment"; //Importamos moment.js
+import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
+const moment = extendMoment(Moment); //Extendemos moment.js con los rangos
+moment.locale("es"); //Cambiamos el lenguaje de moment
+
 export default {
   name: "Regime",
   created() {
@@ -616,10 +621,8 @@ export default {
           idCompo: this.countIdCompo,
           priority: "normal",
           only_room: 0,
-          start_period:
-            new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00",
-          final_period:
-            new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00",
+          start_period: moment().format("YYYY-MM-DD") + " 00:00:00",
+          final_period: moment().format("YYYY-MM-DD") + " 00:00:00", //new Date(Date.now()).toISOString().slice(0, -14) + " 00:00:00"
           lodging_breakfast_children: 0,
           lodging_breakfast_adult: 0,
           half_pension_children: 0,

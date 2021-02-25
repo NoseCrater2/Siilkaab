@@ -343,7 +343,6 @@ export default {
           if(typeof(objRoom.cellColor)=='undefined'){
             objRoom.cellColor = [];
           }
-
           findedColor = objRoom.cellColor.filter((item)=>{
             if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
               return item;
@@ -393,11 +392,13 @@ export default {
         if(typeof(objDate.idRoom[index])!='undefined'){
           if(objRoom.id == objDate.idRoom[index].idRoom){
             let indexInter = 0;
-            while (indexInter < objRoom.cellColor.length) {
-                if(objRoom.cellColor[indexInter].priority == objDate.idRoom[index].priorityColor){
-                  setCellColorClass = objRoom.cellColor[indexInter].color;
-                }
-              indexInter++;
+            if(typeof(objRoom.cellColor) != 'undefined'){
+              while (indexInter < objRoom.cellColor.length) {
+                  if(objRoom.cellColor[indexInter].priority == objDate.idRoom[index].priorityColor){
+                    setCellColorClass = objRoom.cellColor[indexInter].color;
+                  }
+                indexInter++;
+              }
             }
           }
         }
