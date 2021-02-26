@@ -302,9 +302,9 @@ export default {
           }
         }
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
-        // this.putEditRestaurants(this.restaurants).then(() => {
-        //   this.putEditSchedules(this.schedules);
-        // });
+        this.putEditRestaurants(this.restaurants).then(() => {
+          //this.putEditSchedules(this.schedules);
+        });
     },
     //Metodo que verifica si existen errores al momento de guardar la informacion en PostHotel
     verifyErrorsPostHotel(){

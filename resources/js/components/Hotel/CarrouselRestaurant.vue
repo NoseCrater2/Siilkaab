@@ -16,6 +16,7 @@
           v-for="(component) in arrayComponents"
           :idCompo="component.idCompo"
           :idRestaurant="component.objArrCompo.id"
+          :idCompoRestaurant="component.objArrCompo.idCompoRestaurant"
           :restauranNumber="component.restauranNumber"
           :objArrCompo="component.objArrCompo"
           :key="component.idCompo"
@@ -48,10 +49,10 @@ export default {
   },
   created() {
     let count = 0;
-    while (count <= this.restaurants.length - 1) {
-      this.addCompo(this.restaurants[count]);
-      count++;
-    }
+    // while (count <= this.restaurants.length - 1) {
+    //   this.addCompo(this.restaurants[count]);
+    //   count++;
+    // }
   },
   data() {
     return {
@@ -76,14 +77,15 @@ export default {
       this.countLastElementCarrousel = this.arrayComponents.length;
       this.countIdCompo++;
       this.activeRestaurants++;
-      //Declaramos la variable "putId" para insertarla como ID del nuevo restaurant
-      let putId = (this.countIdCompo + 1)
+      let putId = this.countIdCompo + "" + "NEW"; //ID que se seteara al crear los horarios
+      console.log("PUTID", putId)
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagDRestaurant: DynamicRestaurant,
         restauranNumber: this.countLastElementCarrousel,
         objArrCompo: {
-          id: putId, //Se pone "putId" que tiene el valor de "this.countIdCompo" para identificarlo en el PUT
+          id: "NEW",
+          idCompoRestaurant: putId,
           name: null,
           menu_type: null,
           schedules: [],
@@ -116,16 +118,20 @@ export default {
       //Variable del v-model carrousel la decrementamos
       this.countLastElementCarrousel--;
       this.activeRestaurants--;
-      let idCompoMap = this.arrayComponents
-        .map((element) => element.idCompo)
-        .indexOf(idCompoParam);
+      let idCompoMap = this.arrayComponents.map((element) => element.idCompo).indexOf(idCompoParam);
 
       //En una nueva variable llamada "mapIDRestaurant" guardamos el id del restaurant
       //Obtenido gracias al indice actual eliminado (idCompoParam) utilizado en "this.arrayComponents"
       //Para eliminar los horarios del restaurant (ubicados en el state "schedules")
-      let mapIDRestaurant = this.arrayComponents[idCompoMap].objArrCompo.id;
+      let mapIDRestaurant;
+      if(this.arrayComponents[idCompoMap].objArrCompo.id == 'NEW'){
+        mapIDRestaurant = this.arrayComponents[idCompoMap].objArrCompo.idCompoRestaurant;
+      }
+      else{
+        mapIDRestaurant = this.arrayComponents[idCompoMap].objArrCompo.id;
+      }
 
-      //En la variable "deleteSchedule" guardamos el solo aquellos horarios donde su ID de restaurant sea diferente
+      //En la variable "deleteSchedule" guardamos solo aquellos horarios donde su ID de restaurant sea diferente
       //Del ID de restaurant que se esta eliminando
       let deleteSchedule = this.schedules.filter(deleteScheduleItem=> deleteScheduleItem.idRestaurant !== mapIDRestaurant)
 

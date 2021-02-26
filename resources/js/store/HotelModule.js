@@ -61,8 +61,8 @@ const HotelModule = {
             hotel_id: null
         },
         regimes: [],
-        restaurants: null,
-        schedules: null,
+        restaurants: [],
+        schedules: [],
         pools: null,
         aditionalInfo: {
             spa: null,
@@ -214,8 +214,8 @@ const HotelModule = {
                     hotel_id: null
                 }),
                 (state.regimes = []),
-                (state.restaurants = null),
-                (state.schedules = null),
+                (state.restaurants = []),
+                (state.schedules = []),
                 (state.pools = null),
                 (state.aditionalInfo = {
                     spa: null,
@@ -1233,7 +1233,7 @@ const HotelModule = {
         },
 
         putEditRestaurants: async function({ commit }, newRestaurants) {
-            //console.log(newRestaurants)
+            console.log("newRestaurants", newRestaurants)
             try {
                 //Eliminamos las propiedades que no es necesario agregar en la peticion AXIOS
                 //Eliminamos el nombre del hotel
