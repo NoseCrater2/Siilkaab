@@ -2,6 +2,8 @@ import axios from "axios";
 
 const disponibilityMoule = {
     state: {
+        //"arrayItemsCalendar" guardara los arreglos de objetos de calendario (arrayDatesCalendar)
+        arrayItemsCalendar: [],
         ahotels: [],
         arooms: [],
         rates: [],
@@ -14,6 +16,22 @@ const disponibilityMoule = {
     },
     getters: {},
     mutations: {
+        //Mutacion que resetea el arreglo de fechas. Este es llamado desde Disponibility.vue
+        resetArrayItemsCalendar(state) {
+            state.arrayItemsCalendar = [];
+        },
+        //Mutacion que recarga en tiempo real las fechas (los colores) en Calendar.vue
+        mutationReloadDates(state){
+            let lengtArrayItems = state.arrayItemsCalendar.length - 1;
+            while (lengtArrayItems >= 0) {
+                state.arrayItemsCalendar[lengtArrayItems].forEach(itemArray => {
+                if(itemArray.idRoom.length > 0){
+                    itemArray.idRoom = [];
+                }
+              });
+              lengtArrayItems--;
+            }
+        },
         setHotels(state, payload) {
             state.ahotels = payload;
         },

@@ -2,7 +2,7 @@
   <div>
     <v-row align="center" justify="center">
       <v-col cols="12" sm="12" md="4" lg="4">
-        <span class="text-center font-weight-bold overline">{{objArrCompo.name}}</span>
+        <span class="text-center font-weight-bold overline">{{rooms[indexCompo].name}}</span>
       </v-col>
       <v-col cols="12" sm="12" md="4" lg="4" class="mt-6">
         <v-text-field
@@ -11,6 +11,7 @@
           prepend-inner-icon="mdi-pencil"
           dense
           maxlength="3"
+          v-model="computedUnity"
           @keydown="keyhandlerUnity" 
           :rules="[rules.validUnity]"
         ></v-text-field>
@@ -31,12 +32,13 @@
 </template>
 
 <script>
-import { mapActions, mapState } from "vuex";
+import { mapActions, mapMutations, mapState } from "vuex";
 export default {
     name: 'PeriodConfig',
     data(){
       return{
         rateModel: null,
+        unityModel: null,
         localArrayDays: [
           "monday",
           "tuesday",
@@ -59,9 +61,10 @@ export default {
       }
     },
     created(){
-
+      console.log("objArrCompo", this.rooms[this.indexCompo])
     },
     methods: {
+      ...mapMutations(["mutationReloadDates"]),
       keyhandlerUnity(event) {
         const pattern = /^([0-9]\d{0,3})$/
         if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
@@ -72,7 +75,7 @@ export default {
       keyhandlerRate(event) {
         const pattern = /^\s*?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/
         if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab' && event.key != '.'){
-          console.log(event.key)
+          console.log(event.key);
           event.preventDefault();
         }
       }
@@ -82,12 +85,22 @@ export default {
         rates: (state) => state.disponibilityMoule.rates,
         rooms: (state) => state.disponibilityMoule.arooms,
       }),
+      computedUnity: {
+        get(){
+          return this.unityModel;
+        },
+        set(model){
+          return this.unityModel;
+        }
+      },
       computedRate: {
         get() {
           return this.rateModel;
         },
         set(model) {
-          let bandera = false;
+          //Este delete elimina el color de las celdas de la habitacion (las resetea debido a que el calendario se actualiza en tiempo real insertando los colores)
+          delete this.rooms[this.indexCompo].cellColor;
+          let flagIsThereARate = false;
           let arrayFilteredDays = this.localArrayDays.filter((el)=>{
             if(!this.arrayDaysSelected.includes(el)){
               return el;
@@ -97,11 +110,10 @@ export default {
           this.rateModel = model;
           console.log(this.rates)
           this.rates.map(rateItem => {
-            if(rateItem.room_id == this.idRoomCompo || rateItem.id == "NEW"){
+            if(rateItem.room_id == this.rooms[this.indexCompo].id || rateItem.id == "NEW"){
               if((rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0)){
-                bandera = true;
+                flagIsThereARate = true;
                 if(this.arrayDaysSelected.length > 0){
-                  let countDay = 0;
                   this.localArrayDays.forEach((el)=>{
                     if(this.arrayDaysSelected.includes(el)){
                       if(model != ""){
@@ -116,11 +128,27 @@ export default {
                     }
                   })
                 }
+                else{
+                  let allDays = [
+                                  "monday",
+                                  "tuesday",
+                                  "wednesday",
+                                  "thursday",
+                                  "friday",
+                                  "saturday",
+                                  "sunday"
+                                ]
+                  allDays.forEach((el)=>{
+                    if(rateItem[el] != 0){
+                      rateItem[el] = 0;
+                    }
+                  })
+                }
               }
               return rateItem;
             }
           });
-          if(bandera == false){
+          if(flagIsThereARate == false){
             if(this.arrayDaysSelected.length > 0){
               let countDay = 0;
               let obj = {
@@ -135,7 +163,7 @@ export default {
                 friday: 0,
                 saturday: 0,
                 sunday: 0,
-                room_id: this.idRoomCompo
+                room_id: this.rooms[this.indexCompo].id
               }
               this.localArrayDays.forEach((el)=>{
                 if(this.arrayDaysSelected.includes(el)){
@@ -154,14 +182,15 @@ export default {
               this.rates.push(obj)
             }
           }
+          //Esta mutacion permite recargar las fechas para que se acoplen con los colores que son (reinicia los colores en conujunto con los metodos de CalendarFee.vue)
+          this.mutationReloadDates();
           return this.rateModel;
         },
       },
     },
     props: {
       idCompo: Number,
-      objArrCompo: Object,
-      idRoomCompo: Number,
+      indexCompo: Number,
       arrayRangePeriod: Array,
       arrayDaysSelected: Array
     }

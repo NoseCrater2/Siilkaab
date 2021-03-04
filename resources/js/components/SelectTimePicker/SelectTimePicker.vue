@@ -1,15 +1,15 @@
 <template>
   <div>
     <v-row>
-      <v-col md="13" style="display: flex">
-        <v-autocomplete
+      <v-col md="13" class="d-flex">
+        <v-select
           :items="weekDaysItems"
           v-model="computedDdwnWeekDays"
           dense
           filled
           label="Dia"
-          style="margin-right: 4%"
-        ></v-autocomplete>
+          class="mr-4"
+        ></v-select>
         <v-dialog
           ref="dialogFromHour"
           v-model="modalFromHourModel"
@@ -27,7 +27,7 @@
               dense
               filled
               label="Desde"
-              style="margin-right: 2%"
+              class="mr-2"
             ></v-autocomplete>
           </template>
           <v-time-picker
@@ -58,7 +58,7 @@
               dense
               filled
               label="Hasta"
-              style="margin-right: 2%"
+              class="mr-2"
             ></v-autocomplete>
           </template>
           <v-time-picker v-if="modalToHourModel" v-model="computedToHour" format="24hr" full-width>
@@ -111,10 +111,10 @@ export default {
           this.ddwnWeekDaysModel = "Domingo";
         }
       }
-      if (this.objArrCompo.start_time !== null) {
+      if (this.objArrCompo.start_time != null) {
         this.fromHourModel = this.objArrCompo.start_time.slice(0, -3);
       }
-      if (this.objArrCompo.end_time !== null) {
+      if (this.objArrCompo.end_time != null) {
         this.toHourModel = this.objArrCompo.end_time.slice(0, -3);
       }
     }

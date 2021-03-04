@@ -1,7 +1,7 @@
 <template>
   <v-carousel-item>
     <v-sheet color="#eeeeee" height="100%">
-      <div style="padding: 2%">
+      <div class="pa-3">
         <v-row class="ml-1 d-flex">
           <span>
             <h2>
@@ -72,7 +72,6 @@ export default {
     if (this.objArrCompo != null) {
       //componentID es utilizado como key unica para el proceso de muestra de errores
       this.objArrCompo.componentID = this.componentID;
-      console.log("this.componentID", this.componentID)
       //Codigo para agregar componentes existentes
       let count = 0;
       while (count <= this.objArrCompo.schedules.length - 1) {
@@ -180,7 +179,6 @@ export default {
       //Creamos una variable "indexSchedule" que guardara el indice donde se guardara el nuevo horario
       //en el state "schedules"
       let indexSchedule;
-      console.log("SCHEDULES", this.schedules)
       this.schedules.forEach((scheduleItem, index) => {
         if(this.idRestaurant == "NEW"){
           if(scheduleItem.idRestaurant == this.idCompoRestaurant){
@@ -206,7 +204,6 @@ export default {
         if(this.idRestaurant == "NEW"){
           if(restaurantItem.idCompoRestaurant == this.idCompoRestaurant){
             indexRestaurant = index;
-            console.log("NUEVO RSTAURANTTTTTT", indexRestaurant)
           }
         }
         else{
@@ -218,7 +215,7 @@ export default {
       
       //Insertamos el nuevo horario en los horarios que se encuentran en el state "Restaurant"
       this.restaurants[indexRestaurant].schedules.push(newArraySchedules)
-
+      console.log("SCHEDULE", this.schedules)
     },
     //Metodos componente SelectTimePicker ya existente desde BD
     addCompo(obj) {
@@ -239,7 +236,6 @@ export default {
       //Procedemos a eliminar del arreglo state "this.schedules"
       //el horario correspondiente y para eso hacemos una serie de pasos
       let countCurrentStateSchedule = 0; //Inicializamos un contador que llevara el indice del arreglo state en su propiedad "restaurantSchedules"
-      let idScheduleDeleted = 0; //Inicializamos un contador que guardara el id del horario que se eliminará
       let idRestaurantScheduleDeleted = 0; //Inicializamos un contador que guardara el id del restaurant que tiene el horario a eliminar
       this.arrayComponents = this.arrayComponents.map((itemArrayComponents) => {
         //Buscamos en los elementos del "this.arrayComponents" una coincidencia
@@ -264,12 +260,10 @@ export default {
                   //Y verificamos si en este indice se encuentra una coincidencia de ids entre este indice y el id (que es el de restaurant)
                   //del elemento perteneciente a "this.arrayComponents"
                   if (itemArrayComponents.objArrCompo.idCompoSelectTimePicker == currentStateSchedule.restaurantSchedules[countCurrentStateSchedule].idCompoSelectTimePicker) {
-                    //Guardamos el id del horario a eliminar, ya que lo ocuparemos para editar el state "restaurants"
-                    idScheduleDeleted = currentStateSchedule.restaurantSchedules[countCurrentStateSchedule].idCompoSelectTimePicker;
                     //Guardamos el id del restaurante que tiene el horario que se va a eliminar; esto para editar el state "restaurants"
                     idRestaurantScheduleDeleted = currentStateSchedule.idRestaurant
-                    //Si existe la coincidencia entonces del elemento del state eliminamos el restaurant
-                    currentStateSchedule.restaurantSchedules.splice(countCurrentStateSchedule, 1);
+                    //Si existe la coincidencia entonces del elemento del state modificamos el restaurant
+                    currentStateSchedule.restaurantSchedules[countCurrentStateSchedule].deletedSchedule = 'DELETED';
                     break;
                   }
                 }
@@ -278,12 +272,10 @@ export default {
                   //Y verificamos si en este indice se encuentra una coincidencia de ids entre este indice y el id (que es el de restaurant)
                   //del elemento perteneciente a "this.arrayComponents"
                   if (itemArrayComponents.objArrCompo.id == currentStateSchedule.restaurantSchedules[countCurrentStateSchedule].id) {
-                    //Guardamos el id del horario a eliminar, ya que lo ocuparemos para editar el state "restaurants"
-                    idScheduleDeleted = currentStateSchedule.restaurantSchedules[countCurrentStateSchedule].id;
                     //Guardamos el id del restaurante que tiene el horario que se va a eliminar; esto para editar el state "restaurants"
                     idRestaurantScheduleDeleted = currentStateSchedule.idRestaurant
-                    //Si existe la coincidencia entonces del elemento del state eliminamos el restaurant
-                    currentStateSchedule.restaurantSchedules.splice(countCurrentStateSchedule, 1);
+                    //Si existe la coincidencia entonces del elemento del state modificamos el restaurant
+                    currentStateSchedule.restaurantSchedules[countCurrentStateSchedule].deletedSchedule = 'DELETED';
                     break;
                   }
                 }
@@ -298,56 +290,49 @@ export default {
         return itemArrayComponents;
       });
 
+      let localSchedule = this.arrayComponents[idCompoMap].objArrCompo
+      
+      this.restaurants.forEach(itemRestaurant=>{
+        if(itemRestaurant.id == 'NEW'){
+          if(itemRestaurant.idCompoRestaurant == idRestaurantScheduleDeleted){
+            let indexSchedule = 0;
+            while (indexSchedule < itemRestaurant.schedules.length) {
+              if(localSchedule.id == 'NEW'){
+                if(localSchedule.idCompoSelectTimePicker == itemRestaurant.schedules[indexSchedule].idCompoSelectTimePicker){
+                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
+                }
+              }
+              else{
+                if(localSchedule.id == itemRestaurant.schedules[indexSchedule].id){
+                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
+                }
+              }
+              indexSchedule++;
+            }
+          }
+        }
+        else{
+          if(itemRestaurant.id == idRestaurantScheduleDeleted){
+            let indexSchedule = 0;
+            while (indexSchedule < itemRestaurant.schedules.length) {
+              if(localSchedule.id == 'NEW'){
+                if(localSchedule.idCompoSelectTimePicker == itemRestaurant.schedules[indexSchedule].idCompoSelectTimePicker){
+                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
+                }
+              }
+              else{
+                if(localSchedule.id == itemRestaurant.schedules[indexSchedule].id){
+                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
+                  console.log("itemRestaurant.schedules[indexSchedule]", itemRestaurant.schedules[indexSchedule])
+                }
+              }
+              indexSchedule++;
+            }
+          }
+        }
+      });
+      //Eliminamos del arreglo del componentes el horario
       this.arrayComponents.splice(idCompoMap, 1);
-
-      //Mandamos el nuevo arreglo
-      this.setArraySchedules(this.schedules);
-
-      //Para guardar "temporalmente" los horarios en el state "restaurants"
-      //Hacemos lo siguiente...
-      //Primero filtramos el hotel al que pertenece el horario eliminado
-      let filterRestaurantSchedule = this.restaurants.filter(itemRestaurantFilter=> {
-        if(itemRestaurantFilter.id == "NEW"){
-          if(itemRestaurantFilter.idCompoRestaurant == idRestaurantScheduleDeleted){
-            return itemRestaurantFilter;
-          }
-        }
-        else{
-          if(itemRestaurantFilter.id == idRestaurantScheduleDeleted){
-            return itemRestaurantFilter;
-          }
-        }
-      }).map(itemRestaurantMap=>{
-        //Hacemos un map que retornara el hotel ya con los horarios nuevos
-        itemRestaurantMap.schedules.splice(countCurrentStateSchedule, 1)
-        //Y retornamos el restaurant
-        return itemRestaurantMap;
-      })
-
-      //Ahora creamos una variable que sera una copia state "restaurants"
-      //Con la particularidad de que la seteamos para que sea la variable que cambie el estado del state
-      let newArrayRestaurants = this.restaurants.map(itemNewRestaurant=>{
-        if(itemNewRestaurant.id == 'NEW'){
-          //Si los ids del hotel coinciden...
-          if(itemNewRestaurant.idCompoRestaurant == idRestaurantScheduleDeleted){
-            //Entonces el nuevo objeto (el del resultado del filtro de lineas anteriore) pasa a ser el nuevo atributo
-            //del item actual "itemNewRestaurant"
-            itemNewRestaurant = filterRestaurantSchedule[0];
-          }
-        }
-        else{
-          //Si los ids del hotel coinciden...
-          if(itemNewRestaurant.id == idRestaurantScheduleDeleted){
-            //Entonces el nuevo objeto (el del resultado del filtro de lineas anteriore) pasa a ser el nuevo atributo
-            //del item actual "itemNewRestaurant"
-            itemNewRestaurant = filterRestaurantSchedule[0];
-          }
-        }
-        return itemNewRestaurant;
-      })
-      //Mandamos el nuevo arreglo "newArrayRestaurants"
-      //Para cambiar el estado de "this.restaurants"
-      this.setArrayRestaurants(newArrayRestaurants);
     },
   },
   components: {

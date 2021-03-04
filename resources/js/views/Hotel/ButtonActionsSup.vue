@@ -178,8 +178,9 @@ export default {
           if (this.hotel.idAmenity !== null) {
             this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
             this.getPools(this.hotel.id).then(() => {});
-            this.getRestaurants(this.hotel.id).then(() => {});
-            this.getSchedules(this.hotel.id).then(() => {});
+            this.getRestaurants(this.hotel.id).then(() => {
+              this.getSchedules(this.hotel.id).then(() => {});
+            });
           }
         });
       }
@@ -302,9 +303,7 @@ export default {
           }
         }
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
-        this.putEditRestaurants(this.restaurants).then(() => {
-          //this.putEditSchedules(this.schedules);
-        });
+        this.putEditRestaurants({propRestaurants: this.restaurants, propSchedules: this.schedules});
     },
     //Metodo que verifica si existen errores al momento de guardar la informacion en PostHotel
     verifyErrorsPostHotel(){

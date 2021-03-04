@@ -38,18 +38,12 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(objRoom, indexRoom) in arrEndpointRooms" :key="indexRoom">
+        <tr v-for="(objRoom, indexRoom) in rooms" :key="indexRoom">
           <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br></td>
           <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="setCellColor(objRoom, objDate)">
-            <!-- <div v-if="typeof(rates[indexRoom])!='undefined'">
-                      <input v-model="rates[indexRoom].rack" placeholder="$ Precio"/><br />
-                  </div> -->
-            <!-- <v-icon x-small class="ml-n3 mr-n1">mdi-pencil</v-icon> -->
             <input v-model="objRoom.bed_rooms" class="centerContent"/>
             <div>
                <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
-              <!-- Debe de haber de menos un rate para que sea disponible quantity en endpoints rooms-->
-              <!-- <v-icon x-small class="ml-n3 mr-n1">mdi-currency-usd</v-icon> -->
               <input :value="priority(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
             </div>
           </td>
@@ -67,7 +61,7 @@
 //Instalar plugin de rangos moment; "moment-range"
 //npm install --save moment-range
 
-import { mapState, mapActions } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 import Moment from "moment"; //Importamos moment.js
 import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
@@ -78,14 +72,13 @@ export default {
   name: "CalendarFee",
   data() {
     return {
+      daySelected: null,
       //Variable que sera el año global del componente calendario
       generalYear: moment().year(),
       //Variable que sera el mes actual global del componente calendario
       generalCurrentMonth: moment().month(),
       //Variable que sera el dia(n) actual global del componente calendario
       generalCurrentDay: moment().date(),
-      //Variable que guardara los arreglos de objetos de calendario (arrayDatesCalendar)
-      arrayItemsCalendar: [],
       //Variable que sera utilizada para cambiar entre posiciones del arreglo "arrayItemsCalendar" utilizado en la tabla de fechas
       generalIndexArrayItemsCalendar: 0,
       //Variable utilizada para llevar la longitud del arreglo "arrayItemsCalendar"
@@ -93,23 +86,14 @@ export default {
     };
   },
   created() {
-    //tarifas{idHabitacion, tipoTarifa(habitacion, persona), start(fechaRango), end(fechaRango), day(fechaUnSoloDia), precio, cantidadHabitaciones}
-
-    //tarifas un solo dia (dd mm yyyy) priority 1
-    //tarifas rango fecha (fechas especificas) priority 2
-    //tarifas dias de la semana(solo importa dia) double('monday')->default(0.0); priority 3
-
-    // $table->date('start')->nullable();
-    //     $table->date('end')->nullable();
-    //     $table->date('day')->nullable();
-
-    //obj = numeroDia, nombreDia, mes, año, cantidad habitaciones, precio
-
-    // Lo que debería pasar si una habitación no tiene tarifas,
-    // es que en todos los campos debería mostrarse su tarifa rack
-    // y su cantidad de habitaciones disponibles
-
     this.loadDates(); //Se llama al metodo "loadDates" que cargara los datos de fechas para crear la tabla de fechas
+  },
+  computed: {
+    ...mapState({
+      rooms: (state) => state.disponibilityMoule.arooms,
+      rates: (state) => state.disponibilityMoule.rates,
+      arrayItemsCalendar: (state) => state.disponibilityMoule.arrayItemsCalendar,
+    }),
   },
   methods: {
     //Metodo que llevara la paginacion de la tabla mediante los botones "atras" y "adelante"
@@ -140,7 +124,6 @@ export default {
     //Metodo que lleva la logica para crear y cargar los datos de fechas en la tabla de fechas
     loadDates() {
       let arrayDatesCalendar = []; //Variable que sera el arreglo de objetos de fecha, utilizado para insertarse en el arreglo general "this.arrayItemsCalendar"
-      // console.log("TODAY", this.generalCurrentDay)
       let today = this.generalCurrentDay; //Variable que guarda el dia actual (sera el dia que aparezca en la primera columna de la tabla)
       let daysNextMonth = 30 - (31 - today); //Variable que guarda la cantidad de dias del siguiente mes que seran mostrados en la tabla
       let totalDaysCalendar = daysNextMonth + 31; //Variable que lleva el total de dias que se mostraran en la tabla (por defecto "30")
@@ -247,18 +230,9 @@ export default {
           this.generalCurrentMonth = 11;
           break;
       }
-      // console.log(this.arrayItemsCalendar);
-
-      
-
-      const start = new Date(2012, 0, 15);
-      const end = new Date(2012, 4, 23);
-      const range = moment.range(start, end);
-      // console.log(range);
     },
 
-    priority(objDate, objRoom, indexRoom, indexTDColumnsDate) {
-
+    priority(objDate, objRoom) {
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
       let globalCheckPriorityLow = false;
@@ -313,11 +287,8 @@ export default {
         }
       });
       if (isThereARate == true) {
-        let localIndex = 0;
         let findedID;
         let findedColor;
-        //console.log(objRoom)
-        //console.log(flagDay, flagRange, flagWeekday)
         if(globalCheckPriorityHigh == true){
           findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
           if(findedID.length == 0){
@@ -370,16 +341,9 @@ export default {
             objRoom.cellColor.push({color: 'deep-purple lighten-3', priority: 3});
           }
         }
-        //console.log(objRoom.cellColor)
         return rack[indexRates];
       }
       else {
-        // if(objDate.idRoom.length > 1){
-        //   console.log("SHI")
-        //   objDate.idRoom = []
-          
-        // }
-
         return objRoom.rack_rate;
       }
     },
@@ -387,7 +351,7 @@ export default {
     setCellColor(objRoom, objDate){
       let setCellColorClass = '';
       let index = 0;
-      let lengthRooms = this.arrEndpointRooms.length;
+      let lengthRooms = this.rooms.length;
       while (index < lengthRooms) {
         if(typeof(objDate.idRoom[index])!='undefined'){
           if(objRoom.id == objDate.idRoom[index].idRoom){
@@ -406,14 +370,6 @@ export default {
       }
       return setCellColorClass;
     },
-  },
-  props: {
-    arrEndpointRooms: Array,
-    arrayRoomIDs: Array,
-    idRoomSelected: Number,
-    daySelected: String,
-    idHotelSelected: Number,
-    rates: Array,
   },
 };
 </script>

@@ -17,51 +17,12 @@
             @change="searchRoom(hotelSelected)"
           ></v-autocomplete>
 
-          <!-- <v-autocomplete
-            v-model="roomSelected"
-            :items="rooms"
-            :loading="loadingRooms"
-            item-text="name"
-            item-value="id"
-            outlined
-            label="Seleccione Habitación"
-          ></v-autocomplete> -->
-
           <div v-if="arrayRoomIDs.length > 0 && loadingRooms == false">
-            <CalendarFee
-              :arrEndpointRooms="rooms"
-              :arrayRoomIDs="arrayRoomIDs"
-              :idRoomSelected="roomSelected"
-              :daySelected="daySelected"
-              :idHotelSelected="hotelSelected"
-              :rates="rates"
-            ></CalendarFee>
+            <CalendarFee></CalendarFee>
           </div>
         </v-col>
-
-        <!-- <v-col cols="12" sm="12" md="8" lg="8">
-          <div v-if="arrayRoomIDs.length > 0 && loadingRooms == false">
-            <CalendarFee
-              :arrEndpointRooms="rooms"
-              :arrayRoomIDs="arrayRoomIDs"
-              :idRoomSelected="roomSelected"
-              :daySelected="daySelected"
-              :idHotelSelected="hotelSelected"
-              :rates="rates"
-            ></CalendarFee>
-          </div>
-        </v-col> -->
       </v-row>
       <v-form v-if="arrayRoomIDs.length > 0 && loadingRooms == false">
-        <!-- <v-alert dense type="info">
-              Para ver o configurar
-              <strong>DISPONIBILIDAD</strong> y
-              <strong>TARIFA</strong> seleccione un
-              <strong>RANGO DE FECHA</strong>, los <strong>DÍAS</strong> a
-              aplicar, las <strong>UNIDADES</strong> y la
-              <strong>TARIFA</strong> a aplicar.
-            </v-alert> -->
-
         <v-card class="pa-4" outlined tile>
           <div class="d-flex justify-start mb-2">
             <span class="text-h4 text-uppercase font-weight-bold">Actualizar Periodo</span>
@@ -141,18 +102,17 @@
           <div v-if="(rooms.length > 0 && isFilledArrayComponents == false) ? fillArrayComponents() : ' '">
             <div v-if="(computedArrayComponents.length > 0 && isFilledArrayComponents == true)">
               <component
-                v-for="(component) in computedArrayComponents"
-                :idCompo="component.idCompo"
+                v-for="(component, index) in computedArrayComponents"
                 :key="component.idCompo"
-                :objArrCompo="component.objArrCompo"
-                :idRoomCompo="component.idRoomCompo"
+                :idCompo="component.idCompo"
+                :indexCompo="index"
                 :arrayRangePeriod="rangePeriodTimeModel"
                 :arrayDaysSelected="daysIds"
                 :is="component.TagPeriodConfig"
+
               ></component>
             </div>
           </div>
-          <!-- <PeriodConfig></PeriodConfig> -->
         </v-card>
         <v-btn color="primary" large block @click="btnApplyCheckPriority()" :loading="loadingButton" :disabled="loadingButton">Aplicar</v-btn>
         <v-spacer></v-spacer>
@@ -187,7 +147,6 @@ export default {
     return {
       hotelSelected: null,
       loadingRooms: false,
-      roomSelected: null,
       arrayDays: [ 
             { "id": "monday", "day": "Lunes" }, 
             { "id": "tuesday", "day": "Martes" }, 
@@ -201,7 +160,6 @@ export default {
       daysIds: [],
 
       arrayRoomIDs: [],
-      daySelected: null,
 
       arrayComponents: [],
       countIdCompo: -1,
@@ -222,8 +180,10 @@ export default {
 
   methods: {
     ...mapActions(["getHotelsForAdmin", "getRoomsForAdmin", "getRates", "putEditRates"]),
-    ...mapMutations(["setSnackbar", "setTimeoutSnackbar"]),
+    ...mapMutations(["resetArrayItemsCalendar", "setSnackbar", "setTimeoutSnackbar"]),
     searchRoom(idHotel) {
+      //"resetArrayItemsCalendar" es una mutacion que permite reiniciar el arreglo de dates, usado en Calendar.vue
+      this.resetArrayItemsCalendar();
       this.loadingRooms = true;
       this.isFilledArrayComponents = false;
       this.getRoomsForAdmin(idHotel).then(() => {
@@ -250,8 +210,6 @@ export default {
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagPeriodConfig: PeriodConfig,
-        objArrCompo: obj,
-        idRoomCompo: obj.id
       });
     },
     selectAllCheckboxes(event) {
@@ -265,36 +223,18 @@ export default {
     },
     selectBtnCheckbox(event) {
       console.log(event)
-      // this.rates.forEach((itemRates)=>{
-      //   let localDays = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-      //   for (const propertyItemRates in itemRates) {
-      //     if(event.length > 0){
-      //       event.forEach((itemEvent)=>{
-      //         if(localDays.includes(itemEvent)){
-      //           this.copyArrayRates.forEach((itemCopyRates)=>{
-      //             if(itemCopyRates.room_id == itemRates.room_id){
-      //               if(propertyItemRates == itemEvent){
-      //                 itemRates[propertyItemRates] = 777;
-      //               }
-      //             }
-      //           })
-      //         }
-      //       })
-      //     }
-      //   }
-      // })
       this.copyArrayRates = this.rates;
       console.log(this.rates)
       this.allCheckboxesSelected = false;
     },
     btnApplyCheckPriority(){
-      this.loadingButton = true;
-      this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
-      this.setTimeoutSnackbar(3500);
-      this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
-        this.setSnackbar({stateSnackbar: true, messaggeSnackbar: "El registro se guardó con exito", colorSnackbar: "green darken-1"});
-        this.loadingButton = false;
-      });
+      // this.loadingButton = true;
+      // this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
+      // this.setTimeoutSnackbar(3500);
+      // this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
+      //   this.setSnackbar({stateSnackbar: true, messaggeSnackbar: "El registro se guardó con exito", colorSnackbar: "green darken-1"});
+      //   this.loadingButton = false;
+      // });
       console.log(this.rates)
     }
   },
