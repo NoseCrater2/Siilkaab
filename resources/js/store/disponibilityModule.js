@@ -2,8 +2,9 @@ import axios from "axios";
 
 const disponibilityMoule = {
     state: {
-        //"arrayItemsCalendar" guardara los arreglos de objetos de calendario (arrayDatesCalendar)
-        arrayItemsCalendar: [],
+        arrayItemsCalendar: [],//"arrayItemsCalendar" guardara los arreglos de objetos de calendario (arrayDatesCalendar)
+        flagCalendarModified: false,//"calendarModified" funcionara como una bandera para saber si se modifico alguna rate del calendario
+        flagCleanPeriodConfigTextfields: false,//"flagCleanPeriodConfigTextfields" es una bandera que determina si deben de ser limpiadoa los textields de PeriodConfig.vue
         ahotels: [],
         arooms: [],
         rates: [],
@@ -32,6 +33,14 @@ const disponibilityMoule = {
               lengtArrayItems--;
             }
         },
+        //Mutacion que reinicia la variable que es usada para verificar los cambios de rates en calendario
+        mutationFlagCalendarModified(state, payload){
+            state.flagCalendarModified = payload;
+        },
+        //Mutacion que reinicia la variable que es usada para determinar si los textfields de PeriodConfig.vue deben ser limpiados
+        mutationFlagCleanPeriodConfigTextfields(state, payload){
+            state.flagCleanPeriodConfigTextfields = payload;
+        },
         setHotels(state, payload) {
             state.ahotels = payload;
         },
@@ -42,6 +51,13 @@ const disponibilityMoule = {
 
         setRates(state, payload) {
             state.rates = payload;
+        },
+
+        setRatesReinitTable(state, payload){
+            //Array.from(payload)
+            //state.rates = [...payload]
+            //Esto es para clonar el arreglo y en una nueva referencia de memoria
+            state.rates = JSON.parse(JSON.stringify(payload));
         },
 
         putEditRates(state, rates) {

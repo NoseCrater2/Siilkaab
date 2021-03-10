@@ -12,14 +12,22 @@
         <tr class="text-uppercase">
           <th class="headcol empty-col">
             <div class="ml-3">
-              <v-row class="d-flex align-center my-n2">
-                <span class="mr-4">Dia en específico</span><v-sheet color="blue lighten-2" height="11" width="11" class="ml-1"></v-sheet>
+              <v-row class="d-flex justify-end">
+                <span>Dia en específico</span>
+                <div class="d-flex align-center">
+                  <v-sheet color="blue lighten-2" height="11" width="11" class="mx-3"></v-sheet>
+                </div>
               </v-row>
-              <v-row class="d-flex align-center my-n2">
-                <span class="mr-6">Rango de fecha</span><v-sheet color="red darken-1" height="11" width="11" class="ml-1"></v-sheet>
+              <v-row class="d-flex justify-end my-1">
+                <span>Rango de fecha</span>
+                <div class="d-flex align-center">
+                  <v-sheet color="red darken-1" height="11" width="11" class="mx-3"></v-sheet>
+                </div>
               </v-row>
-              <v-row class="d-flex align-center my-n2">
-                <span>Dia(s) de la semana </span><v-sheet color="deep-purple lighten-3" height="11" width="11" class="ml-1"></v-sheet>
+              <v-row class="d-flex justify-end">
+                <div class="d-flex align-center">
+                  <span>Dia(s) de la semana</span><v-sheet color="deep-purple lighten-3" height="11" width="11" class="mx-3"></v-sheet>
+                </div>
               </v-row>
             </div>
           </th>
@@ -41,10 +49,10 @@
         <tr v-for="(objRoom, indexRoom) in rooms" :key="indexRoom">
           <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br></td>
           <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="setCellColor(objRoom, objDate)">
-            <input v-model="objRoom.bed_rooms" class="centerContent"/>
+            <input :value="priorityUnity(objDate, objRoom, indexRoom, index)" class="centerContent"/>
             <div>
-               <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
-              <input :value="priority(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
+              <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
+              <input :value="priorityRate(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
             </div>
           </td>
         </tr>
@@ -232,7 +240,69 @@ export default {
       }
     },
 
-    priority(objDate, objRoom) {
+    priorityUnity(objDate, objRoom) {
+      let globalCheckPriorityHigh = false;
+      let globalCheckPriorityMedium = false;
+      let globalCheckPriorityLow = false;
+      let foundDayAndRange
+      let indexUnity = -1;
+      let isThereAUnity = false;
+
+      let unity = this.rates.map((itemRate, index) => {
+        let countWhile = 0;
+        foundDayAndRange= '';
+
+        
+        if ((itemRate.room_id == objRoom.id)) {
+            while (countWhile < this.rates.length) {
+                if(this.rates[countWhile].room_id == objRoom.id){
+                    if(this.rates[countWhile].day != null){
+                        foundDayAndRange+='day'
+                    }
+                    if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
+                        foundDayAndRange+='AndRange'
+                    }
+                }
+                countWhile++;
+            }
+            if(itemRate.day != null){
+                if (itemRate.day === objDate.dateYYYYMMDD) {
+                    indexUnity = index;
+                    isThereAUnity = true;
+                    globalCheckPriorityHigh = true;
+                    return itemRate.bed_rooms;
+                }
+            }
+            else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
+                //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
+                if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
+                    indexUnity = index;
+                    isThereAUnity = true;
+                    globalCheckPriorityMedium = true;
+                    //pintar el color
+                    return itemRate.bed_rooms;
+                } 
+                else{
+                    return objRoom.quantity;
+                }
+            } 
+            else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
+                indexUnity = index;
+                isThereAUnity = true;
+                globalCheckPriorityLow = true;
+                return itemRate.bed_rooms;
+          }
+        }
+      });
+      if (isThereAUnity == true) {
+        return unity[indexUnity];
+      }
+      else {
+        return objRoom.quantity;
+      }
+    },    
+
+    priorityRate(objDate, objRoom) {
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
       let globalCheckPriorityLow = false;
@@ -407,17 +477,20 @@ th {
 
 .headcol {
   position: sticky;
+  z-index: 1;
   left: 0;
   background-color: white;
   border-right: 1px solid  #dadada;
   /* padding-left: 0.85em;
   padding-right: 0.85em; */
-  white-space: pre;
+  white-space: pre-line;
   text-align: left;
 }
 
 .empty-col {
   border: none;
   background-color: white;
+  white-space: nowrap;
+  text-align: left;
 }
 </style>

@@ -19,19 +19,29 @@
 
           <div v-if="arrayRoomIDs.length > 0 && loadingRooms == false">
             <CalendarFee></CalendarFee>
+            <div v-if="flagCalendarModified" class="d-flex align-center primary--text">
+              <v-icon color="primary" size="25" class="mr-1">mdi-information</v-icon>
+              <div class="mt-1">
+                <span class="caption">Para guardar los cambios realizados, es necesario utilizar el botón <span class="overline font-weight-bold">aplicar</span></span>
+              </div>
+              <v-spacer></v-spacer>
+              <div class="mt-1">
+                <v-btn @click="btnResetTable()" outlined rounded small color="primary">REINICIAR TABLA</v-btn>
+              </div>
+            </div>
           </div>
         </v-col>
       </v-row>
       <v-form v-if="arrayRoomIDs.length > 0 && loadingRooms == false">
         <v-card class="pa-4" outlined tile>
-          <div class="d-flex justify-start mb-2">
+          <div class="d-flex justify-center mb-n3">
             <span class="text-h4 text-uppercase font-weight-bold">Actualizar Periodo</span>
           </div>
-          <v-row align="center">
+          <v-row class="mb-n10" align="center">
             <v-col cols="12" sm="12" md="4" lg="4">
               <span class="text-center font-weight-bold overline">Periodo</span>
             </v-col>
-            <v-col cols="12" sm="12" md="8" lg="8" class="mt-6">
+            <v-col cols="12" sm="12" md="8" lg="8" class="mt-lg-6 mt-md-6">
               <v-dialog
                 ref="dialogRangePeriod"
                 v-model="modalRangePeriod"
@@ -76,11 +86,11 @@
             </v-col>
           </v-row>
           <v-row align="center">
-            <v-col cols="12" sm="12" md="4" lg="4">
+            <v-col cols="12" sm="12" md="4" lg="4" class="mb-sm-n5 mb-xs-n5">
               <span class="text-center font-weight-bold overline">Dias</span>
             </v-col>
             <v-col cols="12" sm="12" md="8" lg="8">
-              <v-row justify="start" class="ml-1 mt-4">
+              <v-row justify="start" class="ml-1">
                 <v-checkbox
                   class="mr-3"
                   v-model="allCheckboxesSelected"
@@ -180,10 +190,12 @@ export default {
 
   methods: {
     ...mapActions(["getHotelsForAdmin", "getRoomsForAdmin", "getRates", "putEditRates"]),
-    ...mapMutations(["resetArrayItemsCalendar", "setSnackbar", "setTimeoutSnackbar"]),
+    ...mapMutations(["resetArrayItemsCalendar", "setSnackbar", "setTimeoutSnackbar", "mutationFlagCalendarModified", "setRatesReinitTable", "mutationReloadDates", "mutationFlagCleanPeriodConfigTextfields"]),
     searchRoom(idHotel) {
       //"resetArrayItemsCalendar" es una mutacion que permite reiniciar el arreglo de dates, usado en Calendar.vue
       this.resetArrayItemsCalendar();
+      this.mutationFlagCalendarModified(false); //Se setea la variable vuex que es la flag de rates en calendario
+      this.mutationFlagCleanPeriodConfigTextfields(false); //Se setea la variable vuex que es la flag que controla la limpieza de textfields en PeriodConfig.vue
       this.loadingRooms = true;
       this.isFilledArrayComponents = false;
       this.getRoomsForAdmin(idHotel).then(() => {
@@ -191,7 +203,8 @@ export default {
           return el.id;
         });
         this.getRates(this.arrayRoomIDs).then(() => {
-          this.copyArrayRates = this.rates;
+          //Se hace una copia ruda con JSON, debido a que se mezclaban referencias en memoria
+          this.copyArrayRates = JSON.parse(JSON.stringify(this.rates));
           this.loadingRooms = false;
         });
       });
@@ -213,7 +226,6 @@ export default {
       });
     },
     selectAllCheckboxes(event) {
-      console.log(event)
       this.daysIds = [];
       if (this.allCheckboxesSelected) {
         for (let day in this.arrayDays) {
@@ -222,10 +234,20 @@ export default {
       }
     },
     selectBtnCheckbox(event) {
-      console.log(event)
-      this.copyArrayRates = this.rates;
-      console.log(this.rates)
+      if(event.length == 7){
+        this.allCheckboxesSelected = true;
+      }
+      else{
+        this.allCheckboxesSelected = false;
+      }
+    },
+    btnResetTable(){
       this.allCheckboxesSelected = false;
+      this.mutationFlagCleanPeriodConfigTextfields(true);
+      this.daysIds = [];
+      this.setRatesReinitTable(this.copyArrayRates); //Reseteamos los rates de la tabla
+      this.mutationReloadDates();
+      this.mutationFlagCalendarModified(false);
     },
     btnApplyCheckPriority(){
       // this.loadingButton = true;
@@ -251,6 +273,7 @@ export default {
       rates: (state) => state.disponibilityMoule.rates,
       snackbar: (state) => state.disponibilityMoule.snackbar,
       timeoutSnackbar: (state) => state.disponibilityMoule.timeoutSnackbar,
+      flagCalendarModified: (state) => state.disponibilityMoule.flagCalendarModified,
     }),
     computedArrayComponents() {
       return this.arrayComponents;
