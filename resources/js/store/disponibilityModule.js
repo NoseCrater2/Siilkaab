@@ -134,6 +134,7 @@ const disponibilityMoule = {
                 return el;
             });
             let newRates = [];
+            let deleteOldRates = [];
             let oldRates = newArrayPutRates.arrayRates.filter((el)=>{
                 if(el.id != "NEWDAYS"){
                     return el;

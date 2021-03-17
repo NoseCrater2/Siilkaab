@@ -37,6 +37,12 @@
 
 <script>
 import { mapActions, mapMutations, mapState } from "vuex";
+
+import Moment from "moment"; //Importamos moment.js
+import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
+const moment = extendMoment(Moment); //Extendemos moment.js con los rangos
+moment.locale("es"); //Cambiamos el lenguaje de moment
+
 export default {
     name: 'PeriodConfig',
     data(){
@@ -98,7 +104,7 @@ export default {
         if(this.rooms[this.indexCompo].id == modelRoomID){
           //Este delete elimina el color de las celdas de la habitacion (las resetea debido a que el calendario se actualiza en tiempo real insertando los colores)
           delete this.rooms[this.indexCompo].cellColor;
-          let flagIsThereARate = false;
+          let flagIsThereARateLow = false;
           let arrayFilteredDays = this.localArrayDays.filter((el)=>{
             if(!this.arrayDaysSelected.includes(el)){
               return el;
@@ -108,7 +114,7 @@ export default {
           this.rates.map(rateItem => {
             if(rateItem.room_id == this.rooms[this.indexCompo].id || rateItem.id == "NEW"){
               if((rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0)){
-                flagIsThereARate = true;
+                flagIsThereARateLow = true;
                 if(this.arrayDaysSelected.length > 0){
                   //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
                   this.mutationFlagCalendarModified(true);
@@ -150,7 +156,7 @@ export default {
               return rateItem;
             }
           });
-          if(flagIsThereARate == false){
+          if(flagIsThereARateLow == false){
             if(this.arrayDaysSelected.length > 0){
               let countDay = 0;
               let obj = {
@@ -322,12 +328,22 @@ export default {
             }
           }
         }
+        else if(this.rateModel == null){
+          if(this.rooms.length -1 == this.indexCompo){
+            this.mutationFlagCleanPeriodConfigTextfields(false);
+          }
+        }
+      },
+      arrayRangePeriod(nuevoValor, valorAnterior){
+        
       }
     },
     props: {
       idCompo: Number,
       indexCompo: Number,
-      arrayRangePeriod: Array,
+      arrayRangePeriod: {
+        type: [ String, Array ]
+      },
       arrayDaysSelected: Array
     }
 }

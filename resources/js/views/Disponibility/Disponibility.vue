@@ -36,6 +36,7 @@
         <v-card class="pa-4" outlined tile>
           <div class="d-flex justify-center mb-n3">
             <span class="text-h4 text-uppercase font-weight-bold">Actualizar Periodo</span>
+            {{rangePeriodTimeModel}}
           </div>
           <v-row class="mb-n10" align="center">
             <v-col cols="12" sm="12" md="4" lg="4">
@@ -44,10 +45,11 @@
             <v-col cols="12" sm="12" md="8" lg="8" class="mt-lg-6 mt-md-6">
               <v-dialog
                 ref="dialogRangePeriod"
+                @input="setClicks"
                 v-model="modalRangePeriod"
-                :return-value.sync="rangePeriodTimeModel"
+                :return-value.sync="computedRangePeriodTime"
                 persistent
-                width="290px"
+                width="42%"
               >
                 <template v-slot:activator="{ on, attrs }">
                   <v-text-field
@@ -62,26 +64,40 @@
                   ></v-text-field>
                 </template>
                 <v-date-picker
-                  v-model="rangePeriodTimeModel"
-                  range
+                  v-model="computedRangePeriodTime"
+                  :min="currentDate"
+                  :color="setColorCalendarDialog()"
+                  @change="dateRestricted"
+                  header-color="primary"
+                  :title-date-format="titleDateFormat"
+                  @dblclick:date="fnDblClickDate"
+                  @click:date="fnClickDate"
+                  :range="flagRangeDate"
+                  landscape
                   scrollable
                 >
-                  <v-spacer></v-spacer>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="modalRangePeriod = false"
-                  >
-                    Cancelar
-                  </v-btn>
-                  <v-btn
-                    text
-                    color="primary"
-                    @click="$refs.dialogRangePeriod.save(rangePeriodTimeSaveState)"
-                  >
-                    Aceptar
-                  </v-btn>
+                <div class="mt-n3">
+                  <span class="caption blue--text">* Para seleccionar una sola fecha, seleccionar cualquier fecha con un clic</span><br>
+                  <span class="caption red--text">* Para seleccionar rango de fecha, doble clic a fecha de inicio y un clic a fecha final</span>
+                </div>
                 </v-date-picker>
+                 <div class="d-flex mt-n1 py-1 justify-end white">
+                    <v-btn
+                      text
+                      color="primary"
+                      @click="modalRangePeriod = false"
+                    >
+                      Cancelar
+                    </v-btn>
+                    <v-btn
+                      text
+                      :disabled="fnBtnAceptar()"
+                      color="primary"
+                      @click="$refs.dialogRangePeriod.save(computedRangePeriodTime)"
+                    >
+                      Aceptar
+                    </v-btn>
+                 </div>
               </v-dialog>
             </v-col>
           </v-row>
@@ -152,6 +168,11 @@ import { mapActions, mapMutations, mapState } from "vuex";
 import CalendarFee from "../../components/CalendarFee/CalendarFee";
 import PeriodConfig from "../../components/Disponibility/PeriodConfig"
 
+import Moment from "moment"; //Importamos moment.js
+import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
+const moment = extendMoment(Moment); //Extendemos moment.js con los rangos
+moment.locale("es"); //Cambiamos el lenguaje de moment
+
 export default {
   data() {
     return {
@@ -176,11 +197,14 @@ export default {
       isFilledArrayComponents: false,
 
       modalRangePeriod: false,
-      rangePeriodTimeModel: [],
+      rangePeriodTimeModel: "",
       loadingButton: false,
 
       copyArrayRates: [],
+      flagRangeDate: false,
+      countClicks: 0,
 
+      currentDate: moment().format("YYYY-MM-DD")//Esta variable se encarga de fijar la seleccion del calendario desde el dia actual
     };
   },
 
@@ -213,12 +237,12 @@ export default {
       this.arrayComponents = [];
       let countWhile = 0;
       while (countWhile < this.rooms.length) {
-        this.addCompo(this.rooms[countWhile]);
+        this.addCompo();
         countWhile++;
       }
       this.isFilledArrayComponents = true;
     },
-    addCompo(obj) {
+    addCompo() {
       this.countIdCompo++;
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
@@ -249,6 +273,97 @@ export default {
       this.mutationReloadDates();
       this.mutationFlagCalendarModified(false);
     },
+    setColorCalendarDialog(){
+      if(this.flagRangeDate == true){
+        return "red darken-1"
+      }
+      else if(this.flagRangeDate == false){
+        return "blue lighten-2"
+      }
+      
+    },
+    titleDateFormat(){
+      if(typeof(this.rangePeriodTimeModel) == 'object'){
+        if(this.rangePeriodTimeModel.length == 0){
+          return "-"
+        }
+        else{
+          if(this.rangePeriodTimeModel.length >= 2){
+            let day1 = moment(this.rangePeriodTimeModel[0]);
+            let day2 = moment(this.rangePeriodTimeModel[1]);
+            return `Desde el ${day1.format("ddd DD MMMM")}<br>hasta el ${day2.format("ddd DD MMMM")}`
+          }
+          else{
+            let day = moment(this.rangePeriodTimeModel[0]);
+            return day.format("ddd DD MMMM");
+          }
+        }
+      }
+      else if(typeof(this.rangePeriodTimeModel) == 'string'){
+        if(this.rangePeriodTimeModel.length == ""){
+          return "-"
+        }
+        else{
+          let day = moment(this.rangePeriodTimeModel);
+          return day.format("ddd DD MMMM");
+        }
+      }
+
+    },
+    fnDblClickDate(){
+      if(typeof(this.rangePeriodTimeModel) == 'string'){
+        this.countClicks = 0;
+        this.flagRangeDate = true;
+        this.rangePeriodTimeModel = new Array(this.rangePeriodTimeModel)
+      }
+    },
+    fnClickDate(){
+      if(typeof(this.rangePeriodTimeModel) == 'object'){
+        if(this.countClicks == 1){
+          this.countClicks = 0;
+          this.flagRangeDate = false;
+          this.rangePeriodTimeModel = this.rangePeriodTimeModel[0];
+        }
+        else{
+          if(this.rangePeriodTimeModel.length == 2){
+            this.countClicks++;
+          }
+        }
+      }
+    },
+    //@change="dateRestricted" si se deja sin los parentesis, el metodo recibe el vmodel de "this.rangePeriodTimeModel"
+    //Este metodo valida que si se introducen rangos, la segunda fecha sea mayor a la primera fecha
+    dateRestricted(dateDatePicker){
+      if(dateDatePicker.length == 2){
+        if(moment(dateDatePicker[1]).isSameOrBefore(moment(dateDatePicker[0]))){
+          this.rangePeriodTimeModel.pop(); //pop elimina el ultimo elemento del arreglo
+        }
+      }
+    },
+    // //Metodo que setea el "this.countClicks" al momento que se abre el cuadro de dialogo
+    setClicks(event){
+      if(event == true){
+        if(typeof(this.rangePeriodTimeModel) == 'object'){
+          if(this.rangePeriodTimeModel.length == 2){
+            this.countClicks = 1;
+          }
+        }
+      }
+    },
+    //Funcion que activa o desactiva el boton "Aceptar" del cuadro de dialogo del calendario
+    fnBtnAceptar(){
+      if(typeof(this.rangePeriodTimeModel) == 'object'){
+        if(this.rangePeriodTimeModel.length == 2){
+          return false;
+        }
+        else{
+          return true;
+        }
+      }
+      else if(typeof(this.rangePeriodTimeModel) == 'string'){
+        return false;
+      }
+    },
     btnApplyCheckPriority(){
       // this.loadingButton = true;
       // this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
@@ -278,11 +393,29 @@ export default {
     computedArrayComponents() {
       return this.arrayComponents;
     },
-    rangePeriodTimeSaveState() {
-      return this.rangePeriodTimeModel;
-    },
     computedRangePeriodText(){
-      return this.rangePeriodTimeModel.join(' - ')
+      if(typeof(this.rangePeriodTimeModel) == 'object'){
+        this.flagRangeDate = true
+        return this.rangePeriodTimeModel.join(' - ')
+      }
+      else if(typeof(this.rangePeriodTimeModel) == 'string'){
+        this.flagRangeDate = false
+        return this.rangePeriodTimeModel
+      }
+    },
+    computedRangePeriodTime:{
+      get(){
+        if(this.flagRangeDate == false){
+          return this.rangePeriodTimeModel.toString()
+        }
+        else if(this.flagRangeDate == true){
+          return this.rangePeriodTimeModel
+        }
+      },
+      set(model){
+        this.rangePeriodTimeModel = model;
+        return this.rangePeriodTimeModel;
+      }
     }
   },
 };
