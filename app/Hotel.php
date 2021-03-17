@@ -98,4 +98,9 @@ class Hotel extends Model
         return $this->belongsTo(HotelCredentials::class,'credentials_id');
     }
 
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
 }

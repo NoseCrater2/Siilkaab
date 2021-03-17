@@ -22,6 +22,7 @@ class PayPalService{
         $this->baseUri = config('services.paypal.base_uri');
         $this->clientId = config('services.paypal.client_id');
         $this->clientSecret = config('services.paypal.client_secret');
+
     }
    
     public function resolveAuthorization(&$queryParams, &$formParams, &$headers)
@@ -44,6 +45,8 @@ class PayPalService{
         // $credentials = base64_encode("{$this->clientId}:{$this->clientSecret}");
         // return "Basic {$credentials}";
         $client = new Client();
+        
+       
        $res = $client->request('POST','https://api.sandbox.paypal.com/v1/oauth2/token',
             [
             "auth"=> [$this->clientId,$this->clientSecret],
@@ -52,7 +55,10 @@ class PayPalService{
                 "Accept-Language"=> "en_US",
             ],
             
-            "body" => "grant_type=client_credentials"]
+            "body" => "grant_type=client_credentials",
+            "verify" => base_path("cacert.pem"),
+            ]
+            
         ); 
 
         $response =  $res->getBody()->getContents();

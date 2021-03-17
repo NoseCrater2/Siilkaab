@@ -44,6 +44,7 @@ class RoomAvailabilityController extends Controller
             }else{
 
                 $omittedIds = [];
+                $index = 0;
                 $disponibilities = new Collection();
                 
                foreach ($data['rooms'] as $key => $room) {
@@ -57,8 +58,8 @@ class RoomAvailabilityController extends Controller
                 );
                 
                 if( isset($result[0])){
-                   
-                    if(isset($disponibilities[$result[0]->id])){
+                   $index++;
+                    if($disponibilities->has($result[0]->id)){
                         $disponibilities[$result[0]->id] = $disponibilities[$result[0]->id] - 1 ;
                     }else{
                         $disponibilities->put($result[0]->id, $result[0]->quantity);
@@ -66,13 +67,15 @@ class RoomAvailabilityController extends Controller
                     }
                     if($disponibilities->search(0))
                     array_push($omittedIds, $disponibilities->search(0));
+                    $disponibilities->forget($disponibilities->search(0));
+
                    
-                    $results->put($key, $result);
+                    $results->put($index, $result);
                 }
 
                }
 
-            //    dd($omittedIds);
+
 
             };
             return  response($results,200);
