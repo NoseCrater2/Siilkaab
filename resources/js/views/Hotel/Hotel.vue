@@ -143,8 +143,9 @@ export default {
             if (this.hotel.idAmenity !== null) {
               this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
               // this.getPools(this.hotel.id).then(() => {});
-              // this.getRestaurants(this.hotel.id).then(() => {});
-              // this.getSchedules(this.hotel.id).then(() => {});
+              this.getRestaurants(this.hotel.id).then(() => {
+                this.getSchedules(this.hotel.id).then(() => {});
+              });
             }
           });
         }

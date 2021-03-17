@@ -61,8 +61,8 @@ const HotelModule = {
             hotel_id: null
         },
         regimes: [],
-        restaurants: null,
-        schedules: null,
+        restaurants: [],
+        schedules: [],
         pools: null,
         aditionalInfo: {
             spa: null,
@@ -137,12 +137,17 @@ const HotelModule = {
         statusConditions: 0,
         errorsRegimes: [],
         statusRegimes: 0,
+        errorsAditionalInfo: [],
+        statusAditionalInfo: 0,
+        errorsRestaurants: [],
+        statusRestaurants: 0,
+        errorsSchedules: [],
+        statusSchedules: 0
     },
     getters: {
         getAssignHotels(state) {
             return state.assignHotels;
         },
-
         getArrayErrors(state){
             return [
                 state.statusInformation,
@@ -214,8 +219,8 @@ const HotelModule = {
                     hotel_id: null
                 }),
                 (state.regimes = []),
-                (state.restaurants = null),
-                (state.schedules = null),
+                (state.restaurants = []),
+                (state.schedules = []),
                 (state.pools = null),
                 (state.aditionalInfo = {
                     spa: null,
@@ -290,7 +295,13 @@ const HotelModule = {
             (state.errorsConditions = []),
             (state.statusConditions = 0),
             (state.errorsRegimes = []),
-            (state.statusRegimes = 0)
+            (state.statusRegimes = 0),
+            (state.errorsAditionalInfo = []),
+            (state.statusAditionalInfo = 0),
+            (state.errorsRestaurants = []),
+            (state.statusRestaurants = 0),
+            (state.errorsSchedules = []),
+            (state.statusSchedules = 0)
         },
         //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
         setSnackbar(state, flag){
@@ -325,6 +336,15 @@ const HotelModule = {
         setErrorsRegimes(state,errors){
             state.errorsRegimes = errors
         },
+        setErrorsAditionalInfo(state,errors){
+            state.errorsAditionalInfo = errors
+        },
+        setErrorsRestaurants(state,errors){
+            state.errorsRestaurants = errors
+        },
+        setErrorsSchedules(state,errors){
+            state.errorsSchedules = errors
+        },
         //Mutacion para el estatus
         setStatusInformation(state, status){
             state.statusInformation = status
@@ -340,6 +360,15 @@ const HotelModule = {
         },
         setStatusRegimes(state, status){
             state.statusRegimes = status
+        },
+        setStatusAditionalInfo(state, status){
+            state.statusAditionalInfo = status
+        },
+        setStatusRestaurants(state, status){
+            state.statusRestaurants = status
+        },
+        setStatusRestaurants(state, status){
+            state.statusSchedules = status
         },
         //Mutacion que setea el state.regimes para asignar nuevo arreglo
         setArrayRegimes(state, payload) {
@@ -392,12 +421,22 @@ const HotelModule = {
         setRegimes(state, payload) {
             state.regimes = payload;
         },
+
         setRestaurants(state, payload) {
             state.restaurants = payload;
         },
 
         setSchedules(state, payload) {
             state.schedules = payload;
+        },
+        //Para borrar los horarios de los restaurantes
+        deleteSchedules(state, deletedSchedules) {
+            deletedHotel.forEach(currentHotel => {
+                let h = state.allhotels.find(
+                    allhotel => allhotel.id === currentHotel
+                );
+                state.allhotels.splice(state.allhotels.indexOf(h), 1);
+            });
         },
 
         setPools(state, payload) {
@@ -955,8 +994,10 @@ const HotelModule = {
                             itemRegime.hotel_id = objRegimes.currentHotelId;
                             //El endopoint solo acepta HH:MM, por lo tanto se cambia
                             //de HH:MM:SS a HH:MM
-                            if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                            if(itemRegime.start_period.length > 16){
                                 itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                            }
+                            if(itemRegime.final_period.length > 16){
                                 itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                             }
                             return itemRegime;
@@ -976,8 +1017,10 @@ const HotelModule = {
                         //Para que sea aceptada por el endpoint (HH:MM)
                         if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                             if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                if(itemRegime.start_period.length > 16){
                                     itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                }
+                                if(itemRegime.final_period.length > 16){
                                     itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                 }
                             }
@@ -1028,8 +1071,10 @@ const HotelModule = {
                                 itemRegime.hotel_id = objRegimes.currentHotelId;
                                 //El endopoint solo acepta HH:MM, por lo tanto se cambia
                                 //de HH:MM:SS a HH:MM
-                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                if(itemRegime.start_period.length > 16){
                                     itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                }
+                                if(itemRegime.final_period.length > 16){
                                     itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                 }
                                 return itemRegime;
@@ -1049,8 +1094,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 }
@@ -1070,8 +1117,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 }
@@ -1080,6 +1129,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
+                        console.log("newArrayPutRegimes", newArrayPutRegimes)
                         dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
                 }
@@ -1120,8 +1170,10 @@ const HotelModule = {
                                 itemRegime.hotel_id = objRegimes.currentHotelId;
                                 //El endopoint solo acepta HH:MM, por lo tanto se cambia
                                 //de HH:MM:SS a HH:MM
-                                if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                if(itemRegime.start_period.length > 16){
                                     itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                }
+                                if(itemRegime.final_period.length > 16){
                                     itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                 }
                                 return itemRegime;
@@ -1141,8 +1193,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 } 
@@ -1162,8 +1216,10 @@ const HotelModule = {
                             //Para que sea aceptada por el endpoint (HH:MM)
                             if(typeof(itemRegime.start_period) != 'undefined' && typeof(itemRegime.final_period) != 'undefined'){
                                 if(itemRegime.start_period !== null && itemRegime.final_period !== null){
-                                    if(itemRegime.start_period.length > 16 && itemRegime.final_period.length > 16){
+                                    if(itemRegime.start_period.length > 16){
                                         itemRegime.start_period = itemRegime.start_period.slice(0,-3)
+                                    }
+                                    if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
                                 }
@@ -1192,8 +1248,8 @@ const HotelModule = {
 
                 commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsAditionalInfo", error.response.data);
+                commit("setStatusAditionalInfo", error.response.status);
             }
         },
 
@@ -1210,48 +1266,71 @@ const HotelModule = {
                 );
                 commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsAditionalInfo", error.response.data);
+                commit("setStatusAditionalInfo", error.response.status);
             }
         },
 
-        putEditRestaurants: async function({ commit }, newRestaurants) {
-            //console.log(newRestaurants)
+        putEditRestaurants: async function({ commit, dispatch }, objRestaurantsSchedules) {
             try {
-                //Eliminamos las propiedades que no es necesario agregar en la peticion AXIOS
-                //Eliminamos el nombre del hotel
-                //delete newAditionalInfo.hotel;
-                //Eliminamos el id del hotel
-                //delete newAditionalInfo.hotel_id;
-                //const requestEditAditionalInfo = await axios.put(
-                //    `/api/amenities/${newAditionalInfo.id}`,
-                //    newAditionalInfo
-                //);
-                //commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
-                // commit('setStatus',request.status);
+                let postRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=> {
+                    if(itemRestaurant.id == 'NEW'){
+                        return itemRestaurant;
+                    }
+                });
+
+                let putRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=> {
+                    if(itemRestaurant.id != 'NEW'){
+                        return itemRestaurant;
+                    }
+                });
+                if(postRestaurants.length > 0){
+                    let arrayAddRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=>{
+                        if(typeof(itemRestaurant.deletedRestaurant) == 'undefined'){
+                            return itemRestaurant;
+                        }
+                    })   
+                    let arrayDeletedRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=>{
+                        if(typeof(itemRestaurant.deletedRestaurant) != 'undefined'){
+                            if(itemRestaurant.deletedRestaurant == 'DELETED'){
+                                return itemRestaurant;
+                            }
+                        }
+                    })
+                    dispatch("postAddRestaurantsAXIOS", {addProp: arrayAddRestaurants, deleteProp: arrayDeletedRestaurants});
+                }
+                if(putRestaurants.length > 0){
+                    
+                }
+
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                commit("setErrorsRestaurants", error.response.data);
+                commit("setStatusRestaurants", error.response.status);
             }
         },
 
-        putEditSchedules: async function({ commit }, newSchedules) {
-            //console.log(newSchedules)
-            try {
-                //Eliminamos las propiedades que no es necesario agregar en la peticion AXIOS
-                //Eliminamos el nombre del hotel
-                //delete newAditionalInfo.hotel;
-                //Eliminamos el id del hotel
-                //delete newAditionalInfo.hotel_id;
-                //const requestEditAditionalInfo = await axios.put(
-                //    `/api/amenities/${newAditionalInfo.id}`,
-                //    newAditionalInfo
-                //);
-                //commit("putEditAditionalInfo", requestEditAditionalInfo.data.data);
-                // commit('setStatus',request.status);
-            } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+        postAddRestaurantsAXIOS: async function({ commit }, newObjPropsRestaurant) {
+            let arrayRequestAddItemRestaurant = [];
+            let arrayErrors = []
+            let status;
+            let forRestaurants = newObjPropsRestaurant.addProp;
+            // for (const itemRestaurant of forRestaurants) {
+            //     try {
+            //         const requestAddItemRestaurant = await axios.post(`/api/restaurants`, itemRestaurant);
+            //         let trasformedRequest = requestAddItemRestaurant.data.data;
+            //         trasformedRequest.idCompoRestaurant = itemRestaurant.idCompoRestaurant;
+            //         arrayRequestAddItemRestaurant.push(trasformedRequest);
+            //     } catch (error) {
+            //         status = error.response.status;
+            //         arrayErrors.push({error: error.response.data, componentID: itemRestaurant.componentID})
+            //     }
+            // }
+            if(arrayErrors == 0){
+                //commit("postAddRestaurants", arrayRequestAddItemRestaurant);
+            }
+            else{
+                //commit("setErrorsRestaurants", arrayErrors);
+                //commit("setStatusRestaurants", status);
             }
         },
 

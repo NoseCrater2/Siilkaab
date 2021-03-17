@@ -2,12 +2,45 @@ import axios from "axios";
 
 const disponibilityMoule = {
     state: {
+        arrayItemsCalendar: [],//"arrayItemsCalendar" guardara los arreglos de objetos de calendario (arrayDatesCalendar)
+        flagCalendarModified: false,//"calendarModified" funcionara como una bandera para saber si se modifico alguna rate del calendario
+        flagCleanPeriodConfigTextfields: false,//"flagCleanPeriodConfigTextfields" es una bandera que determina si deben de ser limpiadoa los textields de PeriodConfig.vue
         ahotels: [],
         arooms: [],
-        rates: []
+        rates: [],
+        snackbar: {
+            stateSnackbar: false,
+            messaggeSnackbar: "",
+            colorSnackbar: ""
+        },
+        timeoutSnackbar: 3500,
     },
     getters: {},
     mutations: {
+        //Mutacion que resetea el arreglo de fechas. Este es llamado desde Disponibility.vue
+        resetArrayItemsCalendar(state) {
+            state.arrayItemsCalendar = [];
+        },
+        //Mutacion que recarga en tiempo real las fechas (los colores) en Calendar.vue
+        mutationReloadDates(state){
+            let lengtArrayItems = state.arrayItemsCalendar.length - 1;
+            while (lengtArrayItems >= 0) {
+                state.arrayItemsCalendar[lengtArrayItems].forEach(itemArray => {
+                if(itemArray.idRoom.length > 0){
+                    itemArray.idRoom = [];
+                }
+              });
+              lengtArrayItems--;
+            }
+        },
+        //Mutacion que reinicia la variable que es usada para verificar los cambios de rates en calendario
+        mutationFlagCalendarModified(state, payload){
+            state.flagCalendarModified = payload;
+        },
+        //Mutacion que reinicia la variable que es usada para determinar si los textfields de PeriodConfig.vue deben ser limpiados
+        mutationFlagCleanPeriodConfigTextfields(state, payload){
+            state.flagCleanPeriodConfigTextfields = payload;
+        },
         setHotels(state, payload) {
             state.ahotels = payload;
         },
@@ -20,10 +53,24 @@ const disponibilityMoule = {
             state.rates = payload;
         },
 
+        setRatesReinitTable(state, payload){
+            //Array.from(payload)
+            //state.rates = [...payload]
+            //Esto es para clonar el arreglo y en una nueva referencia de memoria
+            state.rates = JSON.parse(JSON.stringify(payload));
+        },
+
         putEditRates(state, rates) {
             state.rates = rates;
         },
-
+        //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
+        setSnackbar(state, flag){
+            state.snackbar = flag;
+        },
+        //Metodo que cambia de estado la variable que controla el tiempo de un snackbar (mensaje)
+        setTimeoutSnackbar(state, time){
+            state.timeoutSnackbar = time;
+        },
         // postAddRates(state, rates) {
         //     state.rates = rates;
         // },
@@ -87,6 +134,7 @@ const disponibilityMoule = {
                 return el;
             });
             let newRates = [];
+            let deleteOldRates = [];
             let oldRates = newArrayPutRates.arrayRates.filter((el)=>{
                 if(el.id != "NEWDAYS"){
                     return el;

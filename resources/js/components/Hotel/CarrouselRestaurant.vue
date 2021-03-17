@@ -16,6 +16,7 @@
           v-for="(component) in arrayComponents"
           :idCompo="component.idCompo"
           :idRestaurant="component.objArrCompo.id"
+          :idCompoRestaurant="component.objArrCompo.idCompoRestaurant"
           :restauranNumber="component.restauranNumber"
           :objArrCompo="component.objArrCompo"
           :key="component.idCompo"
@@ -42,14 +43,16 @@ import DynamicRestaurant from "./DynamicRestaurant";
 import { mapState, mapMutations } from "vuex";
 export default {
   name: "CarrouselRestaurant",
-  updated(){
-    //console.log(this.restaurants[this.countLastElementCarrousel])
-    
-  },
   created() {
     let count = 0;
-    while (count <= this.restaurants.length - 1) {
-      this.addCompo(this.restaurants[count]);
+    //La variable "filteredDeletedRestaurants" es util para poner unicamente los restaurantes que no fueron eliminados
+    let filteredDeletedRestaurants = this.restaurants.filter(itemRestaurant=>{
+      if(typeof(itemRestaurant.deletedRestaurant) == 'undefined'){
+        return itemRestaurant;
+      }
+    });
+    while (count < filteredDeletedRestaurants.length) {
+      this.addCompo(filteredDeletedRestaurants[count]);
       count++;
     }
   },
@@ -76,14 +79,14 @@ export default {
       this.countLastElementCarrousel = this.arrayComponents.length;
       this.countIdCompo++;
       this.activeRestaurants++;
-      //Declaramos la variable "putId" para insertarla como ID del nuevo restaurant
-      let putId = (this.countIdCompo + 1)
+      let putId = this.countIdCompo + "" + "NEW"; //ID que se seteara al crear los horarios
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagDRestaurant: DynamicRestaurant,
         restauranNumber: this.countLastElementCarrousel,
         objArrCompo: {
-          id: putId, //Se pone "putId" que tiene el valor de "this.countIdCompo" para identificarlo en el PUT
+          id: "NEW",
+          idCompoRestaurant: putId,
           name: null,
           menu_type: null,
           schedules: [],
@@ -116,31 +119,45 @@ export default {
       //Variable del v-model carrousel la decrementamos
       this.countLastElementCarrousel--;
       this.activeRestaurants--;
-      let idCompoMap = this.arrayComponents
-        .map((element) => element.idCompo)
-        .indexOf(idCompoParam);
+      let idCompoMap = this.arrayComponents.map((element) => element.idCompo).indexOf(idCompoParam);
+      
+      //localRestaurant se utiliza para obtener una copia del restaurante que se esta eliminando
+      let localRestaurant = this.arrayComponents[idCompoMap].objArrCompo;
+      
+      this.schedules.forEach(itemSchedule => {
+        if(localRestaurant.id == 'NEW'){
+          if(localRestaurant.idCompoRestaurant == itemSchedule.idRestaurant){
+            if(itemSchedule.restaurantSchedules.length > 0){
+              itemSchedule.deletedRestaurant = 'DELETED'
+            }
+          }
+        }
+        else{
+          if(localRestaurant.id == itemSchedule.idRestaurant){
+            if(itemSchedule.restaurantSchedules.length > 0){
+              itemSchedule.deletedRestaurant = 'DELETED'
+            }
+          }
+        }
+      });
 
-      //En una nueva variable llamada "mapIDRestaurant" guardamos el id del restaurant
-      //Obtenido gracias al indice actual eliminado (idCompoParam) utilizado en "this.arrayComponents"
-      //Para eliminar los horarios del restaurant (ubicados en el state "schedules")
-      let mapIDRestaurant = this.arrayComponents[idCompoMap].objArrCompo.id;
+      //La variable de estado "restaurants" se modificara si los ids de "localRestaurant" coinciden con
+      //los de la variable de estado
+      this.restaurants.forEach(itemRestaurant => {
+        if(itemRestaurant.id == 'NEW'){
+          if(itemRestaurant.componentID == localRestaurant.componentID){
+            itemRestaurant.deletedRestaurant = "DELETED"
+          }
+        }
+        else{
+          if(itemRestaurant.id == localRestaurant.id){
+            itemRestaurant.deletedRestaurant = "DELETED"
+          }
+        }
+      });
 
-      //En la variable "deleteSchedule" guardamos el solo aquellos horarios donde su ID de restaurant sea diferente
-      //Del ID de restaurant que se esta eliminando
-      let deleteSchedule = this.schedules.filter(deleteScheduleItem=> deleteScheduleItem.idRestaurant !== mapIDRestaurant)
-
-      //Mandamos el nuevo arreglo para setear en el state "schedules"
-      this.setArraySchedules(deleteSchedule);
-    
       //Del arrayComponents quitamos el restaurante que se esta eliminando
       this.arrayComponents.splice(idCompoMap, 1);
-
-      //Seteamos "this.arrayComponents" en una nueva variable
-      //Para unicamente sacar su propiedad "objArrCompo"
-      let mapArrayComponents = this.arrayComponents.map(element =>{
-        return element.objArrCompo;
-      })
-      
 
       //Seteamos tambien en "this.arrayComponentes" el "restauranNumber"
       //Que es el que indica que numero de restaurante estamos visualizando
@@ -149,9 +166,7 @@ export default {
         element.restauranNumber = fixRestauranNumber++;
         return element;
       })
-      //Mandamos la array var "mapArrayComponents" que se seteara en la variable state "restaurants"
-      this.setArrayRestaurants(mapArrayComponents);
-      
+      this.setArrayRestaurants(this.restaurants);
     },
   },
   components: {

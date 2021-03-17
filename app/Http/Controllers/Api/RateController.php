@@ -54,7 +54,7 @@ class RateController extends Controller
                   
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
             $rate =  Rate::create($data);
             return new RateIndexResource(Rate::findOrFail($rate->id));
