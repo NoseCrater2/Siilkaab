@@ -52,10 +52,13 @@
               :error-messages="errorsConfiguration.payment_type"
               class="ml-auto mt-5"
               :items="paymentTypeItems"
-              v-model="computedDdwnPaymentType"
+              v-model="configuration.payment_type"
+              multiple
+              @change="printChanges"
               prepend-inner-icon="mdi-cash"
               :menu-props="{ bottom: true, offsetY: true }"
               outlined
+              
             ></v-select>
           </v-card>
         </v-col>
@@ -117,7 +120,7 @@ export default {
   name: "Configuration",
   data() {
     return {
-      paymentTypeItems: ["Una noche", "Todas las noches"],
+      paymentTypeItems: ['Una noche', 'Mitad de reserva', 'Reserva completa'],
       ddwnPaymentTypeModel: null,
       selectPaymentsPlaceModel: [],
       currencyIdModel: null,
@@ -141,11 +144,11 @@ export default {
     }
     else{
       this.fillModel();
-      console.log(this.configuration);
       //console.log(this.configuration)
       //this.configuration.currency_id = 0;
     }
   },
+
   computed: {
     ...mapState({
       hotel: (state) => state.HotelModule.hotel,
@@ -205,21 +208,7 @@ export default {
         return this.notificationCardModel;
       },
     },
-    computedDdwnPaymentType: {
-      get() {
-        return this.ddwnPaymentTypeModel;
-      },
-      set(model) {
-        this.ddwnPaymentTypeModel = model;
-        if (this.ddwnPaymentTypeModel == "Una noche") {
-          this.configuration.payment_type = "one";
-        }
-        if (this.ddwnPaymentTypeModel == "Todas las noches") {
-          this.configuration.payment_type = "all";
-        }
-        return this.ddwnPaymentTypeModel;
-      },
-    },
+   
     computedSelectPaymentsPlace: {
       get() {
         return this.selectPaymentsPlaceModel;
@@ -236,6 +225,9 @@ export default {
     },
   },
   methods: {
+    printChanges(){
+      console.log(this.ddwnPaymentTypeModel)
+    },
     ...mapActions(["getCurrencies", "getTimezones"]),
     //Metodo para llenar la vista con los datos
     fillModel(){
@@ -274,18 +266,18 @@ export default {
         this.configuration.notification_card = "";
         this.notificationCardModel = this.configuration.notification_card
       }
-      if (this.configuration.payment_type != null) {
-        if (this.configuration.payment_type == "one") {
-          this.ddwnPaymentTypeModel = "Una noche";
-        }
-        if (this.configuration.payment_type == "all") {
-          this.ddwnPaymentTypeModel = "Todas las noches";
-        }
-      }
-      else{
-        this.configuration.payment_type = "one";
-        this.ddwnPaymentTypeModel = "Una noche";
-      }
+      // if (this.configuration.payment_type != null) {
+      //   if (this.configuration.payment_type == "one") {
+      //     this.ddwnPaymentTypeModel = "Una noche";
+      //   }
+      //   if (this.configuration.payment_type == "all") {
+      //     this.ddwnPaymentTypeModel = "Todas las noches";
+      //   }
+      // }
+      // else{
+      //   this.configuration.payment_type = "one";
+      //   this.ddwnPaymentTypeModel = "Una noche";
+      // }
       if (this.configuration.payment_place != null) {
         if (this.configuration.payment_place === "both") {
           this.selectPaymentsPlaceModel.push("online");

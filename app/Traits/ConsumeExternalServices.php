@@ -13,6 +13,8 @@ trait ConsumeExternalServices{
 
         ]);
 
+        // $client->request('GET', '/', ['verify' => base_path('cacert.pem')]);
+
       
         if(method_exists($this, 'resolveAuthorization')){
             $this->resolveAuthorization($queryParams, $formParams, $headers);
@@ -22,6 +24,7 @@ trait ConsumeExternalServices{
             $isJsonRequest ? 'json' : 'form_params' => $formParams,
             'headers' => $headers,
             'query' => $queryParams,
+            'verify' => base_path('cacert.pem'),
         ]);
 
       

@@ -77,4 +77,9 @@ class User extends Authenticatable
     public static function generarVerificationToken(){
         return Str::random(40);
     }
+
+    public function notes()
+    {
+        return $this->hasMany(Note::class);
+    }
 }

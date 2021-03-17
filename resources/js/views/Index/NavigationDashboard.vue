@@ -28,7 +28,7 @@
             </v-list-item-content>
           </v-list-item>
 
-          <v-list-item v-if="index < 2" :style="item.borderStyle" link>
+          <v-list-item v-if="index < 2" :style="item.borderStyle" link :to="item.route">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -89,7 +89,8 @@ export default {
         {
           icon: "mdi-bell",
           text: "Reservas",
-          borderStyle: "padding-left: 13px"
+          borderStyle: "padding-left: 13px",
+          route: '/reservations'
         },
         {
           icon: "mdi-clipboard-list",

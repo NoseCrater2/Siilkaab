@@ -29,7 +29,19 @@ Route::get('currentHotelRooms/{hotel}', 'Api\RoomController@currentHotelRooms');
 
 Route::post('searchRooms/{hotel}', 'Api\HotelController@searchRooms');
 
+// RESERVACIONES
+Route::get('reservations/{hotel}','ReservationController@index');
+Route::post('reservations','ReservationController@store');
+Route::get('reservation/{reservation}','ReservationController@show');
+Route::get('history-reservation/{reservation}', 'ReservationController@history');
+Route::post('reservation-client/{reservation}', 'ReservationController@updateClientInformation');
+Route::post('reservation-state/{reservation}', 'ReservationController@updateState');
 
+
+// NOTAS DE RESERVACIONES
+Route::get('notes/{reservation}','NoteController@index');
+Route::post('notes','NoteController@store');
+Route::delete('notes/{note}','NoteController@destroy');
 
 Route::group(['prefix' => 'events'], function ()
 {
