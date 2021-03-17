@@ -8,6 +8,7 @@ class Rate extends Model
 {
     protected $fillable =  [
         'type',
+        'bed_rooms',
         'rack',
         'start',
         'end',

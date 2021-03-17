@@ -48,10 +48,10 @@ export default {
   name: "CarrouselPool",
   created() {
     let count = 0;
-    while (count <= this.pools.length - 1) {
-      this.addCompo(this.pools[count]);
-      count++;
-    }
+    // while (count <= this.pools.length - 1) {
+    //   this.addCompo(this.pools[count]);
+    //   count++;
+    // }
   },
   data() {
     return {

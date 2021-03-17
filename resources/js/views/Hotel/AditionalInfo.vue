@@ -12,17 +12,17 @@
           </div>
         </v-banner>
         <div class="pa-4">
-          <v-col cols="12" sm="6" md="12">
+          <v-col cols="12" lg="12" md="12" sm="12" xs="12">
             <v-expansion-panels focusable accordion multiple>
               <v-expansion-panel>
                 <v-expansion-panel-header color="#b2b2b2">
                   <strong>Servicios destacados</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Spa</strong>
                         </span>
                         <v-select
@@ -34,89 +34,89 @@
                         ></v-select>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Aire acondicionado</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwAirConditioned" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Habitaciones libres de humo de tabaco</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwNoSmokeRooms" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio por traslado a aeropuerto(transfer)</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwAirTransferService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio por traslado a hotel(collect)</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwAirCollectService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                     <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Recepcion las 24 horas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwRecection_24h" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                     <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Gimnasio</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwGym" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                     <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio a la habitación</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwRoomService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                     <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Terraza</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwTerrace" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                     <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Bar</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwBar" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Jardin</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwGarden" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Parque acuatico</strong>
                         </span>
                         <v-select
@@ -128,16 +128,18 @@
                         ></v-select>
                       </v-card>
                     </v-col>
-                    <!-- <v-col cols="12" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 2%">
+                    <!-- COMIENZA CARRUSEL -->
+                    <v-col cols="12" lg="12" md="12" sm="12" xs="12">
+                      <v-card outlined class="pa-3">
                         <CarrouselRestaurant></CarrouselRestaurant>
                       </v-card>
                     </v-col>
-                    <v-col cols="12" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 2%">
+                    <v-col cols="12" lg="12" md="12" sm="12" xs="12">
+                      <v-card outlined class="pa-3">
                         <CarrouselPool></CarrouselPool>
                       </v-card>
-                    </v-col> -->
+                    </v-col>
+                    <!-- TERMINA CARRUSEL -->
                   </v-row>
                 </v-expansion-panel-content>
               </v-expansion-panel>
@@ -149,10 +151,10 @@
                   <strong>Actividades</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Playa</strong>
                         </span>
                         <v-select
@@ -164,17 +166,17 @@
                         ></v-select>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Actividades recreativas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwRecreationalActivities" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Cena romantica</strong>
                         </span>
                         <v-select
@@ -186,9 +188,9 @@
                         ></v-select>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Tour turistico</strong>
                         </span>
                         <v-select
@@ -211,34 +213,34 @@
                   <strong>Transporte</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Estacionamiento vigilado</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwGuardedParking" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Estacionamiento en la calle</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwStreetParking" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Estacionamiento en un garaje</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwGarageParking" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Estacionamiento adaptado para personas de movilidad reducida</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSpecialParking" inset></v-switch>
@@ -255,42 +257,42 @@
                   <strong>Servicios de recepcion</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Registro privado</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwReg_inout_private" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Registro express</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwReg_inout_express" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Informacion turistica</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwTouristicInfo" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio de estacionamiento</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwParkingService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Cambio de divisas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwCurrencyChange" inset></v-switch>
@@ -307,50 +309,50 @@
                   <strong>Zonas comunes</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Mobiliario exterior</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwOutdoorFurniture" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Terraza/Solárium</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwTerraceSolarium" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Comedor compartido</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSharedDinner" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Salon compartido</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSharedSalon" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Zona de juegos</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwGameZone" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Biblioteca</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwLibrary" inset></v-switch>
@@ -367,10 +369,10 @@
                   <strong>Servicios de limpieza</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Limpieza interna diaria</strong>
                         </span>
                         <v-select
@@ -382,17 +384,17 @@
                         ></v-select>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio de lavanderia</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwLaundryService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio de planchado</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwIronService" inset></v-switch>
@@ -409,26 +411,26 @@
                   <strong>Instalaciones de negocios</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Sala de reuniones</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwMeetingRoom" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Centro de reuniones</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwMeetingCenter" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Fax/Fotocopiadora</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwFaxPhotocopier" inset></v-switch>
@@ -445,114 +447,114 @@
                   <strong>Varios</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Descanso</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwCoffeeBreak" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Tienda de recuerdos</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSouvenirsStore" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio para personas con capacidades reducidas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwInclusiveService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Elevador</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwElevator" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Area para fumar</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSmokingZone" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>No fumar</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwNoSmoking" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Pet friendly</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwPetFriendly" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Casa para mascotas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwPetHouse" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Pet basket</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwPetBasket" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Solo adultos</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwOnlyAdults" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Habitaciones sanitizadas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSanitizedRooms" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Suite nupcial</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwBridalSuite" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Servicio VIP</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwVipService" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Calefacción</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwCalefaction" inset></v-switch>
@@ -569,66 +571,66 @@
                   <strong>Seguridad</strong>
                 </v-expansion-panel-header>
                 <v-expansion-panel-content>
-                  <v-row no-gutters>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                  <v-row>
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Bolsas de seguridad</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwKeepBags" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Seguridad las 24 horas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSecurity24h" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Alarma de seguridad</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSecurityAlarm" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Detectores de humo</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSmookeDetectors" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Camaras de seguridad internas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwInSecurityCams" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Camaras de seguridad externas</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwOutSecurityCams" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; margin-right: 7%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Extintor de incendios</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwFireExtinguishers" inset></v-switch>
                       </v-card>
                     </v-col>
-                    <v-col cols="6" style="margin-bottom: 1%">
-                      <v-card outlined style="padding: 5%; display: flex">
-                        <span class="d-flex align-center" style="margin-right: 5%">
+                    <v-col cols="12" lg="6" md="6" sm="6" xs="12">
+                      <v-card outlined class="d-flex align-center px-3 py-5">
+                        <span class="mr-2">
                           <strong>Caja fuerte</strong>
                         </span>
                         <v-switch class="ml-auto" v-model="computedSwSafeDepositBox" inset></v-switch>

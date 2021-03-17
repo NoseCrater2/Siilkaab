@@ -12,14 +12,22 @@
         <tr class="text-uppercase">
           <th class="headcol empty-col">
             <div class="ml-3">
-              <v-row class="d-flex align-center my-n2">
-                <span class="mr-4">Dia en específico</span><v-sheet color="blue lighten-2" height="11" width="11" class="ml-1"></v-sheet>
+              <v-row class="d-flex justify-end">
+                <span>Dia en específico</span>
+                <div class="d-flex align-center">
+                  <v-sheet color="blue lighten-2" height="11" width="11" class="mx-3"></v-sheet>
+                </div>
               </v-row>
-              <v-row class="d-flex align-center my-n2">
-                <span class="mr-6">Rango de fecha</span><v-sheet color="red darken-1" height="11" width="11" class="ml-1"></v-sheet>
+              <v-row class="d-flex justify-end my-1">
+                <span>Rango de fecha</span>
+                <div class="d-flex align-center">
+                  <v-sheet color="red darken-1" height="11" width="11" class="mx-3"></v-sheet>
+                </div>
               </v-row>
-              <v-row class="d-flex align-center my-n2">
-                <span>Dia(s) de la semana </span><v-sheet color="deep-purple lighten-3" height="11" width="11" class="ml-1"></v-sheet>
+              <v-row class="d-flex justify-end">
+                <div class="d-flex align-center">
+                  <span>Dia(s) de la semana</span><v-sheet color="deep-purple lighten-3" height="11" width="11" class="mx-3"></v-sheet>
+                </div>
               </v-row>
             </div>
           </th>
@@ -38,19 +46,13 @@
         </tr>
         </thead>
         <tbody>
-        <tr v-for="(objRoom, indexRoom) in arrEndpointRooms" :key="indexRoom">
+        <tr v-for="(objRoom, indexRoom) in rooms" :key="indexRoom">
           <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br></td>
           <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="setCellColor(objRoom, objDate)">
-            <!-- <div v-if="typeof(rates[indexRoom])!='undefined'">
-                      <input v-model="rates[indexRoom].rack" placeholder="$ Precio"/><br />
-                  </div> -->
-            <!-- <v-icon x-small class="ml-n3 mr-n1">mdi-pencil</v-icon> -->
-            <input v-model="objRoom.bed_rooms" class="centerContent"/>
+            <input :value="priorityUnity(objDate, objRoom, indexRoom, index)" class="centerContent"/>
             <div>
-               <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
-              <!-- Debe de haber de menos un rate para que sea disponible quantity en endpoints rooms-->
-              <!-- <v-icon x-small class="ml-n3 mr-n1">mdi-currency-usd</v-icon> -->
-              <input :value="priority(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
+              <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
+              <input :value="priorityRate(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
             </div>
           </td>
         </tr>
@@ -67,7 +69,7 @@
 //Instalar plugin de rangos moment; "moment-range"
 //npm install --save moment-range
 
-import { mapState, mapActions } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 import Moment from "moment"; //Importamos moment.js
 import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
@@ -78,14 +80,13 @@ export default {
   name: "CalendarFee",
   data() {
     return {
+      daySelected: null,
       //Variable que sera el año global del componente calendario
       generalYear: moment().year(),
       //Variable que sera el mes actual global del componente calendario
       generalCurrentMonth: moment().month(),
       //Variable que sera el dia(n) actual global del componente calendario
       generalCurrentDay: moment().date(),
-      //Variable que guardara los arreglos de objetos de calendario (arrayDatesCalendar)
-      arrayItemsCalendar: [],
       //Variable que sera utilizada para cambiar entre posiciones del arreglo "arrayItemsCalendar" utilizado en la tabla de fechas
       generalIndexArrayItemsCalendar: 0,
       //Variable utilizada para llevar la longitud del arreglo "arrayItemsCalendar"
@@ -93,23 +94,14 @@ export default {
     };
   },
   created() {
-    //tarifas{idHabitacion, tipoTarifa(habitacion, persona), start(fechaRango), end(fechaRango), day(fechaUnSoloDia), precio, cantidadHabitaciones}
-
-    //tarifas un solo dia (dd mm yyyy) priority 1
-    //tarifas rango fecha (fechas especificas) priority 2
-    //tarifas dias de la semana(solo importa dia) double('monday')->default(0.0); priority 3
-
-    // $table->date('start')->nullable();
-    //     $table->date('end')->nullable();
-    //     $table->date('day')->nullable();
-
-    //obj = numeroDia, nombreDia, mes, año, cantidad habitaciones, precio
-
-    // Lo que debería pasar si una habitación no tiene tarifas,
-    // es que en todos los campos debería mostrarse su tarifa rack
-    // y su cantidad de habitaciones disponibles
-
     this.loadDates(); //Se llama al metodo "loadDates" que cargara los datos de fechas para crear la tabla de fechas
+  },
+  computed: {
+    ...mapState({
+      rooms: (state) => state.disponibilityMoule.arooms,
+      rates: (state) => state.disponibilityMoule.rates,
+      arrayItemsCalendar: (state) => state.disponibilityMoule.arrayItemsCalendar,
+    }),
   },
   methods: {
     //Metodo que llevara la paginacion de la tabla mediante los botones "atras" y "adelante"
@@ -140,7 +132,6 @@ export default {
     //Metodo que lleva la logica para crear y cargar los datos de fechas en la tabla de fechas
     loadDates() {
       let arrayDatesCalendar = []; //Variable que sera el arreglo de objetos de fecha, utilizado para insertarse en el arreglo general "this.arrayItemsCalendar"
-      // console.log("TODAY", this.generalCurrentDay)
       let today = this.generalCurrentDay; //Variable que guarda el dia actual (sera el dia que aparezca en la primera columna de la tabla)
       let daysNextMonth = 30 - (31 - today); //Variable que guarda la cantidad de dias del siguiente mes que seran mostrados en la tabla
       let totalDaysCalendar = daysNextMonth + 31; //Variable que lleva el total de dias que se mostraran en la tabla (por defecto "30")
@@ -247,18 +238,71 @@ export default {
           this.generalCurrentMonth = 11;
           break;
       }
-      // console.log(this.arrayItemsCalendar);
-
-      
-
-      const start = new Date(2012, 0, 15);
-      const end = new Date(2012, 4, 23);
-      const range = moment.range(start, end);
-      // console.log(range);
     },
 
-    priority(objDate, objRoom, indexRoom, indexTDColumnsDate) {
+    priorityUnity(objDate, objRoom) {
+      let globalCheckPriorityHigh = false;
+      let globalCheckPriorityMedium = false;
+      let globalCheckPriorityLow = false;
+      let foundDayAndRange
+      let indexUnity = -1;
+      let isThereAUnity = false;
 
+      let unity = this.rates.map((itemRate, index) => {
+        let countWhile = 0;
+        foundDayAndRange= '';
+
+        
+        if ((itemRate.room_id == objRoom.id)) {
+            while (countWhile < this.rates.length) {
+                if(this.rates[countWhile].room_id == objRoom.id){
+                    if(this.rates[countWhile].day != null){
+                        foundDayAndRange+='day'
+                    }
+                    if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
+                        foundDayAndRange+='AndRange'
+                    }
+                }
+                countWhile++;
+            }
+            if(itemRate.day != null){
+                if (itemRate.day === objDate.dateYYYYMMDD) {
+                    indexUnity = index;
+                    isThereAUnity = true;
+                    globalCheckPriorityHigh = true;
+                    return itemRate.bed_rooms;
+                }
+            }
+            else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
+                //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
+                if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
+                    indexUnity = index;
+                    isThereAUnity = true;
+                    globalCheckPriorityMedium = true;
+                    //pintar el color
+                    return itemRate.bed_rooms;
+                } 
+                else{
+                    return objRoom.quantity;
+                }
+            } 
+            else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
+                indexUnity = index;
+                isThereAUnity = true;
+                globalCheckPriorityLow = true;
+                return itemRate.bed_rooms;
+          }
+        }
+      });
+      if (isThereAUnity == true) {
+        return unity[indexUnity];
+      }
+      else {
+        return objRoom.quantity;
+      }
+    },    
+
+    priorityRate(objDate, objRoom) {
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
       let globalCheckPriorityLow = false;
@@ -313,11 +357,8 @@ export default {
         }
       });
       if (isThereARate == true) {
-        let localIndex = 0;
         let findedID;
         let findedColor;
-        //console.log(objRoom)
-        //console.log(flagDay, flagRange, flagWeekday)
         if(globalCheckPriorityHigh == true){
           findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
           if(findedID.length == 0){
@@ -343,7 +384,6 @@ export default {
           if(typeof(objRoom.cellColor)=='undefined'){
             objRoom.cellColor = [];
           }
-
           findedColor = objRoom.cellColor.filter((item)=>{
             if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
               return item;
@@ -371,16 +411,9 @@ export default {
             objRoom.cellColor.push({color: 'deep-purple lighten-3', priority: 3});
           }
         }
-        //console.log(objRoom.cellColor)
         return rack[indexRates];
       }
       else {
-        // if(objDate.idRoom.length > 1){
-        //   console.log("SHI")
-        //   objDate.idRoom = []
-          
-        // }
-
         return objRoom.rack_rate;
       }
     },
@@ -388,16 +421,18 @@ export default {
     setCellColor(objRoom, objDate){
       let setCellColorClass = '';
       let index = 0;
-      let lengthRooms = this.arrEndpointRooms.length;
+      let lengthRooms = this.rooms.length;
       while (index < lengthRooms) {
         if(typeof(objDate.idRoom[index])!='undefined'){
           if(objRoom.id == objDate.idRoom[index].idRoom){
             let indexInter = 0;
-            while (indexInter < objRoom.cellColor.length) {
-                if(objRoom.cellColor[indexInter].priority == objDate.idRoom[index].priorityColor){
-                  setCellColorClass = objRoom.cellColor[indexInter].color;
-                }
-              indexInter++;
+            if(typeof(objRoom.cellColor) != 'undefined'){
+              while (indexInter < objRoom.cellColor.length) {
+                  if(objRoom.cellColor[indexInter].priority == objDate.idRoom[index].priorityColor){
+                    setCellColorClass = objRoom.cellColor[indexInter].color;
+                  }
+                indexInter++;
+              }
             }
           }
         }
@@ -405,14 +440,6 @@ export default {
       }
       return setCellColorClass;
     },
-  },
-  props: {
-    arrEndpointRooms: Array,
-    arrayRoomIDs: Array,
-    idRoomSelected: Number,
-    daySelected: String,
-    idHotelSelected: Number,
-    rates: Array,
   },
 };
 </script>
@@ -450,17 +477,20 @@ th {
 
 .headcol {
   position: sticky;
+  z-index: 1;
   left: 0;
   background-color: white;
   border-right: 1px solid  #dadada;
   /* padding-left: 0.85em;
   padding-right: 0.85em; */
-  white-space: pre;
+  white-space: pre-line;
   text-align: left;
 }
 
 .empty-col {
   border: none;
   background-color: white;
+  white-space: nowrap;
+  text-align: left;
 }
 </style>

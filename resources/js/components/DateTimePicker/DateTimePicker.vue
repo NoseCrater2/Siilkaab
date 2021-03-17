@@ -26,14 +26,39 @@ import {mapState} from 'vuex'
 import DatetimePicker from "vuetify-datetime-picker";
 Vue.use(DatetimePicker);
 
+import Moment from "moment"; //Importamos moment.js
+import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
+const moment = extendMoment(Moment); //Extendemos moment.js con los rangos
+moment.locale("es"); //Cambiamos el lenguaje de moment
+
 export default {
   name: "DateTimePicker",
   mounted() {
+    // [ { "error": { "final_period": [ "Debe ser mayor " ] }, "componentID": "0158" } ]
+    console.log(this.errorsRegimes)
     if (this.dates.info == "Start") {
       this.datetime = this.dates.prop.toString().slice(0, -3);
+      console.log("this.datetime", this.datetime)
+      let localDatetime = this.datetime
+      let currentDay = moment().format("YYYY-MM-DD")
+      if(moment(localDatetime).isSameOrBefore(currentDay)){
+        this.dateProps.min = localDatetime;
+      }
+      else{
+        this.dateProps.min = currentDay;
+      }
     }
     if (this.dates.info == "Final") {
       this.datetime = this.dates.prop.toString().slice(0, -3);
+      //this.textFieldProps.errorMessages = this.errorsRegimes.error.final_period;
+      let localDatetime = this.datetime
+      let currentDay = moment().format("YYYY-MM-DD")
+      if(moment(localDatetime).isSameOrBefore(currentDay)){
+        this.dateProps.min = localDatetime;
+      }
+      else{
+        this.dateProps.min = currentDay;
+      }
     }
   },
   data() {
@@ -44,10 +69,11 @@ export default {
         prependInnerIcon: "mdi-calendar-month",
         backgroundColor: 'white',
         outlined: true,
-        errorMessages: this.errorsRegimes
+        errorMessages: ''
       },
       dateProps: {
-        headerColor: "primary"
+        headerColor: "primary",
+        min: ""
       },
       timeProps: {
         format: "24hr",
@@ -63,7 +89,12 @@ export default {
   watch: {
 	  errorsRegimes(nuevoValor, valorAnterior){
       if(this.dates.info == "Final"){
-        this.textFieldProps.errorMessages = this.errorsRegimes.final_period;
+        if(this.errorsRegimes.length > 0){
+          this.textFieldProps.errorMessages = this.errorsRegimes[0].error.final_period;
+        }
+        else{
+          this.textFieldProps.errorMessages = '';
+        }
       }
     }
   },
