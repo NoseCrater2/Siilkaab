@@ -57,6 +57,7 @@ const RoomModule = {
                 const request = await axios
                  .post(`/api/rooms/${terms.id}/availability?from=${terms.from}&to=${terms.to}`, {rooms: terms.rooms});
                     commit("setAvailableRooms", request.data);
+                    
               
             } catch (error) {
                 commit("setSearchErrors", error.response.data)

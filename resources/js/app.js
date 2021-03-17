@@ -12,7 +12,7 @@ import 'tiptap-vuetify/dist/main.css'
 
 import Vuex from "vuex";
 import App from "./views/App";
-// import Payments from "./views/Reservations/Payments";
+import Payments from "./views/Reservations/Payments";
 // import Calendar from "./components/HorizontalCalendar/Calendar";
 
 require('moment/locale/es-mx')
@@ -40,7 +40,7 @@ const app = new Vue({
     vuetify,
     components: {
         App,
-        // payments: Payments,
+        payments: Payments,
         // calendar: Calendar,
     },
     

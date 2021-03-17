@@ -1,11 +1,11 @@
 <template>
   <v-app >
-    <v-row justify="center" >
-    <v-form ref="form" v-model="valid" lazy-validation style="width: 1366px">
+    <v-row justify="center"  >
+    <v-form ref="form" style="width: 1366px"  v-model="valid" lazy-validation >
     <v-card color="black"  >
       <v-card-text>
         <v-row>
-          <v-col cols="12" sm="3">
+          <v-col cols="12" sm="3" >
             <v-menu
             dark
             v-model="menu"
@@ -33,7 +33,7 @@
             </v-menu>
           </v-col>
 
-          <v-col cols="12" sm="3">
+          <v-col cols="12" sm="3" >
             <v-menu
             dark
             v-model="menu2"
@@ -144,8 +144,8 @@
       </v-card-text>
     </v-card>
     </v-form>
-    </v-row>
-    <v-row justify="center" class="px-0 mx-0" v-if="availablerooms.length > 0" >
+  </v-row>
+    <v-row justify="center" class="px-0 mx-0" v-if="bookings.rooms.length > 0" >
       <v-breadcrumbs  :items="items">
         <template v-slot:divider>
             <v-icon>mdi-chevron-right</v-icon>
@@ -153,7 +153,7 @@
       </v-breadcrumbs>
     </v-row>
     <v-row class="mx-0 px-0">
-      <v-container style="max-width: 1366px">
+      <v-container fluid style="max-width: 1366px; max-height: 200px">
         <v-alert
         v-if="$route.name === 'PersonalData'"
         dense
@@ -166,10 +166,11 @@
       </v-container>
     </v-row>
     <v-row  class="mx-0 px-0">
-      <v-container style="max-width: 1366px">
-        <v-row justify="space-around">
-            <v-col cols="3">
-        <v-card flat>
+      <v-container fluid style="max-width: 1366px">
+        <v-row >
+         
+        <v-col  cols="12" md="3" sm="12" order-sm="2"  order-md="1">
+        <v-card flat style="position: sticky; top:0; z-index: 7; padding-top: 15px" >
           <v-img class="ma-3" :src="`/img/${hotel.image}`">
 
           </v-img>
@@ -183,25 +184,25 @@
             <v-list dense>
               <v-list-item>
                 <v-list-item-icon>Estancia</v-list-item-icon>
-                <v-list-item-title> {{ bookings.rooms.length }} Habitación(es) para {{ bookings.nights }} noche(s)</v-list-item-title>
+                <v-list-item-subtitle class="text-right"> {{ bookings.rooms.length }} Habitación(es) para {{ bookings.nights }} noche(s)</v-list-item-subtitle>
               </v-list-item>
               <v-list-item>
                 <v-list-item-icon>Entrada</v-list-item-icon>
-                <v-list-item-title> {{ $moment(bookings.from).format("Do dddd MMM gggg") }}</v-list-item-title>
+                <v-list-item-subtitle class="text-right"> {{ $moment(bookings.from).format("Do dddd MMM gggg") }}</v-list-item-subtitle>
               </v-list-item>
               <v-list-item>
                 <v-list-item-icon>Salida</v-list-item-icon>
-                <v-list-item-title>{{ $moment(bookings.to).format("Do dddd MMM gggg")}}</v-list-item-title>
+                <v-list-item-subtitle class="text-right">{{ $moment(bookings.to).format("Do dddd MMM gggg")}}</v-list-item-subtitle>
               </v-list-item>
             </v-list>
             <v-divider></v-divider>
             <v-list dense>
               <v-list-item  v-for="(room, index) in bookings.rooms" :key="index">
                 <v-list-item-content>
-                  <v-list-item-title v-if="room">{{room.name}}</v-list-item-title>
+                  <v-list-item-title>{{room.name}}</v-list-item-title>
                 </v-list-item-content>
                 <v-list-item-action>
-                  <v-list-item-action-text v-if="room">
+                  <v-list-item-action-text >
                     {{configuration.currency_symbol + room.rack_rate +' '+ configuration.currency_code}}
                   </v-list-item-action-text>
                 </v-list-item-action>
@@ -223,10 +224,11 @@
               <v-spacer></v-spacer>
               <v-btn color="primary" depressed :to="{name:'PersonalData'}" >Reservar</v-btn>
             </v-card-actions>
+            
          
         </v-card>
       </v-col>
-      <v-col cols="9">
+       <v-col   cols="12" md="9" sm="12" order-sm="1" order-md="2" >
         <router-view :key="$route.path"></router-view>
       </v-col>
         </v-row>
@@ -257,10 +259,11 @@ export default {
         },
         {
           text: 'Reserva confirmada',
-
+          disabled: true,
           to: {name: 'Confirmation'}
         }
       ],
+      
       valid: true,
       maxChildrenSelected: 0,
       selectedChildren: 0,
@@ -288,6 +291,8 @@ export default {
   },
 
   methods:{
+   
+
     changeCoutRooms(){
       this.form = []
        for (let index = 0; index < parseInt(this.selectedRooms); index++) {
@@ -299,8 +304,8 @@ export default {
       if(this.$refs.form.validate()){
         this.showRooms = false
         // this.loading = true;
-        this.$store.dispatch('resetRooms')
-        this.errors = null;
+        this.$store.dispatch('resetRooms').then(()=>{
+           this.errors = null;
         let terms = {id: 0, from: null, to: null, rooms: []}
         terms.id = this.id
         terms.from = this.date
@@ -314,6 +319,8 @@ export default {
             this.$router.push({name: 'selectRoom'})
           }
         })
+        })
+       
       }
     },
 
@@ -334,6 +341,7 @@ export default {
         hotel: (state) => state.HotelModule.hotel,
         contact: state => state.HotelModule.contacts,
         configuration: state => state.HotelModule.configuration,
+        
     }),
 
    ...mapGetters(["getSearchErrors"]),
@@ -422,8 +430,10 @@ export default {
   mounted(){
 
     this.$store.dispatch('getHotel', this.id).then(() => {
+        this.$store.dispatch('getCountries')
         this.$store.dispatch('getContacts', this.hotel.idContact)
         this.$store.dispatch('getConfiguration', this.hotel.idConfiguration)
+        this.$store.dispatch('getConditions', this.hotel.idCondition)
     })
   
     

@@ -68,6 +68,52 @@ const routes = [
                 component: () => import("./views/payments/Payments"),
                 name: "payment-options"
             },
+            {
+                path: "/panel",
+                component: () => import("./views/Panel/Dashboard"),
+                name: "Panel"
+            },
+            {
+                path: "/reservations",
+                component: () => import("./views/Reservations/AdminSide/Reservations"),
+                name: "Reservations"
+            },
+            {
+                path: "reservation-details/:id",
+                component: () => import("./views/Reservations/AdminSide/Reservation"),
+                props: true,
+                children:[
+                    {
+                        path: "voucher",
+                        component: () => import("./views/Reservations/AdminSide/Voucher"),
+                        name: "Reservation",
+                        props: true,
+
+                    },
+                    {
+                        path: "details",
+                        component: () => import("./views/Reservations/AdminSide/Details"),
+                        name: "Details",
+                        props: true,
+
+                    },
+                    {
+                        path: "notes",
+                        component: () => import("./views/Reservations/AdminSide/Notes"),
+                        name: "Notes",
+                        props: true,
+
+                    },
+                    {
+                        path: "history",
+                        component: () => import("./views/Reservations/AdminSide/History"),
+                        name: "History",
+                        props: true,
+
+                    },
+                ],
+              
+            },
         ],
     },
     {
@@ -97,13 +143,7 @@ const routes = [
         ],
     },
     
-    
-    
-    {
-        path: "/panel/",
-        component: () => import("./views/Panel/Dashboard"),
-        name: "panel"
-    },
+
     {
         path: "/payments",
         component: () => import("./views/Reservations/Payments"),

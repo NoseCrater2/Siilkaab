@@ -1,8 +1,8 @@
 <template>
-    <v-item-group mandatory v-model="bookings.rooms[index]">
+    <v-item-group mandatory  v-model="bookings.rooms[index-1]">
         <v-container>
             <v-row>
-                <v-col cols="12"  v-for="r in room" :key="r.id">
+                <v-col cols="12"  v-for="(r, i) in room" :key="i">
                     <v-item  v-slot="{ active, toggle }" :value="r" >
                         <v-hover   v-slot="{ hover }" >
                             <v-card flat  height="200"  :outlined="hover?true:false" :color="active?'#F0F2F5':''" >
@@ -57,12 +57,13 @@ import DialogDetailRooms from '../DetailRooms/DialogDetailRooms'
 export default {
     data(){
         return{
+            selectedRoom: null, 
             dialog: false,
             icon: 'photos',
             roomId: 0,
-            selected_room: null,
         }
     },
+    
     props: {
         room: Array,
         index: Number,
@@ -74,19 +75,13 @@ export default {
             configuration: state => state.HotelModule.configuration,
         }),
 
-        selectedRoom: {
-            get: function(){
-                return this.bookings.rooms[this.index]
-            },
-            set: function(newValue){
-                this.$store.commit('setNewRoom' , {'index':this.index, 'room':newValue })
-                
-            }
-            
-        }
+        
     },
 
     methods: {
+        addRoom(){
+            this.$store.dispatch('addRoom', {index: this.index, room: this.selectedRoom})
+        },
         openRoomDetail(id){
             this.roomId = id
             this.dialog = true
