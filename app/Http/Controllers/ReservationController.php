@@ -13,6 +13,7 @@ use App\Http\Resources\IndexReservationResource;
 use App\Http\Resources\ShowReservationResource;
 use App\Http\Resources\BinnacleShowResource;
 use App\Http\Resources\BinnacleIndexResource;
+use Illuminate\Support\Facades\DB;
 
 class ReservationController extends Controller
 {
@@ -126,6 +127,17 @@ class ReservationController extends Controller
             $reservation->update($data);
             return new ShowReservationResource(Reservation::findOrFail($reservation->id));
         }
+    }
+
+    public function dashboard()
+    {
+        $reservations = DB::table('reservations')
+                     ->select(DB::raw("count(DATE(created_at) = '".date('Y-m-d')."') as reservations_count, created_at"))
+                     ->whereBetween('created_at', ['2021-03-03','2021-03-18'])
+                     ->groupBy('created_at')
+                     ->get('created_at');
+
+        return $reservations;
     }
 
 }

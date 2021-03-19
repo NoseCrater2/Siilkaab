@@ -27,17 +27,17 @@ export default {
 
        fillData(){
            this.datacollection = {
-               labels: [this.getRandomInt(), this.getRandomInt()],
+               labels: [17,18,19,20,21,22],
                datasets: [
                    {
-                       label: 'Data One',
+                       label: 'Hotel 1',
                        backgroundColor: '#f87979',
-                       data: [this.getRandomInt(), this.getRandomInt()]
+                       data: [2,3,4,5,6,7]
                    },
                    {
-                        label: 'Data One',
-                        backgroundColor: '#f87979',
-                        data: [this.getRandomInt(), this.getRandomInt()]
+                        label: 'Hotel 2',
+                        backgroundColor: '#a87979',
+                        data: [7,6,5,4,3,2]
                    }
                ]
            }
