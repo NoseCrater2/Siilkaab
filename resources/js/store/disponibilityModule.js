@@ -120,6 +120,8 @@ const disponibilityMoule = {
             }
         },
         putEditRates: async function({ commit, dispatch }, newArrayPutRates) {
+            //ESTAN LAS NEWDATES QUE SERAN LAS NUEVAS (SI SON NUEVAS PERO NO TIENEN NADA, NI SIQUIERA INSERTAR)
+            //ESTAN LAS QUE QUE YA ESTAN PERO NO TIENEN NADA. ESAS HAY QUE ELIMINAR
             let flagNewRates = false;
             newArrayPutRates.arrayRates.map(el=>{
                 if(el.day == null){
@@ -140,23 +142,39 @@ const disponibilityMoule = {
                     return el;
                 }
                 else if(el.id == "NEWDAYS"){
-                    flagNewRates = true;
-                    delete el.id;
-                    newRates.push(el);
+                    let isDeleteableObj = false;
+                    if(typeof(el.day) != 'undefined'){
+                        if(el.day == 'day'){
+                            isDeleteableObj = true;
+                        }
+                    }
+                    if(typeof(el.start) != 'undefined' && typeof(el.end) != 'undefined'){
+                        if(el.start == 'start' && el.end == 'end'){
+                            isDeleteableObj = true;
+                        }
+                    }
+                    if((el.monday == 0 && el.tuesday == 0 && el.wednesday == 0 && el.thursday == 0 && el.friday == 0 && el.saturday == 0 && el.sunday == 0) && isDeleteableObj == false){
+                        isDeleteableObj = true;
+                    }
+                    if(isDeleteableObj == false){
+                        flagNewRates = true;
+                        newRates.push(el);
+                    }
                 }
             });
             try {
                 if(flagNewRates == true){
-                    dispatch("postAddRatesAXIOS", newRates).then(()=>{
-                        dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
-                            dispatch("getRates", newArrayPutRates.arrayIdRooms)
-                        });
-                    });
+                    console.log("NEW RATES", newRates)
+                    // dispatch("postAddRatesAXIOS", newRates).then(()=>{
+                    //     dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                    //         dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                    //     });
+                    // });
                 }
                 else{
-                    dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
-                        dispatch("getRates", newArrayPutRates.arrayIdRooms)
-                    });
+                    // dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                    //     dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                    // });
                 }
             } catch (error) {
                 //commit("setErrorsRegimes", error.response.data);

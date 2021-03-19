@@ -36,13 +36,23 @@
         <v-card class="pa-4" outlined tile>
           <div class="d-flex justify-center mb-n3">
             <span class="text-h4 text-uppercase font-weight-bold">Actualizar Periodo</span>
-            {{rangePeriodTimeModel}}
           </div>
           <v-row class="mb-n10" align="center">
             <v-col cols="12" sm="12" md="4" lg="4">
               <span class="text-center font-weight-bold overline">Periodo</span>
             </v-col>
-            <v-col cols="12" sm="12" md="8" lg="8" class="mt-lg-6 mt-md-6">
+            <v-col cols="12" sm="12" md="8" lg="8" class="d-flex mt-lg-6 mt-md-6">
+              <v-slide-x-reverse-transition
+                mode="out-in"
+              >
+                <v-icon
+                class="mt-n6 mr-2 ml-1"
+                  :key="`icon-${flagIsEditingRange}`"
+                  :color="flagIsEditingRange ? 'success' : 'info'"
+                  @click="flagIsEditingRange = !flagIsEditingRange"
+                  v-text="flagIsEditingRange ? 'mdi-check-outline' : 'mdi-circle-edit-outline'"
+                ></v-icon>
+              </v-slide-x-reverse-transition>
               <v-dialog
                 ref="dialogRangePeriod"
                 @input="setClicks"
@@ -59,6 +69,7 @@
                     v-on="on"
                     outlined
                     required
+                    :disabled="!flagIsEditingRange"
                     dense
                     readonly
                   ></v-text-field>
@@ -108,12 +119,14 @@
             <v-col cols="12" sm="12" md="8" lg="8">
               <v-row justify="start" class="ml-1">
                 <v-checkbox
+                  :disabled="flagIsEditingRange"
                   class="mr-3"
                   v-model="allCheckboxesSelected"
                   label="Todos"
                   @change="selectAllCheckboxes($event)"
                 ></v-checkbox>
                 <v-checkbox
+                :disabled="flagIsEditingRange"
                 v-for="(day, index) in arrayDays"
                 :key="index"
                   class="mr-3"
@@ -132,15 +145,50 @@
                 :key="component.idCompo"
                 :idCompo="component.idCompo"
                 :indexCompo="index"
-                :arrayRangePeriod="rangePeriodTimeModel"
+                :arrayRangePeriod="sendArrayRangePeriod"
                 :arrayDaysSelected="daysIds"
                 :is="component.TagPeriodConfig"
-
+                :flagIsEditingRange="flagIsEditingRange"
               ></component>
             </div>
           </div>
         </v-card>
-        <v-btn color="primary" large block @click="btnApplyCheckPriority()" :loading="loadingButton" :disabled="loadingButton">Aplicar</v-btn>
+
+        <v-row justify="center">
+          <v-dialog
+            v-model="dialogAceptCancelSaving"
+            persistent
+            max-width="290"
+          >
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn color="primary" v-bind="attrs" v-on="on" large block :loading="loadingButton" :disabled="(flagCalendarModified == true && loadingButton == false) ? false : true">Aplicar</v-btn>
+            </template>
+            <v-card>
+              <v-card-title class="headline">
+                ¿Guardar cambios?
+              </v-card-title>
+              <v-card-text>Al aceptar, las tarifas configuradas seran guardadas.</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red"
+                  text
+                  @click="dialogAceptCancelSaving = false"
+                >
+                  CANCELAR
+                </v-btn>
+                <v-btn
+                  color="blue"
+                  text
+                  @click="btnApplyCheckPriority()"
+                >
+                  ACEPTAR
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
+
         <v-spacer></v-spacer>
       </v-form>
     </v-container>
@@ -177,6 +225,7 @@ export default {
   data() {
     return {
       hotelSelected: null,
+      dialogAceptCancelSaving: false,
       loadingRooms: false,
       arrayDays: [ 
             { "id": "monday", "day": "Lunes" }, 
@@ -198,7 +247,10 @@ export default {
 
       modalRangePeriod: false,
       rangePeriodTimeModel: "",
+      sendArrayRangePeriod: "",
+      flagIsEditingRange: false,
       loadingButton: false,
+
 
       copyArrayRates: [],
       flagRangeDate: false,
@@ -266,9 +318,16 @@ export default {
       }
     },
     btnResetTable(){
+      this.dialogAceptCancelSaving = false
       this.allCheckboxesSelected = false;
       this.mutationFlagCleanPeriodConfigTextfields(true);
       this.daysIds = [];
+      this.rangePeriodTimeModel = "";
+      this.sendArrayRangePeriod = this.rangePeriodTimeModel;
+      this.countClicks = 0;
+      this.modalRangePeriod = false;
+      this.flagRangeDate = false;
+      this.flagIsEditingRange = false;
       this.setRatesReinitTable(this.copyArrayRates); //Reseteamos los rates de la tabla
       this.mutationReloadDates();
       this.mutationFlagCalendarModified(false);
@@ -349,6 +408,11 @@ export default {
           }
         }
       }
+      else if(event == false){
+        if(this.rangePeriodTimeModel != "" || this.rangePeriodTimeModel.length > 0){
+          this.sendArrayRangePeriod = this.rangePeriodTimeModel;
+        }
+      }
     },
     //Funcion que activa o desactiva el boton "Aceptar" del cuadro de dialogo del calendario
     fnBtnAceptar(){
@@ -365,13 +429,16 @@ export default {
       }
     },
     btnApplyCheckPriority(){
-      // this.loadingButton = true;
-      // this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
-      // this.setTimeoutSnackbar(3500);
-      // this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
-      //   this.setSnackbar({stateSnackbar: true, messaggeSnackbar: "El registro se guardó con exito", colorSnackbar: "green darken-1"});
-      //   this.loadingButton = false;
-      // });
+      this.dialogAceptCancelSaving = false
+      this.loadingButton = true;
+      this.setSnackbar({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
+      this.setTimeoutSnackbar(3500);
+      this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
+        this.setSnackbar({stateSnackbar: true, messaggeSnackbar: "El registro se guardó con exito", colorSnackbar: "green darken-1"});
+        this.loadingButton = false;
+        //this.copyArrayRates MODIFICAAAAAAAAAAAAARRRR
+        this.btnResetTable();
+      });
       console.log(this.rates)
     }
   },
