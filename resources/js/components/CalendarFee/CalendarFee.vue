@@ -49,10 +49,10 @@
         <tr v-for="(objRoom, indexRoom) in rooms" :key="indexRoom">
           <td class="headcol"><span class="font-weight-bold">{{objRoom.name}}</span><br></td>
           <td v-for="(objDate, index) in arrayItemsCalendar[generalIndexArrayItemsCalendar]" :key="index" :class="setCellColor(objRoom, objDate)">
-            <input :value="priorityUnity(objDate, objRoom, indexRoom, index)" class="centerContent"/>
+            <input readonly :value="priorityUnity(objDate, objRoom, indexRoom, index)" class="centerContent"/>
             <div>
               <v-icon x-small class="ml-n4 mr-4" >mdi-currency-usd</v-icon>
-              <input :value="priorityRate(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
+              <input readonly :value="priorityRate(objDate, objRoom, indexRoom, index)" class="centerContent"/><br />
             </div>
           </td>
         </tr>
@@ -239,32 +239,79 @@ export default {
           break;
       }
     },
+    //NO BORRAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAARRRRR
+    // priorityUnity(objDate, objRoom) {
+    //   let globalCheckPriorityHigh = false;
+    //   let globalCheckPriorityMedium = false;
+    //   let globalCheckPriorityLow = false;
+    //   let foundDayAndRange
+    //   let indexUnity = -1;
+    //   let isThereAUnity = false;
+
+    //   let unity = this.rates.map((itemRate, index) => {
+    //     let countWhile = 0;
+    //     foundDayAndRange= '';
+
+        
+    //     if ((itemRate.room_id == objRoom.id)) {
+    //         while (countWhile < this.rates.length) {
+    //             if(this.rates[countWhile].room_id == objRoom.id){
+    //                 if(this.rates[countWhile].day != null){
+    //                     foundDayAndRange+='day'
+    //                 }
+    //                 if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
+    //                     foundDayAndRange+='AndRange'
+    //                 }
+    //             }
+    //             countWhile++;
+    //         }
+    //         if(itemRate.day != null){
+    //             if (itemRate.day === objDate.dateYYYYMMDD) {
+    //                 indexUnity = index;
+    //                 isThereAUnity = true;
+    //                 globalCheckPriorityHigh = true;
+    //                 return itemRate.bed_rooms;
+    //             }
+    //         }
+    //         else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
+    //             //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
+    //             if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
+    //                 indexUnity = index;
+    //                 isThereAUnity = true;
+    //                 globalCheckPriorityMedium = true;
+    //                 //pintar el color
+    //                 return itemRate.bed_rooms;
+    //             } 
+    //             else{
+    //                 return objRoom.quantity;
+    //             }
+    //         } 
+    //         else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
+    //             indexUnity = index;
+    //             isThereAUnity = true;
+    //             globalCheckPriorityLow = true;
+    //             return itemRate.bed_rooms;
+    //       }
+    //     }
+    //   });
+    //   if (isThereAUnity == true) {
+    //     return unity[indexUnity];
+    //   }
+    //   else {
+    //     return objRoom.quantity;
+    //   }
+    // },  
+
 
     priorityUnity(objDate, objRoom) {
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
       let globalCheckPriorityLow = false;
-      let foundDayAndRange
       let indexUnity = -1;
       let isThereAUnity = false;
 
       let unity = this.rates.map((itemRate, index) => {
-        let countWhile = 0;
-        foundDayAndRange= '';
-
-        
         if ((itemRate.room_id == objRoom.id)) {
-            while (countWhile < this.rates.length) {
-                if(this.rates[countWhile].room_id == objRoom.id){
-                    if(this.rates[countWhile].day != null){
-                        foundDayAndRange+='day'
-                    }
-                    if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
-                        foundDayAndRange+='AndRange'
-                    }
-                }
-                countWhile++;
-            }
             if(itemRate.day != null){
                 if (itemRate.day === objDate.dateYYYYMMDD) {
                     indexUnity = index;
@@ -274,17 +321,11 @@ export default {
                 }
             }
             else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
-                //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
-                if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
-                    indexUnity = index;
-                    isThereAUnity = true;
-                    globalCheckPriorityMedium = true;
-                    //pintar el color
-                    return itemRate.bed_rooms;
-                } 
-                else{
-                    return objRoom.quantity;
-                }
+              indexUnity = index;
+              isThereAUnity = true;
+              globalCheckPriorityMedium = true;
+              //pintar el color
+              return itemRate.bed_rooms;
             } 
             else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
                 indexUnity = index;
@@ -302,31 +343,133 @@ export default {
       }
     },    
 
+//NOOOOO BORRARRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR
+    // priorityRate(objDate, objRoom) {
+    //   let globalCheckPriorityHigh = false;
+    //   let globalCheckPriorityMedium = false;
+    //   let globalCheckPriorityLow = false;
+    //   let foundDayAndRange
+    //   let indexRates = -1;
+    //   let isThereARate = false;
+
+    //   let rack = this.rates.map((itemRate, index) => {
+    //     let countWhile = 0;
+    //     foundDayAndRange= '';
+
+        
+    //     if ((itemRate.room_id == objRoom.id)) {
+    //         while (countWhile < this.rates.length) {
+    //             if(this.rates[countWhile].room_id == objRoom.id){
+    //                 if(this.rates[countWhile].day != null){
+    //                     foundDayAndRange+='day'
+    //                 }
+    //                 if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
+    //                     foundDayAndRange+='AndRange'
+    //                 }
+    //             }
+    //             countWhile++;
+    //         }
+    //         if(itemRate.day != null){
+    //             if (itemRate.day === objDate.dateYYYYMMDD) {
+    //                 indexRates = index;
+    //                 isThereARate = true;
+    //                 globalCheckPriorityHigh = true;
+    //                 return itemRate.rack;
+    //             }
+    //         }
+    //         else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
+    //             //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
+    //             if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
+    //                 indexRates = index;
+    //                 isThereARate = true;
+    //                 globalCheckPriorityMedium = true;
+    //                 //pintar el color
+    //                 return itemRate.rack;
+    //             } 
+    //             else{
+    //                 return objRoom.rack_rate;
+    //             }
+    //         } 
+    //         else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
+    //             indexRates = index;
+    //             isThereARate = true;
+    //             globalCheckPriorityLow = true;
+    //             return itemRate[objDate.nameDayEnglish];
+    //       }
+    //     }
+    //   });
+    //   if (isThereARate == true) {
+    //     let findedID;
+    //     let findedColor;
+    //     if(globalCheckPriorityHigh == true){
+    //       findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
+    //       if(findedID.length == 0){
+    //         objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 1})
+    //       }
+    //       if(typeof(objRoom.cellColor) =='undefined'){
+    //         objRoom.cellColor = [];
+    //       }
+    //       findedColor = objRoom.cellColor.filter((item)=>{
+    //         if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
+    //           return item;
+    //         }
+    //       });
+    //       if(findedColor.length <= 3 && !findedColor.includes('blue lighten-2')){
+    //         objRoom.cellColor.push({color: 'blue lighten-2', priority: 1});
+    //       }
+    //     }
+    //     if(globalCheckPriorityMedium == true){
+    //       findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
+    //       if(findedID.length == 0){
+    //         objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 2})
+    //       }
+    //       if(typeof(objRoom.cellColor)=='undefined'){
+    //         objRoom.cellColor = [];
+    //       }
+    //       findedColor = objRoom.cellColor.filter((item)=>{
+    //         if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
+    //           return item;
+    //         }
+    //       });
+    //       if(findedColor.length <= 3 && !findedColor.includes('red darken-1')){
+    //         objRoom.cellColor.push({color: 'red darken-1', priority: 2});
+    //       }
+    //     }
+    //     if(globalCheckPriorityLow == true){
+    //       findedID = objDate.idRoom.filter((item)=>item.idRoom == objRoom.id);
+    //       if(findedID.length == 0){
+    //         objDate.idRoom.push({idRoom: objRoom.id, priorityColor: 3})
+    //       }
+    //       if(typeof(objRoom.cellColor)=='undefined'){
+    //         objRoom.cellColor = [];
+    //       }
+
+    //       findedColor = objRoom.cellColor.filter((item)=>{
+    //         if(item == 'blue lighten-2' || item == 'red darken-1' || item == 'deep-purple lighten-3' || item == 'white'){
+    //           return item;
+    //         }
+    //       });
+    //       if(findedColor.length <= 3 && !findedColor.includes('deep-purple lighten-3')){
+    //         objRoom.cellColor.push({color: 'deep-purple lighten-3', priority: 3});
+    //       }
+    //     }
+    //     return rack[indexRates];
+    //   }
+    //   else {
+    //     return objRoom.rack_rate;
+    //   }
+    // },
+
     priorityRate(objDate, objRoom) {
       let globalCheckPriorityHigh = false;
       let globalCheckPriorityMedium = false;
       let globalCheckPriorityLow = false;
-      let foundDayAndRange
       let indexRates = -1;
       let isThereARate = false;
 
       let rack = this.rates.map((itemRate, index) => {
-        let countWhile = 0;
-        foundDayAndRange= '';
 
-        
         if ((itemRate.room_id == objRoom.id)) {
-            while (countWhile < this.rates.length) {
-                if(this.rates[countWhile].room_id == objRoom.id){
-                    if(this.rates[countWhile].day != null){
-                        foundDayAndRange+='day'
-                    }
-                    if(this.rates[countWhile].start != null && this.rates[countWhile].end != null){
-                        foundDayAndRange+='AndRange'
-                    }
-                }
-                countWhile++;
-            }
             if(itemRate.day != null){
                 if (itemRate.day === objDate.dateYYYYMMDD) {
                     indexRates = index;
@@ -336,17 +479,12 @@ export default {
                 }
             }
             else if (moment(objDate.dateYYYYMMDD).isBetween(itemRate.start,itemRate.end,null,"[]") == true && (globalCheckPriorityHigh == false)) {
-                //Originalmente solo era "foundDayAndRange == 'AndRangeday'"; cambio no mostraba rango ultimo cuarto
-                if(foundDayAndRange == 'AndRangeday' || foundDayAndRange == 'dayAndRange'){
-                    indexRates = index;
-                    isThereARate = true;
-                    globalCheckPriorityMedium = true;
-                    //pintar el color
-                    return itemRate.rack;
-                } 
-                else{
-                    return objRoom.rack_rate;
-                }
+              indexRates = index;
+              isThereARate = true;
+              globalCheckPriorityMedium = true;
+              //pintar el color
+              return itemRate.rack;
+
             } 
             else if (itemRate[objDate.nameDayEnglish] > 0 && (globalCheckPriorityHigh == false && globalCheckPriorityMedium == false)) {
                 indexRates = index;

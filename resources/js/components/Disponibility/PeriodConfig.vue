@@ -15,6 +15,7 @@
           dense
           maxlength="3"
           v-model="computedUnity"
+          @keyup="validateQuantity"
           @keydown="keyhandlerUnity" 
           :rules="[rules.validUnity]"
         ></v-text-field>
@@ -67,6 +68,9 @@ export default {
                 if(pattern.test(value) == false){
                   returned = 'Solo se aceptan numeros';
                 }
+                if(parseInt(this.unityModel) > this.rooms[this.indexCompo].quantity){
+                  returned = 'No puede introducir una cantidad que exceda el numero de habitaciones existentes';
+                }
               }
             }
             return returned;
@@ -88,6 +92,13 @@ export default {
     },
     methods: {
       ...mapMutations(["mutationReloadDates", "mutationFlagCalendarModified", "mutationFlagCleanPeriodConfigTextfields"]),
+      validateQuantity(event){
+        if(parseInt(this.unityModel) >= parseInt(this.rooms[this.indexCompo].quantity)){
+          let subs = parseInt(this.unityModel) - parseInt(this.rooms[this.indexCompo].quantity)
+          let quantity = parseInt(this.unityModel) - subs
+          this.unityModel = quantity.toString();
+        }
+      },
       keyhandlerUnity(event) {
         const pattern = /^([0-9]\d{0,3})$/
         if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
@@ -100,98 +111,386 @@ export default {
           event.preventDefault();
         }
       },
-      changeRate(model, modelRoomID, activatedBy="s"){
+      changeRate(modelRate, modelUnity, modelRoomID, activatedBy="default"){
         if(this.rooms[this.indexCompo].id == modelRoomID){
           //Este delete elimina el color de las celdas de la habitacion (las resetea debido a que el calendario se actualiza en tiempo real insertando los colores)
           delete this.rooms[this.indexCompo].cellColor;
-          let flagIsThereARateLow = false;
+          let flagIsThereARateHigh = false; //Variable que controla si hay una tarifa de prioridad mas alta
+          let flagIsThereARateMedium = false; //Variable que controla si hay una tarifa de prioridad mediana
+          let flagIsThereARateLow = false; //Variable que controla si hay una tarifa de prioridad mas baja
           let arrayFilteredDays = this.localArrayDays.filter((el)=>{
             if(!this.arrayDaysSelected.includes(el)){
               return el;
             }
           });
-          this.rateModel = model;
+          this.rateModel = modelRate;
+          this.unityModel = modelUnity;
           this.rates.map(rateItem => {
-            if(rateItem.room_id == this.rooms[this.indexCompo].id || rateItem.id == "NEW"){
-              if((rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0)){
-                flagIsThereARateLow = true;
-                if(this.arrayDaysSelected.length > 0){
-                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
-                  this.mutationFlagCalendarModified(true);
-                  this.localArrayDays.forEach((el)=>{
-                    if(this.arrayDaysSelected.includes(el)){
-                      if(model != ""){
-                        rateItem[el] = parseInt(this.rateModel);
-                      }
-                      else{
-                        rateItem[el] = 0;
+            if(rateItem.room_id == this.rooms[this.indexCompo].id){
+              //CONDICIONES DE TARIFAS PRIORIDADES ALTA Y MEDIA INICIA
+              if(this.flagIsEditingRange == true){
+                if(rateItem.monday == 0 && rateItem.tuesday == 0 && rateItem.wednesday == 0 && rateItem.thursday == 0 && rateItem.friday == 0 && rateItem.saturday == 0 && rateItem.sunday == 0){
+                  if((rateItem.day != null || (rateItem.start != null && rateItem.end != null))){
+                    //CONDICIONES DE TARIFAS PRIORIDADES ALTA INICIA
+                    if(typeof(this.arrayRangePeriod) == 'string'){
+                      if(rateItem.day != null || rateItem.day == "day"){
+                        flagIsThereARateHigh = true;
+                        //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                        this.mutationFlagCalendarModified(true);
+                        if(typeof(modelUnity) != 'object'){
+                          if(modelUnity != ""){
+                            rateItem.day = this.arrayRangePeriod
+                            rateItem.bed_rooms = parseInt(this.unityModel)
+                          }
+                          else if(modelUnity == ""){
+                            rateItem.day = "day"
+                            rateItem.bed_rooms = 0
+                          }
+                        }
+                        else if(typeof(modelUnity) == 'object'){
+                          rateItem.day = "day"
+                          rateItem.bed_rooms = 0;
+                        }
+
+                        if(typeof(modelRate) != 'object'){
+                          if(modelRate != ""){
+                            rateItem.day = this.arrayRangePeriod
+                            rateItem.rack = parseFloat(this.rateModel);
+                          }
+                          else if(modelRate == ""){
+                            if(modelUnity == ""){
+                              rateItem.day = "day"
+                            }
+                            rateItem.rack = 0;
+                          }
+                        }
+                        else if(typeof(modelRate) == 'object'){
+                          if(modelUnity == ""){
+                            rateItem.day = "day"
+                          }
+                          rateItem.rack = 0;
+                        }
                       }
                     }
-                    else if(!this.arrayDaysSelected.includes(el)){
-                      rateItem[el] = 0;
+                    //CONDICIONES DE TARIFAS PRIORIDADES ALTA TERMINA
+                    //CONDICIONES DE TARIFAS PRIORIDADES MEDIA INICIA
+                    else if(typeof(this.arrayRangePeriod) == 'object'){
+                      if((rateItem.start != null || rateItem.start == "start") && (rateItem.end != null || rateItem.end == "end")){
+                        flagIsThereARateMedium = true;
+                        //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                        this.mutationFlagCalendarModified(true);
+                        if(typeof(modelUnity) != 'object'){
+                          if(modelUnity != ""){
+                            rateItem.start = this.arrayRangePeriod[0]
+                            rateItem.end = this.arrayRangePeriod[1]
+                            rateItem.bed_rooms = parseInt(this.unityModel)
+                          }
+                          else if(modelUnity == ""){
+                            rateItem.start = "start"
+                            rateItem.end = "end"
+                            rateItem.bed_rooms = 0
+                          }
+                        }
+                        else if(typeof(modelUnity) == 'object'){
+                          rateItem.start = "start"
+                          rateItem.end = "end"
+                          rateItem.bed_rooms = 0;
+                        }
+
+                        if(typeof(modelRate) != 'object'){
+                          if(modelRate != ""){
+                            rateItem.start = this.arrayRangePeriod[0]
+                            rateItem.end = this.arrayRangePeriod[1]
+                            rateItem.rack = parseFloat(this.rateModel);
+                          }
+                          else if(modelRate == ""){
+                            if(modelUnity == ""){
+                              rateItem.start = "start"
+                              rateItem.end = "end"
+                            }
+                            rateItem.rack = 0;
+                          }
+                        }
+                        else if(typeof(modelRate) == 'object'){
+                            if(modelUnity == ""){
+                              rateItem.start = "start"
+                              rateItem.end = "end"
+                            }
+                          rateItem.rack = 0;
+                        }
+                      }
                     }
-                  })
+                    //CONDICIONES DE TARIFAS PRIORIDADES MEDIA TERMINA
+                  }
                 }
-                else{
-                  if(activatedBy=="watch"){
+              }
+              //CONDICIONES DE TARIFAS PRIORIDADES ALTA Y MEDIA TERMINA
+              //CONDICIONES DE TARIFAS PRIORIDAD MAS BAJA INICIA
+              else if(this.flagIsEditingRange == false){
+                if((rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0)){
+                  flagIsThereARateLow = true;
+                  if(this.arrayDaysSelected.length > 0){
                     //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
                     this.mutationFlagCalendarModified(true);
-                    let allDays = [
-                                    "monday",
-                                    "tuesday",
-                                    "wednesday",
-                                    "thursday",
-                                    "friday",
-                                    "saturday",
-                                    "sunday"
-                                  ]
-                    allDays.forEach((el)=>{
-                      if(rateItem[el] != 0){
+                    this.localArrayDays.forEach((el)=>{
+                      if(this.arrayDaysSelected.includes(el)){
+                        if(typeof(modelUnity) != 'object'){
+                          if(modelUnity != ""){
+                            rateItem.bed_rooms = parseInt(this.unityModel)
+                          }
+                          else if(modelUnity == ""){
+                            rateItem.bed_rooms = 0
+                          }
+                        }
+                        else if(typeof(modelUnity) == 'object'){
+                          rateItem.bed_rooms = 0;
+                        }
+
+                        if(typeof(modelRate) != 'object'){
+                          if(modelRate != ""){
+                            rateItem[el] = parseFloat(this.rateModel);
+                          }
+                          else if(modelRate == ""){
+                            rateItem[el] = 0;
+                          }
+                        }
+                        else if(typeof(modelRate) == 'object'){
+                          rateItem[el] = parseFloat(this.rateModel);
+                        }
+                      }
+                      else if(!this.arrayDaysSelected.includes(el)){
                         rateItem[el] = 0;
                       }
                     })
                   }
+                  else{
+                    if(activatedBy=="watchP3"){
+                      //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                      this.mutationFlagCalendarModified(true);
+                      let allDays = [
+                                      "monday",
+                                      "tuesday",
+                                      "wednesday",
+                                      "thursday",
+                                      "friday",
+                                      "saturday",
+                                      "sunday"
+                                    ]
+                      allDays.forEach((el)=>{
+                        if(rateItem[el] != 0){
+                          rateItem[el] = 0;
+                        }
+                      })
+                    }
+                  }
                 }
               }
+              //CONDICIONES DE TARIFAS PRIORIDAD MAS BAJA TERMINA
               return rateItem;
             }
           });
-          if(flagIsThereARateLow == false){
-            if(this.arrayDaysSelected.length > 0){
-              let countDay = 0;
-              let obj = {
-                id: "NEWDAYS",
-                type: "room",
-                bed_rooms: 0,
-                rack: 0,
-                monday: 0,
-                tuesday: 0,
-                wednesday: 0,
-                thursday: 0,
-                friday: 0,
-                saturday: 0,
-                sunday: 0,
-                room_id: this.rooms[this.indexCompo].id
+          //CONDICIONES DE TARIFAS NUEVAS PRIORIDAD MAS ALTA INICIA
+          if(this.flagIsEditingRange == true){
+            if(flagIsThereARateHigh == false){
+              if(typeof(this.arrayRangePeriod) == 'string'){
+                if(this.unityModel != "" && this.unityModel != null){
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: parseInt(this.unityModel),
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    day: this.arrayRangePeriod,
+                    rack: 0,
+                    room_id: this.rooms[this.indexCompo].id
+                  }
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  if(typeof(this.rateModel) != 'object'){
+                    if(this.rateModel != ""){
+                      obj.rack = parseFloat(this.rateModel);
+                    }
+                  }
+                  this.rates.push(obj)
+                }
+                else if(this.rateModel != "" && this.rateModel != null){
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: 0,
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    day: this.arrayRangePeriod,
+                    rack: parseFloat(this.rateModel),
+                    room_id: this.rooms[this.indexCompo].id
+                  }
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  this.rates.push(obj)
+                }
               }
-              this.localArrayDays.forEach((el)=>{
-                if(this.arrayDaysSelected.includes(el)){
-                  obj[el] = parseInt(this.rateModel);
-                  if(model != ""){
-                    obj[el] = parseInt(this.rateModel);
+            }
+            //CONDICIONES DE TARIFAS NUEVAS PRIORIDAD MAS ALTA TERMINA
+            //CONDICIONES DE TARIFAS NUEVAS PRIORIDAD MEDIA INICIA
+            if(flagIsThereARateMedium == false){
+              if(typeof(this.arrayRangePeriod) == 'object'){
+                if(this.unityModel != "" && this.unityModel != null){
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: parseInt(this.unityModel),
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    start: this.arrayRangePeriod[0],
+                    end: this.arrayRangePeriod[1],
+                    rack: 0,
+                    room_id: this.rooms[this.indexCompo].id
                   }
-                  else{
-                    obj[el] = 0;
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  if(typeof(this.rateModel) != 'object'){
+                    if(this.rateModel != ""){
+                      obj.rack = parseFloat(this.rateModel);
+                    }
                   }
+                  this.rates.push(obj)
                 }
-                else if(!this.arrayDaysSelected.includes(el)){
-                  obj[el] = 0;
+                else if(this.rateModel != "" && this.rateModel != null){
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: 0,
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    start: this.arrayRangePeriod[0],
+                    end: this.arrayRangePeriod[1],
+                    rack: parseFloat(this.rateModel),
+                    room_id: this.rooms[this.indexCompo].id
+                  }
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  this.rates.push(obj)
                 }
-              })
-              //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
-              this.mutationFlagCalendarModified(true);
-              this.rates.push(obj)
+              }
             }
           }
+          //CONDICIONES DE TARIFAS NUEVAS PRIORIDAD MEDIA TERMINA
+          //CONDICIONES DE TARIFAS NUEVAS PRIORIDAD MAS BAJA INICIA
+          else if(this.flagIsEditingRange == false){
+            if(flagIsThereARateLow == false){
+              if(this.arrayDaysSelected.length > 0){
+                if((this.unityModel != "" && this.unityModel != null) && (this.rateModel != "" && this.rateModel != null)){
+                  let countDay = 0;
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: parseInt(this.unityModel),
+                    rack: 0,
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    room_id: this.rooms[this.indexCompo].id
+                  }
+                  this.localArrayDays.forEach((el)=>{
+                    if(this.arrayDaysSelected.includes(el)){
+                      obj[el] = parseFloat(this.rateModel);
+                      if(modelRate != ""){
+                        obj[el] = parseFloat(this.rateModel);
+                      }
+                      else{
+                        obj[el] = 0;
+                      }
+                    }
+                    else if(!this.arrayDaysSelected.includes(el)){
+                      obj[el] = 0;
+                    }
+                  })
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  this.rates.push(obj)
+                }
+                else if(this.unityModel != "" && this.unityModel != null){
+                  let countDay = 0;
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: parseInt(this.unityModel),
+                    rack: 0,
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    room_id: this.rooms[this.indexCompo].id
+                  }
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  this.rates.push(obj)
+                }
+                else if(this.rateModel != "" && this.rateModel != null){
+                  let countDay = 0;
+                  let obj = {
+                    id: "NEWDAYS",
+                    type: "room",
+                    bed_rooms: 0,
+                    rack: 0,
+                    monday: 0,
+                    tuesday: 0,
+                    wednesday: 0,
+                    thursday: 0,
+                    friday: 0,
+                    saturday: 0,
+                    sunday: 0,
+                    room_id: this.rooms[this.indexCompo].id
+                  }
+                  this.localArrayDays.forEach((el)=>{
+                    if(this.arrayDaysSelected.includes(el)){
+                      obj[el] = parseFloat(this.rateModel);
+                      if(modelRate != ""){
+                        obj[el] = parseFloat(this.rateModel);
+                      }
+                      else{
+                        obj[el] = 0;
+                      }
+                    }
+                    else if(!this.arrayDaysSelected.includes(el)){
+                      obj[el] = 0;
+                    }
+                  })
+                  //Se setea la variable vuex a true para indicar que ya se hizo un cambio en las rates
+                  this.mutationFlagCalendarModified(true);
+                  this.rates.push(obj)
+                }
+              }
+            }
+          }
+          //CONDICIONES DE TARIFAS NUEVAS PRIORIDAD MAS BAJA TERMINA
           //Esta mutacion permite recargar las fechas para que se acoplen con los colores que son (reinicia los colores en conujunto con los metodos de CalendarFee.vue)
           this.mutationReloadDates();
         }
@@ -210,91 +509,15 @@ export default {
           return this.unityModel;
         },
         set(model){
-          // let flagIsThereARate = false;
-          // let arrayFilteredDays = this.localArrayDays.filter((el)=>{
-          //   if(!this.arrayDaysSelected.includes(el)){
-          //     return el;
-          //   }
-          // });
-          // console.log("arrayFilteredDays", arrayFilteredDays)
-          // this.rateModel = model;
-          // console.log(this.rates)
-          // this.rates.map(rateItem => {
-          //   if(rateItem.room_id == this.rooms[this.indexCompo].id || rateItem.id == "NEW"){
-          //     if((rateItem.day == null && rateItem.start == null && rateItem.end == null && rateItem.rack == 0)){
-          //       flagIsThereARate = true;
-          //       if(this.arrayDaysSelected.length > 0){
-          //         this.localArrayDays.forEach((el)=>{
-          //           if(this.arrayDaysSelected.includes(el)){
-          //             if(model != ""){
-          //               rateItem[el] = parseInt(this.rateModel);
-          //             }
-          //             else{
-          //               rateItem[el] = 0;
-          //             }
-          //           }
-          //           else if(!this.arrayDaysSelected.includes(el)){
-          //             rateItem[el] = 0;
-          //           }
-          //         })
-          //       }
-          //       else{
-          //         let allDays = [
-          //                         "monday",
-          //                         "tuesday",
-          //                         "wednesday",
-          //                         "thursday",
-          //                         "friday",
-          //                         "saturday",
-          //                         "sunday"
-          //                       ]
-          //         allDays.forEach((el)=>{
-          //           if(rateItem[el] != 0){
-          //             rateItem[el] = 0;
-          //           }
-          //         })
-          //       }
-          //     }
-          //     return rateItem;
-          //   }
-          // });
-          // if(flagIsThereARate == false){
-          //   if(this.arrayDaysSelected.length > 0){
-          //     let countDay = 0;
-          //     let obj = {
-          //       id: "NEWDAYS",
-          //       type: "room",
-          //       bed_rooms: 0,
-          //       rack: 0,
-          //       monday: 0,
-          //       tuesday: 0,
-          //       wednesday: 0,
-          //       thursday: 0,
-          //       friday: 0,
-          //       saturday: 0,
-          //       sunday: 0,
-          //       room_id: this.rooms[this.indexCompo].id
-          //     }
-          //     this.localArrayDays.forEach((el)=>{
-          //       if(this.arrayDaysSelected.includes(el)){
-          //         obj[el] = parseInt(this.rateModel);
-          //         if(model != ""){
-          //           obj[el] = parseInt(this.rateModel);
-          //         }
-          //         else{
-          //           obj[el] = 0;
-          //         }
-          //       }
-          //       else if(!this.arrayDaysSelected.includes(el)){
-          //         obj[el] = 0;
-          //       }
-          //     })
-          //     this.rates.push(obj)
-          //   }
-          // }
-          // //Esta mutacion permite recargar las fechas para que se acoplen con los colores que son (reinicia los colores en conujunto con los metodos de CalendarFee.vue)
-          // this.mutationReloadDates();
-          this.unityModel = model;
+          //Ejecuta el metodo para cambiar la tarifa
+          let modelUnity = model;
+          if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
+            let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
+            let quantity = parseInt(modelUnity) - subs
+            modelUnity = quantity.toString();
+            this.unityModel = modelUnity;
+          }
+          this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
           return this.unityModel;
         }
       },
@@ -304,38 +527,98 @@ export default {
         },
         set(model) {
           //Ejecuta el metodo para cambiar la tarifa
-          this.changeRate(model, this.rooms[this.indexCompo].id);
+          let modelUnity = this.unityModel;
+          if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
+            let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
+            let quantity = parseInt(modelUnity) - subs
+            modelUnity = quantity.toString();
+            this.unityModel = modelUnity;
+          }
+          this.changeRate(model, modelUnity, this.rooms[this.indexCompo].id);
           return this.rateModel;
         },
       },
     },
     watch: {
 	    arrayDaysSelected(nuevoValor, valorAnterior){
-        if(this.rateModel != null){
-          if(this.rateModel > 0){
+        if(this.rateModel != null || this.unityModel != null){
+          if(this.rateModel > 0 || this.unityModel > 0){
             if(this.flagCleanPeriodConfigTextfields == true){
               this.rateModel = "";
+              this.unityModel = "";
               if(this.rooms.length -1 == this.indexCompo){
                 this.mutationFlagCleanPeriodConfigTextfields(false);
               }
               return; //Esto para salir inmediatamente de este metodo sin ejecutar lo demas
             }
-            this.changeRate(this.rateModel, this.rooms[this.indexCompo].id, "watch");
+            let modelUnity = this.unityModel;
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
+              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
+              let quantity = parseInt(modelUnity) - subs
+              modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
+            }
+            this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id, "watchP3");
           }
-          else{
+          else if(this.rateModel != "" || this.unityModel != ""){
+            let modelUnity = this.unityModel;
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
+              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
+              let quantity = parseInt(modelUnity) - subs
+              modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
+            }
+            this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id, "watchP3");
             if(this.rooms.length -1 == this.indexCompo){
                 this.mutationFlagCleanPeriodConfigTextfields(false);
             }
           }
         }
-        else if(this.rateModel == null){
+        else if(this.rateModel == null || this.unityModel == null){
           if(this.rooms.length -1 == this.indexCompo){
             this.mutationFlagCleanPeriodConfigTextfields(false);
           }
         }
       },
       arrayRangePeriod(nuevoValor, valorAnterior){
-        
+        if(this.rateModel != null || this.unityModel != null){
+          if(this.rateModel > 0 || this.unityModel > 0){
+            if(this.flagCleanPeriodConfigTextfields == true){
+              this.rateModel = "";
+              this.rateModel = ""
+              if(this.rooms.length -1 == this.indexCompo){
+                this.mutationFlagCleanPeriodConfigTextfields(false);
+              }
+              return; //Esto para salir inmediatamente de este metodo sin ejecutar lo demas
+            }
+            let modelUnity = this.unityModel;
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
+              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
+              let quantity = parseInt(modelUnity) - subs
+              modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
+            }
+            this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
+          }
+          else if(this.rateModel != "" || this.unityModel != ""){
+            let modelUnity = this.unityModel;
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
+              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
+              let quantity = parseInt(modelUnity) - subs
+              modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
+            }
+            this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
+            if(this.rooms.length -1 == this.indexCompo){
+                this.mutationFlagCleanPeriodConfigTextfields(false);
+            }
+          }
+        }
+        else if(this.rateModel == null || this.unityModel == null){
+          if(this.rooms.length -1 == this.indexCompo){
+            this.mutationFlagCleanPeriodConfigTextfields(false);
+          }
+        }
       }
     },
     props: {
@@ -344,7 +627,8 @@ export default {
       arrayRangePeriod: {
         type: [ String, Array ]
       },
-      arrayDaysSelected: Array
+      arrayDaysSelected: Array,
+      flagIsEditingRange: Boolean
     }
 }
 </script>
