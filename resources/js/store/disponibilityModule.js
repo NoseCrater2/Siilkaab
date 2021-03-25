@@ -50,7 +50,7 @@ const disponibilityMoule = {
         },
 
         setRates(state, payload) {
-            state.rates = payload;
+            state.rates = JSON.parse(JSON.stringify(payload));
         },
 
         setRatesReinitTable(state, payload){
@@ -71,13 +71,7 @@ const disponibilityMoule = {
         setTimeoutSnackbar(state, time){
             state.timeoutSnackbar = time;
         },
-        // postAddRates(state, rates) {
-        //     state.rates = rates;
-        // },
 
-        // putUpdateRates(state, rates) {
-        //     state.rates = rates;
-        // },
     },
     actions: {
         getHotelsForAdmin: async function({ commit }) {
@@ -111,19 +105,17 @@ const disponibilityMoule = {
                         cont++;
                     }
                 });
-                console.log(filteredRates)
                 commit("setRates", filteredRates);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrors", error.response.data);
-                commit("setStatus", error.response.status);
+                //commit("setErrors", error.response.data);
+                //commit("setStatus", error.response.status);
             }
         },
         putEditRates: async function({ commit, dispatch }, newArrayPutRates) {
-            //ESTAN LAS NEWDATES QUE SERAN LAS NUEVAS (SI SON NUEVAS PERO NO TIENEN NADA, NI SIQUIERA INSERTAR)
+            //ESTAN LAS NEWDATES (SI SON NUEVAS PERO NO TIENEN NADA, NI SIQUIERA INSERTAR)
             //ESTAN LAS QUE QUE YA ESTAN PERO NO TIENEN NADA. ESAS HAY QUE ELIMINAR
-            let flagNewRates = false;
-            newArrayPutRates.arrayRates.map(el=>{
+            newArrayPutRates.arrayRates = newArrayPutRates.arrayRates.filter(el=>{
                 if(el.day == null){
                     delete el.day;
                 }
@@ -135,11 +127,32 @@ const disponibilityMoule = {
                 }
                 return el;
             });
+            let flagNewRates = false;
+            let flagDeleteOldRates = false;
             let newRates = [];
             let deleteOldRates = [];
             let oldRates = newArrayPutRates.arrayRates.filter((el)=>{
                 if(el.id != "NEWDAYS"){
-                    return el;
+                    let isDeleteableObj = false;
+                    if(typeof(el.day) != 'undefined'){
+                        if(el.day == 'day'){
+                            isDeleteableObj = true;
+                        }
+                    }
+                    else if(typeof(el.start) != 'undefined' && typeof(el.end) != 'undefined'){
+                        if(el.start == 'start' && el.end == 'end'){
+                            isDeleteableObj = true;
+                        }
+                    }
+                    else if((el.monday == 0 && el.tuesday == 0 && el.wednesday == 0 && el.thursday == 0 && el.friday == 0 && el.saturday == 0 && el.sunday == 0)){
+                        isDeleteableObj = true;
+                    }
+                    if(isDeleteableObj == true){
+                        deleteOldRates.push(el)
+                    }
+                    else if(isDeleteableObj == false){
+                        return el;
+                    }
                 }
                 else if(el.id == "NEWDAYS"){
                     let isDeleteableObj = false;
@@ -148,37 +161,95 @@ const disponibilityMoule = {
                             isDeleteableObj = true;
                         }
                     }
-                    if(typeof(el.start) != 'undefined' && typeof(el.end) != 'undefined'){
+                    else if(typeof(el.start) != 'undefined' && typeof(el.end) != 'undefined'){
                         if(el.start == 'start' && el.end == 'end'){
                             isDeleteableObj = true;
                         }
                     }
-                    if((el.monday == 0 && el.tuesday == 0 && el.wednesday == 0 && el.thursday == 0 && el.friday == 0 && el.saturday == 0 && el.sunday == 0) && isDeleteableObj == false){
+                    else if((el.monday == 0 && el.tuesday == 0 && el.wednesday == 0 && el.thursday == 0 && el.friday == 0 && el.saturday == 0 && el.sunday == 0)){
                         isDeleteableObj = true;
                     }
+
                     if(isDeleteableObj == false){
                         flagNewRates = true;
                         newRates.push(el);
                     }
                 }
             });
+            //DETECTAMOS ELEMENTOS DUPLICADOS
+            let copyOldRates = oldRates;
+            let deletedOldRatesCoincidences = [];
+            let flagIsFindedCoincidence = false;
+            oldRates.forEach(el => {
+                let copyEl = JSON.parse(JSON.stringify(el));
+                delete copyEl.id;
+                copyEl = JSON.stringify(copyEl)
+                copyOldRates.forEach(elInside => {
+                    let copyElInside = JSON.parse(JSON.stringify(elInside));
+                    delete copyElInside.id;
+                    copyElInside = JSON.stringify(copyElInside)
+                    if((copyEl == copyElInside) && (el.id != elInside.id)){
+                        if(flagIsFindedCoincidence == false){
+                            flagIsFindedCoincidence = true;
+                            deletedOldRatesCoincidences.push(el)
+                            console.log("COPYYYYY", el, elInside)
+                        }
+                    }
+                })
+            });
+            deleteOldRates = [...deleteOldRates, ...deletedOldRatesCoincidences]
+            if(deleteOldRates.length > 0){
+                flagDeleteOldRates = true;
+            }
+            //SE BORRA EL DATO DE COINCIDENCIA DE OLDRATES
+            if(deletedOldRatesCoincidences.length > 0){
+                let indexCoincidence;
+                oldRates.forEach((elOldRates, index) => {
+                    deletedOldRatesCoincidences.forEach(elDeletedOldRatesCoincidences => {
+                        if(elOldRates.id == elDeletedOldRatesCoincidences.id){
+                            indexCoincidence = index;
+                        }
+                    })
+                })
+                oldRates.splice(indexCoincidence, 1);
+            }
+            console.log("OLDRATES",oldRates)
+            console.log("DELETEOLDS", deleteOldRates)
+            console.log("deletedOldRatesCoincidences", deletedOldRatesCoincidences)
             try {
                 if(flagNewRates == true){
-                    console.log("NEW RATES", newRates)
-                    // dispatch("postAddRatesAXIOS", newRates).then(()=>{
-                    //     dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
-                    //         dispatch("getRates", newArrayPutRates.arrayIdRooms)
-                    //     });
-                    // });
+                    if(flagDeleteOldRates == true){
+                        dispatch("putDeleteRatesAXIOS", deleteOldRates).then(()=>{
+                            dispatch("postAddRatesAXIOS", newRates).then(()=>{
+                                dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                                    dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                                });
+                            });
+                        });
+                    }
+                    else{
+                        dispatch("postAddRatesAXIOS", newRates).then(()=>{
+                            dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                                dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                            });
+                        });
+                    }
                 }
                 else{
-                    // dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
-                    //     dispatch("getRates", newArrayPutRates.arrayIdRooms)
-                    // });
+                    if(flagDeleteOldRates == true){
+                        dispatch("putDeleteRatesAXIOS", deleteOldRates).then(()=>{
+                            dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                                dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                            });
+                        });
+                    }
+                    else{
+                        dispatch("putUpdateRatesAXIOS", oldRates).then(()=>{
+                            dispatch("getRates", newArrayPutRates.arrayIdRooms)
+                        });
+                    }
                 }
             } catch (error) {
-                //commit("setErrorsRegimes", error.response.data);
-                //commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -193,15 +264,13 @@ const disponibilityMoule = {
                         );
                         arrayRequestAddItemRate.push(requestAddItemRate.data.data)
                     } catch (error) {
-                        commit("setErrorsRegimes", error.response.data);
-                        commit("setStatusRegimes", error.response.status);
+
                     }
                 });
-                // commit("postAddRates", arrayRequestAddItemRate);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrorsRegimes", error.response.data);
-                commit("setStatusRegimes", error.response.status);
+                //commit("setErrorsRegimes", error.response.data);
+                //commit("setStatusRegimes", error.response.status);
             }
         },
 
@@ -217,16 +286,37 @@ const disponibilityMoule = {
                         arrayRequestItemRate.push(requestItemRate.data.data)
                     } 
                     catch (error) {
-                        //commit("setErrorsRegimes", error.response.data);
-                        //commit("setStatusRegimes", error.response.status);
+
                     }
                 });
-                // commit("putUpdateRates", arrayRequestItemRate);
                 // commit('setStatus',request.status);
                 // commit('setStatus',request.status);
             } catch (error) {
-                commit("setErrorsRegimes", error.response.data);
-                commit("setStatusRegimes", error.response.status);
+                //commit("setErrorsRegimes", error.response.data);
+                //commit("setStatusRegimes", error.response.status);
+            }
+        },
+
+        putDeleteRatesAXIOS: async function({ commit }, newArrayDeleteRates) {
+            try {
+                let idRequestItemRate = [];
+                newArrayDeleteRates.forEach(async itemRate => {
+                    try {
+                        const requestItemRate = await axios.delete(
+                            `/api/rates/${itemRate.id}`,
+                            itemRate
+                        );
+                        idRequestItemRate.push(requestItemRate.data.data.id);
+                    } 
+                    catch (error) {
+
+                    }
+                });
+                // commit('setStatus',request.status);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                //commit("setErrorsRegimes", error.response.data);
+                //commit("setStatusRegimes", error.response.status);
             }
         },
     }

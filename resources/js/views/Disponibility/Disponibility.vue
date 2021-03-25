@@ -436,7 +436,7 @@ export default {
       this.putEditRates({arrayRates: this.rates, arrayIdRooms: this.arrayRoomIDs}).then(()=>{
         this.setSnackbar({stateSnackbar: true, messaggeSnackbar: "El registro se guardó con exito", colorSnackbar: "green darken-1"});
         this.loadingButton = false;
-        //this.copyArrayRates MODIFICAAAAAAAAAAAAARRRR
+        this.copyArrayRates = JSON.parse(JSON.stringify(this.rates));
         this.btnResetTable();
       });
       console.log(this.rates)

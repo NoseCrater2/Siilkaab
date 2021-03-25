@@ -93,7 +93,7 @@ export default {
     methods: {
       ...mapMutations(["mutationReloadDates", "mutationFlagCalendarModified", "mutationFlagCleanPeriodConfigTextfields"]),
       validateQuantity(event){
-        if(parseInt(this.unityModel) > parseInt(this.rooms[this.indexCompo].quantity)){
+        if(parseInt(this.unityModel) >= parseInt(this.rooms[this.indexCompo].quantity)){
           let subs = parseInt(this.unityModel) - parseInt(this.rooms[this.indexCompo].quantity)
           let quantity = parseInt(this.unityModel) - subs
           this.unityModel = quantity.toString();
@@ -165,7 +165,9 @@ export default {
                           }
                         }
                         else if(typeof(modelRate) == 'object'){
-                          rateItem.day = "day"
+                          if(modelUnity == ""){
+                            rateItem.day = "day"
+                          }
                           rateItem.rack = 0;
                         }
                       }
@@ -210,8 +212,10 @@ export default {
                           }
                         }
                         else if(typeof(modelRate) == 'object'){
-                          rateItem.start = "start"
-                          rateItem.end = "end"
+                            if(modelUnity == ""){
+                              rateItem.start = "start"
+                              rateItem.end = "end"
+                            }
                           rateItem.rack = 0;
                         }
                       }
@@ -507,10 +511,11 @@ export default {
         set(model){
           //Ejecuta el metodo para cambiar la tarifa
           let modelUnity = model;
-          if(parseInt(modelUnity) > parseInt(this.rooms[this.indexCompo].quantity)){
+          if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
             let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
             let quantity = parseInt(modelUnity) - subs
             modelUnity = quantity.toString();
+            this.unityModel = modelUnity;
           }
           this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
           return this.unityModel;
@@ -523,10 +528,11 @@ export default {
         set(model) {
           //Ejecuta el metodo para cambiar la tarifa
           let modelUnity = this.unityModel;
-          if(parseInt(modelUnity) > parseInt(this.rooms[this.indexCompo].quantity)){
+          if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
             let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
             let quantity = parseInt(modelUnity) - subs
             modelUnity = quantity.toString();
+            this.unityModel = modelUnity;
           }
           this.changeRate(model, modelUnity, this.rooms[this.indexCompo].id);
           return this.rateModel;
@@ -546,19 +552,21 @@ export default {
               return; //Esto para salir inmediatamente de este metodo sin ejecutar lo demas
             }
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) > parseInt(this.rooms[this.indexCompo].quantity)){
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
               let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
               let quantity = parseInt(modelUnity) - subs
               modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
             }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id, "watchP3");
           }
-          else{
+          else if(this.rateModel != "" || this.unityModel != ""){
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) > parseInt(this.rooms[this.indexCompo].quantity)){
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
               let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
               let quantity = parseInt(modelUnity) - subs
               modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
             }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id, "watchP3");
             if(this.rooms.length -1 == this.indexCompo){
@@ -584,19 +592,21 @@ export default {
               return; //Esto para salir inmediatamente de este metodo sin ejecutar lo demas
             }
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) > parseInt(this.rooms[this.indexCompo].quantity)){
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
               let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
               let quantity = parseInt(modelUnity) - subs
               modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
             }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
           }
-          else{
+          else if(this.rateModel != "" || this.unityModel != ""){
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) > parseInt(this.rooms[this.indexCompo].quantity)){
+            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
               let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
               let quantity = parseInt(modelUnity) - subs
               modelUnity = quantity.toString();
+              this.unityModel = modelUnity;
             }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
             if(this.rooms.length -1 == this.indexCompo){
