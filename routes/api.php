@@ -38,6 +38,10 @@ Route::post('reservation-client/{reservation}', 'ReservationController@updateCli
 Route::post('reservation-state/{reservation}', 'ReservationController@updateState');
 
 
+Route::get('dashboard','ReservationController@dashboard');
+Route::get('earnings','ReservationController@earnings');
+
+
 // NOTAS DE RESERVACIONES
 Route::get('notes/{reservation}','NoteController@index');
 Route::post('notes','NoteController@store');

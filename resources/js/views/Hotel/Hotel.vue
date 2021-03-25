@@ -55,6 +55,12 @@
                   <AditionalInfo></AditionalInfo>
                 </div>
               </div>
+              <div v-if="iditemsListOptions > 5 && chargeView === true">
+                <div v-if="hotel !== null">
+                   <Information></Information>
+                </div>
+              </div>
+              
             </v-col>
             <v-snackbar
               :value="snackbar.stateSnackbar"
