@@ -36,7 +36,10 @@ Route::get('reservation/{reservation}','ReservationController@show');
 Route::get('history-reservation/{reservation}', 'ReservationController@history');
 Route::post('reservation-client/{reservation}', 'ReservationController@updateClientInformation');
 Route::post('reservation-state/{reservation}', 'ReservationController@updateState');
+
+
 Route::get('dashboard','ReservationController@dashboard');
+Route::get('earnings','ReservationController@earnings');
 
 
 // NOTAS DE RESERVACIONES

@@ -23,7 +23,8 @@ class HotelIndexResource extends JsonResource
            // 'rates' => $this->rooms()->where('rate_id','!=' ,null)->count(),
             'discounts' => $this->rooms()->where('discount_id','!=' ,null)->count(),
             'extras' => $this->rooms()->where('extra_id','!=' ,null)->count(),
-            'enabled' => $this->enabled
+            'enabled' => $this->enabled,
+            
         ];
     }
 }

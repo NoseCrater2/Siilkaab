@@ -43,6 +43,7 @@ class ConfigurationController extends Controller
             'timezone' => 'required|timezone',
             'payment_place' => 'required|in:online,offline,both',
             'payment_type'  =>'required',
+            'color' => 'string',
             'currency_id' => 'required|exists:currencies,id',
             'hotel_id' => 'required|exists:hotels,id'
         ];
@@ -89,6 +90,7 @@ class ConfigurationController extends Controller
             'timezone' => 'timezone',
             'payment_place' => 'required|in:online,offline,both',
             'payment_type'  =>'required',
+            'color' => 'string',
             'currency_id' => 'exists:currencies,id',
             'hotel_id' => 'exists:hotels,id'
         ];
