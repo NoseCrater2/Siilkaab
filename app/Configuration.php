@@ -13,6 +13,7 @@ class Configuration extends Model
         'timezone',
         'payment_place',
         'payment_type',
+        'color',
         'currency_id',
         'hotel_id'
     ];

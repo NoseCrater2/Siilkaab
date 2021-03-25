@@ -222,7 +222,4 @@ class HotelController extends Controller
         }   
     }
 
-    
-
-
 }

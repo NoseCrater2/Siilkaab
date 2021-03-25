@@ -95,7 +95,7 @@ const bookingsModule = {
 
         getReservations: async function ({ commit}, id){
             const request =  await axios
-            .get("/api/reservations/"+id);
+            .get(`/api/reservations/${id}`);
             commit('setReservations',request.data.data)
          
         },
@@ -136,7 +136,7 @@ const bookingsModule = {
 
 
             const request =  await axios
-            .post("/api/reservations/", data);
+            .post('/api/reservations/', data);
             commit('setReservation',request.data.data)
          
         },
@@ -150,14 +150,14 @@ const bookingsModule = {
 
         saveNote: async function ({ commit}, data){
             const request =  await axios
-            .post("/api/notes/", data);
+            .post('/api/notes/', data);
             commit('addNote',request.data.data)
          
         },
 
         deleteNote: async function ({ commit}, id){
             const request =  await axios
-            .delete("/api/notes/"+id);
+            .delete('/api/notes/'+id);
             commit('deleteNote',request.data.data)
          
         },

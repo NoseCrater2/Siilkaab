@@ -21,6 +21,7 @@ class CreateConfigurationsTable extends Migration
             $table->string('notification_card')->required();
             $table->enum('payment_place',['online','offline','both'])->required();
             $table->string('payment_type')->required();
+            $table->string('color')->required()->default('blue');
             $table->unsignedBigInteger('currency_id');
             $table->foreign('currency_id')->references('id')->on('currencies');
             $table->unsignedBigInteger('hotel_id');

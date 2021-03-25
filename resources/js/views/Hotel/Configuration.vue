@@ -109,6 +109,53 @@
           ></v-text-field>
         </v-col>
       </v-row>
+      <v-banner single-line>
+        <div class="d-flex align-center ml-1">
+          <v-icon class="mb-1" left>mdi-pa</v-icon>
+          <div class="mt-n1">
+            <span class="text-h6 font-weight-bold">PERSONALIZACIÓN</span>
+          </div>
+        </div>
+      </v-banner>
+      <v-row>
+        <v-col cols="12" md="6" sm="12">
+          <v-alert outlined type="info" >
+            Seleccione un color primario para personalizar su hotel o para diferenciarlo cuando tiene más de uno,
+            si no elige un color se asignará el azul (Blue) por default.
+          </v-alert>
+        </v-col>
+        <v-col cols="12" md="6" sm="12">
+          <v-autocomplete
+          chips
+          v-model="configuration.color"
+          :items="colors"
+          label="Selecciona color"
+          item-text="name"
+          item-value="color">
+            <template v-slot:selection="data">
+              <v-chip
+              outlined
+              :input-value="data.select">
+                <v-avatar left :color="data.item.color">
+                </v-avatar>
+                {{ data.item.name }}
+              </v-chip>
+            </template>
+
+            <template v-slot:item="data">
+              <template>
+                <v-list-item-avatar>
+                  <v-avatar :color="data.item.color">
+                </v-avatar>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                      <v-list-item-title v-html="data.item.name"></v-list-item-title>
+                  </v-list-item-content>
+              </template>
+            </template>
+          </v-autocomplete>
+        </v-col>
+      </v-row>
     </v-card>
   </div>
 </template>
@@ -120,6 +167,23 @@ export default {
   name: "Configuration",
   data() {
     return {
+      colors:[
+        {name: 'Red', color: 'red'},
+        {name: 'Pink', color: 'pink'},
+        {name: 'Purple', color: 'purple'},
+        {name: 'Indigo', color: 'indigo'},
+        {name: 'Blue', color: 'blue'},
+        {name: 'Cyan', color: 'cyan'},
+        {name: 'Teal', color: 'teal'},
+        {name: 'Lime', color: 'lime'},
+        {name: 'Yellow', color: 'yellow'},
+        {name: 'Amber', color: 'amber'},
+        {name: 'Orange', color: 'orange'},
+        {name: 'Brown', color: 'brown'},
+        {name: 'Grey', color: 'grey'},
+
+      ],
+      selectedColor: 'blue',
       paymentTypeItems: ['Una noche', 'Mitad de reserva', 'Reserva completa'],
       ddwnPaymentTypeModel: null,
       selectPaymentsPlaceModel: [],

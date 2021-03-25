@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from '../routes';
 const HotelModule = {
     state: {
         snackbar: {
@@ -12,7 +13,7 @@ const HotelModule = {
         setReinicializedVar: null,
         chargeView: false, //Variable que carga las vistas de componentes de submenus de hotel
         assignHotels: null,
-        iditemsListOptions: 0,
+        iditemsListOptions: parseInt(router.currentRoute.query.option) || 0 ,
         hotel: {
             id: null,
             title: null,
@@ -32,6 +33,7 @@ const HotelModule = {
             notification_voucher: null,
             notification_card: null,
             timezone: null,
+            color: 'blue',
             payment_place: null,
             payment_type: null,
             currency_id: null,
@@ -169,7 +171,7 @@ const HotelModule = {
                 colorSnackbar: ""
             }),
             (state.timeoutSnackbar= 3500),
-            (state.iditemsListOptions = 0),
+            (state.iditemsListOptions = parseInt(router.currentRoute.query.option)  || 0),
             (state.setReinicializedVar = null),
             (state.chargeView = false),
                 (state.hotel = {
@@ -192,6 +194,7 @@ const HotelModule = {
                     timezone: null,
                     payment_place: null,
                     payment_type: null,
+                    color: 'blue',
                     currency_id: null,
                     hotel_id: null,
                 }),
@@ -318,7 +321,9 @@ const HotelModule = {
         },
         //Metodo para mover el contador de items del MenuLateral.vue y ser usado en Hotel.vue
         countIditemsListOptions(state, index) {
+            router.app.$router.push({query: {...router.app.$route.query, option: index}})
             state.iditemsListOptions = index;
+        
         },
         //Mutacion para los errores
         setErrorsInformation(state,errors){

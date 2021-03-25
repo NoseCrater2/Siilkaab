@@ -1,11 +1,12 @@
 <template>
   <div>
     <v-card class="pa-2" outlined tile>
-      <v-list dense>
+      <v-list dense >
         <v-list-item-group
           :value.sync="iditemsListOptions"
           color="primary"
           mandatory
+          @change="changeOption($event)"
         >
           <v-list-item
             :class="getArrayErrors[i] == 422 ? 'v-item--active v-list-item--active' : ''"
@@ -45,6 +46,7 @@ export default {
       ],
     };
   },
+
   computed: {
     ...mapGetters(["getArrayErrors"]),
     ...mapState({
@@ -57,6 +59,9 @@ export default {
     }),
   },
   methods: {
+    changeOption(value){
+      console.log(value)
+    },
     ...mapMutations(["countIditemsListOptions"]),
     setNumberErrors(index) {
       if (index == 0 && this.errorsInformation) {
