@@ -37,14 +37,17 @@ class ContactController extends Controller
         $rules = [
             'url' => 'required|url',
             'email' => 'required|email',
-            'phone' => 'required|alpha_num',
-            'address' => 'required|string',
-            'zipcode' => 'required|numeric',
-            'city' => 'required|alpha_num',
-            'state' => 'required|alpha_num',
+            // 'phone' => 'required|alpha_num',
+            // 'address' => 'required|string',
+            // 'zipcode' => 'required|numeric',
+            // 'city' => 'required|string',
+            // 'state' => 'required|string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'display_name' => 'required|string',
             'manager_name' => 'required|string',
             'legal_rep' => 'required|string',
-            'country_id' => 'required|exists:countries,id',
+            // 'country_id' => 'required|exists:countries,id',
             'hotel_id' => 'required|exists:hotels,id'
         ];
                   
@@ -86,13 +89,16 @@ class ContactController extends Controller
             'url' => 'url',
             'email' => 'email',
             'phone' => 'alpha_num',
-            'address' => 'string',
-            'zipcode' => 'numeric',
-            'city' => 'alpha_num',
-            'state' => 'alpha_num',
+            // 'address' => 'string',
+            // 'zipcode' => 'numeric',
+            // 'city' => 'alpha_num',
+            // 'state' => 'alpha_num',
             'manager_name' => 'string',
             'legal_rep' => 'string',
-            'country_id' => 'exists:countries,id',
+            'latitude' => 'numeric',
+            'longitude' => 'numeric',
+            'display_name' => 'string',
+            // 'country_id' => 'exists:countries,id',
             'hotel_id' => 'exists:hotels,id'
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
