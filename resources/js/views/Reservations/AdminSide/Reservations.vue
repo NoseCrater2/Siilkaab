@@ -72,8 +72,7 @@ export default {
             reservations: state => state.bookingsModule.reservations,  
             hotels: (state) => state.HotelModule.allhotels,
             configuration: state => state.HotelModule.configuration, 
-
-    }),
+        }),
     },
     
     mounted(){

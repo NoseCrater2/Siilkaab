@@ -113,7 +113,7 @@
               </v-alert>
               <div class="text-center">
                 <div class="font-weight-light grey--text title mb-2 d-inline">
-                Reservar 2 habitaciones por 
+                Reservar {{bookings.rooms.length}} habitación(es) por 
               </div>
               <h3 v-if="currencyFormat != null" class="display-1 font-weight-light blue--text mb-2 d-inline">
                 {{currencyFormat.format(subTotal)}}
@@ -124,7 +124,9 @@
               <div class="ma-4" id="paypal-button-container"></div>
                 </v-col>
               </v-row>
-              
+              <v-overlay style="z-index: 4" :value="overlay">
+                <v-progress-circular indeterminate size="64"></v-progress-circular>
+              </v-overlay>
            
           </v-card>
 </template>
@@ -137,7 +139,9 @@ export default {
         return {
           selectedPayment: null,
           currencyFormat : null,
+          overlay: false,
           form:{
+            
             name: null,
             last_name: null,
             country: 'México',
@@ -174,14 +178,17 @@ export default {
                             })
                             }).bind(this),
               onApprove: (function (data, actions) {
+                 this.overlay = true
                 data.paymentPlatformID =  1;
                 return axios.post("/api/payments/success",data)
                             .then( data => {
                               this.form.payed = this.subTotal
                               this.form.hotel = this.hotel.id
                               //LLAMAR EL ENDPOINT DE CREAR RESERVA
+                             
                               this.$store.dispatch('saveReservation', this.form).then(()=>{
                                  this.$router.push({name: 'Confirmation'})
+                                 this.overlay = false
                               })
                              
                             })

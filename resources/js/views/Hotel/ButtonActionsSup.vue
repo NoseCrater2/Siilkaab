@@ -255,7 +255,7 @@ export default {
         }
         //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
         //CODIGO PARA GUARDAR CONTACTOS INICIA
-        if(this.contacts.address != null){
+        
           if(this.hotel.idContact == null){
             //metodo post
             this.contacts.hotel_id = idHotel;
@@ -265,7 +265,7 @@ export default {
             //metodo put
             this.putEditContacts(this.contacts);
           }
-        }
+        
         //CODIGO PARA GUARDAR CONTACTOS TERMINA
         //CODIGO PARA GUARDAR CONDICIONES INICIA
         if(this.conditions.adults != null){

@@ -107,6 +107,13 @@ const bookingsModule = {
          
         },
 
+        getDasboardReservations: async function ({ commit}){
+            const request =  await axios
+            .get("/api/dashboard-reservations/");
+            commit('setReservations',request.data.data)
+         
+        },
+
         getHistory: async function ({ commit}, id){
             const request =  await axios
             .get("/api/history-reservation/"+id);

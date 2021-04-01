@@ -4,6 +4,10 @@ import router from "./routes";
 import vuetify from './plugins/vuetify'
 import moment from 'moment';
 import VueMoment from 'vue-moment'
+
+import "leaflet/dist/leaflet.css";
+import "leaflet-geosearch/dist/geosearch.css";
+
 // import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
 
 //Estas importaciones son de TipTap para usar componente MarkdwonCompo

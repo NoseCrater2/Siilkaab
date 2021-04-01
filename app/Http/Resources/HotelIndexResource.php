@@ -24,6 +24,8 @@ class HotelIndexResource extends JsonResource
             'discounts' => $this->rooms()->where('discount_id','!=' ,null)->count(),
             'extras' => $this->rooms()->where('extra_id','!=' ,null)->count(),
             'enabled' => $this->enabled,
+            'currency_code' => isset($this->configuration)?$this->configuration->currency->code:'MXN',
+            'currency_symbol' => isset($this->configuration)?$this->configuration->currency->symbol:'$',
             
         ];
     }

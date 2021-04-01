@@ -48,11 +48,7 @@ class ShowReservationResource extends JsonResource
             'hotel_url' => $this->hotel->url,
             'hotel_email' => $this->hotel->contact->email,
             'hotel_phone' => $this->hotel->contact->phone,
-            'hotel_address' => $this->hotel->contact->address.' '.
-                                $this->hotel->contact->city.', '.
-                                $this->hotel->contact->zipcode.' '.
-                                $this->hotel->contact->state.', '.
-                                $this->hotel->contact->country->name,
+            'hotel_address' => $this->hotel->contact->display_name,
 
         ];
     }

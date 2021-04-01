@@ -39,7 +39,11 @@ Route::post('reservation-state/{reservation}', 'ReservationController@updateStat
 
 
 Route::get('dashboard','ReservationController@dashboard');
-Route::get('earnings','ReservationController@earnings');
+
+Route::get('earnings/{year}/{id}','ReservationController@earnings');
+Route::get('anual-earnings/{id}','ReservationController@anualEarnings');
+
+Route::get('dashboard-reservations','ReservationController@dashboardReservations');
 
 
 // NOTAS DE RESERVACIONES

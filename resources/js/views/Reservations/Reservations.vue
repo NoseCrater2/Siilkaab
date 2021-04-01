@@ -177,7 +177,7 @@
           <v-card-title>{{hotel.title}}</v-card-title>
           <v-card-text>
              <v-icon>mdi-map-marker</v-icon>
-             {{contact.address +', '+ contact.zipcode +' '+  contact.city +' '+ contact.state +', '+ contact.country}}
+             {{contact.display_name}}
           </v-card-text>
           <v-divider></v-divider>
           
@@ -231,6 +231,18 @@
        <v-col   cols="12" md="9" sm="12" order-sm="1" order-md="2" >
         <router-view :key="$route.path"></router-view>
       </v-col>
+        </v-row>
+        <v-row>
+          <iframe 
+          width="100%" 
+          height="50%" 
+          frameborder="0" 
+          scrolling="no" 
+          marginheight="0" 
+          marginwidth="0" 
+          :src="`https://maps.google.com/maps?q=${contact.latitude},${contact.longitude}&hl=es&z=14&amp;output=embed`"
+          >
+ </iframe>
         </v-row>
       </v-container>
     </v-row>
