@@ -45,6 +45,7 @@ class PoolController extends Controller
             'towels' => 'boolean',
             'bar_pool' => 'boolean',
             'open_at' => 'required|date_format:H:i',
+            'close_at' => 'required|after:open_at|date_format:H:i',
             'hotel_id' => 'required|exists:hotels,id'
         ];
                 
@@ -91,6 +92,7 @@ class PoolController extends Controller
             'towels' => 'boolean',
             'bar_pool' => 'boolean',
             'open_at' => 'date_format:H:i',
+            'close_at' => 'required|after:open_at|date_format:H:i',
             'hotel_id' => 'exists:hotels,id'
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());

@@ -141,22 +141,19 @@ export default {
       this.fillModel();
     }
   },
-  mounted() {
-    
-  },
   data() {
     return {
-      visibleNumRoomsNumFloors: false,
+      visibleNumRoomsNumFloors: true,
       currentImage: null,
       urlTemporal: "",
       typeItems: ["Bungalow", "Cabaña", "Edificio"],
-      ddwnTypeModel: null,
-      titleModel: null,
-      urlModel: null,
-      referenceCModel: null,
-      numRoomsModel: '',
-      numFloorsModel: '',
-      shortTModel: null,
+      ddwnTypeModel: "Edificio",
+      titleModel: "",
+      urlModel: "",
+      referenceCModel: "",
+      numRoomsModel: "",
+      numFloorsModel: "",
+      shortTModel: "",
 
       nameImageFileSpan: "",
       rules: {
@@ -250,48 +247,6 @@ export default {
     },
     //Metodo para llenar la vista con los datos
     fillModel(){
-      if(this.hotel.title != null){
-        this.titleModel = this.hotel.title;
-      }
-      else{
-        this.hotel.title = "";
-        this.titleModel = this.hotel.title;
-      }
-      if(this.hotel.url != null){
-        this.urlModel = this.hotel.url;
-      }
-      else{
-        this.hotel.url = "";
-        this.urlModel = this.hotel.url;
-      }
-      if(this.hotel.reference_code != null){
-        this.referenceCModel = this.hotel.reference_code;
-      }
-      else{
-        this.hotel.reference_code = "";
-        this.referenceCModel = this.hotel.reference_code;
-      }
-      if(this.hotel.num_rooms != null){
-        this.numRoomsModel = this.hotel.num_rooms;
-      }
-      else{
-        this.hotel.num_rooms = '';
-        this.numRoomsModel = this.hotel.num_rooms;
-      }
-      if(this.hotel.num_floors != null){
-        this.numFloorsModel = this.hotel.num_floors;
-      }
-      else{
-        this.hotel.num_floors = '';
-        this.numFloorsModel = this.hotel.num_floors;
-      }
-      if(this.hotel.short_text != null){
-        this.shortTModel = this.hotel.short_text;
-      }
-      else{
-        this.hotel.short_text = "";
-        this.shortTModel = this.hotel.short_text;
-      }
       if(this.hotel.image != null || this.hotel.image != ""){
         if(this.hotel.image != null && typeof(this.hotel.image) == 'object'){
           this.currentImage = this.hotel.image.temporalURL
@@ -301,32 +256,6 @@ export default {
             this.currentImage = "/img/" + this.hotel.image;
           }
         }
-      }
-      else{
-        //console.log("noImage")
-      }
-      if (this.hotel.type != null) {
-        if (this.hotel.type == "bungalow") {
-          this.visibleNumRoomsNumFloors = false;
-          this.numRoomsModel = ''
-          this.numFloorsModel = ''
-          this.ddwnTypeModel = "Bungalow";
-        }
-        if (this.hotel.type == "cabana") {
-          this.visibleNumRoomsNumFloors = false;
-          this.numRoomsModel = ''
-          this.numFloorsModel = ''
-          this.ddwnTypeModel = "Cabaña";
-        }
-        if (this.hotel.type == "build") {
-          this.visibleNumRoomsNumFloors = true;
-          this.ddwnTypeModel = "Edificio";
-        }
-      }
-      else{
-        this.hotel.type = "build";
-        this.visibleNumRoomsNumFloors = true;
-        this.ddwnTypeModel = "Edificio";
       }
     },
     keyhandler(event) {
@@ -344,7 +273,7 @@ export default {
     }),
     computedTitle: {
       get() {
-        return this.titleModel;
+        return this.hotel.title != null ? this.hotel.title : this.titleModel;
       },
       set(model) {
         this.titleModel = model;
@@ -355,7 +284,7 @@ export default {
 
     computedUrl: {
       get() {
-        return this.urlModel;
+        return this.hotel.url != null ? this.hotel.url : this.urlModel;
       },
       set(model) {
         this.urlModel = model;
@@ -366,7 +295,7 @@ export default {
 
     computedReferenceC: {
       get() {
-        return this.referenceCModel;
+        return this.hotel.reference_code != null ? this.hotel.reference_code : this.referenceCModel;
       },
       set(model) {
         this.referenceCModel = model;
@@ -377,7 +306,7 @@ export default {
 
     computedNumRooms: {
       get() {
-        return this.numRoomsModel;
+        return this.hotel.num_rooms != null ? this.hotel.num_rooms : this.numRoomsModel;
       },
       set(model) {
         this.numRoomsModel = model;
@@ -388,7 +317,7 @@ export default {
 
     computedNumFloors: {
       get() {
-        return this.numFloorsModel;
+        return this.hotel.num_floors != null ? this.hotel.num_floors : this.numFloorsModel;
       },
       set(model) {
         this.numFloorsModel = model;
@@ -399,6 +328,24 @@ export default {
 
     computedDdwnType: {
       get() {
+        if (this.hotel.type != null) {
+          if (this.hotel.type == "bungalow") {
+            this.visibleNumRoomsNumFloors = false;
+            this.numRoomsModel = ''
+            this.numFloorsModel = ''
+            this.ddwnTypeModel = "Bungalow";
+          }
+          if (this.hotel.type == "cabana") {
+            this.visibleNumRoomsNumFloors = false;
+            this.numRoomsModel = ''
+            this.numFloorsModel = ''
+            this.ddwnTypeModel = "Cabaña";
+          }
+          if (this.hotel.type == "build") {
+            this.visibleNumRoomsNumFloors = true;
+            this.ddwnTypeModel = "Edificio";
+          }
+        }
         return this.ddwnTypeModel;
       },
       set(model) {
@@ -433,7 +380,7 @@ export default {
 
     computedShortT: {
       get() {
-        return this.shortTModel;
+        return this.hotel.short_text != null ? this.hotel.short_text : this.shortTModel;
       },
       set(model) {
         this.shortTModel = model;

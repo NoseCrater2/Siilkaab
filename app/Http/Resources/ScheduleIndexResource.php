@@ -16,7 +16,7 @@ class ScheduleIndexResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'day' => $this->day,
+            'day' => json_decode($this->day),
             'start_time' => $this->start_time,
             'end_time' => $this->end_time,
             'restaurant_id'=> isset($this->restaurant)?$this->restaurant->id:null,

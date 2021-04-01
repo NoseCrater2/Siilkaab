@@ -58,13 +58,13 @@
           <v-dialog
             ref="dialogChekin"
             v-model="modalCheckin"
-            :return-value.sync="checkinTimeModel"
+            :return-value.sync="computedCheckinTime"
             persistent
             width="290px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="checkinTimeModel"
+                v-model="computedCheckinTime"
                 :readonly="true"
                 label="Check-in"
                 prepend-inner-icon="mdi-clock"
@@ -75,7 +75,7 @@
                 :error-messages="errorsConditions.checkin_time"
               ></v-text-field>
             </template>
-            <v-time-picker v-if="modalCheckin" v-model="checkinTimeModel" format="24hr" full-width>
+            <v-time-picker v-if="modalCheckin" v-model="computedCheckinTime" format="24hr" full-width>
               <v-spacer></v-spacer>
               <v-btn text color="primary" @click="modalCheckin = false">Cancelar</v-btn>
               <v-btn
@@ -90,13 +90,13 @@
           <v-dialog
             ref="dialogChekout"
             v-model="modalCheckout"
-            :return-value.sync="checkoutTimeModel"
+            :return-value.sync="computedCheckoutTime"
             persistent
             width="290px"
           >
             <template v-slot:activator="{ on, attrs }">
               <v-text-field
-                v-model="checkoutTimeModel"
+                v-model="computedCheckoutTime"
                 :readonly="true"
                 label="Check-out"
                 prepend-inner-icon="mdi-clock"
@@ -109,7 +109,7 @@
             </template>
             <v-time-picker
               v-if="modalCheckout"
-              v-model="checkoutTimeModel"
+              v-model="computedCheckoutTime"
               format="24hr"
               full-width
             >
@@ -152,24 +152,16 @@ import MarkdownCompo from "../../components/Markdown/MarkdownCompo";
 import { mapState } from "vuex";
 export default {
   name: "Condition",
-  created() {
-    if (this.hotel.idCondition !== null) {
-      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
-    }
-    else{
-      this.fillModel();
-    }
-  },
   data() {
     return {
-      adultsModel: null,
-      childrenAgeModel: null,
-      adultsRegimenModel: null,
-      adultsAgeModel: null,
+      adultsModel: 0,
+      childrenAgeModel: "",
+      adultsRegimenModel: "",
+      adultsAgeModel: "",
       modalCheckin: false,
-      checkinTimeModel: null,
+      checkinTimeModel: "",
       modalCheckout: false,
-      checkoutTimeModel: null,
+      checkoutTimeModel: "",
       rules: {
         validAges: value => {
           const pattern = /^(1|[0-9]\d{0,3})$/
@@ -191,11 +183,16 @@ export default {
     //Codigo para guardar temporalmente en el state
     computedAdults: {
       get() {
-        if(this.adultsModel == 1 || this.adultsModel == true){
-          this.childrenAgeModel = 0;
-          this.conditions.children_age = this.childrenAgeModel;
+        if(this.conditions.adults != null){
+          if(this.adultsModel == 1 || this.adultsModel == true){
+            this.childrenAgeModel = 0;
+            this.conditions.children_age = this.childrenAgeModel;
+          }
+          return this.conditions.adults;
         }
-        return this.adultsModel;
+        else{
+          return this.adultsModel;
+        }
       },
       set(model) {
         if(model == 1 || model == true){
@@ -209,7 +206,7 @@ export default {
     },
     computedChildrenAge: {
       get() {
-        return this.childrenAgeModel;
+        return this.conditions.children_age != null ? this.conditions.children_age : this.childrenAgeModel;
       },
       set(model) {
         this.childrenAgeModel = model;
@@ -219,7 +216,7 @@ export default {
     },
     computedAdultsRegimen: {
       get() {
-        return this.adultsRegimenModel;
+        return this.conditions.adults_regimen != null ? this.conditions.adults_regimen : this.adultsRegimenModel;
       },
       set(model) {
         this.adultsRegimenModel = model;
@@ -229,13 +226,33 @@ export default {
     },
     computedAdultsAge: {
       get() {
-        return this.adultsAgeModel;
+        return this.conditions.adults_age != null ? this.conditions.adults_age : this.adultsAgeModel;
       },
       set(model) {
         this.adultsAgeModel = model;
         this.conditions.adults_age = this.adultsAgeModel;
         return this.adultsAgeModel;
       },
+    },
+    computedCheckinTime: {
+      get(){
+        return this.conditions.checkin_time != null ? this.conditions.checkin_time : this.checkinTimeModel;
+      },
+      set(model){
+        this.checkinTimeModel = model;
+        this.conditions.checkin_time = this.checkinTimeModel;
+        return this.checkinTimeModel;
+      }
+    },
+    computedCheckoutTime: {
+      get(){
+        return this.conditions.checkout_time != null ? this.conditions.checkout_time : this.checkoutTimeModel;
+      },
+      set(model){
+        this.checkoutTimeModel = model;
+        this.conditions.checkout_time = this.checkoutTimeModel;
+        return this.checkoutTimeModel;
+      }
     },
     checkoutTimeSaveState() {
       this.conditions.checkout_time = this.checkoutTimeModel;
@@ -247,53 +264,6 @@ export default {
     },
   },
   methods:{
-    fillModel(){
-      if(this.conditions.adults != null){
-          this.adultsModel = this.conditions.adults;
-      }
-      else{
-          this.conditions.adults = 0;
-          this.adultsModel = this.conditions.adults;
-      }
-      if(this.conditions.children_age != null){
-          this.childrenAgeModel = this.conditions.children_age;
-      }
-      else{
-          this.conditions.children_age = "";
-          this.childrenAgeModel = this.conditions.children_age;
-      }
-      if(this.conditions.adults_regimen != null){
-          this.adultsRegimenModel = this.conditions.adults_regimen;
-      }
-      else{
-          this.conditions.adults_regimen = "";
-          this.adultsRegimenModel = this.conditions.adults_regimen;
-      } 
-      if(this.conditions.adults_age != null){
-          this.adultsAgeModel = this.conditions.adults_age;
-      }
-      else{
-          this.conditions.adults_age = "";
-          this.adultsAgeModel = this.conditions.adults_age;
-      } 
-      if(this.conditions.checkin_time != null){
-          this.checkinTimeModel = this.conditions.checkin_time;
-      }
-      else{
-          this.conditions.checkin_time = "";
-          this.checkinTimeModel = this.conditions.checkin_time;
-      }    
-      if(this.conditions.checkout_time != null){
-          this.checkoutTimeModel = this.conditions.checkout_time;
-      }
-      else{
-          this.conditions.checkout_time = "";
-          this.checkoutTimeModel = this.conditions.checkout_time;
-      }
-      if(this.conditions.cancelation_text == null){
-          this.conditions.cancelation_text = "";
-      }
-    },
     keyhandler(event) {
       const pattern = /^(1|[0-9]\d{0,3})$/
       if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){

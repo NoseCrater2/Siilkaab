@@ -21,7 +21,14 @@
       </v-col>
 
       <v-col cols="12" md="6" sm="12" xs="12">
-        <v-switch :error-messages="computedErrorOnlyRoom" v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="36">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch :error-messages="computedErrorOnlyRoom" v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Sólo dormir. Sin regímenes</span>
+          </v-tooltip>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
         <v-select
@@ -35,17 +42,24 @@
         ></v-select>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
-        <v-switch v-model="computedSwBreakfast" inset label="Alojamiento y desayuno"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="12">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwBreakfast" inset label="Alojamiento y desayuno"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Alojamiento con desayuno incluido</span>
+          </v-tooltip>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtBreakfastAdult"
-          prepend-inner-icon="mdi-human-male"
+          prepend-inner-icon="mdi-currency-usd"
           label="Adulto"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
           :error-messages="computedErrorLodgingBreakfastAdult"
         ></v-text-field>
@@ -53,28 +67,35 @@
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtBreakfastChildren"
-          prepend-inner-icon="mdi-human-male-boy"
+          prepend-inner-icon="mdi-currency-usd"
           label="Niño"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
           :error-messages="computedErrorLodgingBreakfastChildren"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
-        <v-switch v-model="computedSwHalfPension" inset label="Media pension"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-right="18">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwHalfPension" inset label="Media pension"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Media pensión con desayuno y cena incluidos</span>
+          </v-tooltip>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtHalfPensionAdult"
-          prepend-inner-icon="mdi-human-male"
+          prepend-inner-icon="mdi-currency-usd"
           label="Adulto"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
           :error-messages="computedErrorHalfPensionAdult"
         ></v-text-field>
@@ -82,28 +103,35 @@
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtHalfPensionChildren"
-          prepend-inner-icon="mdi-human-male-boy"
+          prepend-inner-icon="mdi-currency-usd"
           label="Niño"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
           :error-messages="computedErrorHalfPensionChildren"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
-        <v-switch v-model="computedSwFullPension" inset label="Pension completa"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="6">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwFullPension" inset label="Pension completa"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Pensión completa con comida y cena</span>
+          </v-tooltip>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtFullPensionAdult"
-          prepend-inner-icon="mdi-human-male"
+          prepend-inner-icon="mdi-currency-usd"
           label="Adulto"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
           :error-messages="computedErrorFullPensionAdult"
         ></v-text-field>
@@ -111,28 +139,35 @@
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtFullPensionChildren"
-          prepend-inner-icon="mdi-human-male-boy"
+          prepend-inner-icon="mdi-currency-usd"
           label="Niño"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
           :error-messages="computedErrorFullPensionChildren"
         ></v-text-field>
       </v-col>
       <v-col cols="12" md="6" sm="12" xs="12">
-        <v-switch v-model="computedSwAllIncluded" inset label="Todo incluido"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="76">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwAllIncluded" inset label="Todo incluido"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Todo incluido</span>
+          </v-tooltip>
       </v-col>
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model.number="computedTxtAllIncludedAdult"
-          prepend-inner-icon="mdi-human-male"
+          prepend-inner-icon="mdi-currency-usd"
           label="Adulto"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
           :error-messages="computedErrorAllIncludedAdult"
         ></v-text-field>
@@ -140,12 +175,12 @@
       <v-col cols="12" md="3" sm="12" xs="12">
         <v-text-field
           v-model="computedTxtAllIncludedChildren"
-          prepend-inner-icon="mdi-human-male-boy"
+          prepend-inner-icon="mdi-currency-usd"
           label="Niño"
           outlined
           required
-          maxlength="3"
-          @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+          maxlength="15"
+          :rules="[rules.validNumericInputs]"
           :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
           :error-messages="computedErrorAllIncludedChildren"
         ></v-text-field>
@@ -627,13 +662,6 @@ export default {
         this.propFinalDate.prop = this.objArrCompo.final_period;
       }
     },
-    keyhandler(event) {
-      const pattern = /^(1|[0-9]\d{0,3})$/
-      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
-        console.log(event.key)
-        event.preventDefault();
-      }
-    }
   },
   components: {
     DateTimePicker,

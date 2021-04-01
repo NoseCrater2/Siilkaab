@@ -62,7 +62,22 @@ const HotelModule = {
             cancelation_text: null,
             hotel_id: null
         },
-        regimes: [],
+        regimes: [
+            {
+                id: "firstRegister",
+                priority: "normal",
+                only_room: 0,
+                lodging_breakfast_children: 0,
+                lodging_breakfast_adult: 0,
+                half_pension_children: 0,
+                half_pension_adult: 0,
+                full_pension_children: 0,
+                full_pension_adult: 0,
+                all_included_children: 0,
+                all_included_adult: 0,
+                hotel_id: null
+            }
+        ],
         restaurants: [],
         schedules: [],
         pools: null,
@@ -221,7 +236,22 @@ const HotelModule = {
                     cancelation_text: null,
                     hotel_id: null
                 }),
-                (state.regimes = []),
+                (state.regimes = [
+                    {
+                        id: "firstRegister",
+                        priority: "normal",
+                        only_room: 0,
+                        lodging_breakfast_children: 0,
+                        lodging_breakfast_adult: 0,
+                        half_pension_children: 0,
+                        half_pension_adult: 0,
+                        full_pension_children: 0,
+                        full_pension_adult: 0,
+                        all_included_children: 0,
+                        all_included_adult: 0,
+                        hotel_id: null
+                    }
+                ]),
                 (state.restaurants = []),
                 (state.schedules = []),
                 (state.pools = null),

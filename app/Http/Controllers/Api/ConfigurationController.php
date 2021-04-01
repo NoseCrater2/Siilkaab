@@ -37,9 +37,12 @@ class ConfigurationController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'notification_voucher' => 'required|email',
-            'notification_details' => 'required|email',
-            'notification_card' => 'required|email',
+            'notification_voucher' => 'required|array|min:1',
+            'notification_voucher.*' => 'required|email|distinct',
+            'notification_details' => 'required|array|min:1',
+            'notification_details.*' => 'required|email|distinct',
+            'notification_card' => 'required|array|min:1',
+            'notification_card.*' => 'required|email|distinct',
             'timezone' => 'required|timezone',
             'payment_place' => 'required|in:online,offline,both',
             'payment_type'  =>'required',
@@ -53,6 +56,9 @@ class ConfigurationController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
+            $data['notification_voucher'] = json_encode($data['notification_voucher']);
+            $data['notification_details'] = json_encode($data['notification_details']);
+            $data['notification_card'] = json_encode($data['notification_card']);
             $data['payment_type'] = json_encode($data['payment_type']);
             $configuration = Configuration::create($data);
             return new ConfigurationIndexResource(Configuration::findOrFail($configuration->id));
@@ -84,9 +90,12 @@ class ConfigurationController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'notification_voucher' => 'email',
-            'notification_details' => 'email',
-            'notification_card' => 'email',
+            'notification_voucher' => 'required|array|min:1',
+            'notification_voucher.*' => 'required|email|distinct',
+            'notification_details' => 'required|array|min:1',
+            'notification_details.*' => 'required|email|distinct',
+            'notification_card' => 'required|array|min:1',
+            'notification_card.*' => 'required|email|distinct',
             'timezone' => 'timezone',
             'payment_place' => 'required|in:online,offline,both',
             'payment_type'  =>'required',
@@ -99,6 +108,10 @@ class ConfigurationController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
+            $data['notification_voucher'] = json_encode($data['notification_voucher']);
+            $data['notification_details'] = json_encode($data['notification_details']);
+            $data['notification_card'] = json_encode($data['notification_card']);
+            $data['payment_type'] = json_encode($data['payment_type']);
             $configuration->update($data);
             return new ConfigurationIndexResource(Configuration::findOrFail($configuration->id));
         }
