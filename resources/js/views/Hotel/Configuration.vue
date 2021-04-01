@@ -73,40 +73,100 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="8">
-          <v-text-field
+        <v-col cols="12" lg="12" md="12" sm="12" xl="12">
+          <v-combobox
+            prepend-inner-icon="mdi-email"
             v-model="computedNotificationVoucher"
-            prepend-inner-icon="mdi-email"
-            label="Notificacion voucher reservas"
+            chips
+            label="Notificación voucher reservas"
+            multiple
             outlined
+            solo
+            flat
             required
-            :rules="[rules.validEmail]"
-            :error-messages="errorsConfiguration.notification_voucher"
-          ></v-text-field>
+            :error-messages="(Object.keys(errorsConfiguration).length > 0 && Object.keys(errorsConfiguration).toString().includes('notification_voucher'))? 'Email(s) inválidos' : ''"
+            append-icon=""
+            :delimiters="[',', ';']"
+          >
+            <template v-slot:selection="{ attrs, item, select, selected }">
+              <v-chip
+                :color="colorChipNotificationVoucher(item)"
+                :dark="colorChipNotificationVoucher(item) == 'red' ? true : false"
+                v-bind="attrs"
+                :input-value="selected"
+                close
+                close-icon="mdi-close"
+                @click="select"
+                @click:close="removeNotificationVoucher(item)"
+              >
+                <span>{{ item }}</span>
+              </v-chip>
+            </template>
+          </v-combobox>
         </v-col>
 
-        <v-col cols="12" md="8">
-          <v-text-field
+        <v-col cols="12" lg="12" md="12" sm="12" xl="12">
+          <v-combobox
+            prepend-inner-icon="mdi-email"
             v-model="computedNotificationDetails"
-            prepend-inner-icon="mdi-email"
-            label="Notificacion detalles de la reserva"
+            chips
+            label="Notificación detalles de la reserva"
+            multiple
             outlined
+            solo
+            flat
             required
-            :rules="[rules.validEmail]"
-            :error-messages="errorsConfiguration.notification_details"
-          ></v-text-field>
+            :error-messages="(Object.keys(errorsConfiguration).length > 0 && Object.keys(errorsConfiguration).toString().includes('notification_details'))? 'Email(s) inválidos' : ''"
+            append-icon=""
+            :delimiters="[',', ';']"
+          >
+            <template v-slot:selection="{ attrs, item, select, selected }">
+              <v-chip
+                :color="colorChipNotificationDetails(item)"
+                :dark="colorChipNotificationDetails(item) == 'red' ? true : false"
+                v-bind="attrs"
+                :input-value="selected"
+                close
+                close-icon="mdi-close"
+                @click="select"
+                @click:close="removeNotificationDetails(item)"
+              >
+                <span>{{ item }}</span>
+              </v-chip>
+            </template>
+          </v-combobox>
         </v-col>
 
-        <v-col cols="12" md="8">
-          <v-text-field
-            v-model="computedNotificationCard"
+        <v-col cols="12" lg="12" md="12" sm="12" xl="12">
+          <v-combobox
             prepend-inner-icon="mdi-email"
+            v-model="computedNotificationCard"
+            chips
             label="Notificación datos de tarjeta"
+            multiple
             outlined
+            solo
+            flat
             required
-            :rules="[rules.validEmail]"
-            :error-messages="errorsConfiguration.notification_card"
-          ></v-text-field>
+            :error-messages="(Object.keys(errorsConfiguration).length > 0 && Object.keys(errorsConfiguration).toString().includes('notification_card'))? 'Email(s) inválidos' : ''"
+            append-icon=""
+            :delimiters="[',', ';']"
+          >
+            <template v-slot:selection="{ attrs, item, select, selected }">
+              <v-chip
+                :color="colorChipNotificationCard(item)"
+                :dark="colorChipNotificationCard(item) == 'red' ? true : false"
+                v-bind="attrs"
+                :input-value="selected"
+                close
+                close-icon="mdi-close"
+                @click="select"
+                @click:close="removeNotificationCard(item)"
+              >
+                <span>{{ item }}</span>
+              </v-chip>
+            </template>
+          </v-combobox>
         </v-col>
       </v-row>
       <v-banner single-line>
@@ -187,11 +247,11 @@ export default {
       paymentTypeItems: ['Una noche', 'Mitad de reserva', 'Reserva completa'],
       ddwnPaymentTypeModel: null,
       selectPaymentsPlaceModel: [],
-      currencyIdModel: null,
-      timezoneModel: null,
-      notificationVoucherModel: null,
-      notificationDetailsModel: null,
-      notificationCardModel: null,
+      currencyIdModel: 1,
+      timezoneModel: "America/Mexico_City",
+      notificationVoucherModel: [],
+      notificationDetailsModel: [],
+      notificationCardModel: [],
       rules: {
         validEmail: value => {
           const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -203,14 +263,6 @@ export default {
   created() {
     this.getCurrencies().then(() => {});
     this.getTimezones().then(() => {});
-    if (this.hotel.idConfiguration !== null) {
-      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
-    }
-    else{
-      this.fillModel();
-      //console.log(this.configuration)
-      //this.configuration.currency_id = 0;
-    }
   },
 
   computed: {
@@ -224,7 +276,7 @@ export default {
     //Codigo para guardar temporalmente en el state
     computedCurrencyID: {
       get() {
-        return this.currencyIdModel;
+        return this.configuration.currency_id != null ? this.configuration.currency_id : this.currencyIdModel;
       },
       set(idCurrency) {
         this.currencyIdModel = idCurrency;
@@ -234,7 +286,7 @@ export default {
     },
     computedTimezone: {
       get() {
-        return this.timezoneModel;
+        return this.configuration.timezone != null ? this.configuration.timezone : this.timezoneModel;
       },
       set(timezone) {
         this.timezoneModel = timezone;
@@ -244,7 +296,7 @@ export default {
     },
     computedNotificationVoucher: {
       get() {
-        return this.notificationVoucherModel;
+        return this.configuration.notification_voucher != null ? this.configuration.notification_voucher : this.notificationVoucherModel;
       },
       set(model) {
         this.notificationVoucherModel = model;
@@ -254,7 +306,7 @@ export default {
     },
     computedNotificationDetails: {
       get() {
-        return this.notificationDetailsModel;
+        return this.configuration.notification_details != null ? this.configuration.notification_details : this.notificationDetailsModel;
       },
       set(model) {
         this.notificationDetailsModel = model;
@@ -264,7 +316,7 @@ export default {
     },
     computedNotificationCard: {
       get() {
-        return this.notificationCardModel;
+        return this.configuration.notification_card != null ? this.configuration.notification_card : this.notificationCardModel;
       },
       set(model) {
         this.notificationCardModel = model;
@@ -275,6 +327,18 @@ export default {
    
     computedSelectPaymentsPlace: {
       get() {
+        if (this.configuration.payment_place != null) {
+          if (this.configuration.payment_place === "both") {
+            this.selectPaymentsPlaceModel.push("online");
+            this.selectPaymentsPlaceModel.push("offline");
+          } 
+          else {
+            this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
+          }
+        }
+        else{
+          this.configuration.payment_place = "";
+        }
         return this.selectPaymentsPlaceModel;
       },
       set(model) {
@@ -293,68 +357,42 @@ export default {
       console.log(this.ddwnPaymentTypeModel)
     },
     ...mapActions(["getCurrencies", "getTimezones"]),
-    //Metodo para llenar la vista con los datos
-    fillModel(){
-      if(this.configuration.currency_id != null){
-        this.currencyIdModel = this.configuration.currency_id;
+    colorChipNotificationVoucher(item){
+      const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      //SI HAY UN ERROR EN LA VALIDACION, SE PONE DE ROJO
+      if(pattern.test(item) == false){
+        return 'red'
       }
-      else{
-        this.configuration.currency_id = 1;
-        this.currencyIdModel = this.configuration.currency_id;
+      return '';
+    },
+    removeNotificationVoucher(item) {
+      this.notificationVoucherModel.splice(this.notificationVoucherModel.indexOf(item), 1)
+      this.notificationVoucherModel = [...this.notificationVoucherModel]
+    },
+    colorChipNotificationDetails(item){
+      const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      //SI HAY UN ERROR EN LA VALIDACION, SE PONE DE ROJO
+      if(pattern.test(item) == false){
+        return 'red'
       }
-      if(this.configuration.timezone != null){
-        this.timezoneModel = this.configuration.timezone;
+      return '';
+    },
+    removeNotificationDetails(item) {
+      this.notificationDetailsModel.splice(this.notificationDetailsModel.indexOf(item), 1)
+      this.notificationDetailsModel = [...this.notificationDetailsModel]
+    },
+    colorChipNotificationCard(item){
+      const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      //SI HAY UN ERROR EN LA VALIDACION, SE PONE DE ROJO
+      if(pattern.test(item) == false){
+        return 'red'
       }
-      else{
-        this.configuration.timezone = "America/Mexico_City";
-        this.timezoneModel = this.configuration.timezone;
-      }
-      if(this.configuration.notification_voucher != null){
-        this.notificationVoucherModel = this.configuration.notification_voucher;
-      }
-      else{
-        this.configuration.notification_voucher = "";
-        this.notificationVoucherModel = this.configuration.notification_voucher;
-      }
-      if(this.configuration.notification_details != null){
-        this.notificationDetailsModel = this.configuration.notification_details;
-      }
-      else{
-        this.configuration.notification_details = "";
-        this.notificationDetailsModel = this.configuration.notification_details;
-      }
-      if(this.configuration.notification_card != null){
-        this.notificationCardModel = this.configuration.notification_card;
-      }
-      else{
-        this.configuration.notification_card = "";
-        this.notificationCardModel = this.configuration.notification_card
-      }
-      // if (this.configuration.payment_type != null) {
-      //   if (this.configuration.payment_type == "one") {
-      //     this.ddwnPaymentTypeModel = "Una noche";
-      //   }
-      //   if (this.configuration.payment_type == "all") {
-      //     this.ddwnPaymentTypeModel = "Todas las noches";
-      //   }
-      // }
-      // else{
-      //   this.configuration.payment_type = "one";
-      //   this.ddwnPaymentTypeModel = "Una noche";
-      // }
-      if (this.configuration.payment_place != null) {
-        if (this.configuration.payment_place === "both") {
-          this.selectPaymentsPlaceModel.push("online");
-          this.selectPaymentsPlaceModel.push("offline");
-        } 
-        else {
-          this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
-        }
-      }
-      else{
-        this.configuration.payment_place = "";
-      }
-    }
+      return '';
+    },
+    removeNotificationCard(item) {
+      this.notificationCardModel.splice(this.notificationCardModel.indexOf(item), 1)
+      this.notificationCardModel = [...this.notificationCardModel]
+    },
   },
 };
 </script>

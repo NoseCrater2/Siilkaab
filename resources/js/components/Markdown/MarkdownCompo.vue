@@ -33,22 +33,6 @@ import { mapState, mapMutations } from "vuex";
 
 export default {
   name: "MarkdownCompo",
-  created() {
-    //Indicamos si debe de poner el texto largo del hotel o el texto de cancelacion
-    if (this.containerType === "Information") {
-      if(this.hotel.large_text != null){
-        this.content = this.hotel.large_text;
-      }
-      else{
-        this.hotel.large_text = "";
-        this.content = this.hotel.large_text;
-      }
-      
-    }
-    if (this.containerType === "Conditions") {
-      this.content = this.conditions.cancelation_text;
-    }
-  },
   data() {
     return {
       // declare extensions you want to use
@@ -93,6 +77,25 @@ export default {
     }),
     computedContent: {
       get() {
+        //Indicamos si debe de poner el texto largo del hotel o el texto de cancelacion
+        if (this.containerType === "Information") {
+          if(this.hotel.large_text != null){
+            this.content = this.hotel.large_text;
+          }
+          else{
+            this.hotel.large_text = "";
+            this.content = this.hotel.large_text;
+          }
+        }
+        if (this.containerType === "Conditions") {
+          if(this.conditions.cancelation_text != null){
+            this.content = this.conditions.cancelation_text;
+          }
+          else{
+            this.conditions.cancelation_text = "";
+            this.content = this.conditions.cancelation_text;
+          }
+        }
         return this.content;
       },
       set(model) {

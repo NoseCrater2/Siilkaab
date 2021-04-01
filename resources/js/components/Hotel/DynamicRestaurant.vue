@@ -34,18 +34,6 @@
           <span>
             <strong>Introduce el horario</strong>
           </span>
-          <v-btn
-            class="ml-2"
-            x-small
-            depressed
-            dark
-            fab
-            color="primary"
-            @click="addCompoFromComponent()"
-          >
-            <v-icon dark>mdi-pencil</v-icon>
-
-          </v-btn>
         </v-row>
         <br />
         <span>Dile a los clientes cuándo pueden usar este servicio</span>
@@ -57,6 +45,18 @@
           :is="component.TagSTimePicker"
           @removeCompoTime="removeCompoTime"
         ></component>
+        <div class="d-flex justify-end">        
+          <v-btn
+            x-small
+            depressed
+            dark
+            color="primary"
+            @click="addCompoFromComponent()"
+          >
+            <v-icon left size="14" dark>mdi-plus</v-icon>
+            Agregar horario
+          </v-btn>
+        </div>
       </div>
     </v-sheet>
   </v-carousel-item>

@@ -19,12 +19,12 @@
           </div>
         </v-row>
         <br />
-        <v-text-field v-model="poolName" label="Nombre del restaurante" required></v-text-field>
+        <v-text-field v-model="poolName" label="Nombre de la piscina" required></v-text-field>
         <br />
         <span>
           <strong>Tipo de piscina</strong>
         </span>
-        <v-row justify="space-around">
+        <v-row class="mb-n3" justify="space-around">
           <v-radio-group v-model="radioPoolType" row>
             <v-radio label="Interior" value="indoor"></v-radio>
             <v-radio label="Al aire libre" value="outdoor"></v-radio>
@@ -78,39 +78,70 @@
         </v-row>
         <br />
         <br />
-        <v-row class="ml-1" align="center">
+        <v-row class="ml-1 mt-n6" align="center">
           <span>
             <strong>Horario de apertura</strong>
           </span>
         </v-row>
         <br />
-        <v-dialog
-          ref="dialogHour"
-          v-model="modalHour"
-          :return-value.sync="hour"
-          persistent
-          width="290px"
-        >
-          <template v-slot:activator="{ on, attrs }">
-            <v-autocomplete
-              :items="[hour]"
-              v-model="hour"
-              v-bind="attrs"
-              v-on="on"
-              readonly
-              dense
-              label="Desde las"
-              filled
-              style="margin-right: 2%"
-              class="col-6"
-            ></v-autocomplete>
-          </template>
-          <v-time-picker v-if="modalHour" v-model="hour" format="24hr" full-width>
-            <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="modalHour = false">Cancelar</v-btn>
-            <v-btn text color="primary" @click="$refs.dialogHour.save(hour)">Aceptar</v-btn>
-          </v-time-picker>
-        </v-dialog>
+        <v-row class="mt-n6">
+          <v-col md="12" class="d-flex">
+            <v-dialog
+              ref="dialogHourOpen"
+              v-model="modalHourOpen"
+              :return-value.sync="hourOpen"
+              persistent
+              width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-autocomplete
+                  :items="[hourOpen]"
+                  v-model="hourOpen"
+                  v-bind="attrs"
+                  v-on="on"
+                  readonly
+                  dense
+                  label="Desde las"
+                  filled
+                  style="margin-right: 2%"
+                  class="col-6"
+                ></v-autocomplete>
+              </template>
+              <v-time-picker v-if="modalHourOpen" v-model="hourOpen" format="24hr" full-width>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="modalHourOpen = false">Cancelar</v-btn>
+                <v-btn text color="primary" @click="$refs.dialogHourOpen.save(hourOpen)">Aceptar</v-btn>
+              </v-time-picker>
+            </v-dialog>
+            <v-dialog
+              ref="dialogHourClose"
+              v-model="modalHourClose"
+              :return-value.sync="hourClose"
+              persistent
+              width="290px"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-autocomplete
+                  :items="[hourClose]"
+                  v-model="hourClose"
+                  v-bind="attrs"
+                  v-on="on"
+                  readonly
+                  dense
+                  label="Hasta las"
+                  filled
+                  style="margin-right: 2%"
+                  class="col-6"
+                ></v-autocomplete>
+              </template>
+              <v-time-picker v-if="modalHourClose" v-model="hourClose" format="24hr" full-width>
+                <v-spacer></v-spacer>
+                <v-btn text color="primary" @click="modalHourClose = false">Cancelar</v-btn>
+                <v-btn text color="primary" @click="$refs.dialogHourClose.save(hourClose)">Aceptar</v-btn>
+              </v-time-picker>
+            </v-dialog>
+          </v-col>
+        </v-row>
       </div>
     </v-sheet>
   </v-carousel-item>
@@ -154,7 +185,10 @@ export default {
         this.swBarPool = this.objArrCompo.bar_pool;
       }
       if (this.objArrCompo.open_at != null) {
-        this.hour = this.objArrCompo.open_at.slice(0, -3);
+        this.hourOpen = this.objArrCompo.open_at.slice(0, -3);
+      }
+      if (this.objArrCompo.close_at != null) {
+        this.hourClose = this.objArrCompo.close_at.slice(0, -3);
       }
     }
   },
@@ -170,8 +204,10 @@ export default {
       swWadingPool: null,
       swTowels: null,
       swBarPool: null,
-      hour: null,
-      modalHour: false,
+      hourOpen: null,
+      modalHourOpen: false,
+      hourClose: null,
+      modalHourClose: false,
     };
   },
   computed: {

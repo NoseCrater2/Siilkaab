@@ -23,6 +23,7 @@ class CreatePoolsTable extends Migration
             $table->boolean('towels')->default(false);
             $table->boolean('bar_pool')->default(false);
             $table->time('open_at');
+            $table->time('close_at');
             $table->unsignedBigInteger('hotel_id');
             $table->foreign('hotel_id')->references('id')->on('hotels')->onDelete('cascade');
             $table->timestamps();

@@ -13,7 +13,14 @@
       </v-banner>
       <v-row class="pa-6">
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch :error-messages="computedErrorOnlyRoom" v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="36">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch :error-messages="computedErrorOnlyRoom" v-model="computedSwOnlyRoom" inset label="Solo habitacion"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Sólo dormir. Sin regímenes</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
           <v-select
@@ -28,17 +35,24 @@
           ></v-select>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch v-model="computedSwBreakfast" inset label="Alojamiento y desayuno"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="12">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwBreakfast" inset label="Alojamiento y desayuno"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Alojamiento con desayuno incluido</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtBreakfastAdult"
-            prepend-inner-icon="mdi-human-male"
+            prepend-inner-icon="mdi-currency-usd"
             label="Adulto"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
             :error-messages="computedErrorLodgingBreakfastAdult"
           ></v-text-field>
@@ -46,28 +60,35 @@
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtBreakfastChildren"
-            prepend-inner-icon="mdi-human-male-boy"
+            prepend-inner-icon="mdi-currency-usd"
             label="Niño"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwBreakfast == 0 || computedSwBreakfast == false"
             :error-messages="computedErrorLodgingBreakfastChildren"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch v-model="computedSwHalfPension" inset label="Media pension"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-right="18">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwHalfPension" inset label="Media pension"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Media pensión con desayuno y cena incluidos</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtHalfPensionAdult"
-            prepend-inner-icon="mdi-human-male"
+            prepend-inner-icon="mdi-currency-usd"
             label="Adulto"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
             :error-messages="computedErrorHalfPensionAdult"
           ></v-text-field>
@@ -75,28 +96,35 @@
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtHalfPensionChildren"
-            prepend-inner-icon="mdi-human-male-boy"
+            prepend-inner-icon="mdi-currency-usd"
             label="Niño"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwHalfPension == 0 || computedSwHalfPension == false"
             :error-messages="computedErrorHalfPensionChildren"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch v-model="computedSwFullPension" inset label="Pension completa"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="6">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwFullPension" inset label="Pension completa"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Pensión completa con comida y cena</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtFullPensionAdult"
-            prepend-inner-icon="mdi-human-male"
+            prepend-inner-icon="mdi-currency-usd"
             label="Adulto"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
             :error-messages="computedErrorFullPensionAdult"
           ></v-text-field>
@@ -104,28 +132,35 @@
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtFullPensionChildren"
-            prepend-inner-icon="mdi-human-male-boy"
+            prepend-inner-icon="mdi-currency-usd"
             label="Niño"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwFullPension == 0 || computedSwFullPension == false"
             :error-messages="computedErrorFullPensionChildren"
           ></v-text-field>
         </v-col>
         <v-col cols="12" md="6" sm="12" xs="12">
-          <v-switch v-model="computedSwAllIncluded" inset label="Todo incluido"></v-switch>
+          <v-tooltip top nudge-bottom="8" nudge-left="76">
+            <template v-slot:activator="{ on, attrs }">
+              <div v-bind="attrs" v-on="on">
+                <v-switch v-model="computedSwAllIncluded" inset label="Todo incluido"></v-switch>
+              </div>
+            </template>
+            <span class="caption">Todo incluido</span>
+          </v-tooltip>
         </v-col>
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtAllIncludedAdult"
-            prepend-inner-icon="mdi-human-male"
+            prepend-inner-icon="mdi-currency-usd"
             label="Adulto"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
             :error-messages="computedErrorAllIncludedAdult"
           ></v-text-field>
@@ -133,12 +168,12 @@
         <v-col cols="12" md="3" sm="12" xs="12">
           <v-text-field
             v-model.number="computedTxtAllIncludedChildren"
-            prepend-inner-icon="mdi-human-male-boy"
+            prepend-inner-icon="mdi-currency-usd"
             label="Niño"
             outlined
             required
-            maxlength="3"
-            @keydown="keyhandler" :rules="[rules.validNumericInputs]"
+            maxlength="15"
+            :rules="[rules.validNumericInputs]"
             :disabled="computedSwAllIncluded == 0 || computedSwAllIncluded == false"
             :error-messages="computedErrorAllIncludedChildren"
           ></v-text-field>
@@ -190,45 +225,47 @@ moment.locale("es"); //Cambiamos el lenguaje de moment
 
 export default {
   name: "Regime",
-  created() {
-    let countWhile = this.regimes.length - 1;
-    while (countWhile >= 1) {
-      this.addCompo(this.regimes[countWhile]);
-      countWhile--;
-    }
-    if (this.regimes[0] != null) {
-      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
-    }
-    else{
-      this.fillModel();
-    }
+  created(){
+    //Metodo que carga los special regimes
+    this.methodChargeSpecialRegimes();
   },
   data() {
     return {
+      //La variable "chargedSpecialRegimes" sirve para cargar los regimenes restantes por medio del observador "regimes"
+      chargedSpecialRegimes: false,
       arrayComponents: [],
       countIdCompo: -1,
       prioritiesModel: ["Normal", "Media", "Alta"],
-      swOnlyRoomModel: null,
-      ddwnPriorityModel: null,
+      swOnlyRoomModel: 0,
+      ddwnPriorityModel: "Normal",
       swBreakfastModel: 0,
-      txtBreakfastAdultModel: null,
-      txtBreakfastChildrenModel: null,
+      txtBreakfastAdultModel: 0,
+      txtBreakfastChildrenModel: 0,
       swHalfPensionModel: 0,
-      txtHalfPensionAdultModel: null,
-      txtHalfPensionChildrenModel: null,
+      txtHalfPensionAdultModel: 0,
+      txtHalfPensionChildrenModel: 0,
       swFullPensionModel: 0,
-      txtFullPensionAdultModel: null,
-      txtFullPensionChildrenModel: null,
+      txtFullPensionAdultModel: 0,
+      txtFullPensionChildrenModel: 0,
       swAllIncludedModel: 0,
-      txtAllIncludedAdultModel: null,
-      txtAllIncludedChildrenModel: null,
+      txtAllIncludedAdultModel: 0,
+      txtAllIncludedChildrenModel: 0,
       rules: {
         validNumericInputs: value => {
-          const pattern = /^(1|[0-9]\d{0,3})$/
-          return pattern.test(value) || 'Solo se aceptan numeros'
+          const pattern = /^\s*?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/
+          return pattern.test(value) || 'Solo valores monetarios'
         },
       },
     };
+  },
+  watch:{
+    regimes(nuevoValor, valorAnterior){
+      if(this.chargedSpecialRegimes == false){
+        this.methodChargeSpecialRegimes();
+        this.chargedSpecialRegimes = true;
+      }
+      console.log("SHIWATCHWATCH", this.regimes)
+    }
   },
   computed: {
     ...mapState({
@@ -239,7 +276,7 @@ export default {
     //Codigo para guardar temporalmente en el state
     computedSwOnlyRoom: {
       get() {
-        return this.swOnlyRoomModel;
+        return this.regimes[0].only_room;
       },
       set(model) {
         this.swOnlyRoomModel = model;
@@ -249,6 +286,15 @@ export default {
     },
     computedDdwnPriority: {
       get() {
+        if (this.regimes[0].priority == "normal") {
+          this.ddwnPriorityModel = "Normal";
+        }
+        if (this.regimes[0].priority == "medium") {
+          this.ddwnPriorityModel = "Media";
+        }
+        if (this.regimes[0].priority == "high") {
+          this.ddwnPriorityModel = "Alta";
+        }
         return this.ddwnPriorityModel;
       },
       set(model) {
@@ -282,11 +328,14 @@ export default {
     },
     computedTxtBreakfastAdult: {
       get() {
-        return this.txtBreakfastAdultModel;
+        if(parseFloat(this.regimes[0].lodging_breakfast_adult) > 0){
+          this.swBreakfastModel = 1;
+        }
+        return this.regimes[0].lodging_breakfast_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtBreakfastAdultModel = model;
         this.regimes[0].lodging_breakfast_adult = this.txtBreakfastAdultModel;
@@ -295,11 +344,14 @@ export default {
     },
     computedTxtBreakfastChildren: {
       get() {
-        return this.txtBreakfastChildrenModel;
+        if(parseFloat(this.regimes[0].lodging_breakfast_children) > 0){
+          this.swBreakfastModel = 1;
+        }
+        return this.regimes[0].lodging_breakfast_children;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtBreakfastChildrenModel = model;
         this.regimes[0].lodging_breakfast_children = this.txtBreakfastChildrenModel;
@@ -323,11 +375,14 @@ export default {
     },
     computedTxtHalfPensionAdult: {
       get() {
-        return this.txtHalfPensionAdultModel;
+        if(parseFloat(this.regimes[0].half_pension_adult) > 0){
+          this.swHalfPensionModel = 1;
+        }
+        return this.regimes[0].half_pension_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtHalfPensionAdultModel = model;
         this.regimes[0].half_pension_adult = this.txtHalfPensionAdultModel;
@@ -336,11 +391,14 @@ export default {
     },
     computedTxtHalfPensionChildren: {
       get() {
-        return this.txtHalfPensionChildrenModel;
+        if(parseFloat(this.regimes[0].half_pension_children) > 0){
+          this.swHalfPensionModel = 1;
+        }
+        return this.regimes[0].half_pension_children;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtHalfPensionChildrenModel = model;
         this.regimes[0].half_pension_children = this.txtHalfPensionChildrenModel;
@@ -364,11 +422,14 @@ export default {
     },
     computedTxtFullPensionAdult: {
       get() {
-        return this.txtFullPensionAdultModel;
+        if(parseFloat(this.regimes[0].full_pension_adult) > 0){
+          this.swFullPensionModel = 1;
+        }
+        return this.regimes[0].full_pension_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtFullPensionAdultModel = model;
         this.regimes[0].full_pension_adult = this.txtFullPensionAdultModel;
@@ -377,11 +438,14 @@ export default {
     },
     computedTxtFullPensionChildren: {
       get() {
-        return this.txtFullPensionChildrenModel;
+        if(parseFloat(this.regimes[0].full_pension_children) > 0){
+          this.swFullPensionModel = 1;
+        }
+        return this.regimes[0].full_pension_children
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtFullPensionChildrenModel = model;
         this.regimes[0].full_pension_children = this.txtFullPensionChildrenModel;
@@ -405,11 +469,14 @@ export default {
     },
     computedTxtAllIncludedAdult: {
       get() {
-        return this.txtAllIncludedAdultModel;
+        if(parseFloat(this.regimes[0].all_included_adult) > 0){
+          this.swAllIncludedModel = 1;
+        }
+        return this.regimes[0].all_included_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtAllIncludedAdultModel = model;
         this.regimes[0].all_included_adult = this.txtAllIncludedAdultModel;
@@ -418,31 +485,24 @@ export default {
     },
     computedTxtAllIncludedChildren: {
       get() {
-        return this.txtAllIncludedChildrenModel;
+        if(parseFloat(this.regimes[0].all_included_children) > 0){
+          this.swAllIncludedModel = 1;
+        }
+        return this.regimes[0].all_included_children
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtAllIncludedChildrenModel = model;
         this.regimes[0].all_included_children = this.txtAllIncludedChildrenModel;
         return this.txtAllIncludedChildrenModel;
       },
     },
-    //Propiedad computada para asignar al store los arreglos dinamicos que se crearan con btnAddCompo
-    computedRegimes: {
-      get() {
-        return this.regimes;
-      },
-      set(model) {
-        this.regimes = model;
-        return this.regimes;
-      },
-    },
     computedArrayComponents() {
       return this.arrayComponents;
     },
-    //CODIGO DE PROPIEDADES COMPUTADAS PARA ERRORES
+    //CODIGO DE PROPIEDADES COMPUTADAS PARA ERRORES INICIA
     computedErrorOnlyRoom: {
       get() {
         let error = '';
@@ -603,6 +663,7 @@ export default {
         return error;
       }
     },
+    //CODIGO DE PROPIEDADES COMPUTADAS PARA ERRORES TERMINA
   },
 
   components: {
@@ -611,6 +672,13 @@ export default {
   methods: {
     //Esta mutacion setea regimes
     ...mapMutations(["setArrayRegimes"]),
+    methodChargeSpecialRegimes(){
+      let countWhile = this.regimes.length - 1;
+      while (countWhile >= 1) {
+        this.addCompo(this.regimes[countWhile]);
+        countWhile--;
+      }
+    },
     addCompoButton() {
       this.countIdCompo++;
       this.arrayComponents.push({
@@ -668,90 +736,6 @@ export default {
         )
       );
     },
-    //Metodo para llenar la vista con los datos
-    fillModel(){
-      //Con el if principal verifica si hay al menos un regimen o si es un nuevo registro
-      if(typeof(this.regimes[0]) != 'undefined'){
-        this.swOnlyRoomModel = this.regimes[0].only_room;
-        if (this.regimes[0].priority != null) {
-          if (this.regimes[0].priority == "normal") {
-            this.ddwnPriorityModel = "Normal";
-          }
-          if (this.regimes[0].priority == "medium") {
-            this.ddwnPriorityModel = "Media";
-          }
-          if (this.regimes[0].priority == "high") {
-            this.ddwnPriorityModel = "Alta";
-          }
-        }
-        this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
-        this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
-        if (this.txtBreakfastAdultModel != null || this.txtBreakfastChildrenModel != null) {
-          if (this.txtBreakfastAdultModel != 0 || this.txtBreakfastChildrenModel != 0) {
-            this.swBreakfastModel = 1;
-          }
-        }
-        this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
-        this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
-        if (this.txtHalfPensionAdultModel != null || this.txtHalfPensionChildrenModel != null) {
-          if (this.txtHalfPensionAdultModel !=0 || this.txtHalfPensionChildrenModel != 0) {
-            this.swHalfPensionModel = 1;
-          }
-        }
-        this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
-        this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
-        if (this.txtFullPensionAdultModel != null || this.txtFullPensionChildrenModel != null) {
-          if (this.txtFullPensionAdultModel != 0 || this.txtFullPensionChildrenModel != 0) {
-            this.swFullPensionModel = 1;
-          }
-        }
-        this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
-        this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
-        if (this.txtAllIncludedAdultModel !=null || this.txtAllIncludedChildrenModel != null) {
-          if (this.txtAllIncludedAdultModel !=0 || this.txtAllIncludedChildrenModel != 0) {
-            this.swAllIncludedModel = 1;
-          }
-        }
-      }
-      else{
-        let obj = {
-          id: "firstRegister",
-          priority: "normal",
-          only_room: 0,
-          lodging_breakfast_children: 0,
-          lodging_breakfast_adult: 0,
-          half_pension_children: 0,
-          half_pension_adult: 0,
-          full_pension_children: 0,
-          full_pension_adult: 0,
-          all_included_children: 0,
-          all_included_adult: 0,
-          hotel_id: null
-        }
-        this.regimes.push(obj);
-        this.ddwnPriorityModel = "Normal";
-        this.swOnlyRoomModel = this.regimes[0].only_room;
-        this.swBreakfastModel = 0;
-        this.swHalfPensionModel = 0;
-        this.swFullPensionModel = 0;
-        this.swAllIncludedModel = 0;
-        this.txtBreakfastChildrenModel = this.regimes[0].lodging_breakfast_children;
-        this.txtBreakfastAdultModel = this.regimes[0].lodging_breakfast_adult;
-        this.txtHalfPensionChildrenModel = this.regimes[0].half_pension_children;
-        this.txtHalfPensionAdultModel = this.regimes[0].half_pension_adult;
-        this.txtFullPensionChildrenModel = this.regimes[0].full_pension_children;
-        this.txtFullPensionAdultModel = this.regimes[0].full_pension_adult;
-        this.txtAllIncludedChildrenModel = this.regimes[0].all_included_children;
-        this.txtAllIncludedAdultModel = this.regimes[0].all_included_adult;
-      }
-    },
-    keyhandler(event) {
-      const pattern = /^(1|[0-9]\d{0,3})$/
-      if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
-        console.log(event.key)
-        event.preventDefault();
-      }
-    }
   },
 };
 </script>

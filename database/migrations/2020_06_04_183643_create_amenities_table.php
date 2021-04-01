@@ -27,7 +27,7 @@ class CreateAmenitiesTable extends Migration
             $table->boolean('bar')->default(false);
             $table->boolean('garden')->default(false);
             $table->enum('water_park',['free','paid','flag'])->default('flag');
-            $table->enum('beach',['private','in front','flag'])->default('flag');#ACTIVITIES (ACTIVIDADES)
+            $table->enum('beach',['private','in front', 'cliff', 'flag'])->default('flag');#ACTIVITIES (ACTIVIDADES)
             $table->boolean('recreational_activities')->default(false);
             $table->enum('romantic_dinners',['free','paid','flag'])->default('flag');
             $table->enum('touristic_tour',['free','paid','flag'])->default('flag');
