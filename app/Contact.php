@@ -11,13 +11,16 @@ class Contact extends Model
         'url',
         'email',
         'phone',
-        'address',
-        'zipcode',
-        'city',
-        'state',
+        // 'address',
+        // 'zipcode',
+        // 'city',
+        // 'state',
+        'latitude',
+        'longitude',
+        'display_name',
         'manager_name',
         'legal_rep',
-        'country_id',
+        // 'country_id',
         'hotel_id'
            
     ];

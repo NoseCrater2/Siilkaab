@@ -147,6 +147,7 @@ class ReservationController extends Controller
         foreach ($ids as $id) {
             $hotel = [];
             $h = Hotel::find($id);
+            $hotel['id'] = $h->id;
             $hotel['color'] =  $h->configuration['color'];
             $hotel['title'] =  $h->title;
             $counts = [];
@@ -164,46 +165,59 @@ class ReservationController extends Controller
         return $hotels;
     }
 
-    public function earnings()
+
+    public function earnings($year, $id)
     {
-        $type = 'month';
-        switch ($type) {
-            case '15 días':
-                $now = Carbon::now()->addDays(1)->format('Y-m-d');
-                $before15days = Carbon::now()->subDays(15)->format('Y-m-d');
-                $hotel = Hotel::find(1);
-                return $hotel->reservations()->whereBetween('created_at',[$before15days,$now])->sum('total_price');
-            break;
+        //COUNT PER YEAR
+        $result = DB::table('reservations')
+            ->selectRaw('MONTH(created_at) month, COUNT(*) count, SUM(total_price) summatory')
+            ->where('hotel_id', '=', $id)
+            ->whereRaw("YEAR(created_at) = ?", [$year])
+            ->groupBy('month')
+            ->get();
 
-            case 'month';
-                $now = Carbon::now();
-                $hotel = Hotel::find(1);
-                return $hotel->reservations()->whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->sum('total_price');
-            break;
-
-            case 'year';
-                $now = Carbon::now()->year;
-                $hotel = Hotel::find(1);
-                return $hotel->reservations()->whereYear('created_at', $now)->sum('total_price');
-            break;
-
-            default:
-               return 0;
-            break;
-        }
        
+
+
+        return $result;
+        // $now = Carbon::now();
+        // $nowPlusOne = Carbon::now()->addDays(1)->format('Y-m-d');
+        // $before15days = Carbon::now()->subDays(15)->format('Y-m-d');
+        // $ids = [1];
+        // $hotels = new Collection();
+        // foreach ($ids as $id) {
+        // $hotel = [];
+        // $h = Hotel::find($id);
+        // $hotel['symbol'] = $h->configuration->currency->symbol;
+        // $hotel['code'] = $h->configuration->currency->code;
+        // $hotel['days'] = $h->reservations()->whereBetween('created_at',[$before15days,$nowPlusOne])->sum('total_price');
+        // $hotel['month'] = $h->reservations()->whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->sum('total_price');
+        // $hotel['year'] = $h->reservations()->whereYear('created_at', $now)->sum('total_price');
+        // $hotel['all'] = $h->reservations()->sum('total_price');
+
+        //     $hotels->push($hotel);
+        // }
+        // return response($hotels, 200) ;
     }
 
-    public function iterateHotels(Array $ids)
+    public function anualEarnings($id)
     {
-        $hotels = new Collection();
-        foreach ($ids as $id) {
-            $hotel = [];
-            $h = Hotel::find($id);
-            $hotel[] = $h->title;
-            
+         $result = DB::table('reservations')
+            ->where('hotel_id', '=', $id)
+            ->selectRaw('YEAR(created_at) as year, COUNT(*) count, SUM(total_price) summatory')
+            ->groupBy('year')
+            ->limit(10)
+            ->orderBy('year', 'desc')
+            ->get();
 
-        }
+        return $result;
+    }
+
+    public function dashboardReservations()
+    {
+        return IndexReservationResource::collection(
+            Reservation::whereIn('hotel_id',[1,2,3])->limit(10)->get()
+        );
     }
 
 }
