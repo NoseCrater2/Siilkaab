@@ -667,17 +667,17 @@ export default {
   },
   data() {
     return {
-      spaItems: ["Gratis", "De Pago"],
+      spaItems: ["Gratis", "De Pago", "Ninguno"],
       ddwnSpaModel: null,
-      acuaticItems: ["Gratis", "De Pago"],
+      acuaticItems: ["Gratis", "De Pago", "Ninguno"],
       ddwnAcuaticModel: null,
-      beachItems: ["Privada", "En frente"],
+      beachItems: ["Privada", "En frente", "Acantilado", "Ninguno"],
       ddwnBeachModel: null,
-      romanticDItems: ["Gratis", "De Pago"],
+      romanticDItems: ["Gratis", "De Pago", "Ninguno"],
       ddwnRomanticDModel: null,
-      touristicTItems: ["Gratis", "De Pago"],
+      touristicTItems: ["Gratis", "De Pago", "Ninguno"],
       ddwnTouristicTModel: null,
-      dailyHItems: ["Gratis", "De Pago"],
+      dailyHItems: ["Gratis", "De Pago", "Ninguno"],
       ddwnDailyHModel: null,
       swAirConditionedModel: null,
       swNoSmokeRoomsModel: null,
@@ -746,6 +746,9 @@ export default {
       },
       set(model) {
         this.ddwnSpaModel = model;
+        if (this.ddwnSpaModel == "Ninguno") {
+          this.aditionalInfo.spa = "flag";
+        }
         if (this.ddwnSpaModel == "Gratis") {
           this.aditionalInfo.spa = "free";
         }
@@ -761,6 +764,9 @@ export default {
       },
       set(model) {
         this.ddwnAcuaticModel = model;
+        if (this.ddwnAcuaticModel == "Ninguno") {
+          this.aditionalInfo.water_park = "flag";
+        }
         if (this.ddwnAcuaticModel == "Gratis") {
           this.aditionalInfo.water_park = "free";
         }
@@ -776,6 +782,12 @@ export default {
       },
       set(model) {
         this.ddwnBeachModel = model;
+        if (this.ddwnBeachModel == "Acantilado") {
+          this.aditionalInfo.beach = "cliff";
+        }
+        if (this.ddwnBeachModel == "Ninguno") {
+          this.aditionalInfo.beach = "flag";
+        }
         if (this.ddwnBeachModel == "Privada") {
           this.aditionalInfo.beach = "private";
         }
@@ -791,6 +803,9 @@ export default {
       },
       set(model) {
         this.ddwnRomanticDModel = model;
+        if (this.ddwnRomanticDModel == "Ninguno") {
+          this.aditionalInfo.romantic_dinners = "flag";
+        }
         if (this.ddwnRomanticDModel == "Gratis") {
           this.aditionalInfo.romantic_dinners = "free";
         }
@@ -806,6 +821,9 @@ export default {
       },
       set(model) {
         this.ddwnTouristicTModel = model;
+        if (this.ddwnTouristicTModel == "Ninguno") {
+          this.aditionalInfo.touristic_tour = "flag";
+        }
         if (this.ddwnTouristicTModel == "Gratis") {
           this.aditionalInfo.touristic_tour = "free";
         }
@@ -821,6 +839,9 @@ export default {
       },
       set(model) {
         this.ddwnDailyHModel = model;
+        if (this.ddwnDailyHModel == "Ninguno") {
+          this.aditionalInfo.daily_housekipping = "flag";
+        }
         if (this.ddwnDailyHModel == "Gratis") {
           this.aditionalInfo.daily_housekipping = "free";
         }
@@ -1365,6 +1386,9 @@ export default {
   methods:{
     fillModel(){
       if (this.aditionalInfo.spa != null) {
+        if (this.aditionalInfo.spa == "flag") {
+          this.ddwnSpaModel = "Ninguno";
+        }
         if (this.aditionalInfo.spa == "free") {
           this.ddwnSpaModel = "Gratis";
         }
@@ -1373,10 +1397,13 @@ export default {
         }
       }
       else {
-        this.aditionalInfo.spa = "free";
-        this.ddwnSpaModel = "Gratis";
+        this.aditionalInfo.spa = "flag";
+        this.ddwnSpaModel = "Ninguno";
       }
       if (this.aditionalInfo.water_park != null) {
+        if (this.aditionalInfo.water_park == "flag") {
+          this.ddwnAcuaticModel = "Ninguno";
+        }
         if (this.aditionalInfo.water_park == "free") {
           this.ddwnAcuaticModel = "Gratis";
         }
@@ -1385,10 +1412,16 @@ export default {
         }
       }
       else {
-        this.aditionalInfo.water_park = "free"
-        this.ddwnAcuaticModel = "Gratis";
+        this.aditionalInfo.water_park = "flag"
+        this.ddwnAcuaticModel = "Ninguno";
       }
       if (this.aditionalInfo.beach != null) {
+        if (this.aditionalInfo.beach == "cliff") {
+          this.ddwnBeachModel = "Acantilado";
+        }
+        if (this.aditionalInfo.beach == "flag") {
+          this.ddwnBeachModel = "Ninguno";
+        }
         if (this.aditionalInfo.beach == "private") {
           this.ddwnBeachModel = "Privada";
         }
@@ -1397,10 +1430,13 @@ export default {
         }
       }
       else {
-        this.aditionalInfo.beach = "private"
-        this.ddwnBeachModel = "Privada";
+        this.aditionalInfo.beach = "flag"
+        this.ddwnBeachModel = "Ninguno";
       }
       if (this.aditionalInfo.romantic_dinners != null) {
+        if (this.aditionalInfo.romantic_dinners == "flag") {
+          this.ddwnRomanticDModel = "Ninguno";
+        }
         if (this.aditionalInfo.romantic_dinners == "free") {
           this.ddwnRomanticDModel = "Gratis";
         }
@@ -1409,10 +1445,13 @@ export default {
         }
       }
       else {
-        this.aditionalInfo.romantic_dinners = "free"
-        this.ddwnRomanticDModel = "Gratis";
+        this.aditionalInfo.romantic_dinners = "flag"
+        this.ddwnRomanticDModel = "Ninguno";
       }
       if (this.aditionalInfo.touristic_tour != null) {
+        if (this.aditionalInfo.touristic_tour == "flag") {
+          this.ddwnTouristicTModel = "Ninguno";
+        }
         if (this.aditionalInfo.touristic_tour == "free") {
           this.ddwnTouristicTModel = "Gratis";
         }
@@ -1421,10 +1460,13 @@ export default {
         }
       }
       else {
-        this.aditionalInfo.touristic_tour = "free"
-        this.ddwnTouristicTModel = "Gratis";
+        this.aditionalInfo.touristic_tour = "flag"
+        this.ddwnTouristicTModel = "Ninguno";
       }
       if (this.aditionalInfo.daily_housekipping != null) {
+        if (this.aditionalInfo.daily_housekipping == "flag") {
+          this.ddwnDailyHModel = "Ninguno";
+        }
         if (this.aditionalInfo.daily_housekipping == "free") {
           this.ddwnDailyHModel = "Gratis";
         }
@@ -1433,8 +1475,8 @@ export default {
         }
       }
       else {
-        this.aditionalInfo.daily_housekipping = "free"
-        this.ddwnDailyHModel = "Gratis";
+        this.aditionalInfo.daily_housekipping = "flag"
+        this.ddwnDailyHModel = "Ninguno";
       }
       if(this.aditionalInfo.air_conditioned != null){
         this.swAirConditionedModel = this.aditionalInfo.air_conditioned;

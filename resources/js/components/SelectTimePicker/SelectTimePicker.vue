@@ -1,15 +1,39 @@
 <template>
-  <div>
+  <div class="mb-n5">
     <v-row>
       <v-col md="13" class="d-flex">
         <v-select
           :items="weekDaysItems"
+          item-text="name"
+          item-value="key"
+          multiple
           v-model="computedDdwnWeekDays"
           dense
           filled
           label="Dia"
           class="mr-4"
-        ></v-select>
+        >
+        <template v-slot:prepend-item>
+          <v-list-item
+            ripple
+            @click="clickSelectAllDays"
+          >
+            <v-list-item-action>
+              <v-icon :color="ddwnWeekDaysModel.length > 0 ? 'indigo darken-4' : ''">
+                {{ iconSelectAllDays }}
+              </v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                Todos los dias
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-divider class="mt-2"></v-divider>
+        </template>
+        
+        
+        </v-select>
         <v-dialog
           ref="dialogFromHour"
           v-model="modalFromHourModel"
@@ -89,27 +113,10 @@ export default {
   created() {
     if (this.objArrCompo !== null) {
       if (this.objArrCompo.day != null) {
-        if (this.objArrCompo.day == "lunes") {
-          this.ddwnWeekDaysModel = "Lunes";
-        }
-        if (this.objArrCompo.day == "martes") {
-          this.ddwnWeekDaysModel = "Martes";
-        }
-        if (this.objArrCompo.day == "miercoles") {
-          this.ddwnWeekDaysModel = "Miércoles";
-        }
-        if (this.objArrCompo.day == "jueves") {
-          this.ddwnWeekDaysModel = "Jueves";
-        }
-        if (this.objArrCompo.day == "viernes") {
-          this.ddwnWeekDaysModel = "Viernes";
-        }
-        if (this.objArrCompo.day == "sabado") {
-          this.ddwnWeekDaysModel = "Sábado";
-        }
-        if (this.objArrCompo.day == "domingo") {
-          this.ddwnWeekDaysModel = "Domingo";
-        }
+        this.objArrCompo.day.forEach(day=>{
+          this.ddwnWeekDaysModel.push(day)
+        })
+        console.log(this.objArrCompo.day)
       }
       if (this.objArrCompo.start_time != null) {
         this.fromHourModel = this.objArrCompo.start_time.slice(0, -3);
@@ -123,15 +130,15 @@ export default {
     return {
       idModel: this.idCompo,
       weekDaysItems: [
-        "Domingo",
-        "Lunes",
-        "Martes",
-        "Miércoles",
-        "Jueves",
-        "Viernes",
-        "Sábado",
+        {name: "Domingo", key: "domingo"},
+        {name: "Lunes", key: "lunes"},
+        {name: "Martes", key: "martes"},
+        {name: "Miércoles", key: "miercoles"},
+        {name: "Jueves", key: "jueves"},
+        {name: "Viernes", key: "viernes"},
+        {name: "Sábado", key: "sabado"},
       ],
-      ddwnWeekDaysModel: null,
+      ddwnWeekDaysModel: [],
       fromHourModel: null,
       modalFromHourModel: false,
       toHourModel: null,
@@ -145,27 +152,8 @@ export default {
       },
       set(model) {
         this.ddwnWeekDaysModel = model;
-        if (this.ddwnWeekDaysModel == "Lunes") {
-          this.objArrCompo.day = "lunes";
-        }
-        if (this.ddwnWeekDaysModel == "Martes") {
-          this.objArrCompo.day = "martes";
-        }
-        if (this.ddwnWeekDaysModel == "Miércoles") {
-          this.objArrCompo.day = "miercoles";
-        }
-        if (this.ddwnWeekDaysModel == "Jueves") {
-          this.objArrCompo.day = "jueves";
-        }
-        if (this.ddwnWeekDaysModel == "Viernes") {
-          this.objArrCompo.day = "viernes";
-        }
-        if (this.ddwnWeekDaysModel == "Sábado") {
-          this.objArrCompo.day = "sabado";
-        }
-        if (this.ddwnWeekDaysModel == "Domingo") {
-          this.objArrCompo.day = "domingo";
-        }
+        let ddwnWeekDaysModelToJSON = JSON.stringify(this.ddwnWeekDaysModel);
+        this.objArrCompo.day = ddwnWeekDaysModelToJSON;
         return this.ddwnWeekDaysModel;
       },
     },
@@ -189,10 +177,39 @@ export default {
         return this.toHourModel;
       },
     },
+    selectedAllDays() {
+      return this.ddwnWeekDaysModel.length === this.weekDaysItems.length
+    },
+    selectedSomeDays() {
+      return this.ddwnWeekDaysModel.length > 0 && !this.selectedAllDays
+    },
+    iconSelectAllDays() {
+      if (this.selectedAllDays) return 'mdi-close-box'
+      if (this.selectedSomeDays) return 'mdi-minus-box'
+      return 'mdi-checkbox-blank-outline'
+    },
   },
   methods: {
     removeCompoTime(id) {
       this.$emit("removeCompoTime", id);
+    },
+    clickSelectAllDays() {
+      this.$nextTick(() => {
+        if (this.selectedAllDays) {
+          this.ddwnWeekDaysModel = []
+          let ddwnWeekDaysModelToJSON = JSON.stringify(this.ddwnWeekDaysModel);
+          this.objArrCompo.day = ddwnWeekDaysModelToJSON;
+          console.log("TODOS", this.objArrCompo.day)
+        } else {
+          this.ddwnWeekDaysModel = []
+          this.weekDaysItems.forEach(day => {
+            this.ddwnWeekDaysModel.push(day.key)
+          });
+          let ddwnWeekDaysModelToJSON = JSON.stringify(this.ddwnWeekDaysModel);
+          this.objArrCompo.day = ddwnWeekDaysModelToJSON;
+          console.log("TODOS", this.objArrCompo.day)
+        }
+      })
     },
   },
   props: {

@@ -16,9 +16,9 @@ class ConfigurationIndexResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'notification_details' => $this->notification_details,
-            'notification_voucher' => $this->notification_voucher,
-            'notification_card' => $this->notification_card,
+            'notification_details' => json_decode($this->notification_details),
+            'notification_voucher' => json_decode($this->notification_voucher),
+            'notification_card' => json_decode($this->notification_card),
             'timezone' => $this->timezone,
             'payment_place' => $this->payment_place,
             'payment_type'  =>json_decode($this->payment_type),

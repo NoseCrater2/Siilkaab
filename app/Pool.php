@@ -15,6 +15,7 @@ class Pool extends Model
         'towels',
         'bar_pool',
         'open_at',
+        'close_at',
         'hotel_id'
     ];
 
