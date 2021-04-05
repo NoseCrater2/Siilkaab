@@ -5,8 +5,8 @@
                 <v-col cols="12"  v-for="(r, i) in room" :key="i">
                     <v-item  v-slot="{ active, toggle }" :value="r" >
                         <v-hover   v-slot="{ hover }" >
-                            <v-card flat  height="200"  :outlined="hover?true:false" :color="active?'#F0F2F5':''" >
-                                <div class="d-flex flex-no-wrap justify-left">
+                            <v-card flat min-height="166"  :elevation="hover?'5':'0'"  @click="toggle" :style="active?'border-right: 4mm solid #43A047;':''">
+                                <div class="d-flex flex-no-wrap">
                                     <v-avatar class="ma-2" size="150" tile @click="openRoomDetail(r.id)">
                                         <v-hover v-slot="{ hover }">
                                             <v-img height="200" :src="`/img/${r.default_image}`">
@@ -26,19 +26,22 @@
                                             Adultos: {{ r.max_adults}}. Niños: {{ r.max_children}} <br>
                                         </v-card-text>
                                         <v-card-actions class="py-1">
-                                            <v-btn small depressed tile outlined><v-icon left>mdi-magnify-plus</v-icon>Ampliar información</v-btn>
+                                            <v-btn small depressed tile outlined @click="openRoomDetail(r.id)">
+                                                <v-icon left>mdi-magnify-plus</v-icon>Ampliar información
+                                            </v-btn>
                                         </v-card-actions>
                                     </div>
                                     <div>
                                         <v-card-title>TARIFA Y REGIMEN</v-card-title>
                                         <v-card-actions>
-                                            <v-checkbox @click="toggle" v-model="active"></v-checkbox>
+                                            <!-- <v-checkbox @click="toggle" v-model="active"></v-checkbox> -->
                                         </v-card-actions>
                                         
                                     </div>
                                     <div >
-                                        <v-card-title  > {{configuration.currency_symbol + r.rack_rate +' '+ configuration.currency_code}}</v-card-title>
-                                        <v-btn tile small>RESERVAR</v-btn>
+                                        <v-card-title class="text-right" > {{configuration.currency_symbol + r.rack_rate +' '+ configuration.currency_code}}</v-card-title>
+                                        <!-- <v-btn tile small>RESERVAR</v-btn> -->
+                                         
                                     </div>
                                 </div>
                             </v-card>
@@ -57,7 +60,6 @@ import DialogDetailRooms from '../DetailRooms/DialogDetailRooms'
 export default {
     data(){
         return{
-            selectedRoom: null, 
             dialog: false,
             icon: 'photos',
             roomId: 0,
@@ -74,14 +76,10 @@ export default {
             bookings: state => state.bookingsModule.bookings,
             configuration: state => state.HotelModule.configuration,
         }),
-
-        
     },
 
     methods: {
-        addRoom(){
-            this.$store.dispatch('addRoom', {index: this.index, room: this.selectedRoom})
-        },
+ 
         openRoomDetail(id){
             this.roomId = id
             this.dialog = true
@@ -90,9 +88,6 @@ export default {
             this.dialog = false
             this.icon = 'photos'
         },
-        addRoomToBooking(){
-            this.$store.dispatch('addRoom', {'room':this.selected_room,'index':this.index})
-        }
     },
 
     components:{

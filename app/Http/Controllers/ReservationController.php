@@ -62,7 +62,7 @@ class ReservationController extends Controller
             $reservation = Reservation::create($data);
             foreach ($data['rooms'] as $room) {
                 $currentRoom = Room::find($room['id']);
-                $currentRoom->quantity = $currentRoom->quantity - 1;
+                $currentRoom->decrement('quantity');
                 $reservation->rooms()->syncWithoutDetaching([$currentRoom->id]);
 
             }

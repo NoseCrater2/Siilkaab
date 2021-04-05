@@ -1,7 +1,7 @@
 <template>
     <v-dialog v-model="dialog" width="700" max-width="800" persistent >
             
-                <v-card>
+                <v-card v-if="room">
                     <v-card-title>
                         {{room.name}}
                         <v-spacer></v-spacer>
@@ -42,7 +42,7 @@
                             </v-btn>
                         </v-btn-toggle>
                         <v-spacer></v-spacer>
-                        <v-btn class="mr-3"  @click="closeRoomDetail" tile>Cerrar</v-btn>
+                        <v-btn class="mr-3" depressed  @click="closeRoomDetail" tile>Cerrar</v-btn>
                     </v-card-actions>
                 </v-card>
         </v-dialog>

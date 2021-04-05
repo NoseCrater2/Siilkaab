@@ -82,7 +82,7 @@
             <template v-slot:item.rooms="{item}">
               <div class="d-flex align-center justify-start ml-5">
                 <v-badge :content="item.rooms" :value="item.rooms" color="red" overlap>
-                  <v-icon>mdi-bed</v-icon>
+                  <v-btn icon :to="{name: 'RoomsHome', query: {id: item.id}}"><v-icon>mdi-bed</v-icon></v-btn>
                 </v-badge>
               </div>
             </template>
