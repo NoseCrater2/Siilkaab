@@ -1,5 +1,5 @@
 <template>
-        <v-container class="elevation-1 outlined" fluid>
+        <v-container  fluid >
           <div class="text-center mb-4">
             <span class="text-h4 text-uppercase font-weight-bold"
               >Detalles de habitación</span
@@ -26,7 +26,7 @@
                 md="3"
                 sm="12"
               >
-                <v-card :class="mxAutomyAuto" width="370" outlined :hover="true">
+                <v-card :class="mxAutomyAuto" width="370" min-height="450" outlined :hover="true">
                   <v-img
                     height="250"
                     class="white--text align-end"
@@ -149,7 +149,7 @@ export default {
       mxAutomyAuto: null,
       heightCard: "380",
       selectedId: 0,
-      hotelSelected: null,
+      hotelSelected: this.$route.query.id || null,
       loadingRooms: false,
       flagActiveRooms: false
     };
@@ -189,7 +189,9 @@ export default {
   },
 
   mounted(){
-  
+  if(this.hotelSelected != null){
+    this.searchRoom(this.hotelSelected)
+  }
   },
 
   computed: {
@@ -197,6 +199,7 @@ export default {
       hotels: (state) => state.disponibilityMoule.ahotels,
       currentHotelRooms: (state) => state.RoomModule.currentHotelRooms,
     }),
+
         
     },
     //Propiedad computada que controla la responsividad de las cards de habitaciones

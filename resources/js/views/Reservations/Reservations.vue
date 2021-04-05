@@ -165,15 +165,22 @@
       </v-alert>
       </v-container>
     </v-row>
-    <v-row  class="mx-0 px-0">
-      <v-container fluid style="max-width: 1366px">
-        <v-row >
+    <v-row  class="mx-0 px-0" v-if="showResults">
+      <v-container fluid style="max-width: 1366px" class="pa-0">
+        <v-row no-gutters justify="space-between">
          
         <v-col  cols="12" md="3" sm="12" order-sm="2"  order-md="1">
-        <v-card flat style="position: sticky; top:0; z-index: 7; padding-top: 15px" >
-          <v-img class="ma-3" :src="`/img/${hotel.image}`">
-
-          </v-img>
+        <v-card flat style="position: sticky; top:0;" >
+          <v-avatar tile class="mx-3" size="310" @click="openHotelDialog">
+            <v-hover v-slot="{ hover }">
+                  <v-img width="350" :src="`/img/${hotel.image}`">
+                     <v-row style="background-color: rgba(10, 10, 10, 0.5);" align="center" justify="center" v-if="hover">
+                          <v-icon size="50" dark>mdi-magnify</v-icon>
+                     </v-row>
+                  </v-img>
+            </v-hover>
+          </v-avatar>
+         
           <v-card-title>{{hotel.title}}</v-card-title>
           <v-card-text>
              <v-icon>mdi-map-marker</v-icon>
@@ -222,7 +229,7 @@
             </v-list>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" depressed :to="{name:'PersonalData'}" >Reservar</v-btn>
+              <v-btn color="primary" block depressed tile :to="{name:'PersonalData'}" >Reservar</v-btn>
             </v-card-actions>
             
          
@@ -242,22 +249,25 @@
           marginwidth="0" 
           :src="`https://maps.google.com/maps?q=${contact.latitude},${contact.longitude}&hl=es&z=14&amp;output=embed`"
           >
- </iframe>
+          </iframe>
         </v-row>
       </v-container>
     </v-row>
+     <DialogDetailHotel @closeDialog="closeHotelDetail" :dialog="dialog" v-if="dialog"  />
   </v-app>
 </template>
 
 
 <script >
 import {mapGetters, mapState } from 'vuex';
+import DialogDetailHotel from '../../components/DetailRooms/DialogDetailHotel'
 // import Moment from "moment"; //Importamos moment.js
 // import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
 // const moment = extendMoment(Moment);
 export default {
   data () {
     return {
+      dialog: false,
       items: [
         {
           text: 'Selecciona habitación',
@@ -291,7 +301,7 @@ export default {
       loading: false,
       status: null,
       errors: null,
-      showRooms : false,
+      showResults : false,
       maxRooms: [
         '1 Habitación',
         '2 Habitaciones',
@@ -303,8 +313,6 @@ export default {
   },
 
   methods:{
-   
-
     changeCoutRooms(){
       this.form = []
        for (let index = 0; index < parseInt(this.selectedRooms); index++) {
@@ -312,9 +320,16 @@ export default {
       }
     },
 
+    openHotelDialog(){
+      this.dialog = true
+    },
+
+    closeHotelDetail(){
+      this.dialog = false
+    },
+
     search(){
       if(this.$refs.form.validate()){
-        this.showRooms = false
         // this.loading = true;
         this.$store.dispatch('resetRooms').then(()=>{
            this.errors = null;
@@ -324,7 +339,7 @@ export default {
         terms.to = this.date2
         terms.rooms = this.form
         this.$store.dispatch('getAvailabilityRooms',terms).then(()=>{
-          this.showRooms = true;
+          this.showResults = true;
           terms.nights = this.$moment(this.date2).diff(this.$moment(this.date),'days')
           this.$store.dispatch('addGeneralInformation',terms)
           if(this.$route.name !== 'selectRoom'){
@@ -345,15 +360,17 @@ export default {
     }
   },
 
+  components:{
+    DialogDetailHotel,
+  },
+
   computed:{
      ...mapState({
-        hotel: (state) => state.HotelModule.hotel,
         availablerooms: (state) => state.RoomModule.availableRooms,
         bookings: state => state.bookingsModule.bookings,
         hotel: (state) => state.HotelModule.hotel,
         contact: state => state.HotelModule.contacts,
         configuration: state => state.HotelModule.configuration,
-        
     }),
 
    ...mapGetters(["getSearchErrors"]),

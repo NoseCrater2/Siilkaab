@@ -51,6 +51,7 @@ class RoomAvailabilityController extends Controller
 
                 $result =  RoomIndexResource::collection(
                     $hotel->rooms()
+                    ->where('quantity', '>=', 1)
                     ->where('max_adults','>=', intval($room['adults']))
                     ->where('max_children','>=', intval($room['children']))
                     ->whereNotIn('id',$omittedIds)
