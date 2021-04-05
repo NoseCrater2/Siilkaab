@@ -231,8 +231,8 @@ export default {
   },
   data() {
     return {
-      //La variable "chargedSpecialRegimes" sirve para cargar los regimenes restantes por medio del observador "regimes"
-      chargedSpecialRegimes: false,
+      //La variables "chargedSpecial..." sirve para cargar los regimenes restantes por medio del observador "regimes"
+      chargedSpecialRegimesWatch: false,
       arrayComponents: [],
       countIdCompo: -1,
       prioritiesModel: ["Normal", "Media", "Alta"],
@@ -260,11 +260,11 @@ export default {
   },
   watch:{
     regimes(nuevoValor, valorAnterior){
-      if(this.chargedSpecialRegimes == false){
+      if(this.chargedSpecialRegimesWatch == false){
         this.methodChargeSpecialRegimes();
-        this.chargedSpecialRegimes = true;
+        this.chargedSpecialRegimesWatch = true;
+              console.log("SHIWATCHWATCH", this.regimes)
       }
-      console.log("SHIWATCHWATCH", this.regimes)
     }
   },
   computed: {
@@ -673,10 +673,12 @@ export default {
     //Esta mutacion setea regimes
     ...mapMutations(["setArrayRegimes"]),
     methodChargeSpecialRegimes(){
-      let countWhile = this.regimes.length - 1;
-      while (countWhile >= 1) {
-        this.addCompo(this.regimes[countWhile]);
-        countWhile--;
+      if(this.countIdCompo <= -1){
+        let countWhile = this.regimes.length - 1;
+        while (countWhile >= 1) {
+          this.addCompo(this.regimes[countWhile]);
+          countWhile--;
+        }
       }
     },
     addCompoButton() {
