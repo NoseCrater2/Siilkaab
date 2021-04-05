@@ -199,85 +199,35 @@ export default {
   mounted() {
     //componentID es utilizado como key unica para el proceso de muestra de errores
     this.objArrCompo.componentID = this.componentID;
-    if (this.objArrCompo.start_period != null && this.objArrCompo.final_period != null) {
-      this.propStartDate = {
-        info: "Start",
-        prop: this.objArrCompo.start_period,
-      };
-      this.propFinalDate = {
-        info: "Final",
-        prop: this.objArrCompo.final_period,
-      };
-    }
-    this.swOnlyRoomModel = this.objArrCompo.only_room;
-    if (this.objArrCompo.priority != null) {
-      if (this.objArrCompo.priority == "normal") {
-        this.ddwnPriorityModel = "Normal";
-      }
-      if (this.objArrCompo.priority == "medium") {
-        this.ddwnPriorityModel = "Media";
-      }
-      if (this.objArrCompo.priority == "high") {
-        this.ddwnPriorityModel = "Alta";
-      }
-    }
-    this.txtBreakfastChildrenModel = this.objArrCompo.lodging_breakfast_children;
-    this.txtBreakfastAdultModel = this.objArrCompo.lodging_breakfast_adult;
-    if (this.txtBreakfastAdultModel !==null || this.txtBreakfastChildrenModel !== null) {
-      if (this.txtBreakfastAdultModel !== 0 || this.txtBreakfastChildrenModel !== 0) {
-        this.swBreakfastModel = 1;
-      }
-    }
-    this.txtHalfPensionChildrenModel = this.objArrCompo.half_pension_children;
-    this.txtHalfPensionAdultModel = this.objArrCompo.half_pension_adult;
-    if (this.txtHalfPensionAdultModel !==null || this.txtHalfPensionChildrenModel !== null) {
-      if (this.txtHalfPensionAdultModel !== 0 || this.txtHalfPensionChildrenModel !== 0) {
-        this.swHalfPensionModel = 1;
-      }
-    }
-    this.txtFullPensionChildrenModel = this.objArrCompo.full_pension_children;
-    this.txtFullPensionAdultModel = this.objArrCompo.full_pension_adult;
-    if (this.txtFullPensionAdultModel !==null || this.txtFullPensionChildrenModel !== null) {
-      if (this.txtFullPensionAdultModel !==0 || this.txtFullPensionChildrenModel !== 0) {
-        this.swFullPensionModel = 1;
-      }
-    }
-    this.txtAllIncludedChildrenModel = this.objArrCompo.all_included_children;
-    this.txtAllIncludedAdultModel = this.objArrCompo.all_included_adult;
-    if (this.txtAllIncludedAdultModel !==null || this.txtAllIncludedChildrenModel !== null) {
-      if (this.txtAllIncludedAdultModel !==0 || this.txtAllIncludedChildrenModel !== 0) {
-        this.swAllIncludedModel = 1;
-      }
-    }
+    console.log("IDCOMPO", this.objArrCompo.componentID)
   },
   data() {
     return {
       //DATOS DEL FORMULARIO
       componentID: this.idCompo + "" + this.objArrCompo.id,
       id: this.idCompo,
-      noLast: false,
       countIdCompo: -1,
       prioritiesModel: ["Normal", "Media", "Alta"],
       propStartDate: null,
       propFinalDate: null,
-      swOnlyRoomModel: null,
-      ddwnPriorityModel: null,
+      swOnlyRoomModel: 0,
+      ddwnPriorityModel: "Normal",
       swBreakfastModel: 0,
-      txtBreakfastAdultModel: null,
-      txtBreakfastChildrenModel: null,
+      txtBreakfastAdultModel: 0,
+      txtBreakfastChildrenModel: 0,
       swHalfPensionModel: 0,
-      txtHalfPensionAdultModel: null,
-      txtHalfPensionChildrenModel: null,
+      txtHalfPensionAdultModel: 0,
+      txtHalfPensionChildrenModel: 0,
       swFullPensionModel: 0,
-      txtFullPensionAdultModel: null,
-      txtFullPensionChildrenModel: null,
+      txtFullPensionAdultModel: 0,
+      txtFullPensionChildrenModel: 0,
       swAllIncludedModel: 0,
-      txtAllIncludedAdultModel: null,
-      txtAllIncludedChildrenModel: null,
+      txtAllIncludedAdultModel: 0,
+      txtAllIncludedChildrenModel: 0,
       rules: {
         validNumericInputs: value => {
-          const pattern = /^(1|[0-9]\d{0,3})$/
-          return pattern.test(value) || 'Solo se aceptan numeros'
+          const pattern = /^\s*?(\d+(\.\d{1,2})?|\.\d{1,2})\s*$/
+          return pattern.test(value) || 'Solo valores monetarios'
         },
       },
     };
@@ -288,15 +238,27 @@ export default {
       errorsRegimes: (state) => state.HotelModule.errorsRegimes
     }),
     getStartDate() {
+      if (this.objArrCompo.start_period != null) {
+        this.propStartDate = {
+          info: "Start",
+          prop: this.objArrCompo.start_period,
+        };
+      }
       return this.propStartDate;
     },
     getFinalDate() {
+    if (this.objArrCompo.final_period != null) {
+      this.propFinalDate = {
+        info: "Final",
+        prop: this.objArrCompo.final_period,
+      };
+    }
       return this.propFinalDate;
     },
     //Codigo para guardar temporalmente en el state
     computedSwOnlyRoom: {
       get() {
-        return this.swOnlyRoomModel;
+        return this.objArrCompo.only_room != null ? this.objArrCompo.only_room : this.swOnlyRoomModel;
       },
       set(model) {
         this.swOnlyRoomModel = model;
@@ -306,6 +268,17 @@ export default {
     },
     computedDdwnPriority: {
       get() {
+        if (this.objArrCompo.priority != null) {
+          if (this.objArrCompo.priority == "normal") {
+            this.ddwnPriorityModel = "Normal";
+          }
+          if (this.objArrCompo.priority == "medium") {
+            this.ddwnPriorityModel = "Media";
+          }
+          if (this.objArrCompo.priority == "high") {
+            this.ddwnPriorityModel = "Alta";
+          }
+        }
         return this.ddwnPriorityModel;
       },
       set(model) {
@@ -339,11 +312,14 @@ export default {
     },
     computedTxtBreakfastAdult: {
       get() {
-        return this.txtBreakfastAdultModel;
+        if(parseFloat(this.objArrCompo.lodging_breakfast_adult) > 0){
+          this.swBreakfastModel = 1;
+        }
+        return this.objArrCompo.lodging_breakfast_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtBreakfastAdultModel = model;
         this.objArrCompo.lodging_breakfast_adult = this.txtBreakfastAdultModel;
@@ -352,11 +328,14 @@ export default {
     },
     computedTxtBreakfastChildren: {
       get() {
-        return this.txtBreakfastChildrenModel;
+        if(parseFloat(this.objArrCompo.lodging_breakfast_children) > 0){
+          this.swBreakfastModel = 1;
+        }
+        return this.objArrCompo.lodging_breakfast_children;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtBreakfastChildrenModel = model;
         this.objArrCompo.lodging_breakfast_children = this.txtBreakfastChildrenModel;
@@ -380,11 +359,14 @@ export default {
     },
     computedTxtHalfPensionAdult: {
       get() {
-        return this.txtHalfPensionAdultModel;
+        if(parseFloat(this.objArrCompo.half_pension_adult) > 0){
+          this.swHalfPensionModel = 1;
+        }
+        return this.objArrCompo.half_pension_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtHalfPensionAdultModel = model;
         this.objArrCompo.half_pension_adult = this.txtHalfPensionAdultModel;
@@ -393,11 +375,14 @@ export default {
     },
     computedTxtHalfPensionChildren: {
       get() {
-        return this.txtHalfPensionChildrenModel;
+        if(parseFloat(this.objArrCompo.half_pension_children) > 0){
+          this.swHalfPensionModel = 1;
+        }
+        return this.objArrCompo.half_pension_children;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtHalfPensionChildrenModel = model;
         this.objArrCompo.half_pension_children = this.txtHalfPensionChildrenModel;
@@ -421,11 +406,14 @@ export default {
     },
     computedTxtFullPensionAdult: {
       get() {
-        return this.txtFullPensionAdultModel;
+        if(parseFloat(this.objArrCompo.full_pension_adult) > 0){
+          this.swFullPensionModel = 1;
+        }
+        return this.objArrCompo.full_pension_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtFullPensionAdultModel = model;
         this.objArrCompo.full_pension_adult = this.txtFullPensionAdultModel;
@@ -434,11 +422,14 @@ export default {
     },
     computedTxtFullPensionChildren: {
       get() {
-        return this.txtFullPensionChildrenModel;
+        if(parseFloat(this.objArrCompo.full_pension_children) > 0){
+          this.swFullPensionModel = 1;
+        }
+        return this.objArrCompo.full_pension_children;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtFullPensionChildrenModel = model;
         this.objArrCompo.full_pension_children = this.txtFullPensionChildrenModel;
@@ -462,11 +453,14 @@ export default {
     },
     computedTxtAllIncludedAdult: {
       get() {
-        return this.txtAllIncludedAdultModel;
+        if(parseFloat(this.objArrCompo.all_included_adult) > 0){
+          this.swAllIncludedModel = 1;
+        }
+        return this.objArrCompo.all_included_adult;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtAllIncludedAdultModel = model;
         this.objArrCompo.all_included_adult = this.txtAllIncludedAdultModel;
@@ -475,11 +469,14 @@ export default {
     },
     computedTxtAllIncludedChildren: {
       get() {
-        return this.txtAllIncludedChildrenModel;
+        if(parseFloat(this.objArrCompo.all_included_children) > 0){
+          this.swAllIncludedModel = 1;
+        }
+        return this.objArrCompo.all_included_children;
       },
       set(model) {
         if(model != ""){
-          model = parseInt(model)
+          model = parseFloat(model)
         }
         this.txtAllIncludedChildrenModel = model;
         this.objArrCompo.all_included_children = this.txtAllIncludedChildrenModel;

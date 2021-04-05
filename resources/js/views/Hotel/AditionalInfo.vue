@@ -653,86 +653,74 @@ import CarrouselPool from "../../components/Hotel/CarrouselPool";
 
 export default {
   name: "AditionalInfo",
-  created() {
-    if (this.hotel.idAmenity !== null) {
-      console.log("CON ID",this.aditionalInfo, this.hotel)
-      this.fillModel(); //Ejecuta metodo para llenar la vista con los datos
-      console.log("CON ID",this.aditionalInfo)
-    }
-    else{
-      console.log("SIN ID",this.aditionalInfo)
-      this.fillModel();
-      console.log("SIN ID",this.aditionalInfo)
-    }
-  },
   data() {
     return {
       spaItems: ["Gratis", "De Pago", "Ninguno"],
-      ddwnSpaModel: null,
+      ddwnSpaModel: "Ninguno",
       acuaticItems: ["Gratis", "De Pago", "Ninguno"],
-      ddwnAcuaticModel: null,
+      ddwnAcuaticModel: "Ninguno",
       beachItems: ["Privada", "En frente", "Acantilado", "Ninguno"],
-      ddwnBeachModel: null,
+      ddwnBeachModel: "Ninguno",
       romanticDItems: ["Gratis", "De Pago", "Ninguno"],
-      ddwnRomanticDModel: null,
+      ddwnRomanticDModel: "Ninguno",
       touristicTItems: ["Gratis", "De Pago", "Ninguno"],
-      ddwnTouristicTModel: null,
+      ddwnTouristicTModel: "Ninguno",
       dailyHItems: ["Gratis", "De Pago", "Ninguno"],
-      ddwnDailyHModel: null,
-      swAirConditionedModel: null,
-      swNoSmokeRoomsModel: null,
-      swAirTransferServiceModel: null,
-      swAirCollectServiceModel: null,
-      swRecection_24hModel: null,
-      swGymModel: null,
-      swRoomServiceModel: null,
-      swTerraceModel: null,
-      swBarModel: null,
-      swGardenModel: null,
-      swRecreationalActivitiesModel: null,
-      swGuardedParkingModel: null,
-      swStreetParkingModel: null,
-      swGarageParkingModel: null,
-      swSpecialParkingModel: null,
-      swReg_inout_privateModel: null,
-      swReg_inout_expressModel: null,
-      swTouristicInfoModel: null,
-      swParkingServiceModel: null,
-      swCurrencyChangeModel: null,
-      swOutdoorFurnitureModel: null,
-      swTerraceSolariumModel: null,
-      swSharedDinnerModel: null,
-      swSharedSalonModel: null,
-      swGameZoneModel: null,
-      swLibraryModel: null,
-      swLaundryServiceModel: null,
-      swIronServiceModel: null,
-      swMeetingRoomModel: null,
-      swMeetingCenterModel: null,
-      swFaxPhotocopierModel: null,
-      swCoffeeBreakModel: null,
-      swSouvenirsStoreModel: null,
-      swInclusiveServiceModel: null,
-      swElevatorModel: null,
-      swSmokingZoneModel: null,
-      swNoSmokingModel: null,
-      swPetFriendlyModel: null,
-      swPetHouseModel: null,
-      swPetBasketModel: null,
-      swOnlyAdultsModel: null,
-      swSanitizedRoomsModel: null,
-      swBridalSuiteModel: null,
-      swVipServiceModel: null,
-      swCalefactionModel: null,
-      swKeepBagsModel: null,
+      ddwnDailyHModel: "Ninguno",
+      swAirConditionedModel: 0,
+      swNoSmokeRoomsModel: 0,
+      swAirTransferServiceModel: 0,
+      swAirCollectServiceModel: 0,
+      swRecection_24hModel: 0,
+      swGymModel: 0,
+      swRoomServiceModel: 0,
+      swTerraceModel: 0,
+      swBarModel: 0,
+      swGardenModel: 0,
+      swRecreationalActivitiesModel: 0,
+      swGuardedParkingModel: 0,
+      swStreetParkingModel: 0,
+      swGarageParkingModel: 0,
+      swSpecialParkingModel: 0,
+      swReg_inout_privateModel: 0,
+      swReg_inout_expressModel: 0,
+      swTouristicInfoModel: 0,
+      swParkingServiceModel: 0,
+      swCurrencyChangeModel: 0,
+      swOutdoorFurnitureModel: 0,
+      swTerraceSolariumModel: 0,
+      swSharedDinnerModel: 0,
+      swSharedSalonModel: 0,
+      swGameZoneModel: 0,
+      swLibraryModel: 0,
+      swLaundryServiceModel: 0,
+      swIronServiceModel: 0,
+      swMeetingRoomModel: 0,
+      swMeetingCenterModel: 0,
+      swFaxPhotocopierModel: 0,
+      swCoffeeBreakModel: 0,
+      swSouvenirsStoreModel: 0,
+      swInclusiveServiceModel: 0,
+      swElevatorModel: 0,
+      swSmokingZoneModel: 0,
+      swNoSmokingModel: 0,
+      swPetFriendlyModel: 0,
+      swPetHouseModel: 0,
+      swPetBasketModel: 0,
+      swOnlyAdultsModel: 0,
+      swSanitizedRoomsModel: 0,
+      swBridalSuiteModel: 0,
+      swVipServiceModel: 0,
+      swCalefactionModel: 0,
+      swKeepBagsModel: 0,
 
-      swSecurity24hModel: null,
-      swSecurityAlarmModel: null,
-      swSmookeDetectorsModel: null,
-      swInSecurityCamsModel: null,
-      swOutSecurityCamsModel: null,
-      swFireExtinguishersModel: null,
-      swSafeDepositBoxModel: null,
+      swSecurity24hModel: 0,
+      swSecurityAlarmModel: 0,
+      swSmookeDetectorsModel: 0,
+      swInSecurityCamsModel: 0,
+      swOutSecurityCamsModel: 0,
+      swFireExtinguishersModel: 0,
+      swSafeDepositBoxModel: 0,
     };
   },
   computed: {
@@ -742,6 +730,17 @@ export default {
     }),
     computedDdwnSpa: {
       get() {
+        if (this.aditionalInfo.spa != null) {
+          if (this.aditionalInfo.spa == "flag") {
+            this.ddwnSpaModel = "Ninguno";
+          }
+          if (this.aditionalInfo.spa == "free") {
+            this.ddwnSpaModel = "Gratis";
+          }
+          if (this.aditionalInfo.spa == "paid") {
+            this.ddwnSpaModel = "De Pago";
+          }
+        }
         return this.ddwnSpaModel;
       },
       set(model) {
@@ -760,6 +759,17 @@ export default {
     },
     computedDdwnAcuatic: {
       get() {
+        if (this.aditionalInfo.water_park != null) {
+          if (this.aditionalInfo.water_park == "flag") {
+            this.ddwnAcuaticModel = "Ninguno";
+          }
+          if (this.aditionalInfo.water_park == "free") {
+            this.ddwnAcuaticModel = "Gratis";
+          }
+          if (this.aditionalInfo.water_park == "paid") {
+            this.ddwnAcuaticModel = "De Pago";
+          }
+        }
         return this.ddwnAcuaticModel;
       },
       set(model) {
@@ -778,6 +788,20 @@ export default {
     },
     computedDdwnBeach: {
       get() {
+        if (this.aditionalInfo.beach != null) {
+          if (this.aditionalInfo.beach == "cliff") {
+            this.ddwnBeachModel = "Acantilado";
+          }
+          if (this.aditionalInfo.beach == "flag") {
+            this.ddwnBeachModel = "Ninguno";
+          }
+          if (this.aditionalInfo.beach == "private") {
+            this.ddwnBeachModel = "Privada";
+          }
+          if (this.aditionalInfo.beach == "in front") {
+            this.ddwnBeachModel = "En frente";
+          }
+        }
         return this.ddwnBeachModel;
       },
       set(model) {
@@ -799,6 +823,17 @@ export default {
     },
     computedDdwnRomanticD: {
       get() {
+        if (this.aditionalInfo.romantic_dinners != null) {
+          if (this.aditionalInfo.romantic_dinners == "flag") {
+            this.ddwnRomanticDModel = "Ninguno";
+          }
+          if (this.aditionalInfo.romantic_dinners == "free") {
+            this.ddwnRomanticDModel = "Gratis";
+          }
+          if (this.aditionalInfo.romantic_dinners == "paid") {
+            this.ddwnRomanticDModel = "De Pago";
+          }
+        }
         return this.ddwnRomanticDModel;
       },
       set(model) {
@@ -817,6 +852,17 @@ export default {
     },
     computedDdwnTouristicT: {
       get() {
+        if (this.aditionalInfo.touristic_tour != null) {
+          if (this.aditionalInfo.touristic_tour == "flag") {
+            this.ddwnTouristicTModel = "Ninguno";
+          }
+          if (this.aditionalInfo.touristic_tour == "free") {
+            this.ddwnTouristicTModel = "Gratis";
+          }
+          if (this.aditionalInfo.touristic_tour == "paid") {
+            this.ddwnTouristicTModel = "De Pago";
+          }
+        }
         return this.ddwnTouristicTModel;
       },
       set(model) {
@@ -835,6 +881,17 @@ export default {
     },
     computedDdwnDailyH: {
       get() {
+        if (this.aditionalInfo.daily_housekipping != null) {
+          if (this.aditionalInfo.daily_housekipping == "flag") {
+            this.ddwnDailyHModel = "Ninguno";
+          }
+          if (this.aditionalInfo.daily_housekipping == "free") {
+            this.ddwnDailyHModel = "Gratis";
+          }
+          if (this.aditionalInfo.daily_housekipping == "paid") {
+            this.ddwnDailyHModel = "De Pago";
+          }
+        }
         return this.ddwnDailyHModel;
       },
       set(model) {
@@ -853,7 +910,7 @@ export default {
     },
     computedSwAirConditioned: {
       get() {
-        return this.swAirConditionedModel;
+        return this.aditionalInfo.air_conditioned != null ? this.aditionalInfo.air_conditioned : this.swAirConditionedModel;
       },
       set(model) {
         this.swAirConditionedModel = model;
@@ -863,7 +920,7 @@ export default {
     },
     computedSwNoSmokeRooms: {
       get() {
-        return this.swNoSmokeRoomsModel;
+        return this.aditionalInfo.no_smoke_rooms != null ? this.aditionalInfo.no_smoke_rooms : this.swNoSmokeRoomsModel;
       },
       set(model) {
         this.swNoSmokeRoomsModel = model;
@@ -873,7 +930,7 @@ export default {
     },
     computedSwAirTransferService: {
       get() {
-        return this.swAirTransferServiceModel;
+        return this.aditionalInfo.air_transfer_service != null ? this.aditionalInfo.air_transfer_service : this.swAirTransferServiceModel;
       },
       set(model) {
         this.swAirTransferServiceModel = model;
@@ -883,7 +940,7 @@ export default {
     },
     computedSwAirCollectService: {
       get() {
-        return this.swAirCollectServiceModel;
+        return this.aditionalInfo.air_collect_service != null ? this.aditionalInfo.air_collect_service : this.swAirCollectServiceModel;
       },
       set(model) {
         this.swAirCollectServiceModel = model;
@@ -893,7 +950,7 @@ export default {
     },
     computedSwRecection_24h: {
       get() {
-        return this.swRecection_24hModel;
+        return this.aditionalInfo.recection_24h != null ? this.aditionalInfo.recection_24h : this.swRecection_24hModel;
       },
       set(model) {
         this.swRecection_24hModel = model;
@@ -903,7 +960,7 @@ export default {
     },
     computedSwGym: {
       get() {
-        return this.swGymModel;
+        return this.aditionalInfo.gym != null ? this.aditionalInfo.gym : this.swGymModel;
       },
       set(model) {
         this.swGymModel = model;
@@ -913,7 +970,7 @@ export default {
     },
     computedSwRoomService: {
       get() {
-        return this.swRoomServiceModel;
+        return this.aditionalInfo.room_service != null ? this.aditionalInfo.room_service : this.swRoomServiceModel;
       },
       set(model) {
         this.swRoomServiceModel = model;
@@ -923,7 +980,7 @@ export default {
     },
     computedSwTerrace: {
       get() {
-        return this.swTerraceModel;
+        return this.aditionalInfo.terrace != null ? this.aditionalInfo.terrace : this.swTerraceModel;
       },
       set(model) {
         this.swTerraceModel = model;
@@ -933,7 +990,7 @@ export default {
     },
     computedSwBar: {
       get() {
-        return this.swBarModel;
+        return this.aditionalInfo.bar != null ? this.aditionalInfo.bar : this.swBarModel;
       },
       set(model) {
         this.swBarModel = model;
@@ -943,7 +1000,7 @@ export default {
     },
     computedSwGarden: {
       get() {
-        return this.swGardenModel;
+        return this.aditionalInfo.garden != null ? this.aditionalInfo.garden : this.swGardenModel;
       },
       set(model) {
         this.swGardenModel = model;
@@ -953,7 +1010,7 @@ export default {
     },
     computedSwRecreationalActivities: {
       get() {
-        return this.swRecreationalActivitiesModel;
+        return this.aditionalInfo.recreational_activities != null ? this.aditionalInfo.recreational_activities : this.swRecreationalActivitiesModel;
       },
       set(model) {
         this.swRecreationalActivitiesModel = model;
@@ -963,7 +1020,7 @@ export default {
     },
     computedSwGuardedParking: {
       get() {
-        return this.swGuardedParkingModel;
+        return this.aditionalInfo.guarded_parking != null ? this.aditionalInfo.guarded_parking : this.swGuardedParkingModel;
       },
       set(model) {
         this.swGuardedParkingModel = model;
@@ -973,7 +1030,7 @@ export default {
     },
     computedSwStreetParking: {
       get() {
-        return this.swStreetParkingModel;
+        return this.aditionalInfo.street_parking != null ? this.aditionalInfo.street_parking : this.swStreetParkingModel;
       },
       set(model) {
         this.swStreetParkingModel = model;
@@ -983,7 +1040,7 @@ export default {
     },
     computedSwGarageParking: {
       get() {
-        return this.swGarageParkingModel;
+        return this.aditionalInfo.garage_parking != null ? this.aditionalInfo.garage_parking : this.swGarageParkingModel;
       },
       set(model) {
         this.swGarageParkingModel = model;
@@ -993,7 +1050,7 @@ export default {
     },
     computedSwSpecialParking: {
       get() {
-        return this.swSpecialParkingModel;
+        return this.aditionalInfo.special_parking != null ? this.aditionalInfo.special_parking : this.swSpecialParkingModel;
       },
       set(model) {
         this.swSpecialParkingModel = model;
@@ -1003,7 +1060,7 @@ export default {
     },
     computedSwReg_inout_private: {
       get() {
-        return this.swReg_inout_privateModel;
+        return this.aditionalInfo.reg_inout_private != null ? this.aditionalInfo.reg_inout_private : this.swReg_inout_privateModel;
       },
       set(model) {
         this.swReg_inout_privateModel = model;
@@ -1013,17 +1070,17 @@ export default {
     },
     computedSwReg_inout_express: {
       get() {
-        return this.swReg_inout_expressModel;
+        return this.aditionalInfo.reg_inout_express != null ? this.aditionalInfo.reg_inout_express : this.swReg_inout_expressModel;
       },
       set(model) {
         this.swReg_inout_expressModel = model;
-        this.aditionalInfo.reg_inout_express =this.swReg_inout_expressModel;
+        this.aditionalInfo.reg_inout_express = this.swReg_inout_expressModel;
         return this.swReg_inout_expressModel;
       },
     },
     computedSwTouristicInfo: {
       get() {
-        return this.swTouristicInfoModel;
+        return this.aditionalInfo.touristic_info != null ? this.aditionalInfo.touristic_info : this.swTouristicInfoModel;
       },
       set(model) {
         this.swTouristicInfoModel = model;
@@ -1033,7 +1090,7 @@ export default {
     },
     computedSwParkingService: {
       get() {
-        return this.swParkingServiceModel;
+        return this.aditionalInfo.parking_service != null ? this.aditionalInfo.parking_service : this.swParkingServiceModel;
       },
       set(model) {
         this.swParkingServiceModel = model;
@@ -1043,7 +1100,7 @@ export default {
     },
     computedSwCurrencyChange: {
       get() {
-        return this.swCurrencyChangeModel;
+        return this.aditionalInfo.currency_change != null ? this.aditionalInfo.currency_change : this.swCurrencyChangeModel;
       },
       set(model) {
         this.swCurrencyChangeModel = model;
@@ -1053,7 +1110,7 @@ export default {
     },
     computedSwOutdoorFurniture: {
       get() {
-        return this.swOutdoorFurnitureModel;
+        return this.aditionalInfo.outdoor_furniture != null ? this.aditionalInfo.outdoor_furniture : this.swOutdoorFurnitureModel;
       },
       set(model) {
         this.swOutdoorFurnitureModel = model;
@@ -1063,7 +1120,7 @@ export default {
     },
     computedSwTerraceSolarium: {
       get() {
-        return this.swTerraceSolariumModel;
+        return this.aditionalInfo.terrace_solarium != null ? this.aditionalInfo.terrace_solarium : this.swTerraceSolariumModel;
       },
       set(model) {
         this.swTerraceSolariumModel = model;
@@ -1073,7 +1130,7 @@ export default {
     },
     computedSwSharedDinner: {
       get() {
-        return this.swSharedDinnerModel;
+        return this.aditionalInfo.shared_dinner != null ? this.aditionalInfo.shared_dinner : this.swSharedDinnerModel;
       },
       set(model) {
         this.swSharedDinnerModel = model;
@@ -1083,7 +1140,7 @@ export default {
     },
     computedSwSharedSalon: {
       get() {
-        return this.swSharedSalonModel;
+        return this.aditionalInfo.shared_salon != null ? this.aditionalInfo.shared_salon : this.swSharedSalonModel;
       },
       set(model) {
         this.swSharedSalonModel = model;
@@ -1093,7 +1150,7 @@ export default {
     },
     computedSwGameZone: {
       get() {
-        return this.swGameZoneModel;
+        return this.aditionalInfo.game_zone != null ? this.aditionalInfo.game_zone : this.swGameZoneModel;
       },
       set(model) {
         this.swGameZoneModel = model;
@@ -1103,7 +1160,7 @@ export default {
     },
     computedSwLibrary: {
       get() {
-        return this.swLibraryModel;
+        return this.aditionalInfo.library != null ? this.aditionalInfo.library : this.swLibraryModel;
       },
       set(model) {
         this.swLibraryModel = model;
@@ -1113,7 +1170,7 @@ export default {
     },
     computedSwLaundryService: {
       get() {
-        return this.swLaundryServiceModel;
+        return this.aditionalInfo.laundry_service != null ? this.aditionalInfo.laundry_service : this.swLaundryServiceModel;
       },
       set(model) {
         this.swLaundryServiceModel = model;
@@ -1123,7 +1180,7 @@ export default {
     },
     computedSwIronService: {
       get() {
-        return this.swIronServiceModel;
+        return this.aditionalInfo.iron_service != null ? this.aditionalInfo.iron_service : this.swIronServiceModel;
       },
       set(model) {
         this.swIronServiceModel = model;
@@ -1133,7 +1190,7 @@ export default {
     },
     computedSwMeetingRoom: {
       get() {
-        return this.swMeetingRoomModel;
+        return this.aditionalInfo.meeting_room != null ? this.aditionalInfo.meeting_room : this.swMeetingRoomModel;
       },
       set(model) {
         this.swMeetingRoomModel = model;
@@ -1143,7 +1200,7 @@ export default {
     },
     computedSwMeetingCenter: {
       get() {
-        return this.swMeetingCenterModel;
+        return this.aditionalInfo.meeting_center != null ? this.aditionalInfo.meeting_center : this.swMeetingCenterModel;
       },
       set(model) {
         this.swMeetingCenterModel = model;
@@ -1153,7 +1210,7 @@ export default {
     },
     computedSwFaxPhotocopier: {
       get() {
-        return this.swFaxPhotocopierModel;
+        return this.aditionalInfo.fax_photocopier != null ? this.aditionalInfo.fax_photocopier : this.swFaxPhotocopierModel;
       },
       set(model) {
         this.swFaxPhotocopierModel = model;
@@ -1163,7 +1220,7 @@ export default {
     },
     computedSwCoffeeBreak: {
       get() {
-        return this.swCoffeeBreakModel;
+        return this.aditionalInfo.coffee_break != null ? this.aditionalInfo.coffee_break : this.swCoffeeBreakModel;
       },
       set(model) {
         this.swCoffeeBreakModel = model;
@@ -1173,7 +1230,7 @@ export default {
     },
     computedSwSouvenirsStore: {
       get() {
-        return this.swSouvenirsStoreModel;
+        return this.aditionalInfo.souvenirs_store != null ? this.aditionalInfo.souvenirs_store : this.swSouvenirsStoreModel;
       },
       set(model) {
         this.swSouvenirsStoreModel = model;
@@ -1183,7 +1240,7 @@ export default {
     },
     computedSwInclusiveService: {
       get() {
-        return this.swInclusiveServiceModel;
+        return this.aditionalInfo.inclusive_service != null ? this.aditionalInfo.inclusive_service : this.swInclusiveServiceModel;
       },
       set(model) {
         this.swInclusiveServiceModel = model;
@@ -1193,7 +1250,7 @@ export default {
     },
     computedSwElevator: {
       get() {
-        return this.swElevatorModel;
+        return this.aditionalInfo.elevator != null ? this.aditionalInfo.elevator : this.swElevatorModel;
       },
       set(model) {
         this.swElevatorModel = model;
@@ -1203,7 +1260,7 @@ export default {
     },
     computedSwNoSmoking: {
       get() {
-        return this.swNoSmokingModel;
+        return this.aditionalInfo.no_smoking != null ? this.aditionalInfo.no_smoking : this.swNoSmokingModel;
       },
       set(model) {
         this.swNoSmokingModel = model;
@@ -1214,7 +1271,7 @@ export default {
 
     computedSwSmokingZone: {
       get() {
-        return this.swSmokingZoneModel;
+        return this.aditionalInfo.smoking_zone != null ? this.aditionalInfo.smoking_zone : this.swSmokingZoneModel;
       },
       set(model) {
         this.swSmokingZoneModel = model;
@@ -1224,7 +1281,7 @@ export default {
     },
     computedSwPetFriendly: {
       get() {
-        return this.swPetFriendlyModel;
+        return this.aditionalInfo.pet_friendly != null ? this.aditionalInfo.pet_friendly : this.swPetFriendlyModel;
       },
       set(model) {
         this.swPetFriendlyModel = model;
@@ -1234,7 +1291,7 @@ export default {
     },
     computedSwPetHouse: {
       get() {
-        return this.swPetHouseModel;
+        return this.aditionalInfo.pet_house != null ? this.aditionalInfo.pet_house : this.swPetHouseModel;
       },
       set(model) {
         this.swPetHouseModel = model;
@@ -1244,7 +1301,7 @@ export default {
     },
     computedSwPetBasket: {
       get() {
-        return this.swPetBasketModel;
+        return this.aditionalInfo.pet_basket != null ? this.aditionalInfo.pet_basket : this.swPetBasketModel;
       },
       set(model) {
         this.swPetBasketModel = model;
@@ -1254,7 +1311,7 @@ export default {
     },
     computedSwOnlyAdults: {
       get() {
-        return this.swOnlyAdultsModel;
+        return this.aditionalInfo.only_adults != null ? this.aditionalInfo.only_adults : this.swOnlyAdultsModel;
       },
       set(model) {
         this.swOnlyAdultsModel = model;
@@ -1264,7 +1321,7 @@ export default {
     },
     computedSwSanitizedRooms: {
       get() {
-        return this.swSanitizedRoomsModel;
+        return this.aditionalInfo.sanitized_rooms != null ? this.aditionalInfo.sanitized_rooms : this.swSanitizedRoomsModel;
       },
       set(model) {
         this.swSanitizedRoomsModel = model;
@@ -1274,7 +1331,7 @@ export default {
     },
     computedSwBridalSuite: {
       get() {
-        return this.swBridalSuiteModel;
+        return this.aditionalInfo.bridal_suite != null ? this.aditionalInfo.bridal_suite : this.swBridalSuiteModel;
       },
       set(model) {
         this.swBridalSuiteModel = model;
@@ -1284,7 +1341,7 @@ export default {
     },
     computedSwVipService: {
       get() {
-        return this.swVipServiceModel;
+        return this.aditionalInfo.vip_service != null ? this.aditionalInfo.vip_service : this.swVipServiceModel;
       },
       set(model) {
         this.swVipServiceModel = model;
@@ -1294,7 +1351,7 @@ export default {
     },
     computedSwCalefaction: {
       get() {
-        return this.swCalefactionModel;
+        return this.aditionalInfo.calefaction != null ? this.aditionalInfo.calefaction : this.swCalefactionModel;
       },
       set(model) {
         this.swCalefactionModel = model;
@@ -1304,7 +1361,7 @@ export default {
     },
     computedSwKeepBags: {
       get() {
-        return this.swKeepBagsModel;
+        return this.aditionalInfo.keep_bags != null ? this.aditionalInfo.keep_bags : this.swKeepBagsModel;
       },
       set(model) {
         this.swKeepBagsModel = model;
@@ -1314,7 +1371,7 @@ export default {
     },
     computedSwSecurity24h: {
       get() {
-        return this.swSecurity24hModel;
+        return this.aditionalInfo.security_24h != null ? this.aditionalInfo.security_24h : this.swSecurity24hModel;
       },
       set(model) {
         this.swSecurity24hModel = model;
@@ -1324,7 +1381,7 @@ export default {
     },
     computedSwSecurityAlarm: {
       get() {
-        return this.swSecurityAlarmModel;
+        return this.aditionalInfo.security_alarm != null ? this.aditionalInfo.security_alarm : this.swSecurityAlarmModel;
       },
       set(model) {
         this.swSecurityAlarmModel = model;
@@ -1334,7 +1391,7 @@ export default {
     },
     computedSwSmookeDetectors: {
       get() {
-        return this.swSmookeDetectorsModel;
+        return this.aditionalInfo.smoke_detectors != null ? this.aditionalInfo.smoke_detectors : this.swSmookeDetectorsModel;
       },
       set(model) {
         this.swSmookeDetectorsModel = model;
@@ -1344,7 +1401,7 @@ export default {
     },
     computedSwInSecurityCams: {
       get() {
-        return this.swInSecurityCamsModel;
+        return this.aditionalInfo.in_security_cams != null ? this.aditionalInfo.in_security_cams : this.swInSecurityCamsModel;
       },
       set(model) {
         this.swInSecurityCamsModel = model;
@@ -1354,7 +1411,7 @@ export default {
     },
     computedSwOutSecurityCams: {
       get() {
-        return this.swOutSecurityCamsModel;
+        return this.aditionalInfo.out_security_cams != null ? this.aditionalInfo.out_security_cams : this.swOutSecurityCamsModel;
       },
       set(model) {
         this.swOutSecurityCamsModel = model;
@@ -1364,7 +1421,7 @@ export default {
     },
     computedSwFireExtinguishers: {
       get() {
-        return this.swFireExtinguishersModel;
+        return this.aditionalInfo.fire_extinguishers != null ? this.aditionalInfo.fire_extinguishers : this.swFireExtinguishersModel;
       },
       set(model) {
         this.swFireExtinguishersModel = model;
@@ -1374,7 +1431,7 @@ export default {
     },
     computedSwSafeDepositBox: {
       get() {
-        return this.swSafeDepositBoxModel;
+        return this.aditionalInfo.safe_deposit_box != null ? this.aditionalInfo.safe_deposit_box : this.swSafeDepositBoxModel;
       },
       set(model) {
         this.swSafeDepositBoxModel = model;
@@ -1382,474 +1439,6 @@ export default {
         return this.swSafeDepositBoxModel;
       },
     },
-  },
-  methods:{
-    fillModel(){
-      if (this.aditionalInfo.spa != null) {
-        if (this.aditionalInfo.spa == "flag") {
-          this.ddwnSpaModel = "Ninguno";
-        }
-        if (this.aditionalInfo.spa == "free") {
-          this.ddwnSpaModel = "Gratis";
-        }
-        if (this.aditionalInfo.spa == "paid") {
-          this.ddwnSpaModel = "De Pago";
-        }
-      }
-      else {
-        this.aditionalInfo.spa = "flag";
-        this.ddwnSpaModel = "Ninguno";
-      }
-      if (this.aditionalInfo.water_park != null) {
-        if (this.aditionalInfo.water_park == "flag") {
-          this.ddwnAcuaticModel = "Ninguno";
-        }
-        if (this.aditionalInfo.water_park == "free") {
-          this.ddwnAcuaticModel = "Gratis";
-        }
-        if (this.aditionalInfo.water_park == "paid") {
-          this.ddwnAcuaticModel = "De Pago";
-        }
-      }
-      else {
-        this.aditionalInfo.water_park = "flag"
-        this.ddwnAcuaticModel = "Ninguno";
-      }
-      if (this.aditionalInfo.beach != null) {
-        if (this.aditionalInfo.beach == "cliff") {
-          this.ddwnBeachModel = "Acantilado";
-        }
-        if (this.aditionalInfo.beach == "flag") {
-          this.ddwnBeachModel = "Ninguno";
-        }
-        if (this.aditionalInfo.beach == "private") {
-          this.ddwnBeachModel = "Privada";
-        }
-        if (this.aditionalInfo.beach == "in front") {
-          this.ddwnBeachModel = "En frente";
-        }
-      }
-      else {
-        this.aditionalInfo.beach = "flag"
-        this.ddwnBeachModel = "Ninguno";
-      }
-      if (this.aditionalInfo.romantic_dinners != null) {
-        if (this.aditionalInfo.romantic_dinners == "flag") {
-          this.ddwnRomanticDModel = "Ninguno";
-        }
-        if (this.aditionalInfo.romantic_dinners == "free") {
-          this.ddwnRomanticDModel = "Gratis";
-        }
-        if (this.aditionalInfo.romantic_dinners == "paid") {
-          this.ddwnRomanticDModel = "De Pago";
-        }
-      }
-      else {
-        this.aditionalInfo.romantic_dinners = "flag"
-        this.ddwnRomanticDModel = "Ninguno";
-      }
-      if (this.aditionalInfo.touristic_tour != null) {
-        if (this.aditionalInfo.touristic_tour == "flag") {
-          this.ddwnTouristicTModel = "Ninguno";
-        }
-        if (this.aditionalInfo.touristic_tour == "free") {
-          this.ddwnTouristicTModel = "Gratis";
-        }
-        if (this.aditionalInfo.touristic_tour == "paid") {
-          this.ddwnTouristicTModel = "De Pago";
-        }
-      }
-      else {
-        this.aditionalInfo.touristic_tour = "flag"
-        this.ddwnTouristicTModel = "Ninguno";
-      }
-      if (this.aditionalInfo.daily_housekipping != null) {
-        if (this.aditionalInfo.daily_housekipping == "flag") {
-          this.ddwnDailyHModel = "Ninguno";
-        }
-        if (this.aditionalInfo.daily_housekipping == "free") {
-          this.ddwnDailyHModel = "Gratis";
-        }
-        if (this.aditionalInfo.daily_housekipping == "paid") {
-          this.ddwnDailyHModel = "De Pago";
-        }
-      }
-      else {
-        this.aditionalInfo.daily_housekipping = "flag"
-        this.ddwnDailyHModel = "Ninguno";
-      }
-      if(this.aditionalInfo.air_conditioned != null){
-        this.swAirConditionedModel = this.aditionalInfo.air_conditioned;
-      }
-      else{
-        this.aditionalInfo.air_conditioned = 0;
-        this.swAirConditionedModel = this.aditionalInfo.air_conditioned;
-      }
-      if(this.aditionalInfo.no_smoke_rooms != null){
-        this.swNoSmokeRoomsModel = this.aditionalInfo.no_smoke_rooms;
-      }
-      else{
-        this.aditionalInfo.no_smoke_rooms = 0;
-        this.swNoSmokeRoomsModel = this.aditionalInfo.no_smoke_rooms;
-      }
-      if(this.aditionalInfo.air_transfer_service != null){
-        this.swAirTransferServiceModel = this.aditionalInfo.air_transfer_service;
-      }
-      else{
-        this.aditionalInfo.air_transfer_service = 0;
-        this.swAirTransferServiceModel = this.aditionalInfo.air_transfer_service;
-      }
-      if(this.aditionalInfo.air_collect_service != null){
-        this.swAirCollectServiceModel = this.aditionalInfo.air_collect_service;
-      }
-      else{
-        this.aditionalInfo.air_collect_service = 0;
-        this.swAirCollectServiceModel = this.aditionalInfo.air_collect_service;
-      }
-      if(this.aditionalInfo.recection_24h != null){
-        this.swRecection_24hModel = this.aditionalInfo.recection_24h;
-      }
-      else{
-        this.aditionalInfo.recection_24h = 0;
-        this.swRecection_24hModel = this.aditionalInfo.recection_24h;
-      }
-      if(this.aditionalInfo.gym != null){
-        this.swGymModel = this.aditionalInfo.gym;
-      }
-      else{
-        this.aditionalInfo.gym = 0;
-        this.swGymModel = this.aditionalInfo.gym;
-      }
-      if(this.aditionalInfo.room_service != null){
-        this.swRoomServiceModel = this.aditionalInfo.room_service;
-      }
-      else{
-        this.aditionalInfo.room_service = 0;
-        this.swRoomServiceModel = this.aditionalInfo.room_service;
-      }
-      if(this.aditionalInfo.terrace != null){
-        this.swTerraceModel = this.aditionalInfo.terrace;
-      }
-      else{
-        this.aditionalInfo.terrace = 0;
-        this.swTerraceModel = this.aditionalInfo.terrace;
-      }     
-      if(this.aditionalInfo.bar != null){
-        this.swBarModel = this.aditionalInfo.bar;
-      }
-      else{
-        this.aditionalInfo.bar = 0;
-        this.swBarModel = this.aditionalInfo.bar;
-      }    
-      if(this.aditionalInfo.garden != null){
-        this.swGardenModel = this.aditionalInfo.garden;
-      }
-      else{
-        this.aditionalInfo.garden = 0;
-        this.swGardenModel = this.aditionalInfo.garden;
-      }
-      if(this.aditionalInfo.recreational_activities != null){
-        this.swRecreationalActivitiesModel = this.aditionalInfo.recreational_activities;
-      }
-      else{
-        this.aditionalInfo.recreational_activities = 0;
-        this.swRecreationalActivitiesModel = this.aditionalInfo.recreational_activities;
-      }   
-      if(this.aditionalInfo.guarded_parking != null){
-        this.swGuardedParkingModel = this.aditionalInfo.guarded_parking;
-      }
-      else{
-        this.aditionalInfo.guarded_parking = 0;
-        this.swGuardedParkingModel = this.aditionalInfo.guarded_parking;
-      }  
-      if(this.aditionalInfo.street_parking != null){
-        this.swStreetParkingModel = this.aditionalInfo.street_parking;
-      }
-      else{
-        this.aditionalInfo.street_parking = 0;
-        this.swStreetParkingModel = this.aditionalInfo.street_parking;
-      } 
-      if(this.aditionalInfo.garage_parking != null){
-        this.swGarageParkingModel = this.aditionalInfo.garage_parking;
-      }
-      else{
-        this.aditionalInfo.garage_parking = 0;
-        this.swGarageParkingModel = this.aditionalInfo.garage_parking;
-      } 
-      if(this.aditionalInfo.special_parking != null){
-        this.swSpecialParkingModel = this.aditionalInfo.special_parking;
-      }
-      else{
-        this.aditionalInfo.special_parking = 0;
-        this.swSpecialParkingModel = this.aditionalInfo.special_parking;
-      } 
-      if(this.aditionalInfo.reg_inout_private != null){
-        this.swReg_inout_privateModel = this.aditionalInfo.reg_inout_private;
-      }
-      else{
-        this.aditionalInfo.reg_inout_private = 0;
-        this.swReg_inout_privateModel = this.aditionalInfo.reg_inout_private;
-      } 
-      if(this.aditionalInfo.reg_inout_express != null){
-        this.swReg_inout_expressModel = this.aditionalInfo.reg_inout_express;
-      }
-      else{
-        this.aditionalInfo.reg_inout_express = 0;
-        this.swReg_inout_expressModel = this.aditionalInfo.reg_inout_express;
-      } 
-      if(this.aditionalInfo.touristic_info != null){
-        this.swTouristicInfoModel = this.aditionalInfo.touristic_info;
-      }
-      else{
-        this.aditionalInfo.touristic_info = 0;
-        this.swTouristicInfoModel = this.aditionalInfo.touristic_info;
-      } 
-      if(this.aditionalInfo.parking_service != null){
-        this.swParkingServiceModel = this.aditionalInfo.parking_service;
-      }
-      else{
-        this.aditionalInfo.parking_service = 0;
-        this.swParkingServiceModel = this.aditionalInfo.parking_service;
-      }
-      if(this.aditionalInfo.currency_change != null){
-        this.swCurrencyChangeModel = this.aditionalInfo.currency_change;
-      }
-      else{
-        this.aditionalInfo.currency_change = 0;
-        this.swCurrencyChangeModel = this.aditionalInfo.currency_change;
-      }
-      if(this.aditionalInfo.outdoor_furniture != null){
-        this.swOutdoorFurnitureModel = this.aditionalInfo.outdoor_furniture;
-      }
-      else{
-        this.aditionalInfo.outdoor_furniture = 0;
-        this.swOutdoorFurnitureModel = this.aditionalInfo.outdoor_furniture;
-      }
-      if(this.aditionalInfo.terrace_solarium != null){
-        this.swTerraceSolariumModel = this.aditionalInfo.terrace_solarium;
-      }
-      else{
-        this.aditionalInfo.terrace_solarium = 0;
-        this.swTerraceSolariumModel = this.aditionalInfo.terrace_solarium;
-      }
-      if(this.aditionalInfo.shared_dinner != null){
-        this.swSharedDinnerModel = this.aditionalInfo.shared_dinner;
-      }
-      else{
-        this.aditionalInfo.shared_dinner = 0;
-        this.swSharedDinnerModel = this.aditionalInfo.shared_dinner;
-      }
-      if(this.aditionalInfo.shared_salon != null){
-        this.swSharedSalonModel = this.aditionalInfo.shared_salon;
-      }
-      else{
-        this.aditionalInfo.shared_salon = 0;
-        this.swSharedSalonModel = this.aditionalInfo.shared_salon;
-      }
-      if(this.aditionalInfo.game_zone != null){
-        this.swGameZoneModel = this.aditionalInfo.game_zone;
-      }
-      else{
-        this.aditionalInfo.game_zone = 0;
-        this.swGameZoneModel = this.aditionalInfo.game_zone;
-      }
-      if(this.aditionalInfo.library != null){
-        this.swLibraryModel = this.aditionalInfo.library;
-      }
-      else{
-        this.aditionalInfo.library = 0;
-        this.swLibraryModel = this.aditionalInfo.library;
-      }
-      if(this.aditionalInfo.laundry_service != null){
-        this.swLaundryServiceModel = this.aditionalInfo.laundry_service;
-      }
-      else{
-        this.aditionalInfo.laundry_service = 0;
-        this.swLaundryServiceModel = this.aditionalInfo.laundry_service;
-      }
-      if(this.aditionalInfo.iron_service != null){
-        this.swIronServiceModel = this.aditionalInfo.iron_service;
-      }
-      else{
-        this.aditionalInfo.iron_service = 0;
-        this.swIronServiceModel = this.aditionalInfo.iron_service;
-      }
-      if(this.aditionalInfo.meeting_room != null){
-        this.swMeetingRoomModel = this.aditionalInfo.meeting_room;
-      }
-      else{
-        this.aditionalInfo.meeting_room = 0;
-        this.swMeetingRoomModel = this.aditionalInfo.meeting_room;
-      }
-      if(this.aditionalInfo.meeting_center != null){
-        this.swMeetingCenterModel = this.aditionalInfo.meeting_center;
-      }
-      else{
-        this.aditionalInfo.meeting_center = 0;
-        this.swMeetingCenterModel = this.aditionalInfo.meeting_center;
-      }
-      if(this.aditionalInfo.fax_photocopier != null){
-        this.swFaxPhotocopierModel = this.aditionalInfo.fax_photocopier;
-      }
-      else{
-        this.aditionalInfo.fax_photocopier = 0;
-        this.swFaxPhotocopierModel = this.aditionalInfo.fax_photocopier;
-      }
-      if(this.aditionalInfo.coffee_break != null){
-        this.swCoffeeBreakModel = this.aditionalInfo.coffee_break;
-      }
-      else{
-        this.aditionalInfo.coffee_break = 0;
-        this.swCoffeeBreakModel = this.aditionalInfo.coffee_break;
-      }
-      if(this.aditionalInfo.souvenirs_store != null){
-        this.swSouvenirsStoreModel = this.aditionalInfo.souvenirs_store;
-      }
-      else{
-        this.aditionalInfo.souvenirs_store = 0;
-        this.swSouvenirsStoreModel = this.aditionalInfo.souvenirs_store;
-      }
-      if(this.aditionalInfo.inclusive_service != null){
-        this.swInclusiveServiceModel = this.aditionalInfo.inclusive_service;
-      }
-      else{
-        this.aditionalInfo.inclusive_service = 0;
-        this.swInclusiveServiceModel = this.aditionalInfo.inclusive_service;
-      }
-      if(this.aditionalInfo.elevator != null){
-        this.swElevatorModel = this.aditionalInfo.elevator;
-      }
-      else{
-        this.aditionalInfo.elevator = 0;
-        this.swElevatorModel = this.aditionalInfo.elevator;
-      }
-      if(this.aditionalInfo.smoking_zone != null){
-        this.swSmokingZoneModel = this.aditionalInfo.smoking_zone;
-      }
-      else{
-        this.aditionalInfo.smoking_zone = 0;
-        this.swSmokingZoneModel = this.aditionalInfo.smoking_zone;
-      }
-      if(this.aditionalInfo.no_smoking != null){
-        this.swNoSmokingModel = this.aditionalInfo.no_smoking;
-      }
-      else{
-        this.aditionalInfo.no_smoking = 0;
-        this.swNoSmokingModel = this.aditionalInfo.no_smoking;
-      }
-      if(this.aditionalInfo.pet_friendly != null){
-        this.swPetFriendlyModel = this.aditionalInfo.pet_friendly;
-      }
-      else{
-        this.aditionalInfo.pet_friendly = 0;
-        this.swPetFriendlyModel = this.aditionalInfo.pet_friendly;
-      }
-      if(this.aditionalInfo.pet_house != null){
-        this.swPetHouseModel = this.aditionalInfo.pet_house;
-      }
-      else{
-        this.aditionalInfo.pet_house = 0;
-        this.swPetHouseModel = this.aditionalInfo.pet_house;
-      }
-      if(this.aditionalInfo.pet_basket != null){
-        this.swPetBasketModel = this.aditionalInfo.pet_basket;
-      }
-      else{
-        this.aditionalInfo.pet_basket = 0;
-        this.swPetBasketModel = this.aditionalInfo.pet_basket;
-      }
-      if(this.aditionalInfo.only_adults != null){
-        this.swOnlyAdultsModel = this.aditionalInfo.only_adults;
-      }
-      else{
-        this.aditionalInfo.only_adults = 0;
-        this.swOnlyAdultsModel = this.aditionalInfo.only_adults;
-      }
-      if(this.aditionalInfo.sanitized_rooms != null){
-        this.swSanitizedRoomsModel = this.aditionalInfo.sanitized_rooms;
-      }
-      else{
-        this.aditionalInfo.sanitized_rooms = 0;
-        this.swSanitizedRoomsModel = this.aditionalInfo.sanitized_rooms;
-      }
-      if(this.aditionalInfo.bridal_suite != null){
-        this.swBridalSuiteModel = this.aditionalInfo.bridal_suite;
-      }
-      else{
-        this.aditionalInfo.bridal_suite = 0;
-        this.swBridalSuiteModel = this.aditionalInfo.bridal_suite;
-      }
-      if(this.aditionalInfo.vip_service != null){
-        this.swVipServiceModel = this.aditionalInfo.vip_service;
-      }
-      else{
-        this.aditionalInfo.vip_service = 0;
-        this.swVipServiceModel = this.aditionalInfo.vip_service;
-      }
-      if(this.aditionalInfo.calefaction != null){
-        this.swCalefactionModel = this.aditionalInfo.calefaction;
-      }
-      else{
-        this.aditionalInfo.calefaction = 0;
-        this.swCalefactionModel = this.aditionalInfo.calefaction;
-      }
-      if(this.aditionalInfo.keep_bags != null){
-        this.swKeepBagsModel = this.aditionalInfo.keep_bags;
-      }
-      else{
-        this.aditionalInfo.keep_bags = 0;
-        this.swKeepBagsModel = this.aditionalInfo.keep_bags;
-      }
-      if(this.aditionalInfo.security_24h != null){
-        this.swSecurity24hModel = this.aditionalInfo.security_24h;
-      }
-      else{
-        this.aditionalInfo.security_24h = 0;
-        this.swSecurity24hModel = this.aditionalInfo.security_24h;
-      }
-      if(this.aditionalInfo.security_alarm != null){
-        this.swSecurityAlarmModel = this.aditionalInfo.security_alarm;
-      }
-      else{
-        this.aditionalInfo.security_alarm = 0;
-        this.swSecurityAlarmModel = this.aditionalInfo.security_alarm;
-      }
-      if(this.aditionalInfo.smoke_detectors != null){
-        this.swSmookeDetectorsModel = this.aditionalInfo.smoke_detectors;
-      }
-      else{
-        this.aditionalInfo.smoke_detectors = 0;
-        this.swSmookeDetectorsModel = this.aditionalInfo.smoke_detectors;
-      }
-      if(this.aditionalInfo.in_security_cams != null){
-        this.swInSecurityCamsModel = this.aditionalInfo.in_security_cams;
-      }
-      else{
-        this.aditionalInfo.in_security_cams = 0;
-        this.swInSecurityCamsModel = this.aditionalInfo.in_security_cams;
-      }
-      if(this.aditionalInfo.out_security_cams != null){
-        this.swOutSecurityCamsModel = this.aditionalInfo.out_security_cams;
-      }
-      else{
-        this.aditionalInfo.out_security_cams = 0;
-        this.swOutSecurityCamsModel = this.aditionalInfo.out_security_cams;
-      }
-      if(this.aditionalInfo.fire_extinguishers != null){
-        this.swFireExtinguishersModel = this.aditionalInfo.fire_extinguishers;
-      }
-      else{
-        this.aditionalInfo.fire_extinguishers = 0;
-        this.swFireExtinguishersModel = this.aditionalInfo.fire_extinguishers;
-      }
-      if(this.aditionalInfo.safe_deposit_box != null){
-        this.swSafeDepositBoxModel = this.aditionalInfo.safe_deposit_box;
-      }
-      else{
-        this.aditionalInfo.safe_deposit_box = 0;
-        this.swSafeDepositBoxModel = this.aditionalInfo.safe_deposit_box;
-      }
-    }
   },
   components: {
     CarrouselRestaurant,
