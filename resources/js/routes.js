@@ -30,7 +30,8 @@ const routes = [
                 name: "RoomsHome"
             },
             {
-                path: "/roomDetails/:id",
+                path: "/roomDetails/:idHotel?/:idRoom?",
+                props: true,
                 component: () => import("./views/Rooms/RoomDetails"),
                 name: "RoomDetails"
             },{
