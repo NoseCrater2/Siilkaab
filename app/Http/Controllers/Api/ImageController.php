@@ -38,7 +38,7 @@ class ImageController extends Controller
     {
         foreach ($request['image'] as $file) {
             $image = new Image;
-            $name= $file->store('');
+            $name= $file->store('rooms');
             $image->name = $name;
             $image->room_id = $room->id;
             $image->save();

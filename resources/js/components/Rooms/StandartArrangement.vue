@@ -1,21 +1,31 @@
 <template>
   <div class="mb-3">
     <v-card color="#f5f5f5" class="pa-5" outlined>
-      <div class="font-weight-bold primary--text mb-3 mt-2">
-        Arreglo Estandar
-      </div>
+      <v-row>
+        <v-col cols="8" xl="8" lg="8" md="8" sm="8" xs="8">
+          <div class="font-weight-bold primary--text mb-3 mt-2">
+            Bedroom {{idCompo+1}}
+          </div>
+        </v-col>
+        <v-col cols="4" xl="4" lg="6" md="4" sm="4" xs="4" class="d-flex align-center justify-end">
+          <v-btn v-if="indexBedroom > 0" small elevation="0" dark color="red" @click="removeCompoBedrooms(id)">
+            <v-icon left>mdi-close-circle</v-icon>Eliminar bedroom
+          </v-btn>
+        </v-col>
+      </v-row>
       <div>¿Qué tipo de camas estan disponibles en esta habitación?</div>
       <component
-        v-for="component in computedArrayComponents"
+        v-for="(component, index) in computedArrayComponents"
+        :indexBed="index"
         :idCompo="component.idCompo"
         :key="component.idCompo"
         :objArrCompo="component.objArrCompo"
         :is="component.TagStandartArrBeds"
         @removeCompoBeds="removeCompoBeds"
       ></component>
-      <v-col cols="12" md="12" sm="12" xs="12" class="ml-n3 mt-5">
+      <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12" class="ml-xl-n3 ml-lg-n3 ml-md-n3 ml-sm-n3 d-flex justify-xl-start justify-lg-start justify-md-start justify-sm-start justify-center">
         <v-btn elevation="0" dark @click="addCompoButton()">
-          <v-icon left>mdi-plus-circle</v-icon>Agregar otra cama
+          <v-icon left>mdi-plus-circle</v-icon>Agregar cama
         </v-btn>
       </v-col>
     </v-card>
@@ -24,55 +34,72 @@
 
 <script>
 //twin,full,queen,king,triple,quad
-import { mapState, mapActions, mapMutations } from "vuex";
+import { mapState, mapMutations } from "vuex";
 import StandartArrangementBeds from "../../components/Rooms/StandartArrangementBeds";
 export default {
   name: "StandartArrangement",
   mounted() {
-    let countWhile = 0;
-    this.indexArrayBedroomBeds = this.beds.findIndex((element, index) => {
-      if (element[0].idBedroom == this.idBedroomModel) {
-        return element;
+    this.beds.forEach((element, index) => {
+      if(Array.isArray(element) == true){
+        if (element[0].idBedroom == this.idBedroomModel) {
+          this.indexArrayBedroomBeds.push(index)
+        }
+      }
+      else if(Array.isArray(element) == false){
+        if (element.idBedroom == this.idBedroomModel) {
+          this.indexArrayBedroomBeds.push(index)
+        }
       }
     });
-    while (countWhile <= this.beds[this.indexArrayBedroomBeds].length - 1) {
-      this.addCompo(this.beds[this.indexArrayBedroomBeds][countWhile]);
-      countWhile++;
-    }
+    this.indexArrayBedroomBeds.forEach(elementIndex=>{
+      let countWhile = 0;
+      while (countWhile <= this.beds[elementIndex].length - 1) {
+        this.addCompo(this.beds[elementIndex][countWhile]);
+        countWhile++;
+      }
+    })
   },
   data() {
     return {
-      indexArrayBedroomBeds: null,
+      id: this.idCompo,
+      indexArrayBedroomBeds: [],
       idBedroomModel: this.idBedroom,
       arrayComponents: [],
       countIdCompo: -1,
     };
   },
   methods: {
-    //Esta mutacion setea beds
-    ...mapMutations(["setArrayBeds"]),
+    removeCompoBedrooms(id) {
+      this.$emit("removeCompoBedrooms", id);
+    },
     addCompoButton() {
       this.countIdCompo++;
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagStandartArrBeds: StandartArrangementBeds,
         objArrCompo: {
+          new: "NEW",
           idBedroom: this.idBedroomModel,
           obj: {
             id: "NEW", //Se pone "NEW" para identificarlo en el posterior metodo PUT
-            type: null,
-            quantity: 0,
-            bedroom_id: null,
+            type: "twin",
+            quantity: 1,
           },
         },
       });
-      if (typeof this.beds[this.indexArrayBedroomBeds] == "undefined") {
-        this.beds[this.indexArrayBedroomBeds] = new Array();
-        console.log("undefined", this.beds);
-      }
-      this.beds[this.indexArrayBedroomBeds].push(
-        this.arrayComponents[this.arrayComponents.length - 1].objArrCompo
-      );
+      this.indexArrayBedroomBeds.forEach(elementIndex=>{
+        if(Array.isArray(this.beds[elementIndex]) == true){
+          this.beds[elementIndex].push(
+            this.arrayComponents[this.arrayComponents.length - 1].objArrCompo
+          );
+        }
+        else if(Array.isArray(this.beds[elementIndex]) == false){
+          this.beds[elementIndex] = new Array();
+          this.beds[elementIndex].push(
+            this.arrayComponents[this.arrayComponents.length - 1].objArrCompo
+          );
+        }
+      })
     },
     addCompo(obj) {
       this.countIdCompo++;
@@ -83,69 +110,16 @@ export default {
       });
     },
     removeCompoBeds(idCompoParam) {
-      let indexTempArray = []; //Arreglo donde se guardan los indices de los componentes que no son editados
-      let countWhile = this.beds.length - 1; //Contador que sera usado en el while interno del for que recorre el arreglo de beds
-      let indexEditable = 0; //Variable que guarda el indice del arreglo que se esta editando
-      for (let i = 0; i < this.beds.length; i++) {
-        //Ciclo while que verifica si en el actual arreglo existen o no
-        //Arreglos con length = 0
-        while (countWhile >= 0) {
-          if (typeof this.beds[countWhile][0] == "undefined") {
-            let arr = this.beds;
-            arr.splice(countWhile, 1);
-            this.setArrayBeds(arr);
-          }
-          countWhile--;
+      let deletedBedIndex = -1;
+      this.arrayComponents.forEach((elementArray, indexArray)=>{
+        if(elementArray.idCompo == idCompoParam){
+          deletedBedIndex = indexArray;
+          elementArray.objArrCompo.deleted = "DELETED";
         }
-        //Si el idBedroom del actual arreglo no coincide con la variable global de idBedroom
-        //Entonces
-        if (this.beds[i][0].idBedroom != this.idBedroomModel) {
-          //Se guarda el indice del arreglo general que no se esta editando
-          indexTempArray.push(i);
-        } else {
-          //Si no, se guarda en la variable el indice del elemento que se esta editando
-          indexEditable = i;
-        }
+      })
+      if(deletedBedIndex > -1){
+        this.arrayComponents.splice(deletedBedIndex, 1);
       }
-      let countIndexTempArray = 0;
-      let tempArrayNoEditables = []; //Arreglo que guardara los elementos que no fueron editados
-      while (countIndexTempArray <= indexTempArray.length - 1) {
-        tempArrayNoEditables.push(
-          this.beds[indexTempArray[countIndexTempArray]]
-        );
-        countIndexTempArray++;
-      }
-      let idCompoMap = this.arrayComponents
-        .map((element) => element.idCompo)
-        .indexOf(idCompoParam);
-
-      //Del arrayComponents quitamos la bed que se esta eliminando
-      this.arrayComponents.splice(idCompoMap, 1);
-
-      //Seteamos "this.arrayComponents" en una nueva variable
-      //Para unicamente sacar su propiedad "objArrCompo"
-      let mapArrayComponents = this.arrayComponents.map((element) => {
-        return element.objArrCompo;
-      });
-
-      //Inicializamos la variable "setArrayBeds" con los elementos temporales que no fueron editados ("tempArrayNoEditables")
-      let setArrayBeds = tempArrayNoEditables;
-      //Y a este arreglo le agregamos el arreglo mapeado
-      setArrayBeds.splice(indexEditable, 0, mapArrayComponents);
-      //Mandamos el array "setArrayBeds" que se seteara en la variable state "beds"
-      this.setArrayBeds(setArrayBeds);
-
-      let countFinalWhile = this.beds.length - 1;
-      while (countFinalWhile >= 0) {
-        if (typeof this.beds[countFinalWhile][0] == "undefined") {
-          let arr = this.beds;
-          arr.splice(countFinalWhile, 1);
-          this.setArrayBeds(arr);
-        }
-        countFinalWhile--;
-      }
-
-      console.log(this.beds);
     },
   },
   components: {
@@ -153,6 +127,7 @@ export default {
   },
   computed: {
     ...mapState({
+      bedrooms: (state) => state.RoomModule.bedrooms,
       beds: (state) => state.RoomModule.beds,
     }),
     computedArrayComponents() {
@@ -160,7 +135,10 @@ export default {
     },
   },
   props: {
-    idBedroom: Number,
+    indexBedroom: Number,
+    idBedroom: {
+      type: [ Number, String ]
+    },
     idCompo: Number,
     objArrCompo: Object,
   },

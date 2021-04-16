@@ -72,6 +72,7 @@ export default {
   },
   computed: {
     ...mapState({
+      roomDetails: (state) => state.RoomModule.roomDetails,
       hotel: (state) => state.HotelModule.hotel,
       conditions: (state) => state.HotelModule.conditions,
     }),
@@ -87,13 +88,22 @@ export default {
             this.content = this.hotel.large_text;
           }
         }
-        if (this.containerType === "Conditions") {
+        else if (this.containerType === "Conditions") {
           if(this.conditions.cancelation_text != null){
             this.content = this.conditions.cancelation_text;
           }
           else{
             this.conditions.cancelation_text = "";
             this.content = this.conditions.cancelation_text;
+          }
+        }
+        else if(this.containerType === "RoomDetails"){
+          if(this.roomDetails.large_text != null){
+            this.content = this.roomDetails.large_text;
+          }
+          else{
+            this.roomDetails.large_text = "<p></p>";
+            this.content = this.roomDetails.large_text;
           }
         }
         return this.content;
@@ -103,8 +113,11 @@ export default {
         if (this.containerType === "Information") {
           this.hotel.large_text = this.content;
         }
-        if (this.containerType === "Conditions") {
+        else if (this.containerType === "Conditions") {
           this.conditions.cancelation_text = this.content;
+        }
+        else if (this.containerType === "RoomDetails") {
+          this.roomDetails.large_text = this.content;
         }
         return this.content;
       },

@@ -19,7 +19,7 @@ class CreateRoomsTable extends Migration
             $table->enum('type',['single','double','twin','twin-double','triple','quad','family','suite','studio','apartment','bed-in-room','bungalow','challet','villa','vacation-home','trailer','tent']);
             $table->integer('quantity')->required();
             $table->double('rack_rate')->required();
-            $table->string('default_image')->required();
+            $table->string('default_image')->nullable();
             $table->string('short_text')->nullable();
             $table->text('large_text')->nullable();
             $table->enum('smoking_policy',['yes','no','both'])->nullable();

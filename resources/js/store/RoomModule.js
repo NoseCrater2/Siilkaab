@@ -3,22 +3,80 @@ import axios from "axios";
 const RoomModule = {
     state: {
         availableRooms: [],
-        currentHotelRooms: null,
-        roomDetails: null,
-        bedrooms: null,
-        beds: null,
+        currentHotelRooms: [],
+        roomDetails: {
+            id: null,
+            name: null,
+            type: "single",
+            quantity: 0,
+            bed_rooms: null,
+            rack_rate: 0,
+            large_text: null,
+            short_text: null,
+            smoking_policy: "no",
+            pool_near: "none",
+            floor_near: "ground",
+            size: 0,
+            size_type: "meters",
+            max_adults: 0,
+            max_children: 0,
+            max_occpancy: 0,
+            adult_extra: 0,
+            child_extra: 0,
+            baby_extra: 0,
+            hotel_id: null,
+        },
+        bedrooms: [],
+        beds: [],
         searchErrors: [],
         additionalImages: [],
+
+        errorsDetailsRoom: [],
+        statusDetailsRoom: 0
     },
     getters: {
         getSearchErrors(state){
             return state.searchErrors
         },
+        //GETTER para obtenner la cantidad total de rooms del currentHotel
+        getHotelRoomsQuantity(state){
+            let returned = 0;
+            state.currentHotelRooms.forEach(el=>{
+                returned += el.quantity;
+            })
+            return returned.toString();
+        },
     },
     mutations: {
-        //Mutacion que setea el state.beds para asignar nuevo arreglo
-        setArrayBeds(state, payload) {
-            state.beds = payload;
+        //Se reinician los estados (principalmente por el problema del router-link)
+        setReinicializedRoomModule(state) {
+            (state.roomDetails = {
+                id: null,
+                name: null,
+                type: "single",
+                quantity: 0,
+                bed_rooms: null,
+                rack_rate: 0,
+                large_text: null,
+                short_text: null,
+                smoking_policy: "no",
+                pool_near: "none",
+                floor_near: "ground",
+                size: 0,
+                size_type: "meters",
+                max_adults: 0,
+                max_children: 0,
+                max_occpancy: 0,
+                adult_extra: 0,
+                child_extra: 0,
+                baby_extra: 0,
+                hotel_id: null,
+            }),
+            (state.bedrooms = []),
+            (state.beds = []),
+
+            (state.errorsDetailsRoom = []),
+            (state.statusDetailsRoom = 0)
         },
         setAvailableRooms(state, avaRooms) {
             state.availableRooms = avaRooms;
@@ -44,11 +102,34 @@ const RoomModule = {
             state.additionalImages = additionalImages;
         },
 
+        postPutEditRooms(state, roomDetails) {
+            //En caso de que se inserta una habitacion nueva, directamente se inserta la habitacion en las variables
+            if(typeof(roomDetails.new) != "undefined"){
+                if(roomDetails.new == "NEW"){
+                    delete roomDetails.new
+                    state.currentHotelRooms.push(roomDetails)
+                }
+            }
+            state.roomDetails = roomDetails;
+            state.currentHotelRooms.map(currentRoom => {
+                if (currentRoom.id == roomDetails.id) {
+                    Object.assign(currentRoom, roomDetails);
+                }
+            });
+        },
+
         deleteAdditionalImage(state, deleteImage) {
             let  i = state.additionalImages.find((image => image.id === deleteImage.name))
             state.additionalImages.splice(state.additionalImages.indexOf(i),1) 
         },
-
+        //Mutacion para los errores
+        setErrorsDetailsRoom(state, errors){
+            state.errorsDetailsRoom = errors
+        },
+        //Mutacion para el estatus
+        setStatusDetailsRoom(state, status){
+            state.statusDetailsRoom = status
+        },
     },
     actions: {
         //NO TOQUES ESTE MÉTODO
@@ -82,7 +163,7 @@ const RoomModule = {
         },
         getBedrooms: async function({ commit }, idRoom) {
             try {
-                const request = await axios.get(`/api/bedrooms/`);
+                const request = await axios.get(`/api/bedrooms`);
                 let bedrooms = request.data.data.filter(
                     element => element.room_id == idRoom
                 );
@@ -95,7 +176,7 @@ const RoomModule = {
                 arrayIdBedroom = [arrayIdBedroom];
             }
             try {
-                const request = await axios.get(`/api/beds/`);
+                const request = await axios.get(`/api/beds`);
                 let beds = request.data.data;
                 let reformatedArrBeds = [];
                 for (let i = 0; i < arrayIdBedroom.length; i++) {
@@ -120,6 +201,63 @@ const RoomModule = {
                 let images = request.data.data;
                 commit("setAdditionalImages", images);
             } catch (error) {}  
+        },
+
+        postPutEditRoomsAXIOS: async function({ commit }, localDetailsRoom){
+            let arrayPropertyNull = [];//Aqui se guardaran las propiedades del objeto "localDetailsRoom" que son null y se tienen que eliminar
+            for (const propertyRoom in localDetailsRoom) {
+                if(localDetailsRoom[propertyRoom] == null)
+                arrayPropertyNull.push(propertyRoom);
+            }
+            arrayPropertyNull.forEach(propertyNull=>{
+                delete localDetailsRoom[propertyNull];
+            })
+            console.log("localDetailsRoom", localDetailsRoom)
+            try {
+                if(localDetailsRoom.id == "NEW"){
+                    const request = await axios.post("/api/rooms", localDetailsRoom);
+                    let newRoom = request.data.data;
+                    newRoom.new ="NEW";
+                    commit("postPutEditRooms", newRoom);
+                }
+                else if(localDetailsRoom.id != "NEW"){
+                    const request = await axios.put(
+                        `/api/rooms/${localDetailsRoom.id}`,
+                        localDetailsRoom
+                    );
+                    commit("postPutEditRooms", request.data.data);
+                }
+            } catch (error) {
+                commit("setErrorsDetailsRoom", error.response.data);
+                commit("setStatusDetailsRoom", error.response.status);
+            }
+        },
+
+        postPutEditBedroomsAXIOS: async function({ commit }, localDetailsBedrooms){
+            //QUE AL REFRESCAR LA PAGINA EN UNA NUEVA ROOM AGREGADA, QUE NO BORRE LOS DATOS
+            // console.log("AXIOS", localDetailsBedrooms)
+
+            // let arrayRequestAddItemRegime = [];
+            // let arrayErrors = []
+            // let status;
+            // for (const itemRegime of newArrayPostRegimes) {
+            //     try {
+            //         const requestAddItemRegime = await axios.post(`/api/regimes`, itemRegime);
+            //         let trasformedRequest = requestAddItemRegime.data.data;
+            //         trasformedRequest.componentID = itemRegime.componentID;
+            //         arrayRequestAddItemRegime.push(trasformedRequest);
+            //     } catch (error) {
+            //         status = error.response.status;
+            //         arrayErrors.push({error: error.response.data, componentID: itemRegime.componentID})
+            //     }
+            // }
+            // if(arrayErrors == 0){
+            //     commit("postAddRegimes", arrayRequestAddItemRegime);
+            // }
+            // else{
+            //     commit("setErrorsRegimes", arrayErrors);
+            //     commit("setStatusRegimes", status);
+            // }
         },
 
         deleteImage: async function({ commit }, roomId){

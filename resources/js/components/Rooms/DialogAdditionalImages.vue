@@ -2,13 +2,14 @@
     <v-row>
         <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
             <v-card>
-                <v-toolbar dark color="primary">
+                <v-toolbar flat dark color="blue darken-3">
                     <v-btn icon dark @click="closeDialog">
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>Imagenes de {{ $store.state.RoomModule.currentHotelRooms.find( room => room.id == id).name }}</v-toolbar-title>
+                    <v-toolbar-title class="text-uppercase">Galería de imágenes - {{ $store.state.RoomModule.currentHotelRooms.find( room => room.id == id).name }}</v-toolbar-title>
+                    <v-progress-linear absolute bottom color="blue-grey lighten-5" :active="progress > 0 ? true : false" v-model="progress"></v-progress-linear>
                 </v-toolbar>
-                <v-card-title>Imagenes actuales</v-card-title>
+                <v-card-title>Imágenes cargadas</v-card-title>
                 <v-card-text>
                     <v-item-group>
                         <v-row>
@@ -16,8 +17,8 @@
                                  <v-item v-slot="{active, toggle}" :value="index">
                                      <v-hover v-slot="{ hover }" :value="active">
                                          <v-card  width="150" :flat="hover?false:true">
-                                             <v-img :src="`img/${image.name}`" width="150" height="150"  class="text-right" @click="toggle" >
-                                                 <v-btn v-if="hover" @click="deleteSavedImage(image.id)"  icon dark><v-icon size="40">mdi-close-circle</v-icon></v-btn>
+                                             <v-img :src="`/img/${image.name}`" width="150" height="150"  class="text-right" @click="toggle" >
+                                                 <v-btn v-if="hover" @click="deleteSavedImage(image.id)" icon dark><v-icon size="27">mdi-close-circle</v-icon></v-btn>
                                              </v-img>
                                          </v-card>
                                      </v-hover>
@@ -26,17 +27,18 @@
                         </v-row>
                    </v-item-group>
                 </v-card-text>
-                <v-card-title>Seleccione o arrastre imagenes</v-card-title>
+                <v-divider></v-divider>
+                <v-card-title>Carga de imágenes</v-card-title>
                 <v-card-actions>
                     <v-file-input
                     v-model="files"
-                    color="blue accent-4"
                     counter
                     @change="images"
                     multiple
-                     accept="image/png, image/jpeg, image/bmp"
-                    placeholder="Seleccione imagen(es)"
-                    prepend-icon="mdi-paperclip"
+                    placeholder="Haga clic o arrastre la(s) imágen(es) dentro de este campo"
+                    accept="image/png, image/jpeg, image/jpg, image/bmp"
+                    prepend-icon=""
+                    prepend-inner-icon="mdi-paperclip"
                     outlined
                     :show-size="1000"
                     >
@@ -62,10 +64,6 @@
                 <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn :loading="loadingUploadImages" @click="uploadImages()"  outlined color="blue"><v-icon left>mdi-cloud-upload</v-icon>SUBIR</v-btn>
-                </v-card-actions>
-                <v-card-actions>
-                    <v-progress-linear color="blue" v-model="progress" rounded>
-                    </v-progress-linear>
                 </v-card-actions>
                 <v-card-text>
                     <v-item-group>
