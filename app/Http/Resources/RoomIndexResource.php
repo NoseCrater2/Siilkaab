@@ -36,9 +36,6 @@ class RoomIndexResource extends JsonResource
         'child_extra' => $this->child_extra,
         'baby_extra' => $this->baby_extra,
         'hotel_id'=> isset($this->hotel)?$this->hotel->id:null,
-        'discount_id' => isset($this->discount)?$this->discount->id:null,
-        'rate_id'=> isset($this->rate)?$this->rate->id:null,
-        'extra_id'=> isset($this->extra)?$this->extra->id:null,
         ];
     }
 }

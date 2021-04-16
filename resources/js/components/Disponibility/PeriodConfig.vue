@@ -15,7 +15,6 @@
           dense
           maxlength="3"
           v-model="computedUnity"
-          @keyup="validateQuantity"
           @keydown="keyhandlerUnity" 
           :rules="[rules.validUnity]"
         ></v-text-field>
@@ -68,9 +67,6 @@ export default {
                 if(pattern.test(value) == false){
                   returned = 'Solo se aceptan numeros';
                 }
-                if(parseInt(this.unityModel) > this.rooms[this.indexCompo].quantity){
-                  returned = 'No puede introducir una cantidad que exceda el numero de habitaciones existentes';
-                }
               }
             }
             return returned;
@@ -92,13 +88,6 @@ export default {
     },
     methods: {
       ...mapMutations(["mutationReloadDates", "mutationFlagCalendarModified", "mutationFlagCleanPeriodConfigTextfields"]),
-      validateQuantity(event){
-        if(parseInt(this.unityModel) >= parseInt(this.rooms[this.indexCompo].quantity)){
-          let subs = parseInt(this.unityModel) - parseInt(this.rooms[this.indexCompo].quantity)
-          let quantity = parseInt(this.unityModel) - subs
-          this.unityModel = quantity.toString();
-        }
-      },
       keyhandlerUnity(event) {
         const pattern = /^([0-9]\d{0,3})$/
         if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
@@ -511,12 +500,6 @@ export default {
         set(model){
           //Ejecuta el metodo para cambiar la tarifa
           let modelUnity = model;
-          if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
-            let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
-            let quantity = parseInt(modelUnity) - subs
-            modelUnity = quantity.toString();
-            this.unityModel = modelUnity;
-          }
           this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
           return this.unityModel;
         }
@@ -528,12 +511,6 @@ export default {
         set(model) {
           //Ejecuta el metodo para cambiar la tarifa
           let modelUnity = this.unityModel;
-          if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
-            let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
-            let quantity = parseInt(modelUnity) - subs
-            modelUnity = quantity.toString();
-            this.unityModel = modelUnity;
-          }
           this.changeRate(model, modelUnity, this.rooms[this.indexCompo].id);
           return this.rateModel;
         },
@@ -552,22 +529,10 @@ export default {
               return; //Esto para salir inmediatamente de este metodo sin ejecutar lo demas
             }
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
-              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
-              let quantity = parseInt(modelUnity) - subs
-              modelUnity = quantity.toString();
-              this.unityModel = modelUnity;
-            }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id, "watchP3");
           }
           else if(this.rateModel != "" || this.unityModel != ""){
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
-              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
-              let quantity = parseInt(modelUnity) - subs
-              modelUnity = quantity.toString();
-              this.unityModel = modelUnity;
-            }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id, "watchP3");
             if(this.rooms.length -1 == this.indexCompo){
                 this.mutationFlagCleanPeriodConfigTextfields(false);
@@ -592,22 +557,10 @@ export default {
               return; //Esto para salir inmediatamente de este metodo sin ejecutar lo demas
             }
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
-              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
-              let quantity = parseInt(modelUnity) - subs
-              modelUnity = quantity.toString();
-              this.unityModel = modelUnity;
-            }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
           }
           else if(this.rateModel != "" || this.unityModel != ""){
             let modelUnity = this.unityModel;
-            if(parseInt(modelUnity) >= parseInt(this.rooms[this.indexCompo].quantity)){
-              let subs = parseInt(modelUnity) - parseInt(this.rooms[this.indexCompo].quantity)
-              let quantity = parseInt(modelUnity) - subs
-              modelUnity = quantity.toString();
-              this.unityModel = modelUnity;
-            }
             this.changeRate(this.rateModel, modelUnity, this.rooms[this.indexCompo].id);
             if(this.rooms.length -1 == this.indexCompo){
                 this.mutationFlagCleanPeriodConfigTextfields(false);

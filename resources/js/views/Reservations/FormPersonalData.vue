@@ -7,7 +7,7 @@
               <v-divider ></v-divider> -->
               <hr class="hr-text" data-content="Datos Personales">
               <v-card-text>
-               <v-form lazy-validation ref="form" >
+               <v-form  ref="form"  v-model="valid">
               <v-text-field
               dense
               v-model="form.name"
@@ -59,8 +59,7 @@
               <v-select
               v-model="form.checkin"
               outlined
-              dense 
-              @change="checkOut" 
+              dense
               :items="[conditions.checkin_time]" 
               label="Hora de entrada" 
               :rules="[(v) => !!v || 'Requerido']">
@@ -69,13 +68,13 @@
                </v-form>
                </v-card-text>
                 </v-col>
-                <v-col cols="12" md="6" sm="12">
+                <v-col cols="12" md="6" sm="12" v-if="showPaymet">
                   
               <hr class="hr-text" data-content="Confirmación">
 
               <v-subheader>Elija tipo de pago</v-subheader>
               <v-list>
-                <v-list-item-group mandatory  v-model="selectedPayment">
+                <v-list-item-group mandatory v-model="selectedPayment">
                   <template v-for="(item, i) in configuration.payment_type">
                     <v-divider
                       v-if="!item"
@@ -137,6 +136,8 @@ import axios from 'axios';
 export default {
     data(){
         return {
+          showPaymet: false,
+          valid: false,
           selectedPayment: null,
           currencyFormat : null,
           overlay: false,
@@ -161,7 +162,7 @@ export default {
 
     methods:{
       checkOut(){
-        if(this.$refs.form.validate()){
+       
           let paymentData = {
               platform: 1,
               currency: this.configuration.currency_code,
@@ -172,10 +173,13 @@ export default {
           this.getPayPalButtonsInstance().onload = () => {
             window.paypal.Buttons({
               createOrder: (function (data, actions) {
-                return axios.post("/api/payments/pay",paymentData)
+                if(this.$refs.form.validate()){
+                  return axios.post("/api/payments/pay",paymentData)
                             .then( data => {
                               return data.data.id;
                             })
+                }
+                
                             }).bind(this),
               onApprove: (function (data, actions) {
                  this.overlay = true
@@ -194,7 +198,7 @@ export default {
                             })
                             }).bind(this)
                             }).render('#paypal-button-container');
-          } 
+          
         }
       },
 
@@ -217,6 +221,8 @@ export default {
         hotel: (state) => state.HotelModule.hotel,
     }),
 
+
+
     subTotal(){
         if(this.selectedPayment == 'Una noche'){
           return this.$store.getters.totalPrice / this.bookings.nights
@@ -226,6 +232,27 @@ export default {
           return this.$store.getters.totalPrice
         }
     }
+
+  },
+
+  watch:{
+    valid:{
+      handler(value) {
+        if(this.$refs.form.validate()){
+          this.showPaymet = true
+        }
+      }
+    },
+
+    selectedPayment:{
+      handler(value) {
+        if(value != null){
+          console.log(value)
+          this.checkOut()
+        }
+      }
+    }
+
 
   }
 }
