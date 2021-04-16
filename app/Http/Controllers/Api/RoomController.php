@@ -38,7 +38,6 @@ class RoomController extends Controller
             'type' => 'required|in:single,double,twin,twin-double,triple,quad,family,suite,studio,apartment,bed-in-room,bungalow,challet,villa,vacation-home,trailer,tent',
             'quantity' => 'required|integer|min:0',
             'rack_rate' => 'required|numeric|min:0',
-            'default_image' => 'required|image',
             'large_text' => 'string',
             'short_text' => 'string',
             'smoking_policy' => 'in:yes,no,both',
@@ -61,12 +60,8 @@ class RoomController extends Controller
         
            
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
-            if($request->hasFile('default_image')){
-                $image= $request->default_image->store('');
-                $data['default_image']=$image;
-            } 
             $room = Room::create($data);
             $room->roomAmenity()->create([
                 'room_id' => $room->id,
@@ -93,7 +88,6 @@ class RoomController extends Controller
             'type' => 'in:single,double,twin,twin-double,triple,quad,family,suite,studio,apartment,bed-in-room,bungalow,challet,villa,vacation-home,trailer,tent',
             'quantity' => 'integer|min:0',
             'rack_rate' => 'numeric|min:0',
-            'default_image' => 'image',
             'large_text' => 'string',
             'short_text' => 'string',
             'smoking_policy' => 'in:yes,no,both',
@@ -116,10 +110,6 @@ class RoomController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
-            if($request->hasFile('default_image')){
-                Storage::delete($room->default_image);
-                $data['default_image'] = $request->default_image->store('');
-            }
             $room->update($data);
             return new RoomIndexresource(Room::findOrFail($room->id));
         }

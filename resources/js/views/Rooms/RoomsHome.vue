@@ -1,238 +1,206 @@
 <template>
-        <v-container  fluid >
-          <div class="text-center mb-4">
-            <span class="text-h4 text-uppercase font-weight-bold"
-              >Detalles de habitación</span
-            >
-          </div>
-          <v-col cols="12" sm="12" md="12" lg="12" class="mb-n7">
-            <v-autocomplete
-              v-model="hotelSelected"
-              :items="hotels"
-              item-text="title"
-              item-value="hotel_id"
-              outlined
-              label="Seleccione Hotel"
-              @change="searchRoom(hotelSelected)"
-            ></v-autocomplete>
-          </v-col>
+  <div>
+    <v-container class="elevation-1 outlined" fluid>
+      <div class="text-center mb-7">
+        <span class="text-h4 text-uppercase font-weight-bold"
+          >Detalles de habitación</span
+        >
+      </div>
+      <v-card class="pa-4" outlined tile>
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" class="mb-n7">
+          <v-autocomplete
+            v-model="hotelSelected"
+            :items="hotels"
+            item-text="title"
+            item-value="hotel_id"
+            outlined
+            label="Seleccione el hotel"
+            @change="searchRoom(hotelSelected)"
+          ></v-autocomplete>
+        </v-col>
 
-          <div v-if="flagActiveRooms == true">
-            <v-row dense>
-              <v-col
-                v-for="(room, index) in  currentHotelRooms"
-                :key="room.id"
-                cols="12"
-                md="3"
-                sm="12"
+        <div v-if="flagActiveRooms == true">
+          <v-row class="d-flex justify-xl-space-between justify-lg-space-between justify-md-space-between justify-sm-space-around justify-center">
+            <v-col
+              v-for="(room) in currentHotelRooms"
+              :key="room.id"
+              cols="auto"
+            >
+              <v-card
+                class="d-flex flex-column mx-auto my-4"
+                max-width="317.11"
+                height="553.11"
+                outlined
+                :hover="true"
               >
-                <v-card :class="mxAutomyAuto" width="370" min-height="450" outlined :hover="true">
-                  <v-img
-                    height="250"
-                    class="white--text align-end"
-                    :src="`/img/${room.default_image}`"
-                  >
+                <v-img
+                  width="317.11"
+                  class="white--text align-end"
+                  :src="`/img/${room.default_image}`"
+                >
                   <template v-slot:placeholder>
-                        <v-row
-                        class="fill-height ma-0"
-                        align="center"
-                        justify="center"
-                        >
-                        <v-progress-circular
+                    <v-row
+                      class="fill-height ma-0"
+                      align="center"
+                      justify="center"
+                    >
+                      <v-progress-circular
                         indeterminate
                         color="grey"
-                        ></v-progress-circular>
-                      </v-row>
+                      ></v-progress-circular>
+                    </v-row>
                   </template>
-                    <div style="background-color: rgba(0, 0, 0, 0.6)">
-                      <v-card-title class="mb-n3">{{ room.name }}</v-card-title>
-                      <span class="ml-4">({{ room.type }})</span>
+                  <div style="background-color: rgba(0,0,0,0.6)">
+                    <div class="d-flex align-center mx-4">
+                      <p class="overline">{{ room.name }}</p>
                     </div>
-                  </v-img>
-
-                  <v-card-text>
-                    <div class="ml-3">
-                      <v-row>
-                        <div class="grey--text mr-1">Ocupancia:</div>
-                        <span class="font-weight-bold black--text"
-                          >{{ room.max_adults }} adultos +
-                          {{ room.max_children }} niños (max.
-                          {{ room.max_occpancy }} inquilinos)</span
-                        >
-                      </v-row>
-
-                      <v-row>
-                        <div class="grey--text mr-1">
-                          Habitaciones de este tipo:
-                        </div>
-                        <span class="font-weight-bold black--text">{{
-                          room.quantity
-                        }}</span>
-                      </v-row>
+                    <div class="d-flex align-center mx-4">
+                      <span class="caption mb-1">({{ room.type }})</span>
                     </div>
-                  </v-card-text>
+                  </div>
+                </v-img>
 
-                  <v-card-actions>
-                    <div>
-                      <v-btn text>
-                        <router-link
-                          :to="{ name: 'RoomDetails', params: { id: room.id } }"
-                          style="text-decoration: none; color: black"
-                          >Editar</router-link
-                        >
-                      </v-btn>
-                      <v-btn color="red" text>Eliminar</v-btn>
-                      <v-btn color="blue" @click="openPhotosDialog(room.id)" text>Subir fotos</v-btn>
-                    </div>
-                  </v-card-actions>
-                </v-card>
-              </v-col>
-
-              <v-col cols="12" md="3" sm="6" >
-                <router-link
-                  to="/roomDetails"
-                  style="text-decoration: none; color: black"
-                >
-                  <v-card
-                    :class="mxAutomyAuto"
-                    width="370"
-                    :height.sync="heightCard"
-                    outlined
-                    :hover="true"
-                  >
-                    <v-sheet
-                      color="rgb(53,94,150)"
-                      class="d-flex flex-column mb-6 justify-center align-center"
-                      :height.sync="heightCard"
-                    >
-                      <span class="text-h5 white--text"
-                        >Crear nueva habitación</span
+                <v-card-text>
+                  <div style="height: 114px">
+                    <p class="grey--text">
+                      Ocupancia:
+                      <span class="font-weight-bold black--text"
+                        >{{ room.max_adults }} adultos +
+                        {{ room.max_children }} niños (max.
+                        {{ room.max_occpancy }} inquilinos)</span
                       >
-                      <v-icon x-large dark>mdi-plus</v-icon>
-                    </v-sheet>
-                  </v-card>
-                </router-link>
-              </v-col>
-            </v-row>
-          </div>
+                    </p>
+                    <span class="grey--text">Habitaciones de este tipo: <span class="font-weight-bold black--text">{{room.quantity}}</span></span>
+                  </div>
+                </v-card-text>
 
-          <DialogAdditionalImages :dialog="photosDialog" @close="photosDialog = false" v-if="photosDialog" :id="selectedId" />
-         
-        </v-container>
-        
+                <v-card-actions class="d-flex justify-space-between">
+                    <v-btn text @click="routerPushExistingRoom(room.id)">
+                      Editar
+                    </v-btn>
+                    <v-btn color="red" text>Eliminar</v-btn>
+                    <v-btn color="blue darken-3" text @click="openPhotosDialog(room.id)"
+                      >Subir fotos</v-btn
+                    >
+                </v-card-actions>
+              </v-card>
+            </v-col>
+
+            <v-col
+              cols="auto"
+            >
+              <v-card
+                @click="routerPushNewRoom()"
+                class="mx-auto my-4 d-flex align-center justify-center"
+                width="317.11"
+                height="553.11"
+                outlined
+                color="rgb(53,94,150)"
+                :hover="true"
+              >
+              <div>
+                <div class="d-flex justify-center">
+                  <span class="text-h5 white--text text-center"
+                    >Crear nueva habitación</span
+                  >
+                </div>
+                <div class="d-flex justify-center">
+                  <v-icon x-large dark>mdi-plus</v-icon>
+                </div>
+              </div>
+              </v-card>
+            </v-col>
+          </v-row>
+        </div>
+
+        <DialogAdditionalImages
+          :dialog="photosDialog"
+          @close="photosDialog = false"
+          v-if="photosDialog"
+          :id="selectedId"
+        />
+      </v-card>
+    </v-container>
+  </div>
 </template>
 
 <script>
-import DialogAdditionalImages from '../../components/Rooms/DialogAdditionalImages'
+import DialogAdditionalImages from "../../components/Rooms/DialogAdditionalImages";
 import { mapActions, mapState } from "vuex";
 export default {
   name: "RoomsHome",
   created() {
-    window.addEventListener("resize", this.handleResize);
-    this.handleResize();
     this.getHotelsForAdmin();
-  },
-  destroyed() {
-    window.removeEventListener("resize", this.handleResize);
   },
   data() {
     return {
-      //12, xs
-      //6, sm
-      //4, md, lg
-      //3, xl
-
+      routerFullQueryId: this.$router.currentRoute.query,
       photosDialog: false,
-      flexModel: null,
       currentRooms: null,
       roomImageRoute: null,
-      mxAutomyAuto: null,
-      heightCard: "380",
       selectedId: 0,
-      hotelSelected: this.$route.query.id || null,
+      hotelSelected: parseInt(this.$route.query.id) || null,
       loadingRooms: false,
-      flagActiveRooms: false
+      flagActiveRooms: false,
     };
   },
 
   methods: {
-    closeDialog(){
-      this.photosDialog = false
+    routerPushNewRoom(){
+      let localHotelSelected = parseInt(this.hotelSelected);
+      this.$router.push({name: 'RoomDetails', params: { idHotel: localHotelSelected }})
     },
-    openPhotosDialog(id){
-      this.photosDialog = true
-      this.selectedId = id
-    
+    routerPushExistingRoom(localIdRoom){
+      let localHotelSelected = parseInt(this.hotelSelected);
+      localIdRoom = parseInt(localIdRoom);
+      this.$router.push({name: 'RoomDetails', params: { idRoom: localIdRoom, idHotel: localHotelSelected }})
     },
-    
+    closeDialog() {
+      this.photosDialog = false;
+    },
+    openPhotosDialog(id) {
+      this.photosDialog = true;
+      this.selectedId = id;
+    },
+
     ...mapActions(["getHotelsForAdmin", "getCurrentHotelRooms"]),
     searchRoom(idHotel) {
+      if(typeof(this.routerFullQueryId.id) != "undefined"){
+        if(this.routerFullQueryId.id != idHotel){
+          this.routerFullQueryId = idHotel;
+          this.$router.push({name: 'RoomsHome', query: {id: idHotel}})
+        }
+      }
+      else{
+        this.routerFullQueryId = idHotel;
+        this.$router.push({name: 'RoomsHome', query: {id: idHotel}})
+      }
       this.loadingRooms = true;
       this.flagActiveRooms = false;
       //AQUI TENGO QUE DEFINIR A QUE HOTEL ESTOY ACCEDIENDO
       this.getCurrentHotelRooms(idHotel).then(() => {
-
-         this.flagActiveRooms = true;
-         this.loadingRooms = false;
+        this.flagActiveRooms = true;
+        this.loadingRooms = false;
       });
-    },
-    handleResize() {
-      if (window.innerWidth >= 600 && window.innerWidth <= 676) {
-        this.heightCard = "456";
-      } else if (window.innerWidth > 676 && window.innerWidth <= 827) {
-        this.heightCard = "438";
-      } else {
-        this.heightCard = "380";
-      }
-      return this.heightCard;
     },
   },
 
-  mounted(){
-  if(this.hotelSelected != null){
-    this.searchRoom(this.hotelSelected)
-  }
+  mounted() {
+    if (this.hotelSelected != null) {
+      this.searchRoom(this.hotelSelected);
+    }
   },
 
   computed: {
     ...mapState({
       hotels: (state) => state.disponibilityMoule.ahotels,
       currentHotelRooms: (state) => state.RoomModule.currentHotelRooms,
+      roomDetails: (state) => state.RoomModule.roomDetails,
     }),
+  },
 
-        
-    },
-    //Propiedad computada que controla la responsividad de las cards de habitaciones
-    flexRoomsCardsSize() {
-      //1430 - 1903
-      //600 - 827
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          this.flexModel = 12;
-          this.mxAutomyAuto = "mx-auto my-4";
-          return this.flexModel;
-        case "sm":
-          this.flexModel = 6;
-          this.mxAutomyAuto = "mx-auto my-4";
-          return this.flexModel;
-        case "md":
-          this.flexModel = 4;
-          this.mxAutomyAuto = "mx-auto my-4";
-          return this.flexModel;
-        case "lg":
-          this.flexModel = 4;
-          this.mxAutomyAuto = "mx-auto my-4";
-          return this.flexModel;
-        case "xl":
-          this.flexModel = 3;
-          this.mxAutomyAuto = "mx-auto my-4";
-          return this.flexModel;
-      }
-    },
-
-    components:{
-      DialogAdditionalImages,
-    }
-  
+  components: {
+    DialogAdditionalImages,
+  },
 };
 </script>
