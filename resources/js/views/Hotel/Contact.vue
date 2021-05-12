@@ -1,5 +1,8 @@
 <template>
-  <v-container fluid grid-list-md>
+<div>
+  <v-card class="pa-2" outlined tile>
+      <!--Contenido del card-->
+      <!--PRINCIPAL-->
      <v-banner single-line>
         <div class="d-flex align-center ml-1">
           <v-icon class="mb-1" left>mdi-email</v-icon>
@@ -9,7 +12,7 @@
         </div>
       </v-banner>
     <v-layout wrap>
-      <v-flex md12>
+      <v-flex>
         <v-card outlined>
            <v-list-item v-if="!location.position">
               <v-list-item-avatar v-if="errorsContacts.display_name"  size="60">
@@ -39,7 +42,7 @@
           </v-list-item> 
         </v-card>
       </v-flex>
-      <v-flex xs12 md4>
+      <v-flex>
         <v-list dense>
           <v-subheader>Puedes elegir una localización mediante:</v-subheader>
           <v-list-item>
@@ -65,7 +68,7 @@
           </v-list-item>
         </v-list>
       </v-flex>
-      <v-flex xs12 md8>
+      <v-flex xl12 lg12 md12 sm12 xs12 style="z-index:0">
         <v-sheet>
           <div style="width: 100%; height:500px">
             <Map v-model="location" @input="printInfo(location)" :key="key" />
@@ -73,6 +76,7 @@
         </v-sheet>
       </v-flex>
     </v-layout>
+    <br>
     <v-banner single-line>
         <div class="d-flex align-center ml-1">
           <v-icon class="mb-1" left>mdi-map-marker</v-icon>
@@ -140,8 +144,8 @@
           ></v-text-field>
         </v-col>
       </v-row>
-  </v-container>
-
+  </v-card>
+</div>
 </template>
 
 <script>

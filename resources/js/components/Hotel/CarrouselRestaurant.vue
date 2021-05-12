@@ -89,7 +89,6 @@ export default {
           idCompoRestaurant: putId,
           name: null,
           menu_type: null,
-          schedules: [],
           hotel_id: this.hotel.id
         }
       });
@@ -129,6 +128,9 @@ export default {
           if(localRestaurant.idCompoRestaurant == itemSchedule.idRestaurant){
             if(itemSchedule.restaurantSchedules.length > 0){
               itemSchedule.deletedRestaurant = 'DELETED'
+              itemSchedule.restaurantSchedules.forEach(itemArrayRestSchedules=>{
+                itemArrayRestSchedules.deletedSchedule = "DELETED"
+              })
             }
           }
         }
@@ -136,6 +138,9 @@ export default {
           if(localRestaurant.id == itemSchedule.idRestaurant){
             if(itemSchedule.restaurantSchedules.length > 0){
               itemSchedule.deletedRestaurant = 'DELETED'
+              itemSchedule.restaurantSchedules.forEach(itemArrayRestSchedules=>{
+                itemArrayRestSchedules.deletedSchedule = "DELETED"
+              })
             }
           }
         }

@@ -296,6 +296,7 @@ export default {
     },
     computedNotificationVoucher: {
       get() {
+        this.notificationVoucherModel = this.configuration.notification_voucher;
         return this.configuration.notification_voucher != null ? this.configuration.notification_voucher : this.notificationVoucherModel;
       },
       set(model) {
@@ -306,6 +307,7 @@ export default {
     },
     computedNotificationDetails: {
       get() {
+        this.notificationDetailsModel = this.configuration.notification_details
         return this.configuration.notification_details != null ? this.configuration.notification_details : this.notificationDetailsModel;
       },
       set(model) {
@@ -316,6 +318,7 @@ export default {
     },
     computedNotificationCard: {
       get() {
+        this.notificationCardModel = this.configuration.notification_card;
         return this.configuration.notification_card != null ? this.configuration.notification_card : this.notificationCardModel;
       },
       set(model) {
@@ -368,6 +371,7 @@ export default {
     removeNotificationVoucher(item) {
       this.notificationVoucherModel.splice(this.notificationVoucherModel.indexOf(item), 1)
       this.notificationVoucherModel = [...this.notificationVoucherModel]
+      this.configuration.notification_voucher = this.notificationVoucherModel;
     },
     colorChipNotificationDetails(item){
       const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -380,6 +384,7 @@ export default {
     removeNotificationDetails(item) {
       this.notificationDetailsModel.splice(this.notificationDetailsModel.indexOf(item), 1)
       this.notificationDetailsModel = [...this.notificationDetailsModel]
+      this.configuration.notification_details = this.notificationDetailsModel;
     },
     colorChipNotificationCard(item){
       const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -392,6 +397,7 @@ export default {
     removeNotificationCard(item) {
       this.notificationCardModel.splice(this.notificationCardModel.indexOf(item), 1)
       this.notificationCardModel = [...this.notificationCardModel]
+      this.configuration.notification_card = this.notificationCardModel;
     },
   },
 };

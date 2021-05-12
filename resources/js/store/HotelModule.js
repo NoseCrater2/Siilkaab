@@ -470,15 +470,6 @@ const HotelModule = {
         setSchedules(state, payload) {
             state.schedules = payload;
         },
-        //Para borrar los horarios de los restaurantes
-        deleteSchedules(state, deletedSchedules) {
-            deletedHotel.forEach(currentHotel => {
-                let h = state.allhotels.find(
-                    allhotel => allhotel.id === currentHotel
-                );
-                state.allhotels.splice(state.allhotels.indexOf(h), 1);
-            });
-        },
 
         setPools(state, payload) {
             state.pools = payload;
@@ -543,6 +534,154 @@ const HotelModule = {
 
         putEditAditionalInfo(state, aditionalInfo) {
             state.aditionalInfo = aditionalInfo;
+        },
+
+        postAddRestaurants(state, restaurants){
+            restaurants.forEach(itemRestaurant => {
+                for (let stateRestaurant of state.restaurants) {
+                    if(stateRestaurant.componentID === itemRestaurant.componentID){
+                        Object.assign(stateRestaurant, itemRestaurant);
+                    }
+                }
+            });
+            //AHORA AGREGAMOS EL ID DE LOS RESTAURANTES A LA VARABLE DE ESTADO DE SCHEDULES
+            for (const itemSchedule of state.schedules) {
+                if(itemSchedule.idRestaurant.toString().includes("NEW")){
+                  let findedRestaurant = state.restaurants.find(itemRestaurant=> itemRestaurant.componentID == itemSchedule.idRestaurant)
+                  if(typeof(findedRestaurant) != "undefined"){
+                    itemSchedule.idRestaurant = findedRestaurant.id;
+                    if(itemSchedule.restaurantSchedules.length > 0){
+                      itemSchedule.restaurantSchedules.forEach(element => {
+                        element.restaurant_id = findedRestaurant.id;
+                      });
+                    }
+                  }
+                }
+            }
+        },
+
+        putUpdateRestaurants(state, restaurants) {
+            restaurants.forEach(itemRestaurant => {
+                for (let stateRestaurant of state.restaurants) {
+                    if(stateRestaurant.id == itemRestaurant.id){
+                        Object.assign(stateRestaurant, itemRestaurant);
+                    }
+                }
+            });
+        },
+
+        deleteRestaurants(state, restaurants) {
+            restaurants.forEach(itemRestaurant => {
+                if(itemRestaurant.id != "NEW"){
+                    let indexRestaurant = state.restaurants.findIndex(stateRestaurant => stateRestaurant.id == itemRestaurant.id);
+                    if(indexRestaurant > -1){
+                        state.restaurants.splice(indexRestaurant, 1);
+                    }
+                }
+                else if(itemRestaurant.id == "NEW"){
+                    let indexRestaurant = state.restaurants.findIndex(stateRestaurant => stateRestaurant.componentID == itemRestaurant.componentID);
+                    if(indexRestaurant > -1){
+                        state.restaurants.splice(indexRestaurant, 1);
+                    }
+                }
+            });
+        },
+
+        postAddSchedules(state, schedules){
+            //PRIMERO ASIGNAMOS LOS HORARIOS AL STATE DE HORARIOS
+            schedules.forEach(itemSchedule => {
+                for (let stateSchedule of state.schedules) {
+                    if(stateSchedule.idRestaurant == itemSchedule.restaurant_id){
+                        if(stateSchedule.restaurantSchedules.length > 0){
+                            stateSchedule.restaurantSchedules.forEach(itemRestaurantSchedules=>{
+                                if(itemRestaurantSchedules.componentID === itemSchedule.componentID){
+                                    Object.assign(itemRestaurantSchedules, itemSchedule);
+                                }
+                            })
+                        }
+                    }
+                }
+            });
+            //LUEGO ASIGNAMOS LOS HORARIOS A LOS HOTELES
+            state.restaurants.forEach(itemRestaurant => {
+                for (const itemSchedule of state.schedules) {
+                    if(itemRestaurant.id == itemSchedule.idRestaurant){
+                        itemRestaurant.schedules = []
+                        itemRestaurant.schedules.push(...itemSchedule.restaurantSchedules)
+                    }
+                }
+            });
+        },
+
+        putUpdateSchedules(state, schedules) {
+            //PRIMERO ASIGNAMOS LOS HORARIOS AL STATE DE HORARIOS
+            schedules.forEach(itemSchedule => {
+                for (let stateSchedule of state.schedules) {
+                    if(stateSchedule.idRestaurant == itemSchedule.restaurant_id){
+                        if(stateSchedule.restaurantSchedules.length > 0){
+                            stateSchedule.restaurantSchedules.forEach(itemRestaurantSchedules=>{
+                                if(itemRestaurantSchedules.id === itemSchedule.id){
+                                    Object.assign(itemRestaurantSchedules, itemSchedule);
+                                }
+                            })
+                        }
+                    }
+                }
+            });
+            //LUEGO ASIGNAMOS LOS HORARIOS A LOS HOTELES
+            state.restaurants.forEach(itemRestaurant => {
+                for (const itemSchedule of state.schedules) {
+                    if(itemRestaurant.id == itemSchedule.idRestaurant){
+                        itemRestaurant.schedules = []
+                        itemRestaurant.schedules.push(...itemSchedule.restaurantSchedules)
+                    }
+                }
+            });
+        },
+
+        deleteSchedules(state, schedules) {
+            //PRIMERO SE VERIFICA SI FUERON ELIMINADOS RESTAURANTES Y EN BASE A ELLO ELIMINAMOS TODOS SUS HORARIOS
+            let localDeleteRestaurantIndex = [];
+            state.schedules.forEach((stateItemSchedule, index)=>{
+                if(typeof(stateItemSchedule.deletedRestaurant) != "undefined"){
+                    if(stateItemSchedule.deletedRestaurant == "DELETED"){
+                        localDeleteRestaurantIndex.push(index)
+                    }
+                }
+            })
+            //VERIFICAMOS Y SI localDeleteRestaurantIndex en sus elementos son diferentes a -1 se eliminan todos los horarios de dicho Restaurant
+            localDeleteRestaurantIndex.forEach(elementIndex=>{
+                if(elementIndex > -1){
+                    state.schedules.splice(elementIndex, 1)
+                }
+            })
+            //LUEGO, VERIFICAMOS HORARIOS ESPECIFICOS DE RESTAURANTES
+            let deletedSpecificSchedulesIndex = []
+            state.schedules.forEach((stateRestaurantSchedulesItem, indexStateRestaurantSchedules)=>{
+                stateRestaurantSchedulesItem.restaurantSchedules.forEach(itemSchedule=>{
+                    schedules.forEach(localSchedulesItem=>{
+                        if(localSchedulesItem.restaurant_id == stateRestaurantSchedulesItem.idRestaurant){
+                            if(localSchedulesItem.id != "NEW"){
+                                if(localSchedulesItem.id == itemSchedule.id) {
+                                    deletedSpecificSchedulesIndex.push({indexStateRestaurantSchedules: indexStateRestaurantSchedules, componentID: itemSchedule.componentID})
+                                }
+                            }
+                            else if(localSchedulesItem.id == "NEW"){
+                                if(localSchedulesItem.componentID == itemSchedule.componentID) {
+                                    deletedSpecificSchedulesIndex.push({indexStateRestaurantSchedules: indexStateRestaurantSchedules, componentID: itemSchedule.componentID})
+                                }
+                            }
+                        }
+                    })
+                })
+            })
+            //PROCEDEMOS A ELIMINAR LOS HORARIOS ESPECIFICOS
+            deletedSpecificSchedulesIndex.forEach(elementIndex=>{
+                let findedIndex = state.schedules[elementIndex.indexStateRestaurantSchedules].restaurantSchedules.findIndex(elementFinded=> elementFinded.componentID == elementIndex.componentID)
+                if(findedIndex > -1){
+                    state.schedules[elementIndex.indexStateRestaurantSchedules].restaurantSchedules.splice(findedIndex, 1);
+                }
+            })
         },
 
         editHotel(state, hotel) {
@@ -1017,7 +1156,7 @@ const HotelModule = {
                     if(flagDeleteRegimes == true){
                         //Se llama a la accion "deleteRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("deleteRegimesAXIOS", deletedItems);
+                        await dispatch("deleteRegimesAXIOS", deletedItems);
                     }
                     let newArrayPutRegimes = [];
                     let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
@@ -1049,7 +1188,7 @@ const HotelModule = {
                     });
                     //Se llama a la accion "postAddRegimes" que se encargara
                     //De hacer la peticion AXIOS
-                    dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
+                    await dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
                     //Se formatean los regimenes con las siguientes caracteristicas...
                     newArrayPutRegimes = newArrayPutRegimes.map(itemRegime=>{
                         //Se elimina el id del hotel por que en este caso no se ocupa insertar
@@ -1070,7 +1209,7 @@ const HotelModule = {
                     });
                     //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                     //De hacer la peticion AXIOS
-                    dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                    await dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                 }
                 //Si "objRegimes.newRegimes" es igual a los elementos existentes, solamente se da formato a los datos
                 else if (objRegimes.newRegimes.length == objRegimes.currentRegimes.length) {
@@ -1093,7 +1232,7 @@ const HotelModule = {
                     if(flagDeleteRegimes == true){
                         //Se llama a la accion "deleteRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("deleteRegimesAXIOS", deletedItems);
+                        await dispatch("deleteRegimesAXIOS", deletedItems);
                     }
                     let newArrayPutRegimes = [];
                     if(methodsRegime == "POST"){
@@ -1126,7 +1265,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "postAddRegimes" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
+                        await dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
                         //Se formatean los regimenes con las siguientes caracteristicas...
                         newArrayPutRegimes = newArrayPutRegimes.map(itemRegime=>{
                             //Se elimina el id del hotel por que en este caso no se ocupa insertar
@@ -1147,7 +1286,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                        await dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
                     else{
                         //Se formatean los regimenes con las siguientes caracteristicas...
@@ -1171,7 +1310,7 @@ const HotelModule = {
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
                         console.log("newArrayPutRegimes", newArrayPutRegimes)
-                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                        await dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
                 }
                 else {
@@ -1193,7 +1332,7 @@ const HotelModule = {
                     }
                     //Se llama a la accion "deleteRegimesAXIOS" que se encargara
                     //De hacer la peticion AXIOS
-                    dispatch("deleteRegimesAXIOS", arrayIDsItemsDel);
+                    await dispatch("deleteRegimesAXIOS", arrayIDsItemsDel);
                     let newArrayPutRegimes = [];
                     if(methodsRegime == "POST"){
                         let newArrayPostRegimes = objRegimes.newRegimes.filter(itemRegime=>{
@@ -1225,7 +1364,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "postAddRegimes" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
+                        await dispatch("postAddRegimesAXIOS", newArrayPostRegimes);
                         //Se formatean los regimenes con las siguientes caracteristicas...
                         newArrayPutRegimes = newArrayPutRegimes.map(itemRegime=>{
                             //Se elimina el id del hotel por que en este caso no se ocupa insertar
@@ -1246,7 +1385,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                        await dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
                     else{
                         //Se formatean los regimenes con las siguientes caracteristicas...
@@ -1269,7 +1408,7 @@ const HotelModule = {
                         });
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
-                        dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
+                        await dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
 
                 }
@@ -1312,66 +1451,267 @@ const HotelModule = {
             }
         },
 
-        putEditRestaurants: async function({ commit, dispatch }, objRestaurantsSchedules) {
+        putEditRestaurants: async function({ commit, dispatch }, localArrayRestaurants) {
             try {
-                let postRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=> {
-                    if(itemRestaurant.id == 'NEW'){
-                        return itemRestaurant;
+                let postRestaurants = [];
+                let putRestaurants = [];
+                let arrayDeletedRestaurants = [];
+                localArrayRestaurants.forEach(itemRestaurant=>{
+                    if(typeof(itemRestaurant.deletedRestaurant) != 'undefined'){
+                        if(itemRestaurant.deletedRestaurant == 'DELETED'){
+                            arrayDeletedRestaurants.push(itemRestaurant);
+                        }
                     }
-                });
-
-                let putRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=> {
-                    if(itemRestaurant.id != 'NEW'){
-                        return itemRestaurant;
+                    else if(typeof(itemRestaurant.deletedRestaurant) == 'undefined'){
+                        if(itemRestaurant.id == 'NEW'){
+                            postRestaurants.push(itemRestaurant);
+                        }
+                        else if(itemRestaurant.id != 'NEW'){
+                            putRestaurants.push(itemRestaurant);
+                        }
                     }
-                });
+                })
+                if(arrayDeletedRestaurants.length > 0){
+                    await dispatch("deleteRestaurantsAXIOS", arrayDeletedRestaurants);
+                }
                 if(postRestaurants.length > 0){
-                    let arrayAddRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=>{
-                        if(typeof(itemRestaurant.deletedRestaurant) == 'undefined'){
-                            return itemRestaurant;
-                        }
-                    })   
-                    let arrayDeletedRestaurants = objRestaurantsSchedules.propRestaurants.filter(itemRestaurant=>{
-                        if(typeof(itemRestaurant.deletedRestaurant) != 'undefined'){
-                            if(itemRestaurant.deletedRestaurant == 'DELETED'){
-                                return itemRestaurant;
-                            }
-                        }
-                    })
-                    dispatch("postAddRestaurantsAXIOS", {addProp: arrayAddRestaurants, deleteProp: arrayDeletedRestaurants});
+                    await dispatch("postAddRestaurantsAXIOS", postRestaurants);
                 }
                 if(putRestaurants.length > 0){
-                    
+                    await dispatch("putUpdateRestaurantsAXIOS", putRestaurants);
                 }
-
             } catch (error) {
                 commit("setErrorsRestaurants", error.response.data);
                 commit("setStatusRestaurants", error.response.status);
             }
         },
 
-        postAddRestaurantsAXIOS: async function({ commit }, newObjPropsRestaurant) {
+        postAddRestaurantsAXIOS: async function({ commit }, localPostRestaurants) {
             let arrayRequestAddItemRestaurant = [];
             let arrayErrors = []
             let status;
-            let forRestaurants = newObjPropsRestaurant.addProp;
-            // for (const itemRestaurant of forRestaurants) {
-            //     try {
-            //         const requestAddItemRestaurant = await axios.post(`/api/restaurants`, itemRestaurant);
-            //         let trasformedRequest = requestAddItemRestaurant.data.data;
-            //         trasformedRequest.idCompoRestaurant = itemRestaurant.idCompoRestaurant;
-            //         arrayRequestAddItemRestaurant.push(trasformedRequest);
-            //     } catch (error) {
-            //         status = error.response.status;
-            //         arrayErrors.push({error: error.response.data, componentID: itemRestaurant.componentID})
-            //     }
-            // }
+            for (const itemRestaurant of localPostRestaurants) {
+                try {
+                    const requestAddItemRestaurant = await axios.post(`/api/restaurants`, itemRestaurant);
+                    let trasformedRequest = requestAddItemRestaurant.data.data;
+                    trasformedRequest.componentID = itemRestaurant.componentID;
+                    trasformedRequest.idCompoRestaurant = itemRestaurant.idCompoRestaurant;
+                    arrayRequestAddItemRestaurant.push(trasformedRequest);
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemRestaurant.componentID})
+                }
+            }
             if(arrayErrors == 0){
-                //commit("postAddRestaurants", arrayRequestAddItemRestaurant);
+                commit("postAddRestaurants", arrayRequestAddItemRestaurant);
             }
             else{
                 //commit("setErrorsRestaurants", arrayErrors);
                 //commit("setStatusRestaurants", status);
+            }
+        },
+
+        putUpdateRestaurantsAXIOS: async function({ commit }, localPutRestaurants) {
+            let arrayRequestUpdateItemRestaurant = [];
+            let arrayErrors = []
+            let status;
+            for (const itemRestaurant of localPutRestaurants) {
+                try {
+                    const requestUpdateItemRestaurant = await axios.put(
+                        `/api/restaurants/${itemRestaurant.id}`,
+                        itemRestaurant
+                    );
+                    let trasformedRequest = requestUpdateItemRestaurant.data.data;
+                    trasformedRequest.componentID = itemRestaurant.componentID;
+                    trasformedRequest.idCompoRestaurant = itemRestaurant.idCompoRestaurant;
+                    arrayRequestUpdateItemRestaurant.push(trasformedRequest)
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemRestaurant.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("putUpdateRestaurants", arrayRequestUpdateItemRestaurant);
+            }
+            else{
+                // commit("setErrorsRegimes", arrayErrors);
+                // commit("setStatusRegimes", status);
+            }
+        },
+
+        deleteRestaurantsAXIOS: async function({ commit }, localDeleteRestaurants) {
+            let arrayErrors = [];
+            let status;
+            let doneDeletes = [];
+            for (const itemRestaurant of localDeleteRestaurants) {
+                try {
+                    doneDeletes.push(itemRestaurant)
+                    if(typeof(itemRestaurant.deletedRestaurant) != 'undefined' && itemRestaurant.id != "NEW"){
+                        const requestDeleteItemRestaurant = await axios.delete(`/api/restaurants/${itemRestaurant.id}`);
+                    }
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemRestaurant.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("deleteRestaurants", doneDeletes);
+            }
+            else{
+                // commit("setErrorsRegimes", arrayErrors);
+                // commit("setStatusRegimes", status);
+            }
+        },
+
+        putEditSchedules: async function({ commit, dispatch }, localArraySchedules) {
+            localArraySchedules.forEach(element=>{
+                element.restaurantSchedules.forEach(insideElement=>{
+                    if(insideElement.start_time.length >=8){
+                        insideElement.start_time = insideElement.start_time.slice(0, -3);
+                    }
+                    if(insideElement.end_time.length >=8){
+                        insideElement.end_time = insideElement.end_time.slice(0, -3);
+                    }
+                })
+            })
+            console.log("localArraySchedules", localArraySchedules)
+            try {
+                let postSchedules = [];
+                let putSchedules = [];
+                let arrayDeletedSchedules = [];
+                localArraySchedules.forEach(itemSchedule=>{
+                    if(typeof(itemSchedule.deletedRestaurant) != 'undefined'){
+                        if(itemSchedule.deletedRestaurant == 'DELETED'){
+                            if(itemSchedule.restaurantSchedules.length > 0){
+                                arrayDeletedSchedules.push(...itemSchedule.restaurantSchedules);
+                            }
+                        }
+                    }
+                    else if(typeof(itemSchedule.deletedRestaurant) == 'undefined'){
+                        if(itemSchedule.restaurantSchedules.length > 0){
+                            for (let itemRestaurantSchedule of itemSchedule.restaurantSchedules) {
+                                if(typeof(itemRestaurantSchedule.deletedSchedule) != 'undefined'){
+                                    if(itemRestaurantSchedule.deletedSchedule == "DELETED"){
+                                        arrayDeletedSchedules.push(itemRestaurantSchedule)
+                                    }
+                                }
+                                else if(typeof(itemRestaurantSchedule.deletedSchedule) == 'undefined'){
+                                    if(itemRestaurantSchedule.id == 'NEW'){
+                                        postSchedules.push(itemRestaurantSchedule);
+                                    }
+                                    else if(itemRestaurantSchedule.id != 'NEW'){
+                                        putSchedules.push(itemRestaurantSchedule);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                })
+                console.log("arrayDeletedSchedules", arrayDeletedSchedules)
+                console.log("postSchedules", postSchedules)
+                console.log("putSchedules", putSchedules)
+                if(arrayDeletedSchedules.length > 0){
+                    await dispatch("deleteSchedulesAXIOS", arrayDeletedSchedules);
+                }
+                if(postSchedules.length > 0){
+                    await dispatch("postAddSchedulesAXIOS", postSchedules);
+                }
+                if(putSchedules.length > 0){
+                    await dispatch("putUpdateSchedulesAXIOS", putSchedules);
+                }
+            } catch (error) {
+                commit("setErrorsRestaurants", error.response.data);
+                commit("setStatusRestaurants", error.response.status);
+            }
+        },
+
+        postAddSchedulesAXIOS: async function({ commit }, localPostSchedules) {
+            let arrayRequestAddItemSchedule = [];
+            let arrayErrors = []
+            let status;
+            for (const itemSchedule of localPostSchedules) {
+                try {
+                    const requestAddItemSchedule = await axios.post(`/api/schedules`, itemSchedule);
+                    let trasformedRequest = requestAddItemSchedule.data.data;
+                    trasformedRequest.componentID = itemSchedule.componentID;
+                    trasformedRequest.idCompoSelectTimePicker = itemSchedule.idCompoSelectTimePicker;
+                    if(trasformedRequest.start_time.length >= 8){
+                        trasformedRequest.start_time = trasformedRequest.start_time.slice(0, -3);
+                    }
+                    if(trasformedRequest.end_time.length >= 8){
+                        trasformedRequest.end_time = trasformedRequest.end_time.slice(0, -3);
+                    }
+                    arrayRequestAddItemSchedule.push(trasformedRequest);
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemSchedule.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("postAddSchedules", arrayRequestAddItemSchedule);
+            }
+            else{
+                //commit("setErrorsRestaurants", arrayErrors);
+                //commit("setStatusRestaurants", status);
+            }
+        },
+
+        putUpdateSchedulesAXIOS: async function({ commit }, localPutSchedules) {
+            let arrayRequestUpdateItemSchedule = [];
+            let arrayErrors = []
+            let status;
+            console.log("localPutSchedules", localPutSchedules)
+            for (const itemSchedule of localPutSchedules) {
+                try {
+                    const requestUpdateItemSchedule = await axios.put(
+                        `/api/schedules/${itemSchedule.id}`,
+                        itemSchedule
+                    );
+                    let trasformedRequest = requestUpdateItemSchedule.data.data;
+                    trasformedRequest.componentID = itemSchedule.componentID;
+                    trasformedRequest.idCompoSelectTimePicker = itemSchedule.idCompoSelectTimePicker;
+                    if(trasformedRequest.start_time.length >= 8){
+                        trasformedRequest.start_time = trasformedRequest.start_time.slice(0, -3);
+                    }
+                    if(trasformedRequest.end_time.length >= 8){
+                        trasformedRequest.end_time = trasformedRequest.end_time.slice(0, -3);
+                    }
+                    arrayRequestUpdateItemSchedule.push(trasformedRequest)
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemSchedule.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("putUpdateSchedules", arrayRequestUpdateItemSchedule);
+            }
+            else{
+                // commit("setErrorsRegimes", arrayErrors);
+                // commit("setStatusRegimes", status);
+            }
+        },
+
+        deleteSchedulesAXIOS: async function({ commit }, localDeleteSchedules) {
+            let arrayErrors = [];
+            let status;
+            let doneDeletes = [];
+            for (const itemSchedule of localDeleteSchedules) {
+                try {
+                    doneDeletes.push(itemSchedule)
+                    if(typeof(itemSchedule.deletedSchedule) != 'undefined' && itemSchedule.id != "NEW"){
+                        const requestDeleteItemSchedule = await axios.delete(`/api/schedules/${itemSchedule.id}`);
+                    }
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemSchedule.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("deleteSchedules", doneDeletes);
+            }
+            else{
+                // commit("setErrorsRegimes", arrayErrors);
+                // commit("setStatusRegimes", status);
             }
         },
 
