@@ -2,12 +2,13 @@
   <div>
     <v-app-bar
       app
+      height="64px"
       color="blue darken-3"
       dark
       flat
-      :clipped-left="$vuetify.breakpoint.xlAndUp || $vuetify.breakpoint.lgAndUp || $vuetify.breakpoint.mdAndUp || $vuetify.breakpoint.smAndUp || $vuetify.breakpoint.xsOnly"
+      :clipped-left="$vuetify.breakpoint.smAndUp || $vuetify.breakpoint.xsOnly"
     >
-      <v-toolbar-title class="ml-n6 pl-4" style="width: 200px">
+      <v-toolbar-title class="ml-n6 pl-4">
         <div class="d-flex align-center">
           <v-img
               src="/img/logolidhber/lidhberpng.png"
@@ -15,7 +16,7 @@
               width="43"
               contain
           ></v-img>
-          <span class="hidden-sm-and-down ml-2">Siilkaab Panel</span>
+          <span class="hidden-sm-and-down ml-3">Siilkaab Panel</span>
         </div>
 
       </v-toolbar-title>

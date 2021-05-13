@@ -21,6 +21,7 @@ class ScheduleIndexResource extends JsonResource
             'end_time' => $this->end_time,
             'restaurant_id'=> isset($this->restaurant)?$this->restaurant->id:null,
             'restaurant'=> isset($this->restaurant)?$this->restaurant->name:null,
+            'hotel_id'=> isset($this->restaurant)?$this->restaurant->hotel_id:null,
         ];
     }
 }

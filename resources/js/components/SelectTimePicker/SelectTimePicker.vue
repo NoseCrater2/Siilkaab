@@ -112,6 +112,8 @@ export default {
   name: "SelectTimePicker",
   created() {
     if (this.objArrCompo !== null) {
+      //componentID es utilizado como key unica para el proceso de muestra de errores
+      this.objArrCompo.componentID = this.componentID;
       if (this.objArrCompo.day != null) {
         this.objArrCompo.day.forEach(day=>{
           this.ddwnWeekDaysModel.push(day)
@@ -119,15 +121,22 @@ export default {
         console.log(this.objArrCompo.day)
       }
       if (this.objArrCompo.start_time != null) {
-        this.fromHourModel = this.objArrCompo.start_time.slice(0, -3);
+        if(this.objArrCompo.start_time.length >=8){
+          this.objArrCompo.start_time = this.objArrCompo.start_time.slice(0, -3);
+        }
+        this.fromHourModel = this.objArrCompo.start_time;
       }
       if (this.objArrCompo.end_time != null) {
-        this.toHourModel = this.objArrCompo.end_time.slice(0, -3);
+        if(this.objArrCompo.end_time.length >=8){
+          this.objArrCompo.end_time = this.objArrCompo.end_time.slice(0, -3);
+        }
+        this.toHourModel = this.objArrCompo.end_time;
       }
     }
   },
   data() {
     return {
+      componentID: this.idCompo + "" + this.objArrCompo.id,
       idModel: this.idCompo,
       weekDaysItems: [
         {name: "Domingo", key: "domingo"},
@@ -152,8 +161,7 @@ export default {
       },
       set(model) {
         this.ddwnWeekDaysModel = model;
-        let ddwnWeekDaysModelToJSON = JSON.stringify(this.ddwnWeekDaysModel);
-        this.objArrCompo.day = ddwnWeekDaysModelToJSON;
+        this.objArrCompo.day = this.ddwnWeekDaysModel;
         return this.ddwnWeekDaysModel;
       },
     },
@@ -163,7 +171,7 @@ export default {
       },
       set(model) {
         this.fromHourModel = model;
-        this.objArrCompo.start_time = this.fromHourModel + ":00";
+        this.objArrCompo.start_time = this.fromHourModel;
         return this.fromHourModel;
       },
     },
@@ -173,7 +181,7 @@ export default {
       },
       set(model) {
         this.toHourModel = model;
-        this.objArrCompo.end_time = this.toHourModel + ":00";
+        this.objArrCompo.end_time = this.toHourModel;
         return this.toHourModel;
       },
     },
@@ -197,16 +205,14 @@ export default {
       this.$nextTick(() => {
         if (this.selectedAllDays) {
           this.ddwnWeekDaysModel = []
-          let ddwnWeekDaysModelToJSON = JSON.stringify(this.ddwnWeekDaysModel);
-          this.objArrCompo.day = ddwnWeekDaysModelToJSON;
+          this.objArrCompo.day = this.ddwnWeekDaysModel;
           console.log("TODOS", this.objArrCompo.day)
         } else {
           this.ddwnWeekDaysModel = []
           this.weekDaysItems.forEach(day => {
             this.ddwnWeekDaysModel.push(day.key)
           });
-          let ddwnWeekDaysModelToJSON = JSON.stringify(this.ddwnWeekDaysModel);
-          this.objArrCompo.day = ddwnWeekDaysModelToJSON;
+          this.objArrCompo.day = this.ddwnWeekDaysModel;
           console.log("TODOS", this.objArrCompo.day)
         }
       })

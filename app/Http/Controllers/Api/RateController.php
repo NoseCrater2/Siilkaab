@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RateIndexResource;
 use App\Http\Resources\RoomRateResource;
 
+
+
+
 class RateController extends Controller
 {
     /**

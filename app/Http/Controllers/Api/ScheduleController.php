@@ -36,7 +36,7 @@ class ScheduleController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'day' => 'required|string',
+            'day' => 'required|array',
             'start_time' => 'required|date_format:H:i',
             'end_time' => 'required|date_format:H:i|after:start_time',
             'restaurant_id' => 'required|exists:restaurants,id'
@@ -44,8 +44,9 @@ class ScheduleController extends Controller
 
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
+            $data['day'] = json_encode($data['day']);
             $schedule = Schedule::create($data);
             return new ScheduleIndexResource(Schedule::findOrFail($schedule->id));
         }
@@ -76,7 +77,7 @@ class ScheduleController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'day' => 'string',
+            'day' => 'array',
             'start_time' => 'date_format:H:i',
             'end_time' => 'date_format:H:i|after:start_time',
             'restaurant_id' => 'exists:restaurants,id'
@@ -86,6 +87,7 @@ class ScheduleController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
+            $data['day'] = json_encode($data['day']);
             $schedule->update($data);
             return new ScheduleIndexResource(Schedule::findOrFail($schedule->id));
         }

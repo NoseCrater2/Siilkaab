@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-card class="pa-2" outlined tile>
-      <v-list dense >
+      <v-list dense>
         <v-list-item-group
           :value.sync="iditemsListOptions"
           color="primary"

@@ -2,6 +2,12 @@ import axios from "axios";
 
 const RoomModule = {
     state: {
+        snackbarRoomAmenities: {
+            stateSnackbar: false,
+            messaggeSnackbar: "",
+            colorSnackbar: ""
+        },
+        timeoutSnackbarRoomAmenities: 3500,
         availableRooms: [],
         currentHotelRooms: [],
         roomDetails: {
@@ -26,13 +32,16 @@ const RoomModule = {
             baby_extra: 0,
             hotel_id: null,
         },
+        roomAmenities: [],
         bedrooms: [],
         beds: [],
         searchErrors: [],
         additionalImages: [],
 
         errorsDetailsRoom: [],
-        statusDetailsRoom: 0
+        statusDetailsRoom: 0,
+        errorsRoomsAmenities: [],
+        statusRoomsAmenities: 0
     },
     getters: {
         getSearchErrors(state){
@@ -45,7 +54,7 @@ const RoomModule = {
                 returned += el.quantity;
             })
             return returned.toString();
-        },
+        }
     },
     mutations: {
         //Se reinician los estados (principalmente por el problema del router-link)
@@ -72,11 +81,21 @@ const RoomModule = {
                 baby_extra: 0,
                 hotel_id: null,
             }),
+            (state.roomAmenities = []),
             (state.bedrooms = []),
-            (state.beds = []),
-
+            (state.beds = [])
+        },
+        setReinicializedErrorsStatusRoomModule(state){
             (state.errorsDetailsRoom = []),
-            (state.statusDetailsRoom = 0)
+            (state.statusDetailsRoom = 0),
+            (state.errorsRoomsAmenities = []),
+            (state.statusRoomsAmenities = 0),
+            (state.snackbarRoomAmenities = {
+                stateSnackbar: false,
+                messaggeSnackbar: "",
+                colorSnackbar: ""
+            }),
+            (state.timeoutSnackbarRoomAmenities = 3500)
         },
         setAvailableRooms(state, avaRooms) {
             state.availableRooms = avaRooms;
@@ -86,6 +105,15 @@ const RoomModule = {
         },
         setRoomDetails(state, roomDetails) {
             state.roomDetails = roomDetails;
+        },
+        setRoomAmenities(state, roomAmenities){
+            state.roomAmenities = roomAmenities;
+        },
+        setErrorsRoomAmenities(state, errors){
+            state.errorsRoomsAmenities = errors
+        },
+        setStatusRoomAmenities(state, status){
+            state.statusRoomsAmenities = status
         },
         setBedrooms(state, bedrooms) {
             state.bedrooms = bedrooms;
@@ -102,6 +130,13 @@ const RoomModule = {
             state.additionalImages = additionalImages;
         },
 
+        setSnackbarRoomAmenities(state, snackbar){
+            state.snackbarRoomAmenities = snackbar;
+        },
+
+        putRoomAmenities(state, roomAmenities){
+            state.roomAmenities = roomAmenities;
+        },
         postPutEditRooms(state, roomDetails) {
             //En caso de que se inserta una habitacion nueva, directamente se inserta la habitacion en las variables
             if(typeof(roomDetails.new) != "undefined"){
@@ -161,6 +196,17 @@ const RoomModule = {
                 commit("setRoomDetails", roomDetails);
             } catch (error) {}
         },
+
+        getRoomAmenities: async function({ commit }, idHotel) {
+            try {
+                const request = await axios.get("/api/room_amenities");
+                let roomAmenities = request.data.data;
+                let filteredAmenities = roomAmenities.filter(el=> el.hotel_id == idHotel);
+                console.log(filteredAmenities, idHotel)
+                commit("setRoomAmenities", filteredAmenities);
+            } catch (error) {}
+        },
+
         getBedrooms: async function({ commit }, idRoom) {
             try {
                 const request = await axios.get(`/api/bedrooms`);
@@ -201,6 +247,29 @@ const RoomModule = {
                 let images = request.data.data;
                 commit("setAdditionalImages", images);
             } catch (error) {}  
+        },
+
+        putRoomAmenitiesAXIOS: async function({ commit }, localArrayRoomAmenities){
+            let arrayRequestUpdateRoomAmenities = [];
+            let arrayErrors = []
+            let status;
+            
+            for (const itemAmenity of localArrayRoomAmenities) {
+                try {
+                    const request = await axios.put(`/api/room_amenities/${itemAmenity.id}`, itemAmenity);
+                    arrayRequestUpdateRoomAmenities.push(request.data.data);
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("putRoomAmenities", arrayRequestUpdateRoomAmenities);
+            }
+            else{
+                commit("setErrorsRoomAmenities", error.response.data);
+                commit("setStatusRoomAmenities", error.response.status);
+            }
         },
 
         postPutEditRoomsAXIOS: async function({ commit }, localDetailsRoom){

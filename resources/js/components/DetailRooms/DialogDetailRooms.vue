@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import {mapState } from 'vuex';
+import {mapState, mapActions} from 'vuex';
 import SliderRoomPhotos from './SliderRoomPhotos'
 import CardRoomInfo from './CardRoomInfo'
 import CalendarRoomDisponibility from './CalendarRoomDisponibility'
@@ -62,6 +62,7 @@ export default {
 
     created(){
         this.$store.dispatch('getRoomDetails', this.id)
+        this.getRatesByRoom(this.id);
     },
 
     computed:{
@@ -77,6 +78,7 @@ export default {
     },
 
     methods:{
+        ...mapActions(["getRatesByRoom"]),
         closeRoomDetail(){
             this.$emit('closeDialog')
         }
