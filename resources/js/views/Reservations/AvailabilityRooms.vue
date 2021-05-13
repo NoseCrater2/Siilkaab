@@ -10,7 +10,6 @@
               <v-tab-item eager v-for="(room, index) in aRooms" :key="index">
                  <GridAvailabilityRoom v-if="$vuetify.breakpoint.smAndDown" :key="index" :index="parseInt(index)" :room="room"/>
                 <ListAvailabilityRoom  v-else :key="index" :index="parseInt(index)" :room="room"/>
-               
               </v-tab-item>
           </v-tabs-items>
       </v-card>
@@ -41,7 +40,7 @@ export default {
   computed:{
       ...mapState({
         aRooms: state => state.RoomModule.availableRooms,
-         conditions: state => state.HotelModule.conditions,
+        conditions: state => state.HotelModule.conditions,
     }),
   },
 

@@ -26,6 +26,7 @@ class IndexReservationResource extends JsonResource
             'to' => $this->to,
             'total_price' => $this->hotel->configuration->currency->symbol.$this->total_price.' '.$this->hotel->configuration->currency->code,
             'state' => $this->state,
+            'guest_name' => $this->guest_name,
         ];
     }
 }

@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Api;
 use App\Rate;
 use App\Room;
 use App\Messages;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RateIndexResource;
 use App\Http\Resources\RoomRateResource;
-use Carbon\Carbon;
+
+
+
 
 class RateController extends Controller
 {

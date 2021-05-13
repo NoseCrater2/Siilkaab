@@ -109,7 +109,7 @@
                   
                   <v-col cols="12" class="py-0 my-1 ml-n2"> Edad de los niños</v-col>
                   <v-col cols="2" v-for="c in parseInt(form[r-1].children)" :key="c" class="py-0 my-1 mx-1 px-0">
-                      <v-select  :items="maxChildrenAge" v-model="form[r-1].ages[c]" hide-details outlined  type="number" dense  >
+                      <v-select  :items="maxChildrenAge" v-model="form[r-1].ages[c-1]" hide-details outlined  type="number" dense  >
                       </v-select>
                   </v-col>                 
                 </v-row>
@@ -210,7 +210,7 @@
                 </v-list-item-content>
                 <v-list-item-action>
                   <v-list-item-action-text >
-                    {{configuration.currency_symbol + room.rack_rate +' '+ configuration.currency_code}}
+                    {{configuration.currency_symbol + roomPrice(room.rates[0]) +' '+ configuration.currency_code}}
                   </v-list-item-action-text>
                 </v-list-item-action>
               </v-list-item>
@@ -261,9 +261,6 @@
 <script >
 import {mapGetters, mapState } from 'vuex';
 import DialogDetailHotel from '../../components/DetailRooms/DialogDetailHotel'
-// import Moment from "moment"; //Importamos moment.js
-// import { extendMoment } from "moment-range"; //Importamos el plugin de rangos
-// const moment = extendMoment(Moment);
 export default {
   data () {
     return {
@@ -320,6 +317,15 @@ export default {
       }
     },
 
+    roomPrice(rates){
+      let price =  0
+      rates.forEach(r => {
+          price +=r.price
+      });
+
+      return price
+    },
+
     openHotelDialog(){
       this.dialog = true
     },
@@ -338,6 +344,7 @@ export default {
         terms.from = this.date
         terms.to = this.date2
         terms.rooms = this.form
+        console.log(terms.rooms)
         this.$store.dispatch('getAvailabilityRooms',terms).then(()=>{
           this.showResults = true;
           terms.nights = this.$moment(this.date2).diff(this.$moment(this.date),'days')
@@ -366,7 +373,6 @@ export default {
 
   computed:{
      ...mapState({
-        availablerooms: (state) => state.RoomModule.availableRooms,
         bookings: state => state.bookingsModule.bookings,
         hotel: (state) => state.HotelModule.hotel,
         contact: state => state.HotelModule.contacts,
@@ -431,7 +437,7 @@ export default {
     maxChildren(){
       let c = []
       if(this.hotel.max_adults){
-        for (let index = 0; index < this.hotel.max_children + 1; index++) {
+        for (let index = 1; index < this.hotel.max_children + 1; index++) {
           c.push(index+' Niños')
         }
       }
