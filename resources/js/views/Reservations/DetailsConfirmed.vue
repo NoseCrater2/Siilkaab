@@ -25,7 +25,7 @@
             <v-list-item>
                 <v-list-item-title>Estancia:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{reservation.rooms.lenght}}  habitación para {{reservation.nights}} noche(s)
+                    {{reservation.count_rooms}}  habitación para {{reservation.nights}} noche(s)
                 </v-list-item-subtitle>
             </v-list-item>
             <v-list-item>
@@ -114,14 +114,14 @@
              <v-list-item class="font-italic">
                 <v-list-item-title>Nombre del huésped:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{ reservation.guest_names[index] }}
+                    {{ rooms.guest_name.name }}
                 </v-list-item-subtitle>
             </v-list-item>
              <v-divider class="mx-4"></v-divider>
             <v-list-item >
                 <v-list-item-title>Importe de la estancia:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{ room.rack_rate }}
+                     {{ room.price * reservation.nights }}
                 </v-list-item-subtitle>
             </v-list-item>
              <v-divider class="mx-4"></v-divider>

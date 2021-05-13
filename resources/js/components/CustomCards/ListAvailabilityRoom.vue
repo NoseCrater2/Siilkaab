@@ -1,12 +1,14 @@
 <template>
     <v-item-group mandatory  v-model="bookings.rooms[index-1]">
         <v-container>
+            <span class="font-italic">Seleccione la habitación que desee haciendo clic o tap sobre esta</span>
+            <!-- <span class="font-italic">Habitación {{index}}: precios para </span> -->
             <v-row>
                 <v-col cols="12"  v-for="(r, i) in room" :key="i">
                     <v-item  v-slot="{ active, toggle }" :value="r" >
-                        <v-hover   v-slot="{ hover }" >
-                            <v-card flat min-height="166"  :elevation="hover?'5':'0'"  @click="toggle" :style="active?'border-right: 4mm solid #43A047;':''">
-                                <div class="d-flex flex-no-wrap">
+                        <!-- <v-hover   v-slot="{ hover }" > -->
+                            <v-card flat min-height="166"  :elevation="active?'5':'0'"  @click="toggle" :style="active?'border-right: 4mm solid #43A047;':''">
+                                <div class="d-flex flex-no-wrap justify-space-between">
                                     <v-avatar class="ma-2" size="150" tile @click="openRoomDetail(r.id)">
                                         <v-hover v-slot="{ hover }">
                                             <v-img height="200" :src="`/img/${r.default_image}`">
@@ -19,8 +21,8 @@
                                     <div>
                                         <v-card-title class="py-1" style="color: #1976D2" > {{ r.name }} </v-card-title>
                                         <v-card-text class="py-1">
-                                            <b v-if="r.quantity == 1" style="color: red">¡Última unidad!</b>
-                                            <b v-else-if="r.quantity <= 5" style="color: red">¡Solo quedan {{ r.quantity }} unidades!</b><br>
+                                            <b v-if="r.rates[0][0].quantity == 1" style="color: red">¡Última unidad!</b>
+                                            <b v-else-if="r.rates[0][0].quantity <= 5" style="color: red">¡Solo quedan {{ r.rates[0][0].quantity }} unidades!</b><br>
 
                                             Capacidad máxima: <br>
                                             Adultos: {{ r.max_adults}}. Niños: {{ r.max_children}} <br>
@@ -32,21 +34,22 @@
                                         </v-card-actions>
                                     </div>
                                     <div>
-                                        <v-card-title>TARIFA Y REGIMEN</v-card-title>
-                                        <v-card-actions>
-                                            <!-- <v-checkbox @click="toggle" v-model="active"></v-checkbox> -->
-                                        </v-card-actions>
+                                        <v-card-title>TARIFAS</v-card-title>
+                                        <!-- <span v-for="(rs, index) in r.rates[0]" :key="index">
+                                            Noche {{index + 1}}: {{rs.price}}
+                                        </span> -->
                                         
                                     </div>
                                     <div >
-                                        <v-card-title class="text-right" > {{configuration.currency_symbol + r.rack_rate +' '+ configuration.currency_code}}</v-card-title>
-                                        <!-- <v-btn tile small>RESERVAR</v-btn> -->
+                                        <v-card-title > {{configuration.currency_symbol + roomPrice(r.rates[0]) +' '+ configuration.currency_code}}</v-card-title>
+                                        <v-btn tile depressed color="primary" small>RESERVAR</v-btn>
                                          
                                     </div>
                                 </div>
                             </v-card>
-                        </v-hover>
+                        <!-- </v-hover> -->
                     </v-item>
+                    <v-divider></v-divider>
                 </v-col>
             </v-row>
             <DialogDetailRooms @closeDialog="closeRoomDetail" :dialog="dialog" v-if="dialog"  :id="roomId"/>
@@ -76,10 +79,19 @@ export default {
             bookings: state => state.bookingsModule.bookings,
             configuration: state => state.HotelModule.configuration,
         }),
+
+        
     },
 
     methods: {
- 
+        roomPrice(rates){
+            let price =  0
+            rates.forEach(r => {
+                price +=r.price
+            });
+
+            return price
+        },
         openRoomDetail(id){
             this.roomId = id
             this.dialog = true

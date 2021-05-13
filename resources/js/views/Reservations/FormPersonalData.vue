@@ -142,7 +142,6 @@ export default {
           currencyFormat : null,
           overlay: false,
           form:{
-            
             name: null,
             last_name: null,
             country: 'México',
@@ -208,8 +207,6 @@ export default {
         document.body.appendChild(formulary)
         return formulary;
       },
-
-      
     },
 
   computed:{
@@ -221,11 +218,9 @@ export default {
         hotel: (state) => state.HotelModule.hotel,
     }),
 
-
-
     subTotal(){
         if(this.selectedPayment == 'Una noche'){
-          return this.$store.getters.totalPrice / this.bookings.nights
+          return this.$store.getters.oneNightPrice
         }else if(this.selectedPayment == 'Mitad de reserva'){
           return this.$store.getters.totalPrice / 2
         }else {

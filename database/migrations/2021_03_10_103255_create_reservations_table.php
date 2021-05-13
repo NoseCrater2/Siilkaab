@@ -21,14 +21,13 @@ class CreateReservationsTable extends Migration
             $table->string('guest_name')->required();
             $table->string('guest_last_name')->required();
             $table->string('guest_country')->required();
-            $table->string('guest_names')->required();
             $table->string('guest_email')->required();
             $table->string('guest_phone')->required();
-            $table->string('guest_petitions')->required();
+            $table->string('guest_petitions')->nullable();
             $table->time('check_in')->required();
             $table->decimal('payed',8,2)->required();
             $table->decimal('total_price',8,2)->required();
-            $table->enum('state',['Confirmed', 'Cancelled'])->required();
+            $table->enum('state',['Confirmed','Pending','Cancelled','Aborted'])->required();
             $table->unsignedBigInteger('hotel_id');
             $table->foreign('hotel_id')->references('id')->on('hotels');
             $table->timestamps();
