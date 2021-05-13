@@ -8,6 +8,7 @@ const disponibilityMoule = {
         ahotels: [],
         arooms: [],
         rates: [],
+        ratesByRoom: [],
         snackbar: {
             stateSnackbar: false,
             messaggeSnackbar: "",
@@ -47,6 +48,9 @@ const disponibilityMoule = {
 
         setRooms(state, payload) {
             state.arooms = payload;
+        },
+        setRatesByRoom(state, payload){
+            state.ratesByRoom = payload;
         },
 
         setRates(state, payload) {
@@ -92,6 +96,18 @@ const disponibilityMoule = {
             }
         },
 
+        getRatesByRoom: async function({ commit }, idRoom) {
+            try {
+                const response = await axios.get(`/api/ratesByRoom/${idRoom}`);
+                let ratesByRoom = response.data.data;
+                commit("setRatesByRoom", ratesByRoom);
+                // commit('setStatus',request.status);
+            } catch (error) {
+                //commit("setErrors", error.response.data);
+                //commit("setStatus", error.response.status);
+            }
+        },
+
         getRates: async function({ commit }, arrayRoomsID) {
             try {
                 const response = await axios.get(`/api/rates`);
@@ -112,6 +128,7 @@ const disponibilityMoule = {
                 //commit("setStatus", error.response.status);
             }
         },
+
         putEditRates: async function({ commit, dispatch }, newArrayPutRates) {
             //ESTAN LAS NEWDATES (SI SON NUEVAS PERO NO TIENEN NADA, NI SIQUIERA INSERTAR)
             //ESTAN LAS QUE QUE YA ESTAN PERO NO TIENEN NADA. ESAS HAY QUE ELIMINAR
