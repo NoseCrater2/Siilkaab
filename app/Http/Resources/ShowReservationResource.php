@@ -32,6 +32,7 @@ class ShowReservationResource extends JsonResource
             'state' => $this->state,
             'check_in' => $this->check_in,
             'created_at' => $this->created_at,
+            'count_rooms' => $this->rooms->count(),
             'rooms' => $this->rooms->map(function ($room)
                 {
                     return [
@@ -40,7 +41,10 @@ class ShowReservationResource extends JsonResource
                         'short_text' => $room->short_text,
                         'rack_rate' => $room->rack_rate,
                         'image' => $room->default_image,
-
+                        'guest_name' => ['id'=>$room->pivot->room_id,'name' => $room->pivot->guest_name],
+                        'adults' => $room->pivot->adults,
+                        'children' => $room->pivot->children,
+                        'price' => $room->pivot->price,
                     ];
                 }),
             'hotel_name' => $this->hotel->title,

@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\Rate;
 use App\Room;
 use App\Messages;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RateIndexResource;
+use App\Http\Resources\RoomRateResource;
 
 class RateController extends Controller
 {
@@ -125,8 +127,17 @@ class RateController extends Controller
 
     public function getRatesByRoom(Room $room)
     {
-        return RateIndexResource::collection(
-          $room->rates
+        $now = Carbon::now()->format('Y-m-d');
+        $rates = RateIndexResource::collection(
+          $room->rates()
+          ->whereRaw('CASE WHEN day is not null THEN day >= ? WHEN start is not null THEN start >= ? ELSE TRUE END',[$now, $now])
+          ->get()
         );
+
+        if($rates->isEmpty()){
+            return new RoomRateResource($room);
+        }else{
+            return $rates;
+        }
     }
 }

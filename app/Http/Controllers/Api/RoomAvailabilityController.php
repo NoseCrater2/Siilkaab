@@ -39,62 +39,69 @@ class RoomAvailabilityController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
+           
+            $toAdded = Carbon::create($data['to'])->format('Y-m-d');
+            $period = new DatePeriod(new DateTime($data['from']), new DateInterval('P1D'), new DateTime($toAdded));
+
             $results = new Collection();
-            $omittedIds = [];
             $index = 0;
-            $disponibilities = new Collection();
                 
-            foreach ($data['rooms'] as $key => $room) {
-                $result =  AvailabilityRoomResource::collection(
+            foreach ($data['rooms'] as $room) {
+                $preresults =  AvailabilityRoomResource::collection(
                     $hotel->rooms()
                     ->where('quantity', '>=', 1)
                     ->where('max_adults','>=', intval($room['adults']))
                     ->where('max_children','>=', intval($room['children']))
-                    ->whereNotIn('id',$omittedIds)
                     ->get()
                 );
-            
-                if( isset($result[0]) ){
-                    $index++;
-                    if($disponibilities->has($result[0]->id)){
-                        $disponibilities[$result[0]->id] = $disponibilities[$result[0]->id] - 1 ;
+                $index++;
+
+              
+                foreach ($preresults as $key => $result) {
+                    $rates = $this->searchRates($result->id, $period);
+                    if($rates->contains('quantity',0)){
+                        $preresults->forget($key);
                     }else{
-                        $disponibilities->put($result[0]->id, $result[0]->quantity);
-                        $disponibilities[$result[0]->id] = $disponibilities[$result[0]->id] - 1 ;
+                        $result->additional([$rates]);
                     }
-                    if($disponibilities->search(0))
-                    array_push($omittedIds, $disponibilities->search(0));
-                    $disponibilities->forget($disponibilities->search(0));
-
-
-                    $results->put($index, $result);
                 }
+
+                $results->put($index, $preresults);
+            
             }
+
+            
             return  response($results,200);
         }
     }
 
-    public function searchRates($id, $from, $to)
+    public function searchRates($id, $period)
     {
-       
+        $rates = new Collection();
         $room = Room::find($id);
-        $toAdded = Carbon::create($to)->addDays(1)->format('Y-m-d');
-        $period = new DatePeriod(new DateTime($from), new DateInterval('P1D'), new DateTime($toAdded));
         foreach ($period as $date) {
-           $rates[]= RateIndexResource::collection($room->rates()
-                ->where('day', $date)
-                ->orWhere(function ($query) use ($date){
-                    $query->where('start', '<=', $date)
-                          ->where('end', '>=', $date);
-                })
-                ->orWhere(lcfirst($date->format('l')),'>',0)
-                ->get()
-            );
+            $dayName = lcfirst($date->format('l'));
+            $result = $room->rates()
+                        ->select('id','bed_rooms as quantity')
+                        ->selectRaw("IF(rack = 0,".$dayName.",rack) as price")
+                        ->where(function ($query) use ($date, $dayName){
+                            $query
+                                ->whereRaw('IF(day = null,DATE(start) <= ? and DATE(end) >= ?, DATE(day) = ?)  ',[$date, $date,$date])
+                                ->orWhere($dayName,'>',0)
+                                ->first();
+                        })
+                        ->orderBy('rack','desc')
+                        ->first();
+            if($result == null){
+                $r = Rate::make();
+                $r->quantity = $room->quantity;
+                $r->price = $room->rack_rate;
+                $result = $r;
+            }
+
+            $rates->push($result);    
         }
 
-        return $rates;
-       
-
+        return $rates;  
     }
-
 }

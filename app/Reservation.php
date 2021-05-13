@@ -13,7 +13,6 @@ class Reservation extends Model
         'guest_name',
         'guest_last_name',
         'guest_country',
-        'guest_names',
         'guest_email',
         'guest_phone',
         'guest_petitions',
@@ -31,7 +30,12 @@ class Reservation extends Model
 
     public function rooms()
     {
-        return $this->belongsToMany(Room::class);
+        return $this->belongsToMany(Room::class)->withPivot('guest_name','adults','children','child_ages','price');
+    }
+
+    public function rates()
+    {
+        return $this->belongsToMany(Rate::class);
     }
 
     public function notes()

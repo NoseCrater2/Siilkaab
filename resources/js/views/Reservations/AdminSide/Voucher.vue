@@ -102,7 +102,7 @@
             <v-list-item>
                 <v-list-item-title>Estancia:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{reservation.rooms.lenght}}  habitación para {{reservation.nights}} noche(s)
+                    {{reservation.count_rooms}}  habitación para {{reservation.nights}} noche(s)
                 </v-list-item-subtitle>
             </v-list-item>
             <v-list-item>
@@ -179,7 +179,10 @@
             <v-list-item class="font-italic">
                 <v-list-item-title>Ocupación:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    1 adulto
+                   Adultos:  {{room.adults}}
+                   <div class="inline" v-if="room.children > 0">
+                       Niños:  {{room.children}}
+                   </div>
                 </v-list-item-subtitle>
             </v-list-item>
             <v-list-item class="font-italic">
@@ -191,14 +194,14 @@
              <v-list-item class="font-italic">
                 <v-list-item-title>Nombre del huésped:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{ reservation.guest_names[index] }}
+                    {{ room.guest_name.name }}
                 </v-list-item-subtitle>
             </v-list-item>
              <v-divider class="mx-4"></v-divider>
             <v-list-item >
                 <v-list-item-title>Importe de la estancia:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{ room.rack_rate }}
+                    {{ room.price * reservation.nights }}
                 </v-list-item-subtitle>
             </v-list-item>
              <v-divider class="mx-4"></v-divider>
@@ -227,10 +230,11 @@
                     <v-text-field :error-messages="clientErrors.guest_phone" label="Teléfono" dense class="mx-2" outlined v-model="form.guest_phone"></v-text-field>
                     <v-autocomplete :error-messages="clientErrors.guest_country" :items="countries" item-text="name" item-value="name" label="País" dense class="mx-2" outlined v-model="form.guest_country"></v-autocomplete>
                     <v-text-field :error-messages="clientErrors.check_in" label="Hora de entrada" dense class="mx-2" outlined v-model="form.check_in"></v-text-field>
-                    <v-text-field :error-messages="clientErrors.guest_names" :label="`Habitación del huesped #`+(index+1)" dense class="mx-2" 
+                    <v-text-field :error-messages="clientErrors.guest_names" :label="`Huesped de la habitación #`+(index+1)" dense class="mx-2" 
                     v-for="(names, index) in form.guest_names"
                     :key="index"
-                    v-model="form.guest_names[index]"
+                    
+                    v-model="form.guest_names[index].name"
                     outlined>
                     </v-text-field>
                     <v-textarea :error-messages="clientErrors.guest_petitions" label="Peticiones especiales" class="mx-2"  outlined v-model="form.guest_petitions"></v-textarea>
@@ -343,7 +347,8 @@ export default {
             this.form.guest_phone = this.reservation.guest_phone;
             this.form.guest_country = this.reservation.guest_country;
             this.form.check_in = this.reservation.check_in.substr(0,5);
-            this.form.guest_names = this.reservation.guest_names;
+            this.form.guest_names = this.reservation.rooms.map(room =>room.guest_name);
+            console.log(this.form.guest_names)
             this.form.guest_petitions = this.reservation.guest_petitions;
         },
 
