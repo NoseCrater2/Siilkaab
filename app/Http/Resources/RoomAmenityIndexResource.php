@@ -91,6 +91,8 @@ class RoomAmenityIndexResource extends JsonResource
         'fire_extinguisher' => $this->fire_extinguisher,
         'air_purifiers' => $this->air_purifiers,
         'room_id'=> isset($this->room)?$this->room->id:null,
+        'room_name'=> isset($this->room)?$this->room->name:null,
+        'hotel_id'=> isset($this->room)?$this->room->hotel_id:null,
         ];
     }
 }

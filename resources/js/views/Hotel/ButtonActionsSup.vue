@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-banner single-line>
+  <div style="z-index: 7; background-color: white; position: sticky; top: 64px">
+    <v-banner :sticky="true" single-line>
       <v-row class="d-flex align-center justify-end">
         <v-col cols="12" md="8" sm="8" xs="12" class="d-flex justify-start">
           <v-btn
@@ -200,6 +200,7 @@ export default {
                   this.loader = null;
                   this.isLoadingSavingChangesSave = false;
                   this.isLoadingSavingChangesSaveAndClose = false;
+                  
                   this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
                   if(close == "saveAndClose"){
                     this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
@@ -303,7 +304,15 @@ export default {
           }
         }
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
-        this.putEditRestaurants({propRestaurants: this.restaurants, propSchedules: this.schedules});
+        //CODIGO PARA GUARDAR RESTAURANTES Y HORARIOS INICIA
+        
+        this.putEditRestaurants(this.restaurants).then(()=>{
+          this.putEditSchedules(this.schedules).then(()=>{
+            console.log("THIS:RESTAURANTS", this.restaurants)
+            console.log("THIS:SCHEDULES", this.schedules)
+          });
+        });
+        //CODIGO PARA GUARDAR RESTAURANTES Y HORARIOS TERMINA
     },
     //Metodo que verifica si existen errores al momento de guardar la informacion en PostHotel
     verifyErrorsPostHotel(){

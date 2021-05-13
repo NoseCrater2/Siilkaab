@@ -12,24 +12,24 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="8" lg="8" md="8" sm="8" xs="12">
           <v-text-field v-model="computedTitle" :error-messages="errorsInformation.title" prepend-inner-icon="mdi-notebook" label="Titulo" outlined required></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="8" lg="8" md="8" sm="8" xs="12">
           <v-text-field v-model="computedUrl" :error-messages="errorsInformation.url" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="8" lg="8" md="8" sm="8" xs="12">
           <v-text-field v-model="computedReferenceC" :error-messages="errorsInformation.reference_code" prepend-inner-icon="mdi-barcode" label="Codigo de referencia" outlined required></v-text-field>
         </v-col>
 
         <v-row class="ml-1">
-          <v-col cols="12" md="4" sm="4" xs="12">
+          <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
             <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumRooms" :error-messages="errorsInformation.num_rooms" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
           </v-col>
 
-          <v-col cols="12" md="4" sm="4" xs="12">
+          <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
             <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumFloors" :error-messages="errorsInformation.num_floors" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
           </v-col>
         </v-row>

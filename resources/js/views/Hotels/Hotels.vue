@@ -32,7 +32,7 @@
           >
             <template v-slot:top>
               <v-toolbar flat color="white">
-                  <v-col cols="12" lg="3" md="3" sm="3" xs="12" class="mt-3">
+                  <v-col cols="12" xl="3" lg="3" md="3" sm="3" xs="12" class="mt-3">
                     <div v-show="selected==! []?false:true">
                         <v-btn small depressed rounded outlined block color="red" @click="showDeleteDialog()">
                           <!-- <span class="black--text">ELIMINAR SELECCIÓN</span> -->
@@ -40,7 +40,7 @@
                         </v-btn>
                     </div>
                   </v-col>
-                  <v-col cols="12" lg="6" md="6" sm="6" xs="12" class="mt-3">
+                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12" class="mt-3">
                     <v-text-field
                       v-model="search"
                       append-icon="mdi-magnify"
@@ -51,7 +51,7 @@
                       dense
                     ></v-text-field>
                   </v-col>
-                  <v-col cols="12" lg="3" md="3" sm="3" xs="12" class="mt-3">
+                  <v-col cols="12" xl="3" lg="3" md="3" sm="3" xs="12" class="mt-3">
                     <div class="d-flex justify-end">
                       <v-btn small depressed rounded outlined block color="info" :to="{name: 'Hotel'}">
                         <!-- <span class="black--text">NUEVO HOTEL</span> -->

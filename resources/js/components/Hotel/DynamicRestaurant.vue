@@ -73,10 +73,19 @@ export default {
       //componentID es utilizado como key unica para el proceso de muestra de errores
       this.objArrCompo.componentID = this.componentID;
       //Codigo para agregar componentes existentes
-      let count = 0;
-      while (count <= this.objArrCompo.schedules.length - 1) {
-        this.addCompo(this.objArrCompo.schedules[count]);
-        count++;
+      let findedSchedulesIndex = -1;
+      if(this.objArrCompo.id == "NEW"){
+        findedSchedulesIndex = this.schedules.findIndex(itemSchedule=>itemSchedule.idRestaurant == this.objArrCompo.componentID)
+      }
+      else if(this.objArrCompo.id != "NEW"){
+        findedSchedulesIndex = this.schedules.findIndex(itemSchedule=>itemSchedule.idRestaurant == this.objArrCompo.id)
+      }
+      if(findedSchedulesIndex > -1){
+        let count = 0;
+        while (count <= this.schedules[findedSchedulesIndex].restaurantSchedules.length - 1) {
+          this.addCompo(this.schedules[findedSchedulesIndex].restaurantSchedules[count]);
+          count++;
+        }
       }
 
       if (this.objArrCompo.name != null) {
@@ -196,29 +205,12 @@ export default {
       let newArraySchedules = this.arrayComponents[this.arrayComponents.length-1].objArrCompo;
       //Y modificamos el state "schedules" insertando "newArraySchedules"
       this.schedules[indexSchedule].restaurantSchedules.push(newArraySchedules);
-      
-      //Creamos una variable "indexRestaurant" que guardara el indice donde se guardara el nuevo horario
-      //en el state "restaurants"
-      let indexRestaurant;
-      this.restaurants.forEach((restaurantItem, index) => {
-        if(this.idRestaurant == "NEW"){
-          if(restaurantItem.idCompoRestaurant == this.idCompoRestaurant){
-            indexRestaurant = index;
-          }
-        }
-        else{
-          if(restaurantItem.id == this.idRestaurant){
-            indexRestaurant = index;
-          }
-        }
-      });
-      
-      //Insertamos el nuevo horario en los horarios que se encuentran en el state "Restaurant"
-      this.restaurants[indexRestaurant].schedules.push(newArraySchedules)
+
       console.log("SCHEDULE", this.schedules)
     },
     //Metodos componente SelectTimePicker ya existente desde BD
     addCompo(obj) {
+      obj.restaurant_id = this.objArrCompo.id;
       this.countIdCompo++;
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
@@ -232,7 +224,6 @@ export default {
       //En una nueva variable llamada "mapIDComponent" guardamos el id del componente
       //Obtenido gracias al indice actual eliminado (idCompoParam) utilizado en "this.arrayComponents"
       let mapIDComponent = this.arrayComponents[idCompoMap].idCompo;
-
       //Procedemos a eliminar del arreglo state "this.schedules"
       //el horario correspondiente y para eso hacemos una serie de pasos
       let countCurrentStateSchedule = 0; //Inicializamos un contador que llevara el indice del arreglo state en su propiedad "restaurantSchedules"
@@ -245,6 +236,7 @@ export default {
           this.schedules.filter((itemStateSchedules) => {
               //Si hay una coincidencia de ids de restaurantes entre "this.arrayComponents"
               //y "this.schedules"...
+              console.log("itemArrayComponents.objArrCompo.restaurant_id", itemArrayComponents.objArrCompo, "itemStateSchedules.idRestaurant", itemStateSchedules.idRestaurant)
               if (itemArrayComponents.objArrCompo.restaurant_id == itemStateSchedules.idRestaurant) {
                 //Entonces al contador le asignamos el valor de longitud del la propiedad de horarios
                 //de restaurant (que es un array) del elemento de "this.arrayComponents"
@@ -255,6 +247,7 @@ export default {
           }).map((currentStateSchedule) => { //Y a este retorno le aplicamos un map
               //Creamos un ciclo que permanezca activo mientras el contador sea mayor o igual a 0
               while (countCurrentStateSchedule >= 0) {
+                              
                 if(itemArrayComponents.objArrCompo.id == 'NEW'){
                   //Con el contador accedemos al indice del array "restaurantSchedules"
                   //Y verificamos si en este indice se encuentra una coincidencia de ids entre este indice y el id (que es el de restaurant)
@@ -288,48 +281,6 @@ export default {
         //Al final, "this.arrayComponents" en este punto no sufrio cambio alguno. Sin embargo
         //Lo tenemos que retornar
         return itemArrayComponents;
-      });
-
-      let localSchedule = this.arrayComponents[idCompoMap].objArrCompo
-      
-      this.restaurants.forEach(itemRestaurant=>{
-        if(itemRestaurant.id == 'NEW'){
-          if(itemRestaurant.idCompoRestaurant == idRestaurantScheduleDeleted){
-            let indexSchedule = 0;
-            while (indexSchedule < itemRestaurant.schedules.length) {
-              if(localSchedule.id == 'NEW'){
-                if(localSchedule.idCompoSelectTimePicker == itemRestaurant.schedules[indexSchedule].idCompoSelectTimePicker){
-                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
-                }
-              }
-              else{
-                if(localSchedule.id == itemRestaurant.schedules[indexSchedule].id){
-                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
-                }
-              }
-              indexSchedule++;
-            }
-          }
-        }
-        else{
-          if(itemRestaurant.id == idRestaurantScheduleDeleted){
-            let indexSchedule = 0;
-            while (indexSchedule < itemRestaurant.schedules.length) {
-              if(localSchedule.id == 'NEW'){
-                if(localSchedule.idCompoSelectTimePicker == itemRestaurant.schedules[indexSchedule].idCompoSelectTimePicker){
-                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
-                }
-              }
-              else{
-                if(localSchedule.id == itemRestaurant.schedules[indexSchedule].id){
-                  itemRestaurant.schedules[indexSchedule].deletedSchedule = 'DELETED'
-                  console.log("itemRestaurant.schedules[indexSchedule]", itemRestaurant.schedules[indexSchedule])
-                }
-              }
-              indexSchedule++;
-            }
-          }
-        }
       });
       //Eliminamos del arreglo del componentes el horario
       this.arrayComponents.splice(idCompoMap, 1);

@@ -8,7 +8,6 @@
         <div class="overline">{{ nameRoom }}</div>
       </div>
       <br />
-      <br />
       <v-card class="pa-4" outlined tile>
         <div class="mb-5">
           <span class="text-h6 black--text">Por favor, selecciona</span>
@@ -394,7 +393,7 @@ export default {
   },
   methods: {
     ...mapActions(["getRoomDetails", "getBedrooms", "getBeds", "postPutEditRoomsAXIOS", "postPutEditBedroomsAXIOS"]),
-    ...mapMutations(["setReinicializedRoomModule", "setErrorsDetailsRoom", "setStatusDetailsRoom"]),
+    ...mapMutations(["setReinicializedRoomModule", "setReinicializedErrorsStatusRoomModule", "setErrorsDetailsRoom", "setStatusDetailsRoom"]),
     keyhandler(event) {
       const pattern = /^(1|[0-9]\d{0,1})$/
       if (!pattern.test(event.key) && event.key != 'Backspace' && event.key != 'Tab'){
@@ -447,6 +446,7 @@ export default {
     },
     chargeDataRoom(){
       this.setReinicializedRoomModule(); //Reinicia el objeto room (esto es por que no hay una recarga de pag con router-link)
+      this.setReinicializedErrorsStatusRoomModule();
       if(typeof(this.idRoom)!='undefined'){
         this.getRoomDetails(this.$route.params.idRoom).then(() => {
           this.nameRoom = this.roomDetails.name;

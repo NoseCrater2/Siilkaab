@@ -1,15 +1,14 @@
 <template>
   <div>
     <v-navigation-drawer
-      v-model="drawer"
       app
       permanent
       color="#2b3b4a"
       dark
-      width="287"
+      width="301"
       height="100%"
       :mini-variant.sync="navigationDrawerSize"
-      :clipped="$vuetify.breakpoint.xlOnly || $vuetify.breakpoint.lgAndDown"
+      :clipped="$vuetify.breakpoint.xsOnly || $vuetify.breakpoint.smAndUp"
     >
       <v-list dense nav class="py-0" style="padding-left: 0px">
         <div v-for="(item, index) of itemsElementList" :key="item.title">
@@ -37,7 +36,7 @@
               <v-list-item-title>{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-group v-if="index >= 2" @click.stop="expandNavigationDrawer(index-2)">
+          <v-list-group :value="$vuetify.breakpoint.mdAndUp ? fnIsActive(item.children): false" v-if="index >= 2" @click.stop="expandNavigationDrawer(index-2)">
             <template v-slot:activator>
               <v-list-item-icon>
                 <v-icon :style="item.borderStyle">{{ item.icon }}</v-icon>
@@ -74,7 +73,7 @@ export default {
   name: "NavigationDashboard",
   data() {
     return {
-      drawer: null,
+      modelIsActiveTab: false,
       route: "",
       paddingAvatar: "", //Clase que se añade al avatar del navigation si este esta en la config mini
       arrayClickStatus: [false, false, false], //Array que contendra los estados del clic de cada menu desplegable del nav drawer
@@ -208,6 +207,17 @@ export default {
     };
   },
   methods: {
+    fnIsActive(arrayChildren){
+      let returned = false;
+      arrayChildren.forEach(itemArrayChildren=>{
+        if(typeof(itemArrayChildren.route) != 'undefined'){
+          if(itemArrayChildren.route == this.$route.path){
+            returned = true;
+          }
+        }
+      })
+      return returned;
+    },
     //Metodo llamado por el boton del item deslplegable del navigation drawer para expandirlo en pantallas sm/xs
     expandNavigationDrawer() {
       //Se utiliza arguments por convencion de Js que indica cuando un metodo no fue creado para recibir explicitamente parametros
