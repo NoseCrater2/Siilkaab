@@ -7,6 +7,7 @@ const bookingsModule = {
             from : null,
             to : null,
             rooms: [],
+            guests: [],
         },
         reservations: [],
         reservation: null,
@@ -21,12 +22,23 @@ const bookingsModule = {
         totalPrice(state){
             let prices = 0
                 state.bookings.rooms.map(function(room){
-            let pt = parseFloat(room.rack_rate)
-             return prices += pt
-           })
-            return prices * state.bookings.nights
-            
+                    prices += room.rates[0].reduce((acc, curr) => acc + curr.price,0);
+                })
+
+            return prices   
+        },
+
+        oneNightPrice(state){
+            let prices = 0
+                state.bookings.rooms.map(function(room){
+                    prices += room.rates[0][0].price;
+                })
+
+            return prices 
         }
+
+        
+
     },
     
     mutations: {
@@ -37,6 +49,7 @@ const bookingsModule = {
             state.bookings.from = information.from
             state.bookings.to = information.to
             state.bookings.nights = information.nights
+            state.bookings.guests = information.rooms
         },
 
         resetRooms(state){
@@ -82,7 +95,7 @@ const bookingsModule = {
 
     actions: {
         addRoom: async function ({commit, state}, newRoom) {
-         commit('setNewRoom',newRoom)
+            commit('setNewRoom',newRoom)
         },
 
         addGeneralInformation: async function ({commit, state}, information) {
@@ -122,6 +135,7 @@ const bookingsModule = {
         },
 
         saveReservation: async function ({ commit, state, getters}, personalData){
+            
             let data = {
                 nights : state.bookings.nights,
                 from : state.bookings.from,
@@ -129,7 +143,7 @@ const bookingsModule = {
                 guest_name : personalData.name,
                 guest_last_name : personalData.last_name,
                 guest_country : personalData.country,
-                guest_names : JSON.stringify(personalData.guest_names),
+                guest_names : personalData.guest_names,
                 guest_email : personalData.email,
                 guest_phone : personalData.phone,
                 guest_petitions : personalData.special,
@@ -139,9 +153,8 @@ const bookingsModule = {
                 state : 'Confirmed',
                 hotel_id : personalData.hotel,
                 rooms: state.bookings.rooms,
+                guests: state.bookings.guests,
             }
-
-
             const request =  await axios
             .post('/api/reservations/', data);
             commit('setReservation',request.data.data)

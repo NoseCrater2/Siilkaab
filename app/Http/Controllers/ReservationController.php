@@ -44,7 +44,7 @@ class ReservationController extends Controller
             'guest_name' => 'required|string',
             'guest_last_name' => 'required|string',
             'guest_country' => 'required|string',
-            'guest_names' => 'required|string',
+            // 'guest_names' => 'required|string',
             'guest_email' => 'required|email',
             'guest_phone' => 'required|string',
             'guest_petitions' => 'nullable|string',
@@ -59,27 +59,37 @@ class ReservationController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
-            $reservation = Reservation::create($data);
-            foreach ($data['rooms'] as $room) {
-                $currentRoom = Room::find($room['id']);
-                $currentRoom->decrement('quantity');
-                $reservation->rooms()->syncWithoutDetaching([$currentRoom->id]);
+            $r = DB::transaction(function () use ($data) {
+                $reservation = Reservation::create($data);
+                foreach ($data['rooms'] as $key => $room) {
+                    // dd($data['rooms']);
+                    $currentRoom = Room::find($room['id']);
+                    $currentRoom->decrement('quantity',1);
+                    $reservation->rooms()->syncWithoutDetaching([$currentRoom->id]);
+                    $roomPrice = 0;
+                    foreach ($room['rates'][0] as $rate) {
+                        $roomPrice += $rate['price'];
+                        if(isset($rate['id'])){
+                            $reservation->rates()->syncWithoutDetaching([$rate['id']]);
+                        }
+                    } 
 
-            }
+                    $reservation->rooms()->updateExistingPivot($currentRoom->id, 
+                    [
+                        'guest_name' => $data['guest_names'][$key],
+                        'adults' => intval($data['guests'][$key]['adults']),
+                        'children' => intval($data['guests'][$key]['children']),
+                        'child_ages' => json_encode($data['guests'][$key]['ages']),
+                        'price' => $roomPrice,
+                    ]);
+                }
+                return $reservation;
+            });
             
-            return new ShowReservationResource(Reservation::findOrFail($reservation->id));
+            return new ShowReservationResource(Reservation::findOrFail($r->id));
         }
     }
 
-    public function update(Request $request, Reservation $reservation)
-    {
-    
-    }
-
-    public function delete(Reservation $reservation)
-    {
-        # code...
-    }
 
     public function history(Reservation $reservation)
     {
@@ -108,7 +118,10 @@ class ReservationController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
-            $data['guest_names'] = json_encode($data['guest_names']);
+              
+             foreach ($data['guest_names'] as $room) {
+                $reservation->rooms()->updateExistingPivot($room['id'], ['guest_name' => $room['name']]);
+             }
             $reservation->update($data);
             return new ShowReservationResource(Reservation::findOrFail($reservation->id));
         }
