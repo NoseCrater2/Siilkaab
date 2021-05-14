@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Room;
 use App\Hotel;
+use App\Rate;
 use App\Messages;
 use App\Binnacle;
 use App\Reservation;
@@ -25,7 +26,7 @@ class ReservationController extends Controller
     public function index(Hotel $hotel)
     {
         return IndexReservationResource::collection(
-            $hotel->reservations
+            $hotel->reservations()->orderBy('created_at','desc')->get()
         );
     }
 
@@ -62,19 +63,19 @@ class ReservationController extends Controller
             $r = DB::transaction(function () use ($data) {
                 $reservation = Reservation::create($data);
                 foreach ($data['rooms'] as $key => $room) {
-                    // dd($data['rooms']);
                     $currentRoom = Room::find($room['id']);
-                    $currentRoom->decrement('quantity',1);
-                    $reservation->rooms()->syncWithoutDetaching([$currentRoom->id]);
                     $roomPrice = 0;
                     foreach ($room['rates'][0] as $rate) {
                         $roomPrice += $rate['price'];
                         if(isset($rate['id'])){
+                            Rate::find($rate['id'])->decrement('bed_rooms',1);
                             $reservation->rates()->syncWithoutDetaching([$rate['id']]);
+                        }else{
+                            $currentRoom->decrement('quantity',1);
                         }
                     } 
 
-                    $reservation->rooms()->updateExistingPivot($currentRoom->id, 
+                    $reservation->rooms()->attach($currentRoom->id,
                     [
                         'guest_name' => $data['guest_names'][$key],
                         'adults' => intval($data['guests'][$key]['adults']),
@@ -188,29 +189,7 @@ class ReservationController extends Controller
             ->whereRaw("YEAR(created_at) = ?", [$year])
             ->groupBy('month')
             ->get();
-
-       
-
-
         return $result;
-        // $now = Carbon::now();
-        // $nowPlusOne = Carbon::now()->addDays(1)->format('Y-m-d');
-        // $before15days = Carbon::now()->subDays(15)->format('Y-m-d');
-        // $ids = [1];
-        // $hotels = new Collection();
-        // foreach ($ids as $id) {
-        // $hotel = [];
-        // $h = Hotel::find($id);
-        // $hotel['symbol'] = $h->configuration->currency->symbol;
-        // $hotel['code'] = $h->configuration->currency->code;
-        // $hotel['days'] = $h->reservations()->whereBetween('created_at',[$before15days,$nowPlusOne])->sum('total_price');
-        // $hotel['month'] = $h->reservations()->whereYear('created_at', $now->year)->whereMonth('created_at', $now->month)->sum('total_price');
-        // $hotel['year'] = $h->reservations()->whereYear('created_at', $now)->sum('total_price');
-        // $hotel['all'] = $h->reservations()->sum('total_price');
-
-        //     $hotels->push($hotel);
-        // }
-        // return response($hotels, 200) ;
     }
 
     public function anualEarnings($id)
@@ -229,7 +208,8 @@ class ReservationController extends Controller
     public function dashboardReservations()
     {
         return IndexReservationResource::collection(
-            Reservation::whereIn('hotel_id',[1,2,3])->limit(10)->get()
+            // Reservation::whereIn('hotel_id',[1,2,3])->limit(10)->get()
+            Reservation::limit(10)->orderBy('created_at', 'desc')->get()
         );
     }
 

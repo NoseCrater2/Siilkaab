@@ -21,8 +21,8 @@
                                     <div>
                                         <v-card-title class="py-1" style="color: #1976D2" > {{ r.name }} </v-card-title>
                                         <v-card-text class="py-1">
-                                            <b v-if="r.rates[0][0].quantity == 1" style="color: red">¡Última unidad!</b>
-                                            <b v-else-if="r.rates[0][0].quantity <= 5" style="color: red">¡Solo quedan {{ r.rates[0][0].quantity }} unidades!</b><br>
+                                            <b v-if="minDisponibility(r.rates[0]) == 1" style="color: red">¡Última unidad!</b>
+                                            <b v-else-if="minDisponibility(r.rates[0]) <= 5" style="color: red">¡Solo quedan {{ minDisponibility(r.rates[0]) }} unidades!</b><br>
 
                                             Capacidad máxima: <br>
                                             Adultos: {{ r.max_adults}}. Niños: {{ r.max_children}} <br>
@@ -89,9 +89,13 @@ export default {
             rates.forEach(r => {
                 price +=r.price
             });
-
             return price
         },
+
+        minDisponibility(rates){
+            return Math.min.apply(null,rates.map(rate => rate.quantity));
+        },
+        
         openRoomDetail(id){
             this.roomId = id
             this.dialog = true

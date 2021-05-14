@@ -17,14 +17,16 @@
                                 </v-avatar>
                                 <v-card-title class="py-1">{{r.name}}</v-card-title>
                                 <v-card-text class="py-1" >
-                                    <b v-if="r.quantity == 1" style="color: red">¡Última unidad!</b>
-                                    <b v-else-if="r.quantity <= 5" style="color: red">¡Solo quedan {{ r.quantity }} unidades!</b><br>
+                                    <b v-if="minDisponibility(r.rates[0]) == 1" style="color: red">¡Última unidad!</b>
+                                    <b v-else-if="minDisponibility(r.rates[0]) <= 5" style="color: red">¡Solo quedan {{ minDisponibility(r.rates[0]) }} unidades!</b><br>
 
                                     Capacidad máxima: <br>
                                     Adultos: {{ r.max_adults}}. Niños: {{ r.max_children}} <br>
                                 </v-card-text>
 
-                                <v-card-title class="py-1" > ${{r.rack_rate}}MXN</v-card-title>
+                                <v-card-title class="py-1" >
+                                   {{configuration.currency_symbol + roomPrice(r.rates[0]) +' '+ configuration.currency_code}}
+                                </v-card-title>
                                 <v-card-actions class="py-1">
                                     <v-btn  tile small>RESERVAR</v-btn>
                                     <!-- <v-checkbox  v-model="active"></v-checkbox> -->
@@ -67,6 +69,17 @@ export default {
     },
 
      methods: {
+         roomPrice(rates){
+            let price =  0
+            rates.forEach(r => {
+                price +=r.price
+            });
+            return price
+        },
+
+        minDisponibility(rates){
+            return Math.min.apply(null,rates.map(rate => rate.quantity));
+        },
         openRoomDetail(id){
             this.roomId = id
             this.dialog = true
