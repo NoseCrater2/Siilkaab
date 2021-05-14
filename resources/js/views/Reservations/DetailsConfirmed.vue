@@ -114,7 +114,7 @@
              <v-list-item class="font-italic">
                 <v-list-item-title>Nombre del huésped:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
-                    {{ rooms.guest_name.name }}
+                    {{ room.guest_name.name }}
                 </v-list-item-subtitle>
             </v-list-item>
              <v-divider class="mx-4"></v-divider>
