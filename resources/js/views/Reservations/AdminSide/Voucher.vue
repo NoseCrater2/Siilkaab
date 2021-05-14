@@ -348,7 +348,6 @@ export default {
             this.form.guest_country = this.reservation.guest_country;
             this.form.check_in = this.reservation.check_in.substr(0,5);
             this.form.guest_names = this.reservation.rooms.map(room =>room.guest_name);
-            console.log(this.form.guest_names)
             this.form.guest_petitions = this.reservation.guest_petitions;
         },
 
