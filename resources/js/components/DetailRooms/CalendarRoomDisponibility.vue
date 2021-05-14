@@ -1,5 +1,7 @@
 <template>
-    <v-row justify="space-between">{{events}}
+<!-- En beatae reiciendis ut por orden de arreglo puso primero la de third y luego la de first -->
+<!-- corregir error de que si habitacion no tiene tarifa marca error en consola -->
+    <v-row justify="space-between">
         <v-col cols="12">
             <v-toolbar flat>
                 <v-btn
@@ -77,6 +79,7 @@ export default {
     },
     methods: {
         getEvents({ start, end }) {
+            let indexLocalEventsSecondCategory = 0;
             let localEvents = [];
             let copyRatesByRoom = this.ratesByRoom;
             this.ratesByRoom.forEach(itemRate => {
@@ -116,28 +119,31 @@ export default {
                         }
                     })
                     let sortedArrayDays = arrayDays.sort((a, b) => moment(a).diff(moment(b)))
-                    sortedArrayDays.forEach(itemDay=>{
-                        let putOnLocalEvent = true;
-                        localEvents.forEach(itemEvent=>{
-                            if(itemEvent.category == 'first' && itemEvent.start == itemDay){
-                                putOnLocalEvent = false
+                    //range 14 al 17
+                    //dias 16, 17, 19; 13 y 14
+                    let countWhile = 0;
+                    let startDate = itemRate.start;
+                    let endDate = itemRate.end;
+                    while (countWhile < sortedArrayDays.length - 1) {
+                        if((moment(sortedArrayDays[countWhile]).isBetween(itemRate.start,itemRate.end,null,"[]") == true)){
+                            if(moment(sortedArrayDays[countWhile]).isSameOrBefore(itemRate.start)){
+                                startDate = moment(sortedArrayDays[countWhile]).add(1, 'days').format("YYYY-MM-DD");
                             }
-                        })
-                        if(putOnLocalEvent){
-                            localEvents.push({
-                                name: `$${itemRate.rack}`,
-                                start: itemRate.start,
-                                end: itemRate.start,
-                                color: colorEvent,
-                                category: 'second'
-                            });
+                            else if(moment(sortedArrayDays[countWhile]).isSameOrAfter(itemRate.start)){
+                                endDate = moment(sortedArrayDays[countWhile]).subtract(1, 'days').format("YYYY-MM-DD");
+                            }
+                            break;
                         }
-                    })
-                    // localEvents.forEach(itemEvent=>{
-                        // if(itemEvent.category == 'first' && (itemEvent.category == 'second' && (moment(itemEvent.start).isBetween(itemRate.start,itemRate.end,null,"[]") == false))){
-                            // putOnLocalEvent = false
-                        // }
-                    // })
+                        countWhile++;
+                    }
+                    localEvents.push({
+                        name: `$${itemRate.rack}`,
+                        start: startDate,
+                        end: endDate,
+                        color: colorEvent,
+                        category: 'second'
+                    });
+                    indexLocalEventsSecondCategory = localEvents.length - 1;
                 } 
                 else if (
                 itemRate.monday > 0 ||
@@ -185,8 +191,8 @@ export default {
                         }
                         while (currentStartDate.isSameOrBefore(endDate)) {
                             let putOnLocalEvent = true;
-                            localEvents.forEach(itemEvent=>{
-                                if((itemEvent.category == 'first' && itemEvent.start == currentStartDate.clone().format('YYYY-MM-DD')) || (itemEvent.category == 'second' && (moment(itemEvent.start).isBetween(itemRate.start,itemRate.end,null,"[]") == false))){
+                            localEvents.forEach((itemEvent, index)=>{
+                                if((itemEvent.category == 'first' && itemEvent.start == currentStartDate.clone().format('YYYY-MM-DD')) || (indexLocalEventsSecondCategory == index && (moment(currentStartDate.clone().format('YYYY-MM-DD')).isBetween(localEvents[indexLocalEventsSecondCategory].start,localEvents[indexLocalEventsSecondCategory].end,null,"[]") == true))){
                                     putOnLocalEvent = false
                                 }
                             })
