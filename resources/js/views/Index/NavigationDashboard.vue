@@ -12,7 +12,7 @@
     >
       <v-list dense nav class="py-0" style="padding-left: 0px">
         <div v-for="(item, index) of itemsElementList" :key="item.title">
-          <v-list-item
+          <!-- <v-list-item
             v-if="index===0"
             two-line
             :class="'px-0' && navigationDrawerSize && paddingAvatar"
@@ -25,7 +25,7 @@
               <v-list-item-title>GUILLERMO SAMANO</v-list-item-title>
               <v-list-item-subtitle>Superusuario</v-list-item-subtitle>
             </v-list-item-content>
-          </v-list-item>
+          </v-list-item> -->
 
           <v-list-item v-if="index < 2" :style="item.borderStyle" link :to="item.route">
             <v-list-item-icon>
@@ -47,7 +47,7 @@
             </template>
             <div v-for="subItems of item.children" :key="subItems.id">
               <v-list-item
-                v-if="index >= 2"
+               v-if="subItems.availableFor.includes(user.type)"
                 link
                 :to="subItems.route"
                 :style="subItems.borderStyle"
@@ -69,6 +69,7 @@
 </template>
 
 <script>
+import {mapState} from 'vuex'
 export default {
   name: "NavigationDashboard",
   data() {
@@ -102,14 +103,16 @@ export default {
               text: "Disponibilidad y Tarifas",
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
-                "border-left: 2px solid #cb552d; padding-left: 3px"
+                "border-left: 2px solid #cb552d; padding-left: 3px",
+              availableFor: ['administrator','super','manager'],
             },
             {
               icon: "mdi-domain-off",
               text: "Restricciones",
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
-                "border-left: 2px solid #cb552d; padding-left: 3px"
+                "border-left: 2px solid #cb552d; padding-left: 3px",
+              availableFor: ['administrator','super','manager'],
             }
           ]
         },
@@ -124,7 +127,8 @@ export default {
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #cba818; padding-left: 3px",
-              route: "/hotels"
+              route: "/hotels",
+              availableFor: ['administrator','super','manager'],
             },
             {
               icon: "mdi-bed",
@@ -132,7 +136,8 @@ export default {
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #cba818; padding-left: 3px",
-              route: "/rooms-home"
+              route: "/rooms-home",
+              availableFor: ['administrator','super','manager'],
             },
             // {
             //   icon: "mdi-cash-multiple",
@@ -146,14 +151,15 @@ export default {
               text: "Descuentos",
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
-                "border-left: 2px solid #cba818; padding-left: 3px"
+                "border-left: 2px solid #cba818; padding-left: 3px",
+              availableFor: ['administrator','super','manager'],
             },
             {
               icon: "mdi-tag-plus",
               text: "Extras",
               borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #cba818; padding-left: 3px"
+              borderStyleSub:"border-left: 2px solid #cba818; padding-left: 3px",
+              availableFor: ['administrator','super','manager'],
             },
             // {
             //   icon: "mdi-image-multiple",
@@ -176,7 +182,8 @@ export default {
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #7a429b; padding-left: 3px",
-              route: "/users"
+              route: "/users",
+              availableFor: ['administrator','super'],
             },
             {
               icon: "mdi-history",
@@ -184,22 +191,24 @@ export default {
               borderStyle: "padding-left: 37px; text-decoration: none;",
               borderStyleSub:
                 "border-left: 2px solid #7a429b; padding-left: 3px",
-              route: "/binnacles"
+              route: "/binnacles",
+               availableFor: ['administrator','super'],
             },
             {
               icon: "mdi-account-cash",
               text: "Ajustes de Pago",
               route:"/payment-options",
               borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #7a429b; padding-left: 3px"
+              borderStyleSub: "border-left: 2px solid #7a429b; padding-left: 3px",
+              availableFor: ['administrator','super'],
             },
+             
             {
               icon: "mdi-api",
               text: "Ajustes de API",
               borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #7a429b; padding-left: 3px"
+              borderStyleSub: "border-left: 2px solid #7a429b; padding-left: 3px",
+              availableFor: ['administrator','super'],
             }
           ]
         }
@@ -239,6 +248,11 @@ export default {
     }
   },
     computed: {
+      
+       ...mapState({
+        isLoggedIn: (state) => state.isLoggedIn,
+        user: (state) => state.user,
+      }),
     //Propiedad computada que controla la variante mini del navigation drawer dependiendo su pantalla size (breakpoint)
     navigationDrawerSize() {
       switch (this.$vuetify.breakpoint.name) {
@@ -261,7 +275,12 @@ export default {
         case "xl":
           return false;
       }
-    }
-  }
+    },
+
+  },
+
+    // mounted(){
+    //   console.log('loggedIn'+this.isLoggedIn)
+    // }
 };
 </script>

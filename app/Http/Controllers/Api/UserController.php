@@ -16,6 +16,15 @@ use Carbon\Carbon;
 
 class UserController extends Controller
 {
+    public function __construct()
+    {
+        
+        $this->middleware('auth:sanctum');
+        // $this->middleware('can:view,user')->only('show','update');
+        $this->authorizeResource(User::class, 'user');
+        // $this->middleware('can:create,user')->only('store');
+        
+    }
     /**
      * Display a listing of the resource.
      *
@@ -23,12 +32,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        //$logged_user = User::find(auth('api')->user()->id);
 
+        if(auth('sanctum')->user()->type == 'super'){
+            return UserIndexResource::collection(
+                User::all()
+            );
+        };
         return UserIndexResource::collection(
-           // $logged_user->users->all()
-           User::all()
+            auth('sanctum')->user()->users
         );
+
     }
 
     
@@ -41,7 +54,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-         //$logged_user = User::find(auth('api')->user()->id);
+      
         $data = $request->all();
         $rules =[
             'name' => 'required|string',
@@ -49,6 +62,9 @@ class UserController extends Controller
             'type' => 'required|in:manager,administrator,super',
             'language' => 'required|string',
             'timezone' => 'required|timezone',
+            'parent_id'    => 'required_if:type,manager|exists:users,id',
+            "hotels"    => "array|min:1",
+            "hotels.*"  => "distinct|min:1",
             
         ];
 
@@ -58,16 +74,20 @@ class UserController extends Controller
             return response($validator->errors(),422);
             
         }else{
-           
+
                 $pas = User::make_password();
                 $GLOBALS['password_pivote'] = $pas;
                 $data['password'] = bcrypt($pas);
                 $data['remember_token'] = User::generarVerificationToken();
+
+                
                 $user = User::create($data);
-        
-                return new UserIndexResource(User::findOrFail($user->id));
-            
-            
+                if(isset($data['hotels'])){
+                    $hotels = array_map(function($hotel){return $hotel['id'];},$data['hotels']);
+                    $user->hotels()->sync($hotels);
+                }
+                
+                return new UserIndexResource(User::findOrFail($user->id));   
         }
         
         
@@ -106,8 +126,11 @@ class UserController extends Controller
             'name' => 'string',
             'email' => 'email|unique:users,email,'.$user->id,
             'type' => 'in:manager,administrator,super',
+            'parent_id'    => 'required_if:type,manager|exists:users,id',
             'language' => 'string',
             'timezone' => 'timezone',
+            "hotels"    => "array|min:1",
+            "hotels.*"  => "distinct|min:1",
             
         ];
 
@@ -115,11 +138,14 @@ class UserController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
+           
             if($data['email'] != $user->email){
                 $user->email_verified_at = null;
                 $user->remember_token = User::generarVerificationToken();
             }
             $user->update($data);
+            $hotels = array_map(function($hotel){return $hotel['id'];},$data['hotels']);
+            $user->hotels()->sync($hotels);
             return new UserIndexResource(User::findOrFail($user->id));
         }     
        

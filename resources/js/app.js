@@ -1,3 +1,4 @@
+require('./bootstrap');
 import Vue from 'vue';
 import store from "./store/store";
 import router from "./routes";
@@ -16,13 +17,12 @@ import 'tiptap-vuetify/dist/main.css'
 
 import Vuex from "vuex";
 import App from "./views/App";
-import Payments from "./views/Reservations/Payments";
-// import Calendar from "./components/HorizontalCalendar/Calendar";
 
 require('moment/locale/es-mx')
 moment.locale('es-mx')
 
 window.Vue = require("vue");
+
 Vue.use(VueMoment, {moment})
 Vue.use(Vuex)
 Vue.use(TiptapVuetifyPlugin, {
@@ -34,8 +34,21 @@ Vue.use(TiptapVuetifyPlugin, {
 
 moment.locale('es');
 
+
 Vue.prototype.moment = moment
 
+
+// window.axios.interceptors.response.use(
+//     response => {
+//       return response
+//     }, 
+//     error => {
+//       if(401 === error.response.status){
+//         store.dispatch("logout")
+//       }
+//       return Promise.reject(error)
+//     }
+// )
 
 const app = new Vue({
     el: "#app",
@@ -44,8 +57,11 @@ const app = new Vue({
     vuetify,
     components: {
         App,
-        payments: Payments,
-        // calendar: Calendar,
+    },
+
+    async beforeCreate(){
+        this.$store.dispatch("loadStoredState");
+        this.$store.dispatch("loadUser");
     },
     
 });

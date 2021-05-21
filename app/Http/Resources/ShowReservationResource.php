@@ -41,7 +41,7 @@ class ShowReservationResource extends JsonResource
                         'type' => $room->type,
                         'short_text' => $room->short_text,
                         'rack_rate' => $room->rack_rate,
-                        'guest_name' => ['id'=>$room->pivot->room_id,'name' => $room->pivot->guest_name],
+                        'guest_name' => ['id'=>$room->pivot->id,'name' => $room->pivot->guest_name],
                         'adults' => $room->pivot->adults,
                         'children' => $room->pivot->children,
                         'price' => $room->pivot->price,

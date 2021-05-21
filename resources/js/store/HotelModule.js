@@ -866,7 +866,7 @@ const HotelModule = {
 
         getHotelsForAdmin: async function({ commit }) {
             try {
-                const request = await axios.get(`/api/adminhotels`);
+                const request = await axios.get(`/api/hotels`);
                 let hotels = request.data.data;
                 commit("setHotels", hotels);
             } catch (error) {}

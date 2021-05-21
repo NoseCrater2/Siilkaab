@@ -4,7 +4,7 @@
             <v-card-actions>
             <v-btn color="red" small class="white--text" @click="$router.push({name:'Reservations'})" depressed>CERRAR <v-icon right>mdi-close-circle</v-icon> </v-btn>
             <v-spacer></v-spacer>
-            <v-toolbar-title>RESERVA {{reservation.id}}</v-toolbar-title>
+            <v-toolbar-title v-if="reservation">RESERVA {{reservation.id}}</v-toolbar-title>
             </v-card-actions>
             <v-divider></v-divider>
         </v-card>

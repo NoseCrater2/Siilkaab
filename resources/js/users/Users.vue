@@ -75,7 +75,7 @@
                                 
                                 <v-col cols="12" sm="6" md="6">
                                   <v-select
-                                    :items="['super', 'administrator', 'manager']"
+                                    :items="user.type == 'super'?superTypes:administratorTypes"
                                     label="Tipo*"
                                     :error-messages="getErrors.data.type"
                                     v-model="editedItem.type"
@@ -115,19 +115,22 @@
                                 </v-col>
                                 
                                 <v-col cols="12">
-                                  <div v-if="hotels !== []">
+                                  
                                     <v-autocomplete
-                                      v-model="selectedHotels"
+                                    v-if="hotels"
+                                      v-model="editedItem.hotels"
                                       :hint="!isEditing ? 'Click en el icono para editar' : 'Clic en el icono para guardar'"
                                       :items="hotels"
                                       :readonly="!isEditing"
                                       item-text="title"
-                                      item-value="hotel_id"
+                                      item-value="id"
                                       :label="`Hoteles — ${isEditing ? 'Editable' : 'Solo vista'}`"
                                       multiple
                                       chips
                                       small-chips
                                       persistent-hint
+                                      return-object
+                                      :error-messages="getErrors.data.hotels"
                                       prepend-icon="mdi-city"
                                       >
                                       <template v-slot:append-outer>
@@ -142,7 +145,30 @@
                                         </v-slide-x-reverse-transition>
                                       </template>
                                     </v-autocomplete>
-                                  </div>
+
+                                </v-col>
+                                <v-col cols="12" v-if="user.type == 'super' && editedItem.type != 'super'">
+                                  <v-alert dense type="info" style="font-size: 12px;">
+                                    Usuarios Administradores pueden o no tener un usuario Administrador a su cargo,
+                                    usuarios Managers deben tener un usuario Administrador a su cargo. 
+                                  </v-alert>
+                                  <v-autocomplete
+                                  v-model="editedItem.parent_id"
+                                  :items="users"
+                                  item-text="all_name"
+                                  item-value="id"
+                                  chips
+                                  small-chips
+                                  persistent-hint
+                                  :error-messages="getErrors.data.parent"
+                                  prepend-icon="mdi-account"
+                                  >
+                                  </v-autocomplete>
+                                </v-col>
+                                <v-col cols="12" v-if="user.type == 'administrator'">
+                                  <v-alert dense type="info" style="font-size: 12px;">
+                                   Podrá administrar todos los usuarios que usted cree o que se le asignen posteriormente
+                                  </v-alert>
                                 </v-col>
                               </v-row>
                             </v-container>
@@ -152,11 +178,7 @@
                             <v-card-actions>
                               <v-spacer></v-spacer>
                               <v-btn color="blue darken-1" text @click="close">Cancelar</v-btn>
-                              <v-btn color="blue darken-1" 
-                                     text
-                                     @click="save"
-                                     >Guardar
-                              </v-btn>
+                              <v-btn color="blue darken-1" text @click="save">Guardar</v-btn>
                             </v-card-actions>
                       </v-card>
                     </v-dialog>
@@ -193,8 +215,7 @@
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex';
-import { mapMutations, mapGetters, mapModules} from 'vuex';
+import {mapState ,mapGetters } from 'vuex';
 export default {
   data(){
     return {
@@ -213,7 +234,8 @@ export default {
       userIds: {
         userIds:[]
       },
-
+      administratorTypes: ['administrator', 'manager'],
+      superTypes: ['super','administrator', 'manager'],
       actualHotels: [
         {id:null},
         {hotels:null}
@@ -268,16 +290,17 @@ export default {
     },
 
     ...mapState({
+      user: state => state.user,
       users: state => state.UsersModule.users,
       hotels: state => state.HotelModule.hotels,
-      assignHotels:state => state.HotelModule.assignHotels,
+      // assignHotels:state => state.HotelModule.assignHotels,
       timezones: state => state.UsersModule.timezones,
     }),
 
     ...mapGetters([
       'getErrors',
       'getStatus',
-      'getAssignHotels',
+      // 'getAssignHotels',
       'getUserId',
      ]),
   
@@ -294,11 +317,12 @@ export default {
     editItem (item) {
       this.editedIndex = this.users.indexOf(item)
       this.editedItem = Object.assign({},item)
-      this.$store.dispatch('getAssignHotels',item.id).then(()=>{
+    //   this.$store.dispatch('getAssignHotels',item.id).then(()=>{
       this.dialog = true
-      this.selectedHotels = this.$store.getters.getAssignHotels
-    })
+    //   // this.selectedHotels = this.$store.getters.getAssignHotels
+    // })
   },
+
 
   showDeleteDialog () {
     this.deleteDialog = true  
@@ -332,16 +356,16 @@ export default {
     this.$store.commit('setErrors',this.defaultErrors)
   },
     
-  save () {    
+  save () {
+    if(this.user.type == 'administrator'){
+      this.editedItem.parent_id = this.user.id
+      
+    }  
     if (this.editedIndex > -1) {
       try {    
         this.$store.dispatch('editUser',this.editedItem).then(()=>{
           if(this.getStatus=== 200){
-            this.actualHotels[0].id = this.editedItem.id
-            this.actualHotels[1].hotels = this.selectedHotels
-            this.$store.dispatch('setHotelsToUsers',this.actualHotels).then(()=>{
             this.close()
-            })
          }
         })
         } catch (error) {
@@ -352,12 +376,7 @@ export default {
       try {     
         this.$store.dispatch('saveUser',this.editedItem).then(()=>{
           if(this.getStatus=== 200){
-            this.actualHotels[0].id = this.$store.getters.getUserId
-            this.actualHotels[1].hotels = this.selectedHotels
-            this.$store.dispatch('setHotelsToUsers',this.actualHotels).then(()=>{
-              this.close()
-            })
-            
+            this.close()
           }
           })
         } catch (error) {   

@@ -21,19 +21,87 @@
 
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <!--
-        <v-btn icon large>
-          <v-avatar size="32px" item>
-            <v-img src="https://randomuser.me/api/portraits/men/85.jpg" alt="Avatar"></v-img>
-          </v-avatar>
-        </v-btn>
-      -->
+      <v-menu
+           max-width="400"
+            bottom
+            offset-y
+            offset-x
+            transition="slide-y-transition">
+           <template v-slot:activator="{ on, attrs }">
+              <v-btn icon class="ma-1" rounded depressed dark v-bind="attrs" v-on="on">
+                <v-avatar color="primary">
+                  <v-icon dark>mdi-account-circle</v-icon>
+                </v-avatar>
+              </v-btn>
+           </template>
+
+           <v-list >
+            <v-list-item >
+              
+         
+            <v-list-item-content>
+              <v-list-item-title class="title">{{user.name+' '+user.last_name}}</v-list-item-title>
+              <v-list-item-subtitle>{{user.type}}</v-list-item-subtitle>
+              <!-- <v-list-item-subtitle></v-list-item-subtitle> -->
+            </v-list-item-content>
+          </v-list-item>
+            <v-divider></v-divider>
+           
+          </v-list> 
+
+          <v-list nav dense>
+            <v-list-item-group color="primary">
+              <!-- <v-list-item >
+                <v-list-item-icon>
+                  <v-icon >mdi-account</v-icon>
+                </v-list-item-icon>
+                <v-list-item-content>
+                  <v-list-item-title>Perfil</v-list-item-title>
+                </v-list-item-content>    
+              </v-list-item> -->
+              
+
+            <v-list-item @click="logOut()">
+              <v-list-item-icon>
+                <v-icon >mdi-logout</v-icon>
+              </v-list-item-icon>
+  
+              <v-list-item-content>
+                <v-list-item-title>Salir</v-list-item-title>
+              </v-list-item-content>
+
+            </v-list-item>
+          </v-list-item-group>
+        </v-list>
+           </v-menu>
     </v-app-bar>
   </div>
 </template>
 
 <script>
+import {mapState} from 'vuex'
+import axios from 'axios'
 export default {
-  name: "NavbarSiilkaab"
+  
+  computed:{
+    ...mapState({
+        isLoggedIn: (state) => state.isLoggedIn,
+        user: (state) => state.user,
+      }),
+  },
+  name: "NavbarSiilkaab",
+
+  methods:{
+    async logOut(){
+      try {
+        axios.post("/logout");
+        this.$store.dispatch('logout').then(() => {
+          this.$router.push({name: 'Login'})
+        })
+      } catch (error) {
+        this.$store.dispatch('logout')
+      }
+    }
+  }
 };
 </script>
