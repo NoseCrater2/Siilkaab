@@ -123,3 +123,5 @@ Route::apiResource('binnacles','BinnacleController')->only('index','show','destr
 
 
 Route::post('convert_currency','Api\HotelController@convert_currency');
+
+Route::post('sendbookings/{reservation}','MailController@resendBooking');

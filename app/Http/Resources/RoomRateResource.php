@@ -16,6 +16,7 @@ class RoomRateResource extends JsonResource
     {
         return [
             'bed_rooms' => $this->quantity,
+            'rack' => $this->rack_rate
         ];
     }
 }

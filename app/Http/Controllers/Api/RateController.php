@@ -130,6 +130,7 @@ class RateController extends Controller
 
     public function getRatesByRoom(Room $room)
     {
+        $default_rate = new RoomRateResource($room);
         $now = Carbon::now()->format('Y-m-d');
         $rates = RateIndexResource::collection(
           $room->rates()
@@ -137,10 +138,12 @@ class RateController extends Controller
           ->get()
         );
 
-        if($rates->isEmpty()){
-            return new RoomRateResource($room);
-        }else{
+        $rates->push($default_rate);
+
+        // if($rates->isEmpty()){
+        //     return new RoomRateResource($room);
+        // }else{
             return $rates;
-        }
+        // }
     }
 }
