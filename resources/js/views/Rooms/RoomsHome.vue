@@ -135,7 +135,7 @@
                 </v-col>
               </v-row>
             </v-tab-item>
-            <v-tab-item>
+            <v-tab-item v-if="roomAmenitiesLoaded">
               <RoomAmenities @modifyTabModelFromRoomAmenities="modifyTabModelFromRoomAmenities"></RoomAmenities>
             </v-tab-item>
           </v-tabs-items>
@@ -164,6 +164,7 @@ export default {
   data() {
     return {
       tabModel: null,
+      roomAmenitiesLoaded: false,
       routerFullQueryId: this.$router.currentRoute.query,
       photosDialog: false,
       currentRooms: null,
@@ -216,10 +217,13 @@ export default {
       }
       this.loadingRooms = true;
       this.flagActiveRooms = false;
+      this.roomAmenitiesLoaded = false;
       //REINICIAMOS LOS ERRORES
       this.setReinicializedErrorsStatusRoomModule();
       //ACCEDIENDO A AMENIDADES DE HABITACIONES
-      this.getRoomAmenities(idHotel);
+      this.getRoomAmenities(idHotel).then(()=>{
+        this.roomAmenitiesLoaded = true;
+      });
       //ACCEDIENDO A DETALLES DE HABITACION
       this.getCurrentHotelRooms(idHotel).then(() => {
         this.flagActiveRooms = true;
@@ -239,6 +243,7 @@ export default {
       hotels: (state) => state.disponibilityMoule.ahotels,
       currentHotelRooms: (state) => state.RoomModule.currentHotelRooms,
       roomDetails: (state) => state.RoomModule.roomDetails,
+      roomAmenities: (state) => state.RoomModule.roomAmenities,
     }),
   },
 

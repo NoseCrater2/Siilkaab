@@ -1,6 +1,4 @@
 <template>
-<!-- En beatae reiciendis ut por orden de arreglo puso primero la de third y luego la de first -->
-<!-- corregir error de que si habitacion no tiene tarifa marca error en consola -->
     <v-row justify="space-between">
         <v-col cols="12">
             <v-toolbar flat>
@@ -79,10 +77,16 @@ export default {
     },
     methods: {
         getEvents({ start, end }) {
-            let indexLocalEventsSecondCategory = 0;
-            let localEvents = [];
-            let copyRatesByRoom = this.ratesByRoom;
-            this.ratesByRoom.forEach(itemRate => {
+            let daysInCurrentMonth = moment(start.date, "YYYY-MM").daysInMonth();
+            let firstCategoryEvents = [];
+            let secondCategoryEvents = [];
+            let thirdCategoryEvents = [];
+            let fourthCategoryEvents = [];
+            let localRatesByRoom = JSON.parse(JSON.stringify(this.ratesByRoom));
+            localRatesByRoom = localRatesByRoom.filter(el=> typeof(el.id) != 'undefined')
+            let localRatesByRoomDefault = JSON.parse(JSON.stringify(this.ratesByRoom));
+            localRatesByRoomDefault = localRatesByRoomDefault.filter(el=> typeof(el.id) == 'undefined')
+            localRatesByRoom.forEach(itemRate => {
                 let colorEvent = '';
                 if (itemRate.day != null) {
                     if(itemRate.bed_rooms >= 5){
@@ -94,14 +98,14 @@ export default {
                     else if(itemRate.bed_rooms <= 0){
                         colorEvent = 'red'
                     }
-                    localEvents.push({
+                    firstCategoryEvents.push({
                         name: `$${itemRate.rack}`,
                         start: itemRate.day,
                         end: itemRate.day,
                         color: colorEvent,
                         category: 'first'
                     });
-                } 
+                }
                 else if (itemRate.start != null && itemRate.end != null) {
                     if(itemRate.bed_rooms >= 5){
                         colorEvent = 'green'
@@ -112,38 +116,18 @@ export default {
                     else if(itemRate.bed_rooms <= 0){
                         colorEvent = 'red'
                     }
-                    let arrayDays = [];
-                    copyRatesByRoom.forEach(copyItemRate=>{
-                        if(copyItemRate.day != null){
-                            arrayDays.push(copyItemRate.day)
-                        }
-                    })
-                    let sortedArrayDays = arrayDays.sort((a, b) => moment(a).diff(moment(b)))
-                    //range 14 al 17
-                    //dias 16, 17, 19; 13 y 14
-                    let countWhile = 0;
-                    let startDate = itemRate.start;
-                    let endDate = itemRate.end;
-                    while (countWhile < sortedArrayDays.length - 1) {
-                        if((moment(sortedArrayDays[countWhile]).isBetween(itemRate.start,itemRate.end,null,"[]") == true)){
-                            if(moment(sortedArrayDays[countWhile]).isSameOrBefore(itemRate.start)){
-                                startDate = moment(sortedArrayDays[countWhile]).add(1, 'days').format("YYYY-MM-DD");
-                            }
-                            else if(moment(sortedArrayDays[countWhile]).isSameOrAfter(itemRate.start)){
-                                endDate = moment(sortedArrayDays[countWhile]).subtract(1, 'days').format("YYYY-MM-DD");
-                            }
-                            break;
-                        }
-                        countWhile++;
+                    let startDate = moment(itemRate.start);
+                    let diffDays = moment(itemRate.end).diff(itemRate.start, 'days') + 1;
+                    for (let index = 0; index < diffDays; index++) { 
+                        secondCategoryEvents.push({
+                            name: `$${itemRate.rack}`,
+                            start: startDate.clone().format('YYYY-MM-DD'),
+                            end: startDate.clone().format('YYYY-MM-DD'),
+                            color: colorEvent,
+                            category: 'second'
+                        });
+                        startDate.add(1, 'days');
                     }
-                    localEvents.push({
-                        name: `$${itemRate.rack}`,
-                        start: startDate,
-                        end: endDate,
-                        color: colorEvent,
-                        category: 'second'
-                    });
-                    indexLocalEventsSecondCategory = localEvents.length - 1;
                 } 
                 else if (
                 itemRate.monday > 0 ||
@@ -162,7 +146,6 @@ export default {
                     else if(itemRate.bed_rooms <= 0){
                         colorEvent = 'red'
                     }
-
                     let startDate = moment(start.date);
                     let endDate = moment(end.date);
                     let day = [];
@@ -175,7 +158,6 @@ export default {
                             }
                         }
                     }
-
                     day.forEach(itemDay=>{
                         let currentStartDate = startDate.clone();
                         let nextWeek = 7;
@@ -190,28 +172,78 @@ export default {
                             }
                         }
                         while (currentStartDate.isSameOrBefore(endDate)) {
-                            let putOnLocalEvent = true;
-                            localEvents.forEach((itemEvent, index)=>{
-                                if((itemEvent.category == 'first' && itemEvent.start == currentStartDate.clone().format('YYYY-MM-DD')) || (indexLocalEventsSecondCategory == index && (moment(currentStartDate.clone().format('YYYY-MM-DD')).isBetween(localEvents[indexLocalEventsSecondCategory].start,localEvents[indexLocalEventsSecondCategory].end,null,"[]") == true))){
-                                    putOnLocalEvent = false
-                                }
+                            thirdCategoryEvents.push({
+                                name: `$${itemDay.rate}`,
+                                start: currentStartDate.clone().format('YYYY-MM-DD'),
+                                end: currentStartDate.clone().format('YYYY-MM-DD'),
+                                color: colorEvent,
+                                category: 'third'
                             })
-                            if(putOnLocalEvent){
-                                localEvents.push({
-                                    name: `$${itemDay.rate}`,
-                                    start: currentStartDate.clone().format('YYYY-MM-DD'),
-                                    end: currentStartDate.clone().format('YYYY-MM-DD'),
-                                    color: colorEvent,
-                                    category: 'third'
-                                });
-                            }
                             nextWeek = 7;
                             currentStartDate.day(itemDay.day + nextWeek)
                         }
                     })
                 }
             });
-            this.events = localEvents;
+
+            let deletedSecond = [];
+            let deletedThird = [];
+            for (let indexFirstCategory = 0; indexFirstCategory < firstCategoryEvents.length; indexFirstCategory++) {
+                for (let indexSecondCategory = 0; indexSecondCategory < secondCategoryEvents.length; indexSecondCategory++) {
+                    if((firstCategoryEvents[indexFirstCategory].start == secondCategoryEvents[indexSecondCategory].start) && (firstCategoryEvents[indexFirstCategory].category != secondCategoryEvents[indexSecondCategory].category)){           
+                        deletedSecond.push(indexSecondCategory);
+                    }
+                }
+                for (let indexThirdCategory = 0; indexThirdCategory < thirdCategoryEvents.length; indexThirdCategory++) {
+                    if((firstCategoryEvents[indexFirstCategory].start == thirdCategoryEvents[indexThirdCategory].start) && (firstCategoryEvents[indexFirstCategory].category != thirdCategoryEvents[indexThirdCategory].category)){
+                        deletedThird.push(indexThirdCategory);
+                    }
+                }
+            }
+            for (let indexSecondCategory = 0; indexSecondCategory < secondCategoryEvents.length; indexSecondCategory++) {
+                for (let indexThirdCategory = 0; indexThirdCategory < thirdCategoryEvents.length; indexThirdCategory++) {
+                    if((secondCategoryEvents[indexSecondCategory].start == thirdCategoryEvents[indexThirdCategory].start) && (secondCategoryEvents[indexSecondCategory].category != thirdCategoryEvents[indexThirdCategory].category)){           
+                        deletedThird.push(indexThirdCategory);
+                    }
+                }
+            }
+            deletedThird = deletedThird.sort((a, b) => a - b);
+            if(deletedSecond.length > 0){
+                secondCategoryEvents = secondCategoryEvents.filter((itemEvent, index)=>{
+                    return deletedSecond.indexOf(index) == -1;
+                })
+            }
+            if(deletedThird.length > 0){
+                thirdCategoryEvents = thirdCategoryEvents.filter((itemEvent, index)=>{
+                    return deletedThird.indexOf(index) == -1;
+                })
+            }
+            //Definimos la tarifa rack
+            let localEvents = [...firstCategoryEvents, ...secondCategoryEvents, ...thirdCategoryEvents];
+            let dayInMonth = moment(start.date)
+            for (let index = 1; index <= daysInCurrentMonth; index++) {
+                let colorEvent = '';
+                if(localRatesByRoomDefault[0].bed_rooms >= 5){
+                    colorEvent = 'green'
+                }
+                else if(localRatesByRoomDefault[0].bed_rooms < 5 && localRatesByRoomDefault[0].bed_rooms > 0){
+                    colorEvent = 'orange'
+                }
+                else if(localRatesByRoomDefault[0].bed_rooms <= 0){
+                    colorEvent = 'red'
+                }
+                if(localEvents.findIndex(el=> el.start == dayInMonth.clone().format("YYYY-MM-DD")) == -1){
+                    fourthCategoryEvents.push({
+                        name: `$${localRatesByRoomDefault[0].rack}`,
+                        start: dayInMonth.clone().format("YYYY-MM-DD"),
+                        end: dayInMonth.clone().format("YYYY-MM-DD"),
+                        color: colorEvent,
+                        category: 'fourth'
+                    })
+                }
+                dayInMonth.add(1, 'd') //Adelanta al siguiente dia
+            }
+            this.events = [...localEvents, ...fourthCategoryEvents];
         },
         getEventColor(event) {
             return event.color

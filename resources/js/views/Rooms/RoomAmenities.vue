@@ -28,12 +28,11 @@
                     <span v-if="roomAmenities.length > 0" class="font-weight-bold body-2">Selecciona en que habitación aplica esta amenidad</span>
                     <span v-else class="font-weight-bold body-2 red--text">No existen habitaciones con amenidades vigentes para este hotel</span>
                     <v-row>
-                        <v-col cols="12" xl="3" lg="4" md="4" sm="12" xs="12" v-for="(itemRoomAmenities, index) in roomAmenities" :key="index" class="d-flex flex-column align-xl-start align-lg-start align-md-start align-center">
+                        <v-col cols="12" xl="3" lg="4" md="4" sm="12" xs="12" v-for="(itemRoomAmenities) in roomAmenities" :key="itemRoomAmenities.id" class="d-flex flex-column align-xl-start align-lg-start align-md-start align-center">
                             <v-checkbox
                                 class="text-subtitle-1"
                                 v-model="itemRoomAmenities[itemArrayModelBtn.value]"
                                 :label="itemRoomAmenities.room_name"
-                                :value="!itemRoomAmenities[itemArrayModelBtn.value]"
                                 hide-details
                             ></v-checkbox>
                         </v-col>
@@ -76,9 +75,10 @@ import {mapState, mapActions, mapMutations} from 'vuex';
 export default {
     name: "RoomAmenities",
     created(){
-        for (let index = 0; index < this.arrayModelBtn.length; index++) {
+        console.log("MOUNTED", this.roomAmenities)
+        this.arrayModelBtn.forEach((item, index)=>{
             this.getValueBtnModel(index);
-        }
+        })
     },
     data() {
         return {
@@ -198,19 +198,27 @@ export default {
                 let roomAmenitiesFiltered = this.roomAmenities.map(item=>{
                     let returned = {};
                     for (const prop in item) {
-                        if (prop != 'id' && prop != 'room_id' && prop != 'room_name' && prop != 'hotel_id') {
-                            returned[prop] = item[prop]
+                        if (prop != 'room_id' && prop != 'room_name' && prop != 'hotel_id') {
+                            returned[prop] = parseInt(item[prop])
                         }
                     }
                     return returned;
                 })
                 let prop = this.arrayModelBtn[index].value;
-                const reducer = (accumulator, currentValue) => (typeof accumulator === 'object' ? accumulator[prop] : accumulator) + currentValue[prop];
-                let reducedValue = roomAmenitiesFiltered.reduce(reducer);
-                if(reducedValue == this.roomAmenities.length){
+                let additionAmenityProp = 0;
+                roomAmenitiesFiltered.forEach(itemAmenity=>{
+                    if(prop != 'id'){
+                        if(itemAmenity[prop] == 1){
+                            additionAmenityProp+=1;
+                        }
+                    }
+                })
+                console.log("roomAmenitiesFiltered", roomAmenitiesFiltered);
+                console.log("reducedValue", additionAmenityProp)
+                if(additionAmenityProp == this.roomAmenities.length){
                     this.arrayModelBtn[index].btnGroupModel = 'all'
                 }
-                else if(reducedValue < this.roomAmenities.length && reducedValue > 0){
+                else if(additionAmenityProp < this.roomAmenities.length && additionAmenityProp > 0){
                     this.arrayModelBtn[index].btnGroupModel = 'some'
                 }
                 else{

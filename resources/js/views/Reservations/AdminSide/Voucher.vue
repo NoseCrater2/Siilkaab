@@ -3,7 +3,7 @@
         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn depressed dark color="primary" tile><v-icon left>mdi-printer</v-icon>Imprimir</v-btn>
-            <v-btn depressed dark color="primary" tile><v-icon left>mdi-send</v-icon>Enviar</v-btn>
+            <v-btn depressed dark color="primary" tile @click="openSendEmailDialog"><v-icon left>mdi-send</v-icon>Enviar</v-btn>
         </v-card-actions>
          <v-card-title style="font-weight: bolder" class="display-2">Reserva - {{reservation.id}}</v-card-title>
          <v-divider></v-divider>
@@ -78,7 +78,7 @@
             </v-col>
             <v-col cols="7">
                  <v-card flat>
-           
+
             <v-list-item style="font-weight: bolder">
                 <v-list-item-title  >Número de reserva:</v-list-item-title>
                 <v-list-item-subtitle class="text-right">
@@ -205,7 +205,7 @@
                 </v-list-item-subtitle>
             </v-list-item>
              <v-divider class="mx-4"></v-divider>
-            
+
         </v-card>
         <v-list-item  >
             <v-list-item-title style="font-size: 1.2em">Importe total de la habitación:</v-list-item-title>
@@ -230,10 +230,10 @@
                     <v-text-field :error-messages="clientErrors.guest_phone" label="Teléfono" dense class="mx-2" outlined v-model="form.guest_phone"></v-text-field>
                     <v-autocomplete :error-messages="clientErrors.guest_country" :items="countries" item-text="name" item-value="name" label="País" dense class="mx-2" outlined v-model="form.guest_country"></v-autocomplete>
                     <v-text-field :error-messages="clientErrors.check_in" label="Hora de entrada" dense class="mx-2" outlined v-model="form.check_in"></v-text-field>
-                    <v-text-field :error-messages="clientErrors.guest_names" :label="`Huesped de la habitación #`+(index+1)" dense class="mx-2" 
+                    <v-text-field :error-messages="clientErrors.guest_names" :label="`Huesped de la habitación #`+(index+1)" dense class="mx-2"
                     v-for="(names, index) in form.guest_names"
                     :key="index"
-                    
+
                     v-model="form.guest_names[index].name"
                     outlined>
                     </v-text-field>
@@ -260,7 +260,7 @@
                     v-model="checkEmail"
                     hide-details
                     label="Enviar email de notificación"
-                   
+
                     ></v-checkbox>
                     <v-textarea outlined height="100" v-model="note"  messages="Comentario o nota opcional (para uso interno)"></v-textarea>
                 </v-card-text>
@@ -268,6 +268,51 @@
                     <v-btn tile depressed outlined @click="closeStateDialog">Cancelar</v-btn>
                     <v-spacer></v-spacer>
                     <v-btn tile depressed color="primary" class="white--text" @click="saveState"><v-icon left>mdi-content-save</v-icon>Cambiar estado</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+                <v-dialog persistent max-width="600" v-model="sendEmailDialog">
+            <v-card>
+                <v-card-title>
+                    Enviar
+                    <v-spacer></v-spacer>
+                    <v-btn class="mb-3 ml-3" icon @click="closeSendEmailDialog"><v-icon>mdi-close</v-icon></v-btn>
+                </v-card-title>
+                <v-card-text>
+                    <v-combobox
+                        prepend-inner-icon="mdi-email"
+                        v-model="modelEmails"
+                        chips
+                        multiple
+                        outlined
+                        solo
+                        hint="Introduce direcciones email separadas por coma, punto y coma, enter, o tab"
+                        persistent-hint
+                        flat
+                        required
+                        append-icon=""
+                        :delimiters="[',', ';']"
+                      >
+                        <template v-slot:selection="{ attrs, item, select, selected }">
+                          <v-chip
+                            :color="colorChipEmails(item)"
+                            :dark="colorChipEmails(item) == 'red' ? true : false"
+                            v-bind="attrs"
+                            :input-value="selected"
+                            close
+                            close-icon="mdi-close"
+                            @click="select"
+                            @click:close="removeEmails(item)"
+                          >
+                            <span>{{ item }}</span>
+                          </v-chip>
+                        </template>
+                    </v-combobox>
+                </v-card-text>
+                <v-card-actions>
+                    <v-btn tile depressed outlined @click="closeSendEmailDialog">Cancelar</v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn tile depressed color="primary" class="white--text" @click="sendEmails"><v-icon left>mdi-content-save</v-icon>Enviar</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -282,9 +327,12 @@
 
 <script>
 import {mapState} from 'vuex'
+import axios from 'axios'
 export default {
     data(){
         return{
+            modelEmails: [],
+            sendEmailDialog: false,
             clientDialog: false,
             stateDialog: false,
             checkEmail: false,
@@ -306,13 +354,13 @@ export default {
                 {text:'Pendiente', value:'Pending'},
                 {text:'Cancelado', value:'Cancelled'},
                 {text:'Abortado', value:'Aborted'}
-                
+
             ]
         }
     },
     mounted(){
-        this.$store.dispatch('getCountries')  
-        this.createClientForm();   
+        this.$store.dispatch('getCountries')
+        this.createClientForm();
     },
 
     computed:{
@@ -351,7 +399,7 @@ export default {
             this.form.guest_petitions = this.reservation.guest_petitions;
         },
 
-        closeClientDialog(){  
+        closeClientDialog(){
             this.clientDialog = false
         },
 
@@ -363,8 +411,37 @@ export default {
             this.stateDialog = false
         },
 
+        colorChipEmails(item){
+          const pattern = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+          //SI HAY UN ERROR EN LA VALIDACION, SE PONE DE ROJO
+          if(pattern.test(item) == false){
+            return 'red'
+          }
+          return '';
+        },
+        sendEmails(){
+            let objEmails = {
+                emails: this.modelEmails
+            }
+            axios.post(`/api/sendbookings/${this.reservation.id}`, objEmails).then((response)=>{
+                this.modelEmails = [];
+                this.closeSendEmailDialog();
+            }).catch((error)=>{
+
+            });
+        },
+        removeEmails(item) {
+          this.modelEmails.splice(this.modelEmails.indexOf(item), 1)
+          this.modelEmails = [...this.modelEmails]
+        },
+        openSendEmailDialog(){
+            this.sendEmailDialog = true;
+        },
+        closeSendEmailDialog(){
+            this.sendEmailDialog = false;
+        },
         saveState(){
-            this.$store.dispatch('saveState', {id: this.reservation.id, state: this.state, send_email: this.checkEmail}).then(()=>{  
+            this.$store.dispatch('saveState', {id: this.reservation.id, state: this.state, send_email: this.checkEmail}).then(()=>{
                 if(this.stateCode != 422 && this.note != null){
                   this.$store.dispatch('saveNote', {content: this.note, reservation_id: this.reservation.id, user_id: 1})
                     this.stateDialog = false
