@@ -16,18 +16,29 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\HotelShowResource;
 use App\Http\Resources\HotelIndexResource;
 use App\Http\Resources\HotelViewResource;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\RoomViewResource;
 
 
 class HotelController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['show']);
+    }
     public function index()
     {
-        //$logged_user = User::find(auth('api')->user()->id);
+        // $logged_user = User::find($request->user()->id);
+        if(auth('sanctum')->user()->type == 'super'){
+            return HotelIndexResource::collection(
+               Hotel::all()
+            );
+        };
         return HotelIndexResource::collection(
-            //$logged_user->hotels
-           Hotel::all()
+            auth('sanctum')->user()->hotels
         );
+      
     }
 
     public function show(Hotel $hotel)

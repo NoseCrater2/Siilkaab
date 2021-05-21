@@ -11,6 +11,10 @@ use App\Http\Resources\BedroomIndexResource;
 
 class BedroomController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['show','index']);
+    }
     /**
      * Display a listing of the resource.
      *

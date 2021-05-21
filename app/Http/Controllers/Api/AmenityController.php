@@ -12,6 +12,11 @@ use Illuminate\Http\Request;
 
 class AmenityController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['show']);
+    }
+    
     public function index()
     {
         return AmenityIndexResource::collection(

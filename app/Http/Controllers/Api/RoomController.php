@@ -11,10 +11,15 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\RoomIndexResource;
 use App\Http\Resources\RoomViewResource;
+use App\Http\Resources\RoomClientResource;
 use App\RoomAmenities;
 
 class RoomController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['show']);
+    }
     public function index()
     {
         //$logged_user = User::find(auth('api')->user()->id);
@@ -26,7 +31,11 @@ class RoomController extends Controller
 
     public function show(Room $room)
     {
-        return new RoomIndexResource(Room::findOrFail($room->id));
+        if(auth('sanctum')->check()){
+            return new RoomIndexResource($room);
+        }
+        return  new RoomClientResource($room);
+        
     }
 
     public function store(Request $request)
@@ -129,12 +138,12 @@ class RoomController extends Controller
 
     }
 
-    public function getRoomsForAdmin($id)
-    {
-        return RoomViewResource::collection(
-            Hotel::findOrFail($id)->rooms
-        );
-    }
+    // public function getRoomsForAdmin($id)
+    // {
+    //     return RoomViewResource::collection(
+    //         Hotel::findOrFail($id)->rooms
+    //     );
+    // }
 
     public function currentHotelRooms(Hotel $hotel)
     {

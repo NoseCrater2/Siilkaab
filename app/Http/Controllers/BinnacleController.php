@@ -17,11 +17,12 @@ class BinnacleController extends Controller
      */
     public function index()
     {
-
+        $users = auth('sanctum')->user()->users->map(function($user){
+            return $user->id;
+        });
         return  BinnacleIndexResource::collection(
-            Binnacle::latest()->get()->unique('actor_id')
+            Binnacle::whereIn('actor_id',$users)->latest()->get()->unique('actor_id')
         );
-            
         
     }
 

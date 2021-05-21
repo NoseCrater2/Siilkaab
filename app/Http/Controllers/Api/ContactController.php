@@ -11,6 +11,10 @@ use App\Http\Resources\ContactIndexResource;
 
 class ContactController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['show']);
+    }
     /**
      * Display a listing of the resource.
      *
