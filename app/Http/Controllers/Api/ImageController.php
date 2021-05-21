@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Response;
 
 class ImageController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['index']);
+    }
     /**
      * Display a listing of the resource.
      *

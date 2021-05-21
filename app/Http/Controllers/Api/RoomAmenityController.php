@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Hotel;
 use App\Messages;
 use App\RoomAmenity;
 use Illuminate\Http\Request;
@@ -11,15 +12,19 @@ use App\Http\Resources\RoomAmenityIndexResource;
 
 class RoomAmenityController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:sanctum')->except(['show']);
+    }
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Hotel $hotel)
     {
         return RoomAmenityIndexResource::collection(
-            RoomAmenity::all()
+            $hotel->roomAmenities
         );
     }
 

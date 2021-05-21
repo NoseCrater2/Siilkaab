@@ -1,9 +1,7 @@
 <?php
 
-use App\Calendar;
-use App\Http\Controllers\CalendarController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +14,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-
+Route::middleware('auth:sanctum')->get('/user', function(Request $request){
+    return $request->user();
+});
 //Route::get('getcredential/{hotel_credentials}','HotelCredentialsController@show');
 
 Route::post('payments/pay', 'PaymentController@pay')->name('pay');
@@ -58,11 +58,9 @@ Route::group(['prefix' => 'events'], function ()
     Route::post('/','CalendarController@store');
 });
 
-Route::post('oauth/token','\Laravel\Passport\Http\Controllers\AccessTokenController@issueToken');
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
+
 
 Route::post('UploadImages/{room}','Api\ImageController@store');
 Route::get('images/{room}','Api\ImageController@index');
@@ -77,14 +75,14 @@ Route::apiResource('paypal_pays','PayPalController')->only('index','show','store
 
 
 Route::apiResource('credentials','Api\HotelCredentialsController')->only('index','show','store','update','destroy');
-Route::apiResource('hotels','Api\HotelController')->only('index','show','store','update');
+Route::resource('hotels','Api\HotelController')->only('index','show','store','update');
 Route::post('deletehotels','Api\HotelController@delete');
 
 Route::name('hotelsnoadmin')->get('myhotels/','Api\HotelController@getHotelsForNoAdmin');
 
 Route::name('hotelsadmin')->get('adminhotels/','Api\HotelController@getHotelsForAdmin');
 
-Route::name('roomsadmin')->get('adminrooms/{id}','Api\RoomController@getRoomsForAdmin');
+Route::name('roomsadmin')->get('adminrooms/{hotel}','Api\RoomController@currentHotelRooms');
 
 Route::apiResource('rooms','Api\RoomController')->only('index','show','store','update','destroy');
 Route::post('rooms/{hotel}/availability','Api\RoomAvailabilityController@getAvailabilityRooms')->name('rooms.availability.show');
@@ -97,7 +95,8 @@ Route::apiResource('extras','Api\ExtraController')->only('index','show','store',
 
 Route::apiResource('bedrooms','Api\BedroomController')->only('index','show','store','update','destroy');
 Route::apiResource('beds','Api\BedController')->only('index','show','store','update','destroy');
-Route::apiResource('room_amenities','Api\RoomAmenityController')->only('index','show','store','update','destroy');
+Route::apiResource('room_amenities','Api\RoomAmenityController')->only('show','store','update','destroy');
+Route::get('hotel_rooms_amenities/{hotel}','Api\RoomAmenityController@index');
 
 Route::apiResource('amenities','Api\AmenityController')->only('index','show','store','update','destroy');
 Route::apiResource('conditions','Api\ConditionController')->only('index','show','store','update','destroy');

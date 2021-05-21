@@ -43,7 +43,7 @@ trait SaveBinnacleTrait
         'binnacleable_type' => $table,
         'binnacleable_id'   => $id,
         'action'            => "UPDATED",
-        'actor_id'      => auth('api')->user() ==! null,
+        'actor_id'      => auth('sanctum')->check()?auth('sanctum')->user()->id:0,
         'body'          => json_encode($model->getDirty()),
         ]);
     }
@@ -54,7 +54,7 @@ trait SaveBinnacleTrait
        Binnacle::create([
             'binnacleable_type' => $table,
             'binnacleable_id'    => $id,
-            'actor_id'        =>0,
+            'actor_id'        =>auth('sanctum')->check()?auth('sanctum')->user()->id:0,
             'action'            => 'CREATED',
         ]);
     }
@@ -63,7 +63,7 @@ trait SaveBinnacleTrait
         Binnacle::create([
             'binnacleable_type' => $table,
             'binnacleable_id'    => $id,
-            'actor_id'        => auth('api')->user() ==! null,
+            'actor_id'        => auth('sanctum')->check()?auth('sanctum')->user()->id:0,
             'action'            => 'DELETED',
             'body'          => json_encode($model->getRawOriginal(null,'id','name','last_name','email')),
         ]);

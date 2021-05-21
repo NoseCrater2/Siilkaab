@@ -11,7 +11,7 @@
             v-model="hotelSelected"
             :items="hotels"
             item-text="title"
-            item-value="hotel_id"
+            item-value="id"
             outlined
             label="Seleccione el hotel"
             @change="searchRoom(hotelSelected)"
@@ -53,7 +53,10 @@
                       :src="`/img/${room.default_image}`"
                     >
                       <template v-slot:placeholder>
-                        <v-row
+                        <v-img width="317" src="/img/unavailable.jpg">
+
+                        </v-img>
+                        <!-- <v-row
                           class="fill-height ma-0"
                           align="center"
                           justify="center"
@@ -62,7 +65,7 @@
                             indeterminate
                             color="grey"
                           ></v-progress-circular>
-                        </v-row>
+                        </v-row> -->
                       </template>
                       <div style="background-color: rgba(0, 0, 0, 0.6)">
                         <div class="d-flex align-center mx-4">

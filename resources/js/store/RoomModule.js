@@ -199,11 +199,9 @@ const RoomModule = {
 
         getRoomAmenities: async function({ commit }, idHotel) {
             try {
-                const request = await axios.get("/api/room_amenities");
+                const request = await axios.get(`/api/hotel_rooms_amenities/${idHotel}`);
                 let roomAmenities = request.data.data;
-                let filteredAmenities = roomAmenities.filter(el=> el.hotel_id == idHotel);
-                console.log(filteredAmenities, idHotel)
-                commit("setRoomAmenities", filteredAmenities);
+                commit("setRoomAmenities", roomAmenities);
             } catch (error) {}
         },
 
