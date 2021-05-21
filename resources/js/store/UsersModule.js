@@ -75,15 +75,10 @@ const UsersModule = {
     actions: {
         
       getUsers: async function ({ commit, state }){
-        if(state.users.length === 0){
             const request =  await axios
             .get("/api/users");
             const users = request.data.data
             commit('setUsers',users)
-        }else{
-            
-            return state.users
-        } 
 
       },
   

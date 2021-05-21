@@ -11,7 +11,7 @@
             v-model="hotelSelected"
             :items="hotels"
             item-text="title"
-            item-value="hotel_id"
+            item-value="id"
             outlined
             label="Seleccione Hotel"
             @change="searchRoom(hotelSelected)"

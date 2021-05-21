@@ -1,5 +1,5 @@
 <template>
-    <v-expansion-panels flat v-model="panel" multiple>
+    <v-expansion-panels flat v-model="panel" multiple v-if="reservation">
         <v-expansion-panel class="my-4">
             <v-expansion-panel-header color="#E0E0E0" >
               <div class="d-inline">

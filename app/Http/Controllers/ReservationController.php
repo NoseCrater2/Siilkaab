@@ -121,7 +121,10 @@ class ReservationController extends Controller
         }else{
               
              foreach ($data['guest_names'] as $room) {
-                $reservation->rooms()->updateExistingPivot($room['id'], ['guest_name' => $room['name']]);
+                DB::table('reservation_room')
+                ->where('id', $room['id'])
+                ->update(['guest_name' => $room['name']]);
+                // $reservation->rooms()->updateExistingPivot($room['id'], ['guest_name' => $room['name']]);
              }
             $reservation->update($data);
             return new ShowReservationResource(Reservation::findOrFail($reservation->id));
@@ -156,7 +159,10 @@ class ReservationController extends Controller
         foreach ($period as $date) {
             $dates[] = $date->format("Y-m-d");
         }
-        $ids = [1];
+        $ids = auth('sanctum')->user()->hotels->map(function($hotel){
+            return $hotel->id;
+        });
+        
         $hotels = new Collection();
         foreach ($ids as $id) {
             $hotel = [];
@@ -207,9 +213,12 @@ class ReservationController extends Controller
 
     public function dashboardReservations()
     {
+        $hotels = auth('sanctum')->user()->hotels->map(function($hotel){
+            return $hotel->id;
+        });
         return IndexReservationResource::collection(
             // Reservation::whereIn('hotel_id',[1,2,3])->limit(10)->get()
-            Reservation::limit(10)->orderBy('created_at', 'desc')->get()
+            Reservation::whereIn('hotel_id',$hotels)->limit(10)->orderBy('created_at', 'desc')->get()
         );
     }
 

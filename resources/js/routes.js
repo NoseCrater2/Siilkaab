@@ -1,3 +1,4 @@
+import store from './store/store';
 import Vue from 'vue'
 import VueRouter from "vue-router";
 
@@ -7,6 +8,9 @@ const routes = [
     {
         path: "/",
         component: () => import("./views/Index/Index"),
+        meta:{
+            requiresAuth: true,
+        },
         children: [
             {
                 path: "",
@@ -144,11 +148,15 @@ const routes = [
         ],
     },
     
-
+    // {
+    //     path: "/payments",
+    //     component: () => import("./views/Reservations/Payments"),
+    //     name: "payments"
+    // },
     {
-        path: "/payments",
-        component: () => import("./views/Reservations/Payments"),
-        name: "payments"
+        path: "/auth/login",
+        component: () => import("./views/Login"),
+        name: "Login"
     },
     
 
@@ -159,5 +167,22 @@ const router = new VueRouter({
     routes,
     mode: "history"
 });
+
+
+router.beforeEach((to, from, next) => {
+    if(to.matched.some(record => record.meta.requiresAuth)){
+        if(store.state.isLoggedIn == 'false' || store.state.isLoggedIn == false){
+            next({
+                name: 'Login',
+                query: {redirect: to.fullPath
+                }
+            })
+        }else{
+            next()
+        }
+    }else{
+        next();
+    }
+})
 
 export default router;

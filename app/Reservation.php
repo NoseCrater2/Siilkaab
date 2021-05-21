@@ -30,7 +30,7 @@ class Reservation extends Model
 
     public function rooms()
     {
-        return $this->belongsToMany(Room::class)->withPivot('guest_name','adults','children','child_ages','price');
+        return $this->belongsToMany(Room::class)->withPivot('id','guest_name','adults','children','child_ages','price');
     }
 
     public function rates()

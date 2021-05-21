@@ -103,4 +103,9 @@ class Hotel extends Model
         return $this->hasMany(Reservation::class);
     }
 
+    public function roomAmenities()
+    {
+        return $this->hasManyThrough(RoomAmenity::class, Room::class);
+    }
+
 }
