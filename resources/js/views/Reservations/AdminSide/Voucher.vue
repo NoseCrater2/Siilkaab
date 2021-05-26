@@ -312,7 +312,7 @@
                 <v-card-actions>
                     <v-btn tile depressed outlined @click="closeSendEmailDialog">Cancelar</v-btn>
                     <v-spacer></v-spacer>
-                    <v-btn tile depressed color="primary" class="white--text" @click="sendEmails"><v-icon left>mdi-content-save</v-icon>Enviar</v-btn>
+                    <v-btn tile depressed color="primary" class="white--text" @click="sendEmails" :loading="isSendingEmailBtn" :disabled="isSendingEmailBtn"><v-icon left>mdi-content-save</v-icon>Enviar</v-btn>
                 </v-card-actions>
             </v-card>
         </v-dialog>
@@ -332,6 +332,7 @@ export default {
     data(){
         return{
             modelEmails: [],
+            isSendingEmailBtn: false,
             sendEmailDialog: false,
             clientDialog: false,
             stateDialog: false,
@@ -420,14 +421,16 @@ export default {
           return '';
         },
         sendEmails(){
+            this.isSendingEmailBtn = true;
             let objEmails = {
                 emails: this.modelEmails
             }
             axios.post(`/api/sendbookings/${this.reservation.id}`, objEmails).then((response)=>{
+                this.isSendingEmailBtn = false;
                 this.modelEmails = [];
                 this.closeSendEmailDialog();
             }).catch((error)=>{
-
+                this.isSendingEmailBtn = false;
             });
         },
         removeEmails(item) {

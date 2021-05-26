@@ -58,7 +58,7 @@
               prepend-inner-icon="mdi-cash"
               :menu-props="{ bottom: true, offsetY: true }"
               outlined
-              
+
             ></v-select>
           </v-card>
         </v-col>
@@ -327,14 +327,14 @@ export default {
         return this.notificationCardModel;
       },
     },
-   
+
     computedSelectPaymentsPlace: {
       get() {
         if (this.configuration.payment_place != null) {
           if (this.configuration.payment_place === "both") {
             this.selectPaymentsPlaceModel.push("online");
             this.selectPaymentsPlaceModel.push("offline");
-          } 
+          }
           else {
             this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
           }
