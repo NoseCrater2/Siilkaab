@@ -30,6 +30,6 @@ class UserMailChanged extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.confirm')->from('anarqueabrn@gmail.com')->subject('Por favor confirma tu nuevo correo electrónico');
+        return $this->markdown('emails.confirm')->from(env('MAIL_FROM_ADDRESS'))->subject('CAMBIO DE DIRECCIÓN EMAIL');
     }
 }

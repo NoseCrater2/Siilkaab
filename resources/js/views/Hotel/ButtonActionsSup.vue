@@ -17,10 +17,10 @@
               <v-icon left size="22" class="custom-loader" light>mdi-cached</v-icon>Guardar
             </template>
           </v-btn>
-          <v-btn 
+          <v-btn
             :loading="isLoadingSavingChangesSaveAndClose"
             :disabled="isLoadingSavingChangesSaveAndClose"
-            depressed 
+            depressed
             small
             color="grey"
             class="white--text mr-3"
@@ -200,7 +200,7 @@ export default {
                   this.loader = null;
                   this.isLoadingSavingChangesSave = false;
                   this.isLoadingSavingChangesSaveAndClose = false;
-                  
+
                   this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
                   if(close == "saveAndClose"){
                     this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
@@ -232,7 +232,7 @@ export default {
                       router.replace({ path: '/hotels' });
                     }
                   }
-                }); 
+                });
               });
             }
         //CODIGO PARA GUARDAR INFORMACION DEL HOTEL TERMINA
@@ -256,7 +256,7 @@ export default {
         }
         //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
         //CODIGO PARA GUARDAR CONTACTOS INICIA
-        
+
           if(this.hotel.idContact == null){
             //metodo post
             this.contacts.hotel_id = idHotel;
@@ -266,7 +266,7 @@ export default {
             //metodo put
             this.putEditContacts(this.contacts);
           }
-        
+
         //CODIGO PARA GUARDAR CONTACTOS TERMINA
         //CODIGO PARA GUARDAR CONDICIONES INICIA
         if(this.conditions.adults != null){
@@ -305,7 +305,7 @@ export default {
         }
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
         //CODIGO PARA GUARDAR RESTAURANTES Y HORARIOS INICIA
-        
+
         this.putEditRestaurants(this.restaurants).then(()=>{
           this.putEditSchedules(this.schedules).then(()=>{
             console.log("THIS:RESTAURANTS", this.restaurants)

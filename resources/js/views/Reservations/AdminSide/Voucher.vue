@@ -444,6 +444,7 @@ export default {
             this.sendEmailDialog = false;
         },
         saveState(){
+            console.log(this.reservation)
             this.$store.dispatch('saveState', {id: this.reservation.id, state: this.state, send_email: this.checkEmail}).then(()=>{
                 if(this.stateCode != 422 && this.note != null){
                   this.$store.dispatch('saveNote', {content: this.note, reservation_id: this.reservation.id, user_id: 1})

@@ -29,6 +29,6 @@ class UserCreated extends Mailable
      */
     public function build()
     {
-        return $this->markdown('emails.welcome')->from('anarqueabrn@gmail.com')->subject('Por favor confirme tu correo electrónico');
+        return $this->markdown('emails.welcome')->from(env('MAIL_FROM_ADDRESS'))->subject('CREACIÓN DE CUENTAS');
     }
 }

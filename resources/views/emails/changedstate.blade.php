@@ -82,11 +82,11 @@
         <tr>
           <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
       <![endif]-->
-    <div style="background:#1565c0;background-color:#1565c0;margin:0px auto;max-width:600px;">
-      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#1565c0;background-color:#1565c0;width:100%;">
+    <div style="background:#f0f0f0;background-color:#f0f0f0;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#f0f0f0;background-color:#f0f0f0;width:100%;">
         <tbody>
           <tr>
-            <td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
+            <td style="direction:ltr;font-size:0px;padding:20px 0;padding-bottom:0px;text-align:center;">
               <!--[if mso | IE]>
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
 
@@ -100,7 +100,7 @@
                 <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                   <tr>
                     <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                      <div style="font-family:Raleway, Arial;font-size:28px;line-height:1;text-align:center;color:white;">{{ config('app.name') }}</div>
+                      <div style="font-family:Raleway, Arial;font-size:25px;line-height:1;text-align:center;color:#000000;">{{$reservation->hotel->title}}</div>
                     </td>
                   </tr>
                 </table>
@@ -132,7 +132,63 @@
       <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#f0f0f0;background-color:#f0f0f0;width:100%;">
         <tbody>
           <tr>
-            <td style="direction:ltr;font-size:0px;padding:20px 0;padding-top:9px;text-align:center;">
+            <td style="direction:ltr;font-size:0px;padding:20px 0;padding-bottom:0px;padding-top:0px;text-align:center;">
+              <!--[if mso | IE]>
+                  <table role="presentation" border="0" cellpadding="0" cellspacing="0">
+
+        <tr>
+
+            <td
+               class="" style="vertical-align:top;width:600px;"
+            >
+          <![endif]-->
+              <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
+                <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
+                  <tr>
+                    <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:center;color:#000000;">{{$reservation->hotel->url}}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:center;color:#000000;">{{$reservation->hotel->contact->email}}</div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
+                      <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:center;color:#000000;">{{$reservation->hotel->contact->phone}}</div>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <!--[if mso | IE]>
+            </td>
+
+        </tr>
+
+                  </table>
+                <![endif]-->
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <!--[if mso | IE]>
+          </td>
+        </tr>
+      </table>
+
+      <table
+         align="center" border="0" cellpadding="0" cellspacing="0" class="" style="width:600px;" width="600"
+      >
+        <tr>
+          <td style="line-height:0px;font-size:0px;mso-line-height-rule:exactly;">
+      <![endif]-->
+    <div style="background:#dbf3fa;background-color:#dbf3fa;margin:0px auto;max-width:600px;">
+      <table align="center" border="0" cellpadding="0" cellspacing="0" role="presentation" style="background:#dbf3fa;background-color:#dbf3fa;width:100%;">
+        <tbody>
+          <tr>
+            <td style="direction:ltr;font-size:0px;padding:20px 0;text-align:center;">
               <!--[if mso | IE]>
                   <table role="presentation" border="0" cellpadding="0" cellspacing="0">
 
@@ -157,92 +213,22 @@
                   <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                     <tr>
                       <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;">Bienvenido <strong>{{$user->name}}</strong>. Una cuenta a su nombre ha sido creada como usuario de tipo <strong style="text-transform: uppercase;">{{$user->type}}</strong> para utilizarse en {{ config('app.name') }}.</div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:center;color:#000000;">{{ config('app.url') }}</div>
+                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;">Estimado <strong>{{$reservation->guest_name}} {{$reservation->guest_last_name}}.</strong></div>
                       </td>
                     </tr>
                     <tr>
                       <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;">Acceda a {{ config('app.name') }} mediante el enlace proporcionado utilizando sus credenciales:</div>
+                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;">El motivo del presente correo es para informale que ha cambiado el estado de su reserva, de <strong style="text-transform: uppercase;">{{$pastState}}</strong> a <strong style="text-transform: uppercase;">{{$reservation->state}}</strong></div>
                       </td>
                     </tr>
-                  </table>
-                </div>
-                <!--[if mso | IE]>
-              </td>
-
-              <td
-                 style="vertical-align:top;width:600px;"
-              >
-              <![endif]-->
-                <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                  <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                    <tr>
-                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:center;color:#000000;"><strong>Email: {{$user->email}}</strong></div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <!--[if mso | IE]>
-              </td>
-
-              <td
-                 style="vertical-align:top;width:600px;"
-              >
-              <![endif]-->
-                <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                  <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                    <tr>
-                      <td align="center" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:center;color:#000000;"><strong>Contraseña: {{$GLOBALS['password_pivote']}}</strong></div>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
-                <!--[if mso | IE]>
-              </td>
-
-              <td
-                 style="vertical-align:top;width:600px;"
-              >
-              <![endif]-->
-                <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                  <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
-                  </table>
-                </div>
-                <!--[if mso | IE]>
-              </td>
-
-              <td
-                 style="vertical-align:top;width:600px;"
-              >
-              <![endif]-->
-                <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                  <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                     <tr>
                       <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;">En caso que usted no haya creado esta cuenta y/o no esté enterado de estas acciones, favor de ponerse en contacto con los administradores.</div>
+                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;">Para cualquier duda o aclaración, favor de comunicarse con la administración.</div>
                       </td>
                     </tr>
-                  </table>
-                </div>
-                <!--[if mso | IE]>
-              </td>
-
-              <td
-                 style="vertical-align:top;width:600px;"
-              >
-              <![endif]-->
-                <div class="mj-column-per-100 mj-outlook-group-fix" style="font-size:0px;text-align:left;direction:ltr;display:inline-block;vertical-align:top;width:100%;">
-                  <table border="0" cellpadding="0" cellspacing="0" role="presentation" style="vertical-align:top;" width="100%">
                     <tr>
                       <td align="left" style="font-size:0px;padding:10px 25px;word-break:break-word;">
-                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;"><strong>Atentamente: Equipo {{ config('app.name') }}.</strong></div>
+                        <div style="font-family:Raleway, Arial;font-size:13px;line-height:1;text-align:left;color:#000000;"><strong>Atentamente: Equipo {{$reservation->hotel->title}}</strong></div>
                       </td>
                     </tr>
                   </table>
