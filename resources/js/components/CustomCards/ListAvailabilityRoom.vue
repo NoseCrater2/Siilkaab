@@ -38,12 +38,12 @@
                                         <!-- <span v-for="(rs, index) in r.rates[0]" :key="index">
                                             Noche {{index + 1}}: {{rs.price}}
                                         </span> -->
-                                        
+
                                     </div>
                                     <div >
-                                        <v-card-title > {{configuration.currency_symbol + roomPrice(r.rates[0]) +' '+ configuration.currency_code}}</v-card-title>
+                                        <v-card-title > {{configuration.currency_symbol}}{{roomPrice(r.rates[0])}} {{configuration.currency_code}}</v-card-title>
                                         <v-btn tile depressed color="primary" small>RESERVAR</v-btn>
-                                         
+
                                     </div>
                                 </div>
                             </v-card>
@@ -68,7 +68,7 @@ export default {
             roomId: 0,
         }
     },
-    
+
     props: {
         room: Array,
         index: Number,
@@ -80,14 +80,14 @@ export default {
             configuration: state => state.HotelModule.configuration,
         }),
 
-        
+
     },
 
     methods: {
         roomPrice(rates){
             let price =  0
             rates.forEach(r => {
-                price +=r.price
+                price = price + parseFloat(r.price)
             });
             return price
         },
@@ -95,7 +95,7 @@ export default {
         minDisponibility(rates){
             return Math.min.apply(null,rates.map(rate => rate.quantity));
         },
-        
+
         openRoomDetail(id){
             this.roomId = id
             this.dialog = true

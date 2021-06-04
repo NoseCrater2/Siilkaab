@@ -19,14 +19,17 @@
           </div>
         </v-row>
         <br />
-        <v-text-field v-model="computedRestaurantName" label="Nombre del restaurante" required></v-text-field>
+        <v-text-field v-model="computedRestaurantName" :error-messages="computedErrorRestaurantName" outlined label="Nombre del restaurante" required></v-text-field>
         <br />
         <span>
           <strong>Tipo de menú</strong>
         </span>
         <v-row justify="space-around">
-          <v-checkbox v-model="computedSelectMenuType" label="A la carta" value="a la carte"></v-checkbox>
-          <v-checkbox v-model="computedSelectMenuType" label="Buffet" value="buffet"></v-checkbox>
+            <v-checkbox :error="computedErrorMenuType != '' ? true : false" v-model="computedSelectMenuType" label="A la carta" value="a la carte"></v-checkbox>
+            <v-checkbox :error="computedErrorMenuType != '' ? true : false" v-model="computedSelectMenuType" label="Buffet" value="buffet"></v-checkbox>
+            <div v-if="computedErrorMenuType != ''" class="mt-n2">
+                <span class="red--text text-caption">Debe seleccionarse al menos un tipo de menú</span>
+            </div>
         </v-row>
         <br />
         <br />
@@ -45,7 +48,7 @@
           :is="component.TagSTimePicker"
           @removeCompoTime="removeCompoTime"
         ></component>
-        <div class="d-flex justify-end">        
+        <div class="d-flex justify-end">
           <v-btn
             x-small
             depressed
@@ -111,15 +114,14 @@ export default {
       countIdCompo: -1,
       id: this.idCompo,
       restaurantNameModel: null,
-      selectMenuTypeModel: [],
-      restaurantId: 0,
+      selectMenuTypeModel: []
     };
   },
   computed: {
     ...mapState({
-      hotel: (state) => state.HotelModule.hotel,
       restaurants: (state) => state.HotelModule.restaurants,
       schedules: (state) => state.HotelModule.schedules,
+      errorsRestaurants: (state) => state.HotelModule.errorsRestaurants
     }),
     computedRestaurantName: {
       get() {
@@ -145,6 +147,38 @@ export default {
         return this.selectMenuTypeModel;
       },
     },
+    computedErrorRestaurantName: {
+      get() {
+        let error = '';
+        this.errorsRestaurants.forEach((itemErrorRestaurant)=>{
+          if(typeof(itemErrorRestaurant.error.name) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRestaurant.componentID){
+              error = itemErrorRestaurant.error.name;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorMenuType: {
+      get() {
+        let error = '';
+        this.errorsRestaurants.forEach((itemErrorRestaurant)=>{
+          if(typeof(itemErrorRestaurant.error.menu_type) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRestaurant.componentID){
+              error = itemErrorRestaurant.error.menu_type;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    }
   },
   methods: {
     //Esta mutacion setea schedules
@@ -200,7 +234,7 @@ export default {
           }
         }
       });
-      
+
       //Creamos la variable "newArraySchedules" que guardará el nuevo horario que se creo por medio de este boton
       let newArraySchedules = this.arrayComponents[this.arrayComponents.length-1].objArrCompo;
       //Y modificamos el state "schedules" insertando "newArraySchedules"
@@ -247,7 +281,7 @@ export default {
           }).map((currentStateSchedule) => { //Y a este retorno le aplicamos un map
               //Creamos un ciclo que permanezca activo mientras el contador sea mayor o igual a 0
               while (countCurrentStateSchedule >= 0) {
-                              
+
                 if(itemArrayComponents.objArrCompo.id == 'NEW'){
                   //Con el contador accedemos al indice del array "restaurantSchedules"
                   //Y verificamos si en este indice se encuentra una coincidencia de ids entre este indice y el id (que es el de restaurant)

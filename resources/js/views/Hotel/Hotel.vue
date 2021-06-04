@@ -4,6 +4,18 @@
       <v-app id="inspire">
         <!--Usamos componente ButtonActionsSup.vue-->
         <ButtonActionsSup :title="hotelTitle"></ButtonActionsSup>
+        <v-overlay :value="!chargeView" opacity="0.7" z-index="7">
+            <div>
+                <div>
+                    <v-progress-circular
+                        class="ml-14 mb-2"
+                        indeterminate
+                        size="64"
+                    ></v-progress-circular>
+                </div>
+                <div>Cargando información...</div>
+            </div>
+        </v-overlay>
         <v-container>
           <v-row no-gutters>
             <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12">
@@ -11,15 +23,6 @@
               <LateralMenu></LateralMenu>
             </v-col>
             <v-col cols="12" xl="9" lg="9" md="9" sm="12" xs="12">
-              <div class="ml-8">
-                <v-text-field
-                  color="primary"
-                  loading
-                  disabled
-                  label="Obteniendo información..."
-                  v-if="chargeView === false"
-                ></v-text-field>
-              </div>
               <div v-if="iditemsListOptions === 0 && chargeView === true">
                 <div v-if="hotel !== null">
                   <Information></Information>
@@ -59,7 +62,7 @@
                    <Information></Information>
                 </div>
               </div>
-              
+
             </v-col>
             <v-snackbar
               :value="snackbar.stateSnackbar"
@@ -113,6 +116,7 @@ export default {
       iditemsListOptions: (state) => state.HotelModule.iditemsListOptions,
       snackbar: (state) => state.HotelModule.snackbar,
       timeoutSnackbar: (state) => state.HotelModule.timeoutSnackbar,
+      schedules: (state) => state.HotelModule.schedules
     }),
   },
   methods: {
@@ -131,27 +135,37 @@ export default {
     chargeDataHotel() {
         this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
         if(typeof(this.id)!='undefined'){
-          this.getHotel(this.$route.params.id).then(() => {
+          this.getHotel(this.$route.params.id).then(async() => {
             this.hotelTitle = this.hotel.title;
+            let promiseConfiguration = 1;
+            let promiseContact = 1;
+            let promiseCondition = 1;
+            let promiseRegime = 1;
+            let promiseAditionalInfo = 1;
+            let promiseRestaurants = 1;
+            let promiseSchedules = 1;
+            let promisePools = 1;
             if (this.hotel.idConfiguration !== null) {
-              this.getConfiguration(this.hotel.idConfiguration).then(() => {});
+                promiseConfiguration = this.getConfiguration(this.hotel.idConfiguration);
             }
             if (this.hotel.idContact !== null) {
-              this.getContacts(this.hotel.idContact).then(() => {});
+                promiseContact = this.getContacts(this.hotel.idContact);
             }
             if (this.hotel.idCondition !== null) {
-              this.getConditions(this.hotel.idCondition).then(() => {});
+                promiseCondition = this.getConditions(this.hotel.idCondition);
             }
             if (this.hotel.idRegime !== null) {
-              this.getRegimes(this.hotel.idRegime).then(() => {});
+                promiseRegime = this.getRegimes(this.hotel.idRegime);
             }
             if (this.hotel.idAmenity !== null) {
-              this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
-              // this.getPools(this.hotel.id).then(() => {});
-              this.getRestaurants(this.hotel.id).then(() => {
-                this.getSchedules(this.hotel.id).then(() => {});
-              });
+                promiseAditionalInfo = this.getAditionalInfo(this.hotel.idAmenity);
+                promiseRestaurants = this.getRestaurants(this.hotel.id);
+                promiseSchedules = this.getSchedules(this.hotel.id);
+                promisePools = this.getPools(this.hotel.id);
             }
+            await Promise.all([promiseConfiguration, promiseContact, promiseCondition, promiseRegime, promiseAditionalInfo, promiseRestaurants, promiseSchedules, promisePools]).then(values => {
+                this.setChargeView(true);
+            });
           });
         }
         else {

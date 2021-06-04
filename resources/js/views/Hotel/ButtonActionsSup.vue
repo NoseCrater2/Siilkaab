@@ -5,7 +5,7 @@
         <v-col cols="12" md="8" sm="8" xs="12" class="d-flex justify-start">
           <v-btn
             :loading="isLoadingSavingChangesSave"
-            :disabled="isLoadingSavingChangesSave"
+            :disabled="(isLoadingSavingChangesSave || isLoadingSavingChangesSaveAndClose) == true ? true : false"
             depressed
             small
             color="info"
@@ -19,7 +19,7 @@
           </v-btn>
           <v-btn
             :loading="isLoadingSavingChangesSaveAndClose"
-            :disabled="isLoadingSavingChangesSaveAndClose"
+            :disabled="(isLoadingSavingChangesSaveAndClose || isLoadingSavingChangesSave) == true ? true : false"
             depressed
             small
             color="grey"
@@ -31,7 +31,7 @@
               <v-icon left size="22" class="custom-loader" light>mdi-cached</v-icon>Guardar y cerrar
             </template>
           </v-btn>
-          <v-btn depressed small color="red" class="white--text mr-3" @click="close()">
+          <v-btn :disabled="(isLoadingSavingChangesSave || isLoadingSavingChangesSaveAndClose) == true ? true : false" depressed small color="red" class="white--text mr-3" @click="close()">
             <v-icon left dark>mdi-close-circle</v-icon>Cerrar
           </v-btn>
         </v-col>
@@ -89,14 +89,18 @@ export default {
       aditionalInfo: (state) => state.HotelModule.aditionalInfo,
       restaurants: (state) => state.HotelModule.restaurants,
       schedules: (state) => state.HotelModule.schedules,
+      pools: (state) => state.HotelModule.pools,
       snackbar: (state) => state.HotelModule.snackbar,
 
-      errorsInformation: (state) => state.HotelModule.errorsInformation,
       statusInformation: (state) => state.HotelModule.statusInformation,
       statusConfiguration: (state) => state.HotelModule.statusConfiguration,
       statusContacts: (state) => state.HotelModule.statusContacts,
       statusConditions: (state) => state.HotelModule.statusConditions,
       statusRegimes: (state) => state.HotelModule.statusRegimes,
+      statusAditionalInfo: (state) => state.HotelModule.statusAditionalInfo,
+      statusRestaurants: (state) => state.HotelModule.statusRestaurants,
+      statusSchedules: (state) => state.HotelModule.statusSchedules,
+      statusPools: (state) => state.HotelModule.statusPools
     }),
     computedTitleHotel: {
       get() {
@@ -138,8 +142,9 @@ export default {
       "postEditAditionalInfo",
       "putEditRestaurants",
       "putEditSchedules",
+      "putEditPools"
     ]),
-    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar", "setTimeoutSnackbar"]),
+    ...mapMutations(["setReinicialized", "setReinicializedErrorsStatus", "setSnackbar", "setTimeoutSnackbar", "setChargeView", "setProgressbarNavbarStateHotel"]),
     close(){
       this.setReinicialized();
       this.setReinicializedErrorsStatus();
@@ -161,27 +166,37 @@ export default {
     chargeDataHotel() {
       if (this.$route.params.id) {
         this.setReinicialized(); //Reinicia el objeto hotel (esto es por que no hay una recarga de pag con router-link)
-        this.getHotel(this.$route.params.id).then(() => {
-          this.hotelTitle = this.hotel.title;
-          if (this.hotel.idConfiguration !== null) {
-            this.getConfiguration(this.hotel.idConfiguration).then(() => {});
-          }
-          if (this.hotel.idContact !== null) {
-            this.getContacts(this.hotel.idContact).then(() => {});
-          }
-          if (this.hotel.idCondition !== null) {
-            this.getConditions(this.hotel.idCondition).then(() => {});
-          }
-          if (this.hotel.idRegime !== null) {
-            this.getRegimes(this.hotel.idRegime).then(() => {});
-          }
-          if (this.hotel.idAmenity !== null) {
-            this.getAditionalInfo(this.hotel.idAmenity).then(() => {});
-            this.getPools(this.hotel.id).then(() => {});
-            this.getRestaurants(this.hotel.id).then(() => {
-              this.getSchedules(this.hotel.id).then(() => {});
+        this.getHotel(this.$route.params.id).then(async() => {
+            this.hotelTitle = this.hotel.title;
+            let promiseConfiguration = 1;
+            let promiseContact = 1;
+            let promiseCondition = 1;
+            let promiseRegime = 1;
+            let promiseAditionalInfo = 1;
+            let promiseRestaurants = 1;
+            let promiseSchedules = 1;
+            let promisePools = 1;
+            if (this.hotel.idConfiguration !== null) {
+                promiseConfiguration = this.getConfiguration(this.hotel.idConfiguration);
+            }
+            if (this.hotel.idContact !== null) {
+                promiseContact = this.getContacts(this.hotel.idContact);
+            }
+            if (this.hotel.idCondition !== null) {
+                promiseCondition = this.getConditions(this.hotel.idCondition);
+            }
+            if (this.hotel.idRegime !== null) {
+                promiseRegime = this.getRegimes(this.hotel.idRegime);
+            }
+            if (this.hotel.idAmenity !== null) {
+                promiseAditionalInfo = this.getAditionalInfo(this.hotel.idAmenity);
+                promiseRestaurants = this.getRestaurants(this.hotel.id);
+                promiseSchedules = this.getSchedules(this.hotel.id);
+                promisePools = this.getPools(this.hotel.id);
+            }
+            await Promise.all([promiseConfiguration, promiseContact, promiseCondition, promiseRegime, promiseAditionalInfo, promiseRestaurants, promiseSchedules, promisePools]).then(values => {
+                this.setChargeView(true);
             });
-          }
         });
       }
     },
@@ -193,14 +208,17 @@ export default {
             //metodo post
             if(this.hotel.id == null){
               this.postEditHotel(this.hotel).then(()=>{
-                let returnedErrorObj = this.verifyErrorsPostHotel();
                 //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
                   // this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
+                  //Se llama al metodo que detecta los errores
+                  let returnedErrorObj = this.verifyErrorsEndpoints();
                   this.loader = null;
                   this.isLoadingSavingChangesSave = false;
                   this.isLoadingSavingChangesSaveAndClose = false;
 
+                    // Se setea la variable de estado del hotel que controla la progreess bar del navbar siilkaab
+                    this.setProgressbarNavbarStateHotel(0);
                   this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
                   if(close == "saveAndClose"){
                     this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
@@ -216,12 +234,17 @@ export default {
             }
             else if(this.hotel.id != null){
               this.postEditHotel(this.hotel).then(()=>{
-                let returnedErrorObj = this.verifyErrorsPostHotel();
                 //Se ejecuta el método que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.idHotel).then(()=>{
+                    //Se llama al metodo que detecta los errores
+                  let returnedErrorObj = this.verifyErrorsEndpoints();
                   this.loader = null;
                   this.isLoadingSavingChangesSave = false;
                   this.isLoadingSavingChangesSaveAndClose = false;
+
+                    // Se setea la variable de estado del hotel que controla la progreess bar del navbar siilkaab
+                    this.setProgressbarNavbarStateHotel(0);
+
                   this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
                   if(close == "saveAndClose"){
                     this.setSnackbar({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
@@ -242,16 +265,29 @@ export default {
     //Este metodo cotiene los demas metodos que se ejecutaran y que dependen del hotel
     //Ademas es un metodo asincrono ya que se deben de ejecutar ciertas acciones cuando finalizan todas las peticiones
     executeSaveOnAPIAfterHotel: async function(idHotel){
+        let progress = 0;
         //CODIGO PARA GUARDAR CONFIGURACIONES INICIA
         if(this.configuration.timezone != null){
           if(this.hotel.idConfiguration == null){
             //metodo post
             this.configuration.hotel_id = idHotel;
-            this.postEditConfiguration(this.configuration);
+            await this.postEditConfiguration(this.configuration).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
           else if(this.hotel.idConfiguration != null){
             //metodo put
-            this.putEditConfiguration(this.configuration);
+            await this.putEditConfiguration(this.configuration).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
         }
         //CODIGO PARA GUARDAR CONFIGURACIONES TERMINA
@@ -260,11 +296,23 @@ export default {
           if(this.hotel.idContact == null){
             //metodo post
             this.contacts.hotel_id = idHotel;
-            this.postEditContacts(this.contacts);
+            await this.postEditContacts(this.contacts).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
           else if(this.hotel.idContact != null){
             //metodo put
-            this.putEditContacts(this.contacts);
+            await this.putEditContacts(this.contacts).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
 
         //CODIGO PARA GUARDAR CONTACTOS TERMINA
@@ -273,21 +321,39 @@ export default {
           if(this.hotel.idCondition == null){
             //metodo post
             this.conditions.hotel_id = idHotel;
-            this.postEditConditions(this.conditions);
+            await this.postEditConditions(this.conditions).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
           else if(this.hotel.idCondition != null){
             //metodo put
-            this.putEditConditions(this.conditions);
+            await this.putEditConditions(this.conditions).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
         }
         //CODIGO PARA GUARDAR CONDICIONES TERMINA
         //CODIGO PARA GUARDAR REGIMENES INICIA
         if(typeof(this.regimes[0]) !='undefined'){
-          this.putEditRegimes({
+          await this.putEditRegimes({
             newRegimes: this.regimes,
             currentHotelId: idHotel,
             currentRegimes: this.hotel.idRegime,
-          });
+          }).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
         }
         //CODIGO PARA GUARDAR REGIMENES TERMINA
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
@@ -295,47 +361,61 @@ export default {
           if(this.aditionalInfo.hotel_id == null){
             //metodo post
             this.aditionalInfo.hotel_id = idHotel;
-            console.log("BTN", this.aditionalInfo);
-            this.postEditAditionalInfo(this.aditionalInfo);
+            await this.postEditAditionalInfo(this.aditionalInfo).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
           else{
             //metodo put
-            this.putEditAditionalInfo(this.aditionalInfo);
+            await this.putEditAditionalInfo(this.aditionalInfo).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
           }
         }
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
         //CODIGO PARA GUARDAR RESTAURANTES Y HORARIOS INICIA
-
-        this.putEditRestaurants(this.restaurants).then(()=>{
-          this.putEditSchedules(this.schedules).then(()=>{
-            console.log("THIS:RESTAURANTS", this.restaurants)
-            console.log("THIS:SCHEDULES", this.schedules)
-          });
-        });
+        await this.putEditRestaurants(this.restaurants).then(async ()=>{
+            progress++
+            this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            await this.putEditSchedules(this.schedules).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
+        }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
         //CODIGO PARA GUARDAR RESTAURANTES Y HORARIOS TERMINA
+        //CODIGO PARA GUARDAR PISCINAS INICIA
+        await this.putEditPools(this.pools).then(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            }).catch(()=>{
+                progress++
+                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+            });
+        //CODIGO PARA GUARDAR PISCINAS TERMINA
     },
-    //Metodo que verifica si existen errores al momento de guardar la informacion en PostHotel
-    verifyErrorsPostHotel(){
-      let obj = {};
-      if(this.statusInformation == 422){
-        obj.messagge = "Ocurrió un error al guardar";
-        obj.color = "red darken-1";
-      }
-      else{
-        obj.messagge = "El registro se guardó con exito";
-        obj.color = "green darken-1";
-      }
-      return obj;
-    },
-    //Metodo que verifica si existen errores al momento de guardar en los demas endpoints
+    //Metodo que verifica si existen errores al momento de guardar en los endpoints
     verifyErrorsEndpoints(){
       let obj = {};
-      if(this.statusConfiguration == 422 || this.statusConfiguration == 422 || this.statusConditions == 422 || this.statusRegimes == 422){
-        obj.messagge = "Ocurrió un error al guardar";
+      if(this.statusInformation == 422 || this.statusConfiguration == 422 || this.statusContacts == 422 || this.statusConditions == 422 || this.statusRegimes == 422 || this.statusAditionalInfo == 422 || this.statusRestaurants == 422 || this.statusSchedules == 422 || this.statusPools == 422){
+        obj.messagge = "Ocurrió un error al guardar. Verifique e intente de nuevo";
         obj.color = "red darken-1";
       }
       else{
-        obj.messagge = "El registro se guardó con exito";
+        obj.messagge = "La información se guardó con exito";
         obj.color = "green darken-1";
       }
       return obj;

@@ -24,7 +24,7 @@ class PoolController extends Controller
         );
     }
 
-   
+
 
     /**
      * Store a newly created resource in storage.
@@ -37,28 +37,28 @@ class PoolController extends Controller
         $data = $request->all();
 
         $rules = [
-            'type' => 'in:outdoor,indoor',
+            'type' => 'required|in:outdoor,indoor',
             'name' => 'required|string',
-            'air_conditioned' => 'boolean',
-            'panoramic_view' => 'boolean',
-            'wading_pool' => 'boolean',
-            'towels' => 'boolean',
-            'bar_pool' => 'boolean',
+            'air_conditioned' => 'required|boolean',
+            'panoramic_view' => 'required|boolean',
+            'wading_pool' => 'required|boolean',
+            'towels' => 'required|boolean',
+            'bar_pool' => 'required|boolean',
             'open_at' => 'required|date_format:H:i',
             'close_at' => 'required|after:open_at|date_format:H:i',
             'hotel_id' => 'required|exists:hotels,id'
         ];
-                
-         
+
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
 
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
             $pool = Pool::create($data);
             return new PoolIndexResource(Pool::findOrFail($pool->id));
         }
-        
+
     }
 
     /**
@@ -84,16 +84,16 @@ class PoolController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'type' => 'in:outdoor,indoor',
-            'name' => 'string',
-            'air_conditioned' => 'boolean',
-            'panoramic_view' => 'boolean',
-            'wading_pool' => 'boolean',
-            'towels' => 'boolean',
-            'bar_pool' => 'boolean',
-            'open_at' => 'date_format:H:i',
+            'type' => 'required|in:outdoor,indoor',
+            'name' => 'required|string',
+            'air_conditioned' => 'required|boolean',
+            'panoramic_view' => 'required|boolean',
+            'wading_pool' => 'required|boolean',
+            'towels' => 'required|boolean',
+            'bar_pool' => 'required|boolean',
+            'open_at' => 'required|date_format:H:i',
             'close_at' => 'required|after:open_at|date_format:H:i',
-            'hotel_id' => 'exists:hotels,id'
+            'hotel_id' => 'required|exists:hotels,id'
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
@@ -102,7 +102,7 @@ class PoolController extends Controller
             $pool->update($data);
             return new PoolIndexResource(Pool::findOrFail($pool->id));
         }
-        
+
     }
 
     /**

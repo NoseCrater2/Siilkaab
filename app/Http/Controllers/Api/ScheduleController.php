@@ -24,7 +24,7 @@ class ScheduleController extends Controller
         );
     }
 
-    
+
 
     /**
      * Store a newly created resource in storage.
@@ -50,7 +50,7 @@ class ScheduleController extends Controller
             $schedule = Schedule::create($data);
             return new ScheduleIndexResource(Schedule::findOrFail($schedule->id));
         }
-       
+
     }
 
     /**
@@ -64,7 +64,7 @@ class ScheduleController extends Controller
         return new ScheduleIndexResource(Schedule::findOrFail($schedule->id));
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -77,10 +77,10 @@ class ScheduleController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'day' => 'array',
-            'start_time' => 'date_format:H:i',
-            'end_time' => 'date_format:H:i|after:start_time',
-            'restaurant_id' => 'exists:restaurants,id'
+            'day' => 'required|array',
+            'start_time' => 'required|date_format:H:i',
+            'end_time' => 'required|date_format:H:i|after:start_time',
+            'restaurant_id' => 'required|exists:restaurants,id'
         ];
 
         $validator= Validator::make($data,$rules, Messages::getMessages());

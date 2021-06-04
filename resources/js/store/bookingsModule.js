@@ -20,12 +20,25 @@ const bookingsModule = {
 
     getters: {
         totalPrice(state){
-            let prices = 0
-                state.bookings.rooms.map(function(room){
-                    prices += room.rates[0].reduce((acc, curr) => acc + curr.price,0);
-                })
+            // let prices = 0
+            let additionPriceProp = 0;
+            state.bookings.rooms.forEach(room=>{
+                for (let roomProp in room.rates[0]) {
+                    for (let internRoomProp in room.rates[0][roomProp]) {
+                        if(internRoomProp == 'price'){
+                            additionPriceProp = additionPriceProp + parseFloat(room.rates[0][roomProp].price)
+                        }
+                    }
+                }
+            })
+            console.log(parseFloat(additionPriceProp))
+            return additionPriceProp;
 
-            return prices   
+            //     state.bookings.rooms.map(function(room){
+            //         prices += room.rates[0].reduce((acc, curr) => acc + curr.price, 0);
+            //     })
+
+            // return prices
         },
 
         oneNightPrice(state){
@@ -34,13 +47,13 @@ const bookingsModule = {
                     prices += room.rates[0][0].price;
                 })
 
-            return prices 
+            return prices
         }
 
-        
+
 
     },
-    
+
     mutations: {
         setNewRoom(state, newRoom){
           state.bookings.rooms[newRoom.index] = newRoom.room
@@ -110,32 +123,32 @@ const bookingsModule = {
             const request =  await axios
             .get(`/api/reservations/${id}`);
             commit('setReservations',request.data.data)
-         
+
         },
 
         getReservation: async function ({ commit}, id){
             const request =  await axios
             .get("/api/reservation/"+id);
             commit('setReservation',request.data.data)
-         
+
         },
 
         getDasboardReservations: async function ({ commit}){
             const request =  await axios
             .get("/api/dashboard-reservations/");
             commit('setReservations',request.data.data)
-         
+
         },
 
         getHistory: async function ({ commit}, id){
             const request =  await axios
             .get("/api/history-reservation/"+id);
             commit('setHistory',request.data.data)
-         
+
         },
 
         saveReservation: async function ({ commit, state, getters}, personalData){
-            
+
             let data = {
                 nights : state.bookings.nights,
                 from : state.bookings.from,
@@ -158,35 +171,35 @@ const bookingsModule = {
             const request =  await axios
             .post('/api/reservations/', data);
             commit('setReservation',request.data.data)
-         
+
         },
 
         getNotes: async function ({ commit}, id){
             const request =  await axios
             .get("/api/notes/"+id);
             commit('setNotes',request.data.data)
-         
+
         },
 
         saveNote: async function ({ commit}, data){
             const request =  await axios
             .post('/api/notes/', data);
             commit('addNote',request.data.data)
-         
+
         },
 
         deleteNote: async function ({ commit}, id){
             const request =  await axios
             .delete('/api/notes/'+id);
             commit('deleteNote',request.data.data)
-         
+
         },
 
         saveClientInformation: async function ({ commit}, reservation){
             try {
                 const request =  await axios
                 .post("/api/reservation-client/"+reservation.id, reservation);
-                commit('setReservation',request.data.data)  
+                commit('setReservation',request.data.data)
             } catch (error) {
                 commit('setClientErrors',error.response.data)
                 commit('setClientCode',error.response.status)
@@ -197,7 +210,7 @@ const bookingsModule = {
             try {
                 const request =  await axios
                 .post("/api/reservation-state/"+reservation.id, reservation);
-                commit('setReservation',request.data.data)  
+                commit('setReservation',request.data.data)
             } catch (error) {
                 commit('setStateCode',error.response.status)
             }

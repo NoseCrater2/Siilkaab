@@ -24,6 +24,7 @@ class PoolIndexResource extends JsonResource
             'towels' => $this->towels,
             'bar_pool' => $this->bar_pool,
             'open_at' => $this->open_at,
+            'close_at' => $this->close_at,
             'hotel_id'=> isset($this->hotel)?$this->hotel->id:null,
             'hotel'=> isset($this->hotel)?$this->hotel->title:null,
         ];

@@ -28,7 +28,7 @@ class RestaurantController extends Controller
         );
     }
 
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -44,7 +44,7 @@ class RestaurantController extends Controller
             'menu_type' => 'required|in:a la carte,buffet,both',
             'hotel_id' => 'required|exists:hotels,id'
         ];
-                 
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
             return response($validator->errors(),422);
@@ -52,7 +52,7 @@ class RestaurantController extends Controller
             $restaurant = Restaurant::create($data);
             return new RestaurantIndexResource(Restaurant::findOrFail($restaurant->id));
         }
-       
+
     }
 
     /**
@@ -66,7 +66,7 @@ class RestaurantController extends Controller
         return new RestaurantIndexResource(Restaurant::findOrFail($restaurant->id));
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -79,19 +79,19 @@ class RestaurantController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'name' => 'string',
-            'menu_type' => 'in:a la carte,buffet,both',
-            'hotel_id' => 'exists:hotels,id'
+            'name' => 'required|string',
+            'menu_type' => 'required|in:a la carte,buffet,both',
+            'hotel_id' => 'required|exists:hotels,id'
         ];
-                
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
-            return $validator->errors();
+            return response($validator->errors(),422);
         }else{
             $restaurant->update($data);
             return new RestaurantIndexResource(Restaurant::findOrFail($restaurant->id));
         }
-        
+
     }
 
     /**

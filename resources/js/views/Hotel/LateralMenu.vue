@@ -55,6 +55,10 @@ export default {
       errorsContacts: (state) => state.HotelModule.errorsContacts,
       errorsConditions: (state) => state.HotelModule.errorsConditions,
       errorsRegimes: (state) => state.HotelModule.errorsRegimes,
+      errorsAditionalInfo: (state) => state.HotelModule.errorsAditionalInfo,
+      errorsRestaurants: (state) => state.HotelModule.errorsRestaurants,
+      errorsSchedules: (state) => state.HotelModule.errorsSchedules,
+      errorsPools: (state) => state.HotelModule.errorsPools,
     }),
   },
   methods: {
@@ -83,6 +87,22 @@ export default {
       if (index == 4 && this.errorsRegimes) {
         let countErrors = 0;
         for (const itemError of this.errorsRegimes) {
+          countErrors += Object.keys(itemError.error).length;
+        }
+        return countErrors;
+      }
+      if (index == 5 && (this.errorsAditionalInfo || this.errorsRestaurants || this.errorsSchedules || this.errorsPools)) {
+        let countErrors = 0;
+        for (const itemError of this.errorsAditionalInfo) {
+          countErrors += Object.keys(itemError.error).length;
+        }
+        for (const itemError of this.errorsRestaurants) {
+          countErrors += Object.keys(itemError.error).length;
+        }
+        for (const itemError of this.errorsSchedules) {
+          countErrors += Object.keys(itemError.error).length;
+        }
+        for (const itemError of this.errorsPools) {
           countErrors += Object.keys(itemError.error).length;
         }
         return countErrors;

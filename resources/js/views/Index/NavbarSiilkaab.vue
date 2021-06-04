@@ -8,6 +8,7 @@
       flat
       :clipped-left="$vuetify.breakpoint.smAndUp || $vuetify.breakpoint.xsOnly"
     >
+    <v-progress-linear absolute top height="4" color="blue-grey lighten-5" :active="localProgress > 0 ? true : false" v-model="localProgress"></v-progress-linear>
       <v-toolbar-title class="ml-n6 pl-4">
         <div class="d-flex align-center">
           <v-img
@@ -79,19 +80,29 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 import axios from 'axios'
 export default {
-
+    name: "NavbarSiilkaab",
+    data() {
+        return {
+            localProgress: 0
+        }
+    },
   computed:{
     ...mapState({
         isLoggedIn: (state) => state.isLoggedIn,
         user: (state) => state.user,
+        progressbarNavbarStateHotel: (state) => state.HotelModule.progressbarNavbarStateHotel
       }),
   },
-  name: "NavbarSiilkaab",
-
+  watch:{
+      progressbarNavbarStateHotel(newValue, oldValue){
+        this.localProgress = newValue;
+      }
+  },
   methods:{
+      ...mapMutations(["setProgressbarNavbarStateHotel"]),
     async logOut(){
       try {
         axios.post("/logout");

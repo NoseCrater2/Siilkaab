@@ -2,6 +2,7 @@ import axios from "axios";
 import router from '../routes';
 const HotelModule = {
     state: {
+        progressbarNavbarStateHotel: 0,
         snackbar: {
             stateSnackbar: false,
             messaggeSnackbar: "",
@@ -83,7 +84,7 @@ const HotelModule = {
         ],
         restaurants: [],
         schedules: [],
-        pools: null,
+        pools: [],
         aditionalInfo: {
             spa: null,
             air_conditioned: null,
@@ -162,20 +163,26 @@ const HotelModule = {
         errorsRestaurants: [],
         statusRestaurants: 0,
         errorsSchedules: [],
-        statusSchedules: 0
+        statusSchedules: 0,
+        errorsPools: [],
+        statusPools: 0
     },
     getters: {
         getAssignHotels(state) {
             return state.assignHotels;
         },
         getArrayErrors(state){
+            let statusAllAditionalInfo = 0;
+            if(state.statusAditionalInfo == 422 || state.statusRestaurants == 422 || state.statusSchedules == 422 || state.statusPools == 422){
+                statusAllAditionalInfo = 422;
+            }
             return [
                 state.statusInformation,
                 state.statusConfiguration,
                 state.statusContacts,
                 state.statusConditions,
                 state.statusRegimes,
-                0,
+                statusAllAditionalInfo
             ]
         },
 
@@ -183,6 +190,7 @@ const HotelModule = {
     mutations: {
         //Se reinician los estados (principalmente por el problema del router-link)
         setReinicialized(state) {
+            (state.progressbarNavbarStateHotel = 0),
             (state.snackbar = {
                 stateSnackbar: false,
                 messaggeSnackbar: "",
@@ -260,7 +268,7 @@ const HotelModule = {
                 ]),
                 (state.restaurants = []),
                 (state.schedules = []),
-                (state.pools = null),
+                (state.pools = []),
                 (state.aditionalInfo = {
                     spa: null,
                     air_conditioned: null,
@@ -340,7 +348,13 @@ const HotelModule = {
             (state.errorsRestaurants = []),
             (state.statusRestaurants = 0),
             (state.errorsSchedules = []),
-            (state.statusSchedules = 0)
+            (state.statusSchedules = 0),
+            (state.errorsPools = []),
+            (state.statusPools = 0)
+        },
+        //Metodo que cambia de estado la variable que permite mostrar progreso en barra de navegacion
+        setProgressbarNavbarStateHotel(state, flag){
+            state.progressbarNavbarStateHotel = flag;
         },
         //Metodo que cambia de estado la variable que permite mostrar un snackbar (mensaje)
         setSnackbar(state, flag){
@@ -359,7 +373,7 @@ const HotelModule = {
         countIditemsListOptions(state, index) {
             router.app.$router.push({query: {...router.app.$route.query, option: index}})
             state.iditemsListOptions = index;
-        
+
         },
         //Mutacion para los errores
         setErrorsInformation(state,errors){
@@ -386,6 +400,9 @@ const HotelModule = {
         setErrorsSchedules(state,errors){
             state.errorsSchedules = errors
         },
+        setErrorsPools(state,errors){
+            state.errorsPools = errors
+        },
         //Mutacion para el estatus
         setStatusInformation(state, status){
             state.statusInformation = status
@@ -408,8 +425,11 @@ const HotelModule = {
         setStatusRestaurants(state, status){
             state.statusRestaurants = status
         },
-        setStatusRestaurants(state, status){
+        setStatusSchedules(state, status){
             state.statusSchedules = status
+        },
+        setStatusPools(state, status){
+            state.statusPools = status
         },
         //Mutacion que setea el state.regimes para asignar nuevo arreglo
         setArrayRegimes(state, payload) {
@@ -423,11 +443,13 @@ const HotelModule = {
         setArraySchedules(state, payload) {
             state.schedules = payload;
         },
+        //Mutacion que setea el state.pools para asignar nuevo arreglo
+        setArrayPools(state, payload) {
+            state.pools = payload;
+        },
         setHotel(state, payload) {
             //Inicializa la variable "setReinicializedVar" que indica que ya hay datos de hotel
             state.setReinicializedVar = 1;
-            //Inicializa la variable "chargeView" que indica que ya se puede cargar las vistas
-            state.chargeView = true;
             state.hotel = payload;
         },
         setHotels(state, payload) {
@@ -684,6 +706,43 @@ const HotelModule = {
             })
         },
 
+        postAddPools(state, pools){
+            pools.forEach(itemPool => {
+                for (let statePool of state.pools) {
+                    if(statePool.componentID === itemPool.componentID){
+                        Object.assign(statePool, itemPool);
+                    }
+                }
+            });
+        },
+
+        putUpdatePools(state, pools) {
+            pools.forEach(itemPool => {
+                for (let statePool of state.pools) {
+                    if(statePool.id == itemPool.id){
+                        Object.assign(statePool, itemPool);
+                    }
+                }
+            });
+        },
+
+        deletePools(state, pools) {
+            pools.forEach(itemPool => {
+                if(itemPool.id != "NEW"){
+                    let indexPool = state.pools.findIndex(statePools => statePools.id == itemPool.id);
+                    if(indexPool > -1){
+                        state.pools.splice(indexPool, 1);
+                    }
+                }
+                else if(itemPool.id == "NEW"){
+                    let indexPool = state.pools.findIndex(statePools => statePools.componentID == itemPool.componentID);
+                    if(indexPool > -1){
+                        state.pools.splice(indexPool, 1);
+                    }
+                }
+            });
+        },
+
         editHotel(state, hotel) {
             state.hotel = hotel;
             state.hotels.map(function(currentHotel) {
@@ -724,7 +783,7 @@ const HotelModule = {
                 let hotel = request.data.data;
                 commit("setHotel", hotel);
             } catch (error) {
-                
+
             }
         },
 
@@ -734,7 +793,7 @@ const HotelModule = {
                 let currencies = request.data.data;
                 commit("setCurrencies", currencies);
             } catch (error) {
-                
+
             }
         },
         getTimezones: async function({ commit }) {
@@ -780,22 +839,22 @@ const HotelModule = {
         },
         getRegimes: async function({ commit }, id) {
             try {
-                
+
                 const promiseRequest = await Promise.all(
                     id.map(elID => {
                         const requestRegime = axios.get(`/api/regimes/${elID}`);
                         return requestRegime;
                     })
                 );
-                
+
                 //Guardamos en un arreglo el resultado de la promesa (que contiene los regimenes)
                 let mapArray = promiseRequest.map((itemPromise, index)=>{
                     return itemPromise.data.data;
                 })
-                
+
                 //Ordenamos el arreglo de regimenes de manera desc
                 mapArray.sort(function(a,b) {return (a.id < b.id) ? 1 : ((b.id < a.id) ? -1 : 0);});
-                
+
                 //Creamos e inicializamos una variable donde se guardara el indice del arreglo
                 //Y que servirá para cortar del arreglo el regimen que no tenga fecha
                 let indexSplice = 0;
@@ -839,11 +898,18 @@ const HotelModule = {
                 }
                 //Despues mapeamos para dejar unicamente los horarios a ocupar
                 ).map(scheduleItem=>{
-                    return {idRestaurant: scheduleItem.id, restaurantSchedules: scheduleItem.schedules}
+                    let obj = {
+                        idRestaurant: scheduleItem.id,
+                        restaurantSchedules: scheduleItem.schedules
+                    }
+                    obj.restaurantSchedules.forEach(item => {
+                        item.restaurant_id = scheduleItem.id;
+                    });
+                    return obj
                 });
                 commit("setSchedules", schedules);
             } catch (error) {
-                
+
             }
         },
 
@@ -895,7 +961,7 @@ const HotelModule = {
 
                 // commit("setAssignHotels", assignHotels);
             } catch (error) {
-                console.log("An error has ocurred");
+
             }
         },
 
@@ -937,7 +1003,7 @@ const HotelModule = {
             else if(newHotel.id != null){
                 formDataHotel.append("_method", "put");
             }
-            
+
             try {
                 //Verifica si se esta insertando o modificando un hotel
                 if(newHotel.id != null){
@@ -1117,7 +1183,7 @@ const HotelModule = {
         },
 
         //Metodo que llama a diferentes acciones de Regimes dependiendo
-        //De lo que requiera hacer 
+        //De lo que requiera hacer
         putEditRegimes: async function({ commit, dispatch }, objRegimes) {
             let methodsRegime = "";
             objRegimes.newRegimes = objRegimes.newRegimes.filter((itemRegime)=>{
@@ -1309,7 +1375,6 @@ const HotelModule = {
                         });
                         //Se llama a la accion "putUpdateRegimesAXIOS" que se encargara
                         //De hacer la peticion AXIOS
-                        console.log("newArrayPutRegimes", newArrayPutRegimes)
                         await dispatch("putUpdateRegimesAXIOS", newArrayPutRegimes);
                     }
                 }
@@ -1379,7 +1444,7 @@ const HotelModule = {
                                     if(itemRegime.final_period.length > 16){
                                         itemRegime.final_period = itemRegime.final_period.slice(0,-3)
                                     }
-                                } 
+                                }
                             }
                             return itemRegime;
                         });
@@ -1506,8 +1571,8 @@ const HotelModule = {
                 commit("postAddRestaurants", arrayRequestAddItemRestaurant);
             }
             else{
-                //commit("setErrorsRestaurants", arrayErrors);
-                //commit("setStatusRestaurants", status);
+                commit("setErrorsRestaurants", arrayErrors);
+                commit("setStatusRestaurants", status);
             }
         },
 
@@ -1534,8 +1599,8 @@ const HotelModule = {
                 commit("putUpdateRestaurants", arrayRequestUpdateItemRestaurant);
             }
             else{
-                // commit("setErrorsRegimes", arrayErrors);
-                // commit("setStatusRegimes", status);
+                commit("setErrorsRestaurants", arrayErrors);
+                commit("setStatusRestaurants", status);
             }
         },
 
@@ -1558,23 +1623,26 @@ const HotelModule = {
                 commit("deleteRestaurants", doneDeletes);
             }
             else{
-                // commit("setErrorsRegimes", arrayErrors);
-                // commit("setStatusRegimes", status);
+                commit("setErrorsRestaurants", arrayErrors);
+                commit("setStatusRestaurants", status);
             }
         },
 
         putEditSchedules: async function({ commit, dispatch }, localArraySchedules) {
             localArraySchedules.forEach(element=>{
                 element.restaurantSchedules.forEach(insideElement=>{
-                    if(insideElement.start_time.length >=8){
-                        insideElement.start_time = insideElement.start_time.slice(0, -3);
+                    if(insideElement.start_time != null){
+                        if(insideElement.start_time.length >=8){
+                            insideElement.start_time = insideElement.start_time.slice(0, -3);
+                        }
                     }
-                    if(insideElement.end_time.length >=8){
-                        insideElement.end_time = insideElement.end_time.slice(0, -3);
+                    if(insideElement.end_time != null){
+                        if(insideElement.end_time.length >=8){
+                            insideElement.end_time = insideElement.end_time.slice(0, -3);
+                        }
                     }
                 })
             })
-            console.log("localArraySchedules", localArraySchedules)
             try {
                 let postSchedules = [];
                 let putSchedules = [];
@@ -1607,9 +1675,6 @@ const HotelModule = {
                         }
                     }
                 })
-                console.log("arrayDeletedSchedules", arrayDeletedSchedules)
-                console.log("postSchedules", postSchedules)
-                console.log("putSchedules", putSchedules)
                 if(arrayDeletedSchedules.length > 0){
                     await dispatch("deleteSchedulesAXIOS", arrayDeletedSchedules);
                 }
@@ -1620,8 +1685,8 @@ const HotelModule = {
                     await dispatch("putUpdateSchedulesAXIOS", putSchedules);
                 }
             } catch (error) {
-                commit("setErrorsRestaurants", error.response.data);
-                commit("setStatusRestaurants", error.response.status);
+                commit("setErrorsSchedules", error.response.data);
+                commit("setStatusSchedules", error.response.status);
             }
         },
 
@@ -1635,11 +1700,15 @@ const HotelModule = {
                     let trasformedRequest = requestAddItemSchedule.data.data;
                     trasformedRequest.componentID = itemSchedule.componentID;
                     trasformedRequest.idCompoSelectTimePicker = itemSchedule.idCompoSelectTimePicker;
-                    if(trasformedRequest.start_time.length >= 8){
-                        trasformedRequest.start_time = trasformedRequest.start_time.slice(0, -3);
+                    if(trasformedRequest.start_time != null){
+                        if(trasformedRequest.start_time.length >= 8){
+                            trasformedRequest.start_time = trasformedRequest.start_time.slice(0, -3);
+                        }
                     }
-                    if(trasformedRequest.end_time.length >= 8){
-                        trasformedRequest.end_time = trasformedRequest.end_time.slice(0, -3);
+                    if(trasformedRequest.end_time != null){
+                        if(trasformedRequest.end_time.length >= 8){
+                            trasformedRequest.end_time = trasformedRequest.end_time.slice(0, -3);
+                        }
                     }
                     arrayRequestAddItemSchedule.push(trasformedRequest);
                 } catch (error) {
@@ -1651,8 +1720,8 @@ const HotelModule = {
                 commit("postAddSchedules", arrayRequestAddItemSchedule);
             }
             else{
-                //commit("setErrorsRestaurants", arrayErrors);
-                //commit("setStatusRestaurants", status);
+                commit("setErrorsSchedules", arrayErrors);
+                commit("setStatusSchedules", status);
             }
         },
 
@@ -1660,7 +1729,6 @@ const HotelModule = {
             let arrayRequestUpdateItemSchedule = [];
             let arrayErrors = []
             let status;
-            console.log("localPutSchedules", localPutSchedules)
             for (const itemSchedule of localPutSchedules) {
                 try {
                     const requestUpdateItemSchedule = await axios.put(
@@ -1670,11 +1738,15 @@ const HotelModule = {
                     let trasformedRequest = requestUpdateItemSchedule.data.data;
                     trasformedRequest.componentID = itemSchedule.componentID;
                     trasformedRequest.idCompoSelectTimePicker = itemSchedule.idCompoSelectTimePicker;
-                    if(trasformedRequest.start_time.length >= 8){
-                        trasformedRequest.start_time = trasformedRequest.start_time.slice(0, -3);
+                    if(trasformedRequest.start_time != null){
+                        if(trasformedRequest.start_time.length >= 8){
+                            trasformedRequest.start_time = trasformedRequest.start_time.slice(0, -3);
+                        }
                     }
-                    if(trasformedRequest.end_time.length >= 8){
-                        trasformedRequest.end_time = trasformedRequest.end_time.slice(0, -3);
+                    if(trasformedRequest.end_time != null){
+                        if(trasformedRequest.end_time.length >= 8){
+                            trasformedRequest.end_time = trasformedRequest.end_time.slice(0, -3);
+                        }
                     }
                     arrayRequestUpdateItemSchedule.push(trasformedRequest)
                 } catch (error) {
@@ -1686,8 +1758,8 @@ const HotelModule = {
                 commit("putUpdateSchedules", arrayRequestUpdateItemSchedule);
             }
             else{
-                // commit("setErrorsRegimes", arrayErrors);
-                // commit("setStatusRegimes", status);
+                commit("setErrorsSchedules", arrayErrors);
+                commit("setStatusSchedules", status);
             }
         },
 
@@ -1710,8 +1782,150 @@ const HotelModule = {
                 commit("deleteSchedules", doneDeletes);
             }
             else{
-                // commit("setErrorsRegimes", arrayErrors);
-                // commit("setStatusRegimes", status);
+                commit("setErrorsSchedules", arrayErrors);
+                commit("setStatusSchedules", status);
+            }
+        },
+
+        putEditPools: async function({ commit, dispatch }, localArrayPools) {
+            try {
+                let postPools = [];
+                let putPools = [];
+                let arrayDeletedPools = [];
+                localArrayPools.forEach(itemPool=>{
+                    if(itemPool.open_at != null){
+                        if(itemPool.open_at.length >=8){
+                            itemPool.open_at = itemPool.open_at.slice(0, -3);
+                        }
+                    }
+                    if(itemPool.close_at != null){
+                        if(itemPool.close_at.length >=8){
+                            itemPool.close_at = itemPool.close_at.slice(0, -3);
+                        }
+                    }
+                    if(typeof(itemPool.deletedPool) != 'undefined'){
+                        if(itemPool.deletedPool == 'DELETED'){
+                            arrayDeletedPools.push(itemPool);
+                        }
+                    }
+                    else if(typeof(itemPool.deletedPool) == 'undefined'){
+                        if(itemPool.id == 'NEW'){
+                            postPools.push(itemPool);
+                        }
+                        else if(itemPool.id != 'NEW'){
+                            putPools.push(itemPool);
+                        }
+                    }
+                })
+                if(arrayDeletedPools.length > 0){
+                    await dispatch("deletePoolsAXIOS", arrayDeletedPools);
+                }
+                if(postPools.length > 0){
+                    await dispatch("postAddPoolsAXIOS", postPools);
+                }
+                if(putPools.length > 0){
+                    await dispatch("putUpdatePoolsAXIOS", putPools);
+                }
+            } catch (error) {
+                commit("setErrorsPools", error.response.data);
+                commit("setStatusPools", error.response.status);
+            }
+        },
+
+        postAddPoolsAXIOS: async function({ commit }, localPostPools) {
+            let arrayRequestAddItemPool = [];
+            let arrayErrors = []
+            let status;
+            for (const itemPool of localPostPools) {
+                try {
+                    const requestAddItemPool = await axios.post(`/api/pools`, itemPool);
+                    let trasformedRequest = requestAddItemPool.data.data;
+                    trasformedRequest.componentID = itemPool.componentID;
+                    trasformedRequest.idCompoPool = itemPool.idCompoPool;
+                    if(trasformedRequest.open_at != null){
+                        if(trasformedRequest.open_at.length >= 8){
+                            trasformedRequest.open_at = trasformedRequest.open_at.slice(0, -3);
+                        }
+                    }
+                    if(trasformedRequest.close_at != null){
+                        if(trasformedRequest.close_at.length >= 8){
+                            trasformedRequest.close_at = trasformedRequest.close_at.slice(0, -3);
+                        }
+                    }
+                    arrayRequestAddItemPool.push(trasformedRequest);
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemPool.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("postAddPools", arrayRequestAddItemPool);
+            }
+            else{
+                commit("setErrorsPools", arrayErrors);
+                commit("setStatusPools", status);
+            }
+        },
+
+        putUpdatePoolsAXIOS: async function({ commit }, localPutPools) {
+            let arrayRequestUpdateItemPool = [];
+            let arrayErrors = []
+            let status;
+            for (const itemPool of localPutPools) {
+                try {
+                    const requestUpdateItemPool = await axios.put(
+                        `/api/pools/${itemPool.id}`,
+                        itemPool
+                    );
+                    let trasformedRequest = requestUpdateItemPool.data.data;
+                    trasformedRequest.componentID = itemPool.componentID;
+                    trasformedRequest.idCompoPool = itemPool.idCompoPool;
+                    if(trasformedRequest.open_at != null){
+                        if(trasformedRequest.open_at.length >= 8){
+                            trasformedRequest.open_at = trasformedRequest.open_at.slice(0, -3);
+                        }
+                    }
+                    if(trasformedRequest.close_at != null){
+                        if(trasformedRequest.close_at.length >= 8){
+                            trasformedRequest.close_at = trasformedRequest.close_at.slice(0, -3);
+                        }
+                    }
+                    arrayRequestUpdateItemPool.push(trasformedRequest)
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemPool.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("putUpdatePools", arrayRequestUpdateItemPool);
+            }
+            else{
+                commit("setErrorsPools", arrayErrors);
+                commit("setStatusPools", status);
+            }
+        },
+
+        deletePoolsAXIOS: async function({ commit }, localDeletePools) {
+            let arrayErrors = [];
+            let status;
+            let doneDeletes = [];
+            for (const itemPool of localDeletePools) {
+                try {
+                    doneDeletes.push(itemPool)
+                    if(typeof(itemPool.deletedPool) != 'undefined' && itemPool.id != "NEW"){
+                        const requestDeleteItemPool = await axios.delete(`/api/pools/${itemPool.id}`);
+                    }
+                } catch (error) {
+                    status = error.response.status;
+                    arrayErrors.push({error: error.response.data, componentID: itemPool.componentID})
+                }
+            }
+            if(arrayErrors == 0){
+                commit("deletePools", doneDeletes);
+            }
+            else{
+                commit("setErrorsPools", arrayErrors);
+                commit("setStatusPools", status);
             }
         },
 

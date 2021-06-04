@@ -1,11 +1,11 @@
 <template>
-  <v-app >
-    <v-row justify="center"  >
-    <v-form ref="form" style="width: 1366px"  v-model="valid" lazy-validation >
-    <v-card color="black"  >
+  <v-app>
+    <v-row justify="center">
+    <v-form ref="form" style="width: 100%"  v-model="valid" lazy-validation >
+    <v-card color="black" flat>
       <v-card-text>
-        <v-row>
-          <v-col cols="12" sm="3" >
+        <v-row class="mx-2 mb-xl-n5 mb-lg-n5 mb-md-n5">
+          <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12">
             <v-menu
             dark
             v-model="menu"
@@ -22,7 +22,7 @@
                 label="DESDE"
                 prepend-inner-icon="mdi-calendar"
                 readonly
-                 outlined
+                outlined
                 v-bind="attrs"
                 v-on="on"
                 :messages="getSearchErrors.from"
@@ -33,7 +33,7 @@
             </v-menu>
           </v-col>
 
-          <v-col cols="12" sm="3" >
+          <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12">
             <v-menu
             dark
             v-model="menu2"
@@ -60,15 +60,17 @@
             </v-menu>
           </v-col>
 
-          <v-col cols="12" sm="3">
+          <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12">
             <v-menu
             ref="menu3"
-            width="350"
             v-model="menu3"
             :close-on-content-click="false"
             transition="scale-transition"
+            nudge-bottom="-31"
+            max-width="600"
+            :bottom="$vuetify.breakpoint.mdAndUp"
+            :top="$vuetify.breakpoint.sm || $vuetify.breakpoint.xs"
             offset-y
-            max-height="350"
             >
             <template v-slot:activator="{ on, attrs }">
                 <v-text-field
@@ -84,9 +86,9 @@
                 >
                 </v-text-field>
             </template>
-            <v-card max-width="500" class="pa-4" >
+            <v-card class="pa-4">
               <v-row  >
-                <v-col cols="12" class="py-0 my-0" >
+                <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12" >
                   <v-select outlined label="Habitaciones" @change="changeCoutRooms" dense :items="maxRooms" v-model="selectedRooms">
                   </v-select>
                 </v-col>
@@ -95,28 +97,26 @@
                <v-col cols="12" class="py-0 my-0">
                  <span>Habitación {{r}}</span>
                </v-col>
-                <v-col cols="6" class="py-0 my-0">
-                   
+                <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12" class="py-0 my-0 mb-sm-2 mb-2">
                   <v-select :items="maxAdults" v-model="form[r-1].adults" label="Adultos" hide-details outlined  dense >
                   </v-select>
                 </v-col>
-                <v-col cols="6" class="py-0 my-0">
+                <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12" class="py-0 my-0">
                   <v-select :items="maxChildren" hide-details v-model="form[r-1].children"  outlined  label="Niños" dense  >
                   </v-select>
                 </v-col>
-               
+
                 <v-row v-if="parseInt(form[r-1].children) > 0" class="mx-2 my-0">
-                  
                   <v-col cols="12" class="py-0 my-1 ml-n2"> Edad de los niños</v-col>
-                  <v-col cols="2" v-for="c in parseInt(form[r-1].children)" :key="c" class="py-0 my-1 mx-1 px-0">
+                  <v-col cols="2" xl="2" lg="2" md="2" sm="2" xs="2" v-for="c in parseInt(form[r-1].children)" :key="c" class="py-0 my-1 mx-1 px-0">
                       <v-select  :items="maxChildrenAge" v-model="form[r-1].ages[c-1]" hide-details outlined  type="number" dense  >
                       </v-select>
-                  </v-col>                 
+                  </v-col>
                 </v-row>
                 <v-col cols="12">
                    <v-divider></v-divider>
                 </v-col>
-               
+
               </v-row>
               <v-card-actions>
                 <v-btn class="ml-n2"  @click="menu3 = false" outlined>CERRAR</v-btn>
@@ -126,7 +126,7 @@
             </v-menu>
           </v-col>
 
-          <v-col cols="12" sm="3" >
+          <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12">
             <v-btn
             dark
             x-large
@@ -152,101 +152,163 @@
         </template>
       </v-breadcrumbs>
     </v-row>
-    <v-row class="mx-0 px-0">
-      <v-container fluid style="max-width: 1366px; max-height: 200px">
+    <v-row v-if="showResults">
         <v-alert
-        v-if="$route.name === 'PersonalData'"
-        dense
-        text
-        class="text-center"
-        color="success"
-      >
-        Estás a un paso de completar tu reserva.
-      </v-alert>
-      </v-container>
-    </v-row>
-    <v-row  class="mx-0 px-0" v-if="showResults">
-      <v-container fluid style="max-width: 1366px" class="pa-0">
-        <v-row no-gutters justify="space-between">
-         
-        <v-col  cols="12" md="3" sm="12" order-sm="2"  order-md="1">
-        <v-card flat style="position: sticky; top:0;" >
-          <v-avatar tile class="mx-3" size="310" @click="openHotelDialog">
+            :value="$route.name === 'PersonalData' ? true : false"
+            width="100%"
+            dense
+            text
+            class="text-center mx-2 mb-n3"
+            color="success"
+        >
+            Estás a un paso de completar tu reserva.
+        </v-alert>
+      <v-container fluid style="width: 100%">
+        <v-row no-gutters>
+        <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12" order-md="1" order-sm="1">
+        <v-card flat style="position: sticky; top:0;">
+          <v-avatar tile size="100%" @click="openHotelDialog">
             <v-hover v-slot="{ hover }">
-                  <v-img width="350" :src="`/img/${hotel.image}`">
+                  <v-img width="auto" height="auto" :src="`/img/${hotel.image}`">
                      <v-row style="background-color: rgba(10, 10, 10, 0.5);" align="center" justify="center" v-if="hover">
                           <v-icon size="50" dark>mdi-magnify</v-icon>
                      </v-row>
                   </v-img>
             </v-hover>
           </v-avatar>
-         
-          <v-card-title>{{hotel.title}}</v-card-title>
-          <v-card-text>
-             <v-icon>mdi-map-marker</v-icon>
-             {{contact.display_name}}
-          </v-card-text>
+            <v-card-title class="font-weight-bold ml-1">{{hotel.title}}</v-card-title>
+            <v-card-subtitle>
+                <v-row>
+                    <v-col cols="1">
+                        <v-icon>mdi-map-marker</v-icon>
+                    </v-col>
+                    <v-col cols="11">
+                        <span>{{hotel.title}} jajaaaaaaaaaaaaaaaaajsjs pero lo que pasa es que ya es tarde jajaja</span>
+                    {{contact.display_name}}
+                    </v-col>
+                </v-row>
+            </v-card-subtitle>
           <v-divider></v-divider>
-          
-            <v-list dense>
-              <v-list-item>
-                <v-list-item-icon>Estancia</v-list-item-icon>
-                <v-list-item-subtitle class="text-right"> {{ bookings.rooms.length }} Habitación(es) para {{ bookings.nights }} noche(s)</v-list-item-subtitle>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>Entrada</v-list-item-icon>
-                <v-list-item-subtitle class="text-right"> {{ $moment(bookings.from).format("Do dddd MMM gggg") }}</v-list-item-subtitle>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-icon>Salida</v-list-item-icon>
-                <v-list-item-subtitle class="text-right">{{ $moment(bookings.to).format("Do dddd MMM gggg")}}</v-list-item-subtitle>
-              </v-list-item>
-            </v-list>
+          <div class="d-flex justify-space-between">
+            <v-col cols="5">
+                <div class="font-weight-bold" style="font-size: 13px">
+                    Estancia:
+                </div>
+            </v-col>
+            <v-col cols="7">
+                <div class="d-flex justify-end text-right" style="font-size: 13px">
+                    {{ bookings.rooms.length }} Habitación(es) para {{ bookings.nights }} noche(s)
+                </div>
+            </v-col>
+          </div>
+            <div class="d-flex justify-space-between">
+                <v-col cols="5">
+                    <div class="font-weight-bold" style="font-size: 13px">
+                        Entrada:
+                    </div>
+                </v-col>
+                <v-col cols="7">
+                    <div class="d-flex justify-end text-right" style="font-size: 13px">
+                        {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                    </div>
+                </v-col>
+            </div>
+            <div class="d-flex justify-space-between">
+                <v-col cols="5">
+                    <div class="font-weight-bold" style="font-size: 13px">
+                        Salida:
+                    </div>
+                </v-col>
+                <v-col cols="7">
+                    <div class="d-flex justify-end text-right" style="font-size: 13px">
+                        {{ $moment(bookings.to).format("Do dddd MMM gggg")}}
+                    </div>
+                </v-col>
+            </div>
             <v-divider></v-divider>
-            <v-list dense>
-              <v-list-item  v-for="(room, index) in bookings.rooms" :key="index">
-                <v-list-item-content>
-                  <v-list-item-title>{{room.name}}</v-list-item-title>
-                </v-list-item-content>
-                <v-list-item-action>
-                  <v-list-item-action-text >
-                    {{configuration.currency_symbol + roomPrice(room.rates[0]) +' '+ configuration.currency_code}}
-                  </v-list-item-action-text>
-                </v-list-item-action>
-              </v-list-item>
-              <v-divider></v-divider>
-            </v-list>
-            <v-list dense>
-              <v-list-item >
-                <v-list-item-content>
-                  <v-list-item-title>Total Reserva</v-list-item-title>
-                 
-                </v-list-item-content>
-                <v-list-item-action>
-                   {{configuration.currency_symbol + $store.getters.totalPrice+' '+ configuration.currency_code}}
-                </v-list-item-action>
-              </v-list-item>
-            </v-list>
+            <div v-for="(room, index) in bookings.rooms" :key="index">
+                <div class="d-flex justify-space-between mb-n3">
+                <v-col cols="7">
+                    <div class="font-weight-bold">
+                        {{room.name}}
+                    </div>
+                </v-col>
+                <v-col cols="5">
+                    <div class="d-flex justify-end text-right">
+                        {{configuration.currency_symbol}}{{roomPrice(room.rates[0])}} {{configuration.currency_code}}
+                    </div>
+                </v-col>
+                </div>
+                <div class="d-flex justify-space-between mb-n5">
+                    <v-col cols="5">
+                        <div class="font-weight-bold" style="font-size: 13px">
+                            Ocupacion:
+                        </div>
+                    </v-col>
+                    <v-col cols="7">
+                        <div class="d-flex justify-end text-right" style="font-size: 13px">
+                            {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                        </div>
+                    </v-col>
+                </div>
+                <div class="d-flex justify-space-between mb-n5">
+                    <v-col cols="5">
+                        <div class="font-weight-bold" style="font-size: 13px">
+                            Régimen:
+                        </div>
+                    </v-col>
+                    <v-col cols="7">
+                        <div class="d-flex justify-end text-right" style="font-size: 13px">
+                            {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                        </div>
+                    </v-col>
+                </div>
+                <div class="d-flex justify-space-between">
+                    <v-col cols="5">
+                        <div class="font-weight-bold" style="font-size: 13px">
+                            Condiciones de la tarifa:
+                        </div>
+                    </v-col>
+                    <v-col cols="7">
+                        <div class="d-flex justify-end text-right" style="font-size: 13px">
+                            {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                        </div>
+                    </v-col>
+                </div>
+                <v-divider></v-divider>
+            </div>
+            <div class="d-flex justify-space-between">
+            <v-col cols="5">
+                <div class="font-weight-bold">
+                    Total reserva:
+                </div>
+            </v-col>
+            <v-col cols="7">
+                <div class="d-flex justify-end text-right">
+                    {{configuration.currency_symbol}}{{$store.getters.totalPrice}} {{configuration.currency_code}}
+                </div>
+            </v-col>
+            </div>
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="primary" block depressed tile :to="{name:'PersonalData'}" >Reservar</v-btn>
+              <v-btn v-if="$route.name == 'selectRoom'" color="primary" block depressed tile :to="{name:'PersonalData'}" >Reservar</v-btn>
             </v-card-actions>
-            
-         
         </v-card>
       </v-col>
-       <v-col   cols="12" md="9" sm="12" order-sm="1" order-md="2" >
+
+       <v-col cols="12" xl="9" lg="9" md="9" sm="12" xs="12" order-md="2" order-sm="2">
         <router-view :key="$route.path"></router-view>
       </v-col>
         </v-row>
+
         <v-row>
-          <iframe 
-          width="100%" 
-          height="50%" 
-          frameborder="0" 
-          scrolling="no" 
-          marginheight="0" 
-          marginwidth="0" 
+          <iframe
+          width="100%"
+          height="50%"
+          frameborder="0"
+          scrolling="no"
+          marginheight="0"
+          marginwidth="0"
           :src="`https://maps.google.com/maps?q=${contact.latitude},${contact.longitude}&hl=es&z=14&amp;output=embed`"
           >
           </iframe>
@@ -282,7 +344,7 @@ export default {
           to: {name: 'Confirmation'}
         }
       ],
-      
+
       valid: true,
       maxChildrenSelected: 0,
       selectedChildren: 0,
@@ -313,14 +375,14 @@ export default {
     changeCoutRooms(){
       this.form = []
        for (let index = 0; index < parseInt(this.selectedRooms); index++) {
-        this.form.push({adults: 0, children:0, ages:[]}) 
+        this.form.push({adults: 0, children:0, ages:[]})
       }
     },
 
     roomPrice(rates){
       let price =  0
       rates.forEach(r => {
-          price +=r.price
+          price = price + parseFloat(r.price)
       });
 
       return price
@@ -354,7 +416,7 @@ export default {
           }
         })
         })
-       
+
       }
     },
 
@@ -385,7 +447,7 @@ export default {
       if(this.totalAdults && this.totalChildren){
         this.searchTerms = this.totalAdults + ' Adultos + '+ this.totalChildren + ' Niños'
         return this.totalAdults + ' Adultos + '+ this.totalChildren + ' Niños'
-        
+
       }else if(this.totalAdults ){
         this.searchTerms = this.totalAdults + ' Adultos'
         return this.totalAdults + ' Adultos'
@@ -470,8 +532,8 @@ export default {
         this.$store.dispatch('getConfiguration', this.hotel.idConfiguration)
         this.$store.dispatch('getConditions', this.hotel.idCondition)
     })
-  
-    
+
+
   },
 
   props:['id'],

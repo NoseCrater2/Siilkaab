@@ -3,6 +3,7 @@
     <v-row>
       <v-col md="13" class="d-flex">
         <v-select
+        :error-messages="computedErrorDay"
           :items="weekDaysItems"
           item-text="name"
           item-value="key"
@@ -31,8 +32,8 @@
           </v-list-item>
           <v-divider class="mt-2"></v-divider>
         </template>
-        
-        
+
+
         </v-select>
         <v-dialog
           ref="dialogFromHour"
@@ -43,6 +44,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-autocomplete
+            :error-messages="computedErrorStartTime"
               :items="[computedFromHour]"
               v-model="computedFromHour"
               v-bind="attrs"
@@ -74,6 +76,7 @@
         >
           <template v-slot:activator="{ on, attrs }">
             <v-autocomplete
+            :error-messages="computedErrorEndTime"
               :items="[computedToHour]"
               v-model="computedToHour"
               v-bind="attrs"
@@ -108,6 +111,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 export default {
   name: "SelectTimePicker",
   created() {
@@ -155,6 +159,57 @@ export default {
     };
   },
   computed: {
+    ...mapState({
+      errorsSchedules: (state) => state.HotelModule.errorsSchedules
+    }),
+    computedErrorDay: {
+      get() {
+        let error = '';
+        this.errorsSchedules.forEach((itemErrorSchedule)=>{
+          if(typeof(itemErrorSchedule.error.day) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorSchedule.componentID){
+              error = itemErrorSchedule.error.day;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorStartTime: {
+      get() {
+        let error = '';
+        this.errorsSchedules.forEach((itemErrorSchedule)=>{
+          if(typeof(itemErrorSchedule.error.start_time) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorSchedule.componentID){
+              error = itemErrorSchedule.error.start_time;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorEndTime: {
+      get() {
+        let error = '';
+        this.errorsSchedules.forEach((itemErrorSchedule)=>{
+          if(typeof(itemErrorSchedule.error.end_time) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorSchedule.componentID){
+              error = itemErrorSchedule.error.end_time;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
     computedDdwnWeekDays: {
       get() {
         return this.ddwnWeekDaysModel;
