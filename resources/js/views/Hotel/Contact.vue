@@ -11,6 +11,7 @@
           </div>
         </div>
       </v-banner>
+      <v-row class="pa-6">
     <v-layout wrap>
       <v-flex>
         <v-card outlined>
@@ -21,7 +22,7 @@
             <v-list-item-avatar v-else  size="60">
               <v-icon dark large class="primary white--text">mdi-map-marker</v-icon>
             </v-list-item-avatar>
-            
+
             <v-list-item-content>
               <v-list-item-title class="title">No se ha seleccionado una ubicación</v-list-item-title>
             </v-list-item-content>
@@ -36,38 +37,29 @@
                 Latitud: {{location.position.lat}}
               </v-list-item-subtitle>
               <v-list-item-subtitle >
-                longitud: {{location.position.lng}}
+                Longitud: {{location.position.lng}}
               </v-list-item-subtitle>
             </v-list-item-content>
-          </v-list-item> 
+          </v-list-item>
         </v-card>
       </v-flex>
-      <v-flex>
-        <v-list dense>
-          <v-subheader>Puedes elegir una localización mediante:</v-subheader>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Doble clic en el área elegida
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Arrastrando el marcador
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-          <v-list-item>
-            <v-list-item-content>
-              <v-list-item-title>
-                Usando el botón de busqueda
-              </v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
-        </v-list>
-      </v-flex>
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12">
+            <div class="d-flex justify-center">
+              <div>
+                Puedes elegir una localización mediante:
+              </div>
+            </div>
+        </v-col>
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12">
+            <div class="d-flex justify-center">
+                <div>
+                    <div><v-icon>mdi-circle-small</v-icon>Doble clic en el área elegida</div>
+                    <div><v-icon>mdi-circle-small</v-icon>Arrastrando el marcador</div>
+                    <div><v-icon>mdi-circle-small</v-icon>Usando el botón de busqueda</div>
+                </div>
+            </div>
+        </v-col>
+
       <v-flex xl12 lg12 md12 sm12 xs12 style="z-index:0">
         <v-sheet>
           <div style="width: 100%; height:500px">
@@ -76,6 +68,7 @@
         </v-sheet>
       </v-flex>
     </v-layout>
+      </v-row>
     <br>
     <v-banner single-line>
         <div class="d-flex align-center ml-1">
@@ -86,7 +79,7 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="4" lg="6" md="12" sm="12" xs="12">
           <v-text-field
             v-model="computedLegalRep"
             prepend-inner-icon="mdi-form-textbox"
@@ -97,7 +90,7 @@
             :error-messages="errorsContacts.legal_rep"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="4" lg="6" md="12" sm="12" xs="12">
           <v-text-field
             v-model="computedManagerName"
             prepend-inner-icon="mdi-form-textbox"
@@ -108,7 +101,7 @@
             :error-messages="errorsContacts.manager_name"
           ></v-text-field>
         </v-col>
-         <v-col cols="12" md="6" sm="12" xs="12">
+         <v-col cols="12" xl="4" lg="6" md="12" sm="12" xs="12">
           <v-text-field
             v-model="computedEmail"
             prepend-inner-icon="mdi-email"
@@ -120,7 +113,7 @@
           ></v-text-field>
         </v-col>
 
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="3" lg="6" md="12" sm="12" xs="12">
           <v-text-field
             v-model="computedPhone"
             prepend-inner-icon="mdi-phone"
@@ -128,12 +121,12 @@
             outlined
             required
             maxlength="10"
-            @keydown="keyhandlerPhone" 
+            @keydown="keyhandlerPhone"
             :rules="[rules.validPhone]"
             :error-messages="errorsContacts.phone"
           ></v-text-field>
         </v-col>
-         <v-col cols="12" md="6" sm="12" xs="12">
+         <v-col cols="12" xl="9" lg="6" md="12" sm="12" xs="12">
           <v-text-field
             v-model="computedUrl"
             prepend-inner-icon="mdi-web"
@@ -152,7 +145,7 @@
 import { mapState } from "vuex";
 import Map from './Map';
 export default {
-  
+
   name: "Contact",
   components:{
     Map,
@@ -171,7 +164,7 @@ export default {
       query: null,
         key: 1,
         location: {},
-      
+
       urlModel: null,
       emailModel:null,
       phoneModel: null,
@@ -236,7 +229,7 @@ export default {
       },
     },
 
-   
+
     // computedAddress: {
     //   get() {
     //     return this.addressModel;
@@ -315,7 +308,7 @@ export default {
       this.contacts.latitude = location.position.lat
       this.contacts.longitude = location.position.lng
     },
-    
+
     // ...mapActions(["getCountries"]),
     //Metodo para llenar la vista con los datos
     fillModel(){
@@ -403,7 +396,7 @@ export default {
       }
     },
 
-  
+
   },
 };
 </script>

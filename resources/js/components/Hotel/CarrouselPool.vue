@@ -1,11 +1,12 @@
 <template>
   <div>
     <div>
-      <v-row justify="space-around">
+      <v-row justify="center">
         <strong>Piscinas activas: {{ activePools }}</strong>
       </v-row>
 
       <v-carousel
+      v-if="activePools > 0"
         light
         hide-delimiters
         v-model="countLastElementCarrousel"
@@ -24,6 +25,12 @@
           @removeCompo="removeCompo"
         ></component>
       </v-carousel>
+
+        <v-sheet color="#eeeeee" height="100%" v-if="activePools == 0">
+            <div class="pa-3 text-center">
+                Haga clic en agregar para configurar una nueva piscina
+            </div>
+        </v-sheet>
 
       <div class="d-flex justify-end">
         <v-btn

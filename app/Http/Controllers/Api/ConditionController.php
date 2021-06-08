@@ -27,7 +27,7 @@ class ConditionController extends Controller
         );
     }
 
-   
+
 
     /**
      * Store a newly created resource in storage.
@@ -49,16 +49,16 @@ class ConditionController extends Controller
             'hotel_id' => 'required|exists:hotels,id',
         ];
 
-      
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
-        
+
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
             $condition = Condition::create($data);
             return new ConditionIndexResource(Condition::findOrFail($condition->id));
         }
-       
+
     }
 
     /**
@@ -72,7 +72,7 @@ class ConditionController extends Controller
         return new ConditionIndexResource(Condition::findOrFail($condition->id));
     }
 
-    
+
 
     /**
      * Update the specified resource in storage.
@@ -88,11 +88,11 @@ class ConditionController extends Controller
         $rules = [
             'adults' => 'required|boolean',
             'children_age' => 'required_if:adults,0|Integer|min:0',
-            'adults_age' => 'Integer|min:0',
+            'adults_age' => 'required|Integer|min:0',
             'adults_regimen' => 'required|Integer|min:0',
-            'checkin_time' => 'date_format:H:i',
-            'checkout_time' => 'date_format:H:i|after:checkin_time',
-            'hotel_id' => 'exists:hotels,id',
+            'checkin_time' => 'required|date_format:H:i',
+            'checkout_time' => 'required|date_format:H:i|after:checkin_time',
+            'hotel_id' => 'required|exists:hotels,id',
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
 
@@ -102,7 +102,7 @@ class ConditionController extends Controller
             $condition->update($data);
             return new ConditionIndexResource(Condition::findOrFail($condition->id));
         }
-       
+
     }
 
     /**
@@ -118,7 +118,7 @@ class ConditionController extends Controller
     }
 
 
-   
 
-  
+
+
 }

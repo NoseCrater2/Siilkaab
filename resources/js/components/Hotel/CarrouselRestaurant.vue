@@ -1,11 +1,12 @@
 <template>
   <div>
     <div>
-      <v-row justify="space-around">
+      <v-row justify="center">
         <strong>Restaurantes activos: {{ activeRestaurants }}</strong>
       </v-row>
 
       <v-carousel
+      v-if="activeRestaurants > 0"
         light
         hide-delimiters
         v-model="countLastElementCarrousel"
@@ -24,6 +25,12 @@
           @removeCompo="removeCompo"
         ></component>
       </v-carousel>
+
+        <v-sheet color="#eeeeee" height="100%" v-if="activeRestaurants == 0">
+            <div class="pa-3 text-center">
+                Haga clic en agregar para configurar un nuevo restaurant
+            </div>
+        </v-sheet>
 
       <div class="d-flex justify-end">
         <v-btn
@@ -100,7 +107,7 @@ export default {
       let concatNewArraySchedules = [{idRestaurant: putId, restaurantSchedules: []}]
       //Mandamos al setter la concatenacion de arreglos (el state actual + el nuevo array)
       this.setArraySchedules([].concat(this.schedules, concatNewArraySchedules))
-      
+
     },
     addCompo(obj) {
       //Variable del v-model carrousel la incrementamos
@@ -119,10 +126,10 @@ export default {
       this.countLastElementCarrousel--;
       this.activeRestaurants--;
       let idCompoMap = this.arrayComponents.map((element) => element.idCompo).indexOf(idCompoParam);
-      
+
       //localRestaurant se utiliza para obtener una copia del restaurante que se esta eliminando
       let localRestaurant = this.arrayComponents[idCompoMap].objArrCompo;
-      
+
       this.schedules.forEach(itemSchedule => {
         if(localRestaurant.id == 'NEW'){
           if(localRestaurant.idCompoRestaurant == itemSchedule.idRestaurant){

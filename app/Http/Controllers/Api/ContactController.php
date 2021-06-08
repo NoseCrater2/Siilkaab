@@ -27,7 +27,7 @@ class ContactController extends Controller
         );
     }
 
-   
+
 
     /**
      * Store a newly created resource in storage.
@@ -39,7 +39,7 @@ class ContactController extends Controller
     {
         $data = $request->all();
         $rules = [
-            'url' => 'required|url',
+            'url' => 'url',
             'email' => 'required|email',
             // 'phone' => 'required|alpha_num',
             // 'address' => 'required|string',
@@ -54,7 +54,7 @@ class ContactController extends Controller
             // 'country_id' => 'required|exists:countries,id',
             'hotel_id' => 'required|exists:hotels,id'
         ];
-                  
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
             return response($validator->errors(),422);
@@ -62,7 +62,7 @@ class ContactController extends Controller
             $contact = Contact::create($data);
              return new ContactIndexResource(Contact::findOrFail($contact->id));
         }
-       
+
     }
 
     /**
@@ -76,7 +76,7 @@ class ContactController extends Controller
         return new ContactIndexResource(Contact::findOrFail($contact->id));
     }
 
-  
+
 
     /**
      * Update the specified resource in storage.
@@ -91,29 +91,29 @@ class ContactController extends Controller
 
         $rules = [
             'url' => 'url',
-            'email' => 'email',
-            'phone' => 'alpha_num',
+            'email' => 'required|email',
+            // 'phone' => 'alpha_num',
             // 'address' => 'string',
             // 'zipcode' => 'numeric',
             // 'city' => 'alpha_num',
             // 'state' => 'alpha_num',
-            'manager_name' => 'string',
-            'legal_rep' => 'string',
-            'latitude' => 'numeric',
-            'longitude' => 'numeric',
-            'display_name' => 'string',
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+            'display_name' => 'required|string',
+            'manager_name' => 'required|string',
+            'legal_rep' => 'required|string',
             // 'country_id' => 'exists:countries,id',
-            'hotel_id' => 'exists:hotels,id'
+            'hotel_id' => 'required|exists:hotels,id'
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
-       
+
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
             $contact->update($data);
             return new ContactIndexResource(Contact::findOrFail($contact->id));
         }
-        
+
     }
 
     /**

@@ -38,7 +38,7 @@ class HotelController extends Controller
         return HotelIndexResource::collection(
             auth('sanctum')->user()->hotels
         );
-      
+
     }
 
     public function show(Hotel $hotel)
@@ -55,8 +55,8 @@ class HotelController extends Controller
             'url'=>'required|url',
             'reference_code'=>'required',
             'image'=>'image|nullable',
-            'short_text' => 'required',
-            'large_text' => 'string',
+            'short_text' => 'string|nullable',
+            'large_text' => 'string|nullable',
             'type' => 'required|in:bungalow,cabana,build',
             'num_rooms' => 'required_if:type,build',
             'num_floors' => 'required_if:type,build',
@@ -64,20 +64,20 @@ class HotelController extends Controller
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
 
-        
-           
+
+
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
             if($request->hasFile('image')){
                 $image= $request->image->store('hotels');
                 $data['image']=$image;
-            } 
+            }
             $hotel = Hotel::create($data);
             return new HotelShowResource(Hotel::findOrFail($hotel->id));
         }
-        
-       
+
+
     }
 
     /**
@@ -93,18 +93,19 @@ class HotelController extends Controller
 
         $rules = [
             'title'=>'required|unique:hotels,id,'.'$hotel->id',
-            'url'=>'url',
+            'url'=>'required|url',
             'reference_code'=>'required',
             'image'=>'image|nullable',
-            'type' => 'in:bungalow,cabana,build',
+            'short_text' => 'string|nullable',
+            'large_text' => 'string|nullable',
+            'type' => 'required|in:bungalow,cabana,build',
             'num_rooms' => 'required_if:type,build',
             'num_floors' => 'required_if:type,build',
-            'short_text' => 'required',
             'enabled' => 'in:0,1',
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
 
-        
+
 
         if($validator->fails()){
             return response($validator->errors(),422);
@@ -116,8 +117,8 @@ class HotelController extends Controller
             $hotel->update($data);
             return new HotelShowResource(Hotel::findOrFail($hotel->id));
         }
-       
-        
+
+
     }
 
     public function delete(Request $request)
@@ -129,7 +130,7 @@ class HotelController extends Controller
             "hotelIds"    => "required|array|min:1",
             "hotelIds.*"  => "required|exists:hotels,id|distinct|min:1",
         ];
-                
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
 
         if($validator->fails()){
@@ -139,13 +140,13 @@ class HotelController extends Controller
 
             HotelUser::whereIn('hotel_id',$data['hotelIds'])->delete();
             Hotel::destroy($data['hotelIds']);
-           
+
             });
 
             return response($data['hotelIds'],200);
         }
-        
-       
+
+
     }
 
     /**
@@ -168,7 +169,7 @@ class HotelController extends Controller
 
     public function convert_currency(Request $request)
     {
-        
+
         $data = $request->validate([
             'origin'=>'required|in:EUR,USD,MXN',
             'destiny'=>'required|in:EUR,USD,MXN',
@@ -187,7 +188,7 @@ class HotelController extends Controller
         $response = $client->request('GET',"latest?base=$origen&symbols=$destino");
         //$rate = $response->rates
 
-        
+
 
         return $response;
 
@@ -195,9 +196,9 @@ class HotelController extends Controller
 
     public function getTimeZones()
     {
-      
-        return DateTimeZone::listIdentifiers(DateTimeZone::AMERICA); 
-       
+
+        return DateTimeZone::listIdentifiers(DateTimeZone::AMERICA);
+
     }
 
     public function getHotelsForNoAdmin()
@@ -205,7 +206,7 @@ class HotelController extends Controller
         $logged_user = User::find(auth('api')->user()->id);
         return HotelViewResource::collection(
             $logged_user->hotels
-          
+
         );
     }
 
@@ -228,9 +229,9 @@ class HotelController extends Controller
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
-        
+
           //  return new RoomViewResource(Hotel::findOrFail($hotel->id));
-        }   
+        }
     }
 
 }

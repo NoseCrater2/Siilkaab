@@ -12,29 +12,19 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" xl="8" lg="8" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="6" lg="8" md="12" sm="12" xs="12">
           <v-text-field v-model="computedTitle" :error-messages="errorsInformation.title" prepend-inner-icon="mdi-notebook" label="Titulo" outlined required></v-text-field>
         </v-col>
 
-        <v-col cols="12" xl="8" lg="8" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="6" lg="8" md="12" sm="12" xs="12">
           <v-text-field v-model="computedUrl" :error-messages="errorsInformation.url" prepend-inner-icon="mdi-web" label="URL" outlined required></v-text-field>
         </v-col>
 
-        <v-col cols="12" xl="8" lg="8" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="3" lg="4" md="12" sm="12" xs="12">
           <v-text-field v-model="computedReferenceC" :error-messages="errorsInformation.reference_code" prepend-inner-icon="mdi-barcode" label="Codigo de referencia" outlined required></v-text-field>
         </v-col>
 
-        <v-row class="ml-1">
-          <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
-            <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumRooms" :error-messages="errorsInformation.num_rooms" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
-          </v-col>
-
-          <v-col cols="12" xl="4" lg="4" md="4" sm="4" xs="12">
-            <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumFloors" :error-messages="errorsInformation.num_floors" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
-          </v-col>
-        </v-row>
-
-        <v-col cols="12" md="8" sm="8" xs="12">
+        <v-col cols="12" xl="3" lg="12" md="12" sm="12" xs="12">
           <v-select
             :error-messages="errorsInformation.type"
             class="ml-auto"
@@ -45,6 +35,14 @@
             outlined
           ></v-select>
         </v-col>
+
+        <v-col cols="12" xl="3" lg="4" md="12" sm="12" xs="12">
+          <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumRooms" :error-messages="errorsInformation.num_rooms" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
+        </v-col>
+        <v-col cols="12" xl="3" lg="4" md="12" sm="12" xs="12">
+          <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumFloors" :error-messages="errorsInformation.num_floors" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
+        </v-col>
+
       </v-row>
       <!--FOTOS-->
       <v-banner single-line>
@@ -57,40 +55,41 @@
       </v-banner>
 
       <div class="pa-10">
-        <v-row>
-          <v-card class="mx-3" max-width="400" outlined color="white">
-            <v-icon size="70" style="height:210px; width:300px; border: 1px solid grey;" v-if="currentImage===null">mdi-image</v-icon>
-            <v-img
-              v-else
-              :src="srcImage()"
-              height="210"
-              width="300"
-              contain
-              class="grey darken-4"
-            ></v-img>
-            <!--En este input de file (que se mantendra oculto) se activa dando clic al boton de Vue-->
-            <input
-              accept="image/*"
-              type="file"
-              ref="btnUploadImage"
-              style="display:none"
-              @change="selectImage($event)"
-            />
-            <v-btn
-              block
-              small
-              color="grey"
-              class="white--text mt-1"
-              depressed
-              @click="$refs.btnUploadImage.click()"
-            >Seleccionar imagen</v-btn>
-          </v-card>
-          <div v-if="nameImageFileSpan != ''" class="ml-3">
-            <span class="red--text text-caption">El archivo<span class="font-weight-black font-italic"> "{{nameImageFileSpan}}" </span>no es un tipo de archivo válido</span>
-          </div>
-        </v-row>
+          <v-col cols="12" class="d-flex justify-center">
+            <v-card class="mx-3" max-width="600" outlined color="white">
+              <v-icon size="100" style="height:430px; width:550px; border: 1px solid grey;" v-if="currentImage===null">mdi-image</v-icon>
+              <v-img
+                v-else
+                :src="srcImage()"
+                height="430"
+                width="550"
+                contain
+                class="grey darken-4"
+              ></v-img>
+              <!--En este input de file (que se mantendra oculto) se activa dando clic al boton de Vue-->
+              <input
+                accept="image/*"
+                type="file"
+                ref="btnUploadImage"
+                style="display:none"
+                @change="selectImage($event)"
+              />
+              <v-btn
+                block
+                small
+                color="grey"
+                class="white--text mt-1"
+                depressed
+                @click="$refs.btnUploadImage.click()"
+              >Seleccionar imagen</v-btn>
+            </v-card>
+          </v-col>
+          <v-col cols="12" class="d-flex justify-center" offset-xl="12" offset-lg="12" offset-md="12" offset-sm="12" offset-xs="12">
+            <div v-if="nameImageFileSpan != ''" class="ml-3">
+              <div class="red--text">El archivo<span class="font-weight-black font-italic"> "{{nameImageFileSpan}}" </span>no es un tipo de archivo válido</div>
+            </div>
+          </v-col>
       </div>
-      <br />
       <!--TEXTOS-->
       <v-banner single-line>
         <div class="d-flex align-center ml-1">
@@ -108,7 +107,7 @@
             no-resize
             rows="4"
             row-height="30"
-            maxlength="120"
+            maxlength="191"
             counter
             v-model="computedShortT"
           ></v-textarea>

@@ -12,7 +12,7 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="36">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -22,7 +22,7 @@
             <span class="caption">Sólo dormir. Sin regímenes</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-select
             :items="prioritiesModel"
             :error-messages="computedErrorPriority"
@@ -31,10 +31,10 @@
             label="Prioridad"
             :menu-props="{ bottom: true, offsetY: true }"
             outlined
-            
+
           ></v-select>
         </v-col>
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="12">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -44,7 +44,7 @@
             <span class="caption">Alojamiento con desayuno incluido</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtBreakfastAdult"
             prepend-inner-icon="mdi-currency-usd"
@@ -57,7 +57,7 @@
             :error-messages="computedErrorLodgingBreakfastAdult"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtBreakfastChildren"
             prepend-inner-icon="mdi-currency-usd"
@@ -70,7 +70,7 @@
             :error-messages="computedErrorLodgingBreakfastChildren"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-right="18">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -80,7 +80,7 @@
             <span class="caption">Media pensión con desayuno y cena incluidos</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtHalfPensionAdult"
             prepend-inner-icon="mdi-currency-usd"
@@ -93,7 +93,7 @@
             :error-messages="computedErrorHalfPensionAdult"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtHalfPensionChildren"
             prepend-inner-icon="mdi-currency-usd"
@@ -106,7 +106,7 @@
             :error-messages="computedErrorHalfPensionChildren"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="6">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -116,7 +116,7 @@
             <span class="caption">Pensión completa con comida y cena</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtFullPensionAdult"
             prepend-inner-icon="mdi-currency-usd"
@@ -129,7 +129,7 @@
             :error-messages="computedErrorFullPensionAdult"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtFullPensionChildren"
             prepend-inner-icon="mdi-currency-usd"
@@ -142,7 +142,7 @@
             :error-messages="computedErrorFullPensionChildren"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="6" sm="12" xs="12">
+        <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="76">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -152,7 +152,7 @@
             <span class="caption">Todo incluido</span>
           </v-tooltip>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtAllIncludedAdult"
             prepend-inner-icon="mdi-currency-usd"
@@ -165,7 +165,7 @@
             :error-messages="computedErrorAllIncludedAdult"
           ></v-text-field>
         </v-col>
-        <v-col cols="12" md="3" sm="12" xs="12">
+        <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
           <v-text-field
             v-model.number="computedTxtAllIncludedChildren"
             prepend-inner-icon="mdi-currency-usd"
@@ -188,12 +188,13 @@
           </div>
         </div>
       </v-banner>
-      <v-row class="pa-6 mx-1">
-        <span>
-          Puedes añadir periodos de regimenes especiales.
-          Si un regimen no esta disponible para todas las fechas de la reserva, no
-          se aplicará
-        </span>
+      <v-row class="pa-6">
+          <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
+            <v-alert outlined type="info" color="blue darken-3">
+              Puedes añadir periodos de regimenes especiales.
+              Si un regimen no esta disponible para todas las fechas de la reserva, no se aplicará
+            </v-alert>
+          </v-col>
       </v-row>
       <!--ETIQUETA SpecialRegime.vue-->
       <component

@@ -50,7 +50,7 @@ class ConfigurationController extends Controller
             'timezone' => 'required|timezone',
             'payment_place' => 'required|in:online,offline,both',
             'payment_type'  =>'required',
-            'color' => 'string',
+            'color' => 'string|nullable',
             'currency_id' => 'required|exists:currencies,id',
             'hotel_id' => 'required|exists:hotels,id'
         ];
@@ -100,10 +100,10 @@ class ConfigurationController extends Controller
             'notification_details.*' => 'required|email|distinct',
             'notification_card' => 'required|array|min:1',
             'notification_card.*' => 'required|email|distinct',
-            'timezone' => 'timezone',
+            'timezone' => 'required|timezone',
             'payment_place' => 'required|in:online,offline,both',
             'payment_type'  =>'required',
-            'color' => 'string',
+            'color' => 'string|nullable',
             'currency_id' => 'exists:currencies,id',
             'hotel_id' => 'exists:hotels,id'
         ];

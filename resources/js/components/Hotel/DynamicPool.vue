@@ -1,31 +1,27 @@
 <template>
   <v-carousel-item>
     <v-sheet color="#eeeeee" height="100%">
-      <div style="padding: 2%">
-        <v-row class="ml-1 d-flex">
-          <span>
-            <h2>
-              <strong>Piscina #{{poolNumber+1}}</strong>
-            </h2>
-          </span>
-          <div class="ml-auto mr-2">
+      <div class="pa-3">
+        <v-row :justify="$vuetify.breakpoint.smAndUp ? 'space-between': 'center'" :class="$vuetify.breakpoint.smAndUp ? 'px-4' : ''">
+          <div><h2 class="font-weight-bold">Piscina #{{poolNumber+1}}</h2></div>
+          <div>
             <v-btn
               small
               class="white--text"
               depressed
               color="red"
-              @click="removeCompo(id)"
+              @click="dialogAceptCancelRemovePool = true"
             >Eliminar piscina</v-btn>
           </div>
         </v-row>
         <br />
         <v-text-field v-model="computedPoolName" :error-messages="computedErrorPoolName" outlined label="Nombre de la piscina" required></v-text-field>
         <br />
-        <span>
+        <v-row justify-xl="start" justify-lg="start" justify-md="start" justify="center" class="ml-xl-1 ml-lg-1 ml-xl-1 ml-md-1">
           <strong>Tipo de piscina</strong>
-        </span>
-        <v-row class="mb-n3" justify="space-around">
-          <v-radio-group :error="computedErrorRadioPoolType != '' ? true : false" v-model="computedRadioPoolType" row>
+        </v-row>
+        <v-row :justify="$vuetify.breakpoint.mdAndUp ? 'start' : 'center'" :class="$vuetify.breakpoint.mdAndUp ? 'ml-1' : ''">
+          <v-radio-group :error="computedErrorRadioPoolType != '' ? true : false" v-model="computedRadioPoolType">
             <v-radio label="Interior" value="indoor"></v-radio>
             <v-radio label="Al aire libre" value="outdoor"></v-radio>
           </v-radio-group>
@@ -34,61 +30,59 @@
             </div>
         </v-row>
         <br />
-        <span>
-          <strong>Otros</strong>
-        </span>
+        <v-row justify-xl="start" justify-lg="start" justify-md="start" justify="center" class="ml-xl-1 ml-lg-1 ml-md-1">
+          <div class="font-weight-bold">Otros</div>
+        </v-row>
         <v-row>
-          <v-col cols="6" style="margin-bottom: 1%">
-            <v-card outlined style="padding: 5%; display: flex" color="#e0e0e0">
-              <span class="d-flex align-center" style="margin-right: 5%">
+          <v-col cols="12" xl="4" lg="6" md="6" sm="6" xs="12">
+            <v-card outlined class="d-flex align-center justify-space-between px-3 py-5" color="#e0e0e0">
+              <span class="mr-2">
                 <strong>Aire acondicionado</strong>
               </span>
-              <v-switch class="ml-auto" v-model="computedSwAirConditioned" inset></v-switch>
+              <v-switch v-model="computedSwAirConditioned" inset></v-switch>
             </v-card>
           </v-col>
-          <v-col cols="6" style="margin-bottom: 1%">
-            <v-card outlined style="padding: 5%; display: flex" color="#e0e0e0">
-              <span class="d-flex align-center" style="margin-right: 5%">
+          <v-col cols="12" xl="4" lg="6" md="6" sm="6" xs="12">
+            <v-card outlined class="d-flex align-center justify-space-between px-3 py-5" color="#e0e0e0">
+              <span class="mr-2">
                 <strong>Vista panorámica</strong>
               </span>
-              <v-switch class="ml-auto" v-model="computedSwPanoramicView" inset></v-switch>
+              <v-switch v-model="computedSwPanoramicView" inset></v-switch>
             </v-card>
           </v-col>
-          <v-col cols="6" style="margin-bottom: 1%">
-            <v-card outlined style="padding: 5%; display: flex" color="#e0e0e0">
-              <span class="d-flex align-center" style="margin-right: 5%">
+          <v-col cols="12" xl="4" lg="6" md="6" sm="6" xs="12">
+            <v-card outlined class="d-flex align-center justify-space-between px-3 py-5" color="#e0e0e0">
+              <span class="mr-2">
                 <strong>Chapoteadero</strong>
               </span>
-              <v-switch class="ml-auto" v-model="computedSwWadingPool" inset></v-switch>
+              <v-switch v-model="computedSwWadingPool" inset></v-switch>
             </v-card>
           </v-col>
-          <v-col cols="6" style="margin-bottom: 1%">
-            <v-card outlined style="padding: 5%; display: flex" color="#e0e0e0">
-              <span class="d-flex align-center" style="margin-right: 5%">
+          <v-col cols="12" xl="4" lg="6" md="6" sm="6" xs="12">
+            <v-card outlined class="d-flex align-center justify-space-between px-3 py-5" color="#e0e0e0">
+              <span class="mr-2">
                 <strong>Toallas</strong>
               </span>
-              <v-switch class="ml-auto" v-model="computedSwTowels" inset></v-switch>
+              <v-switch v-model="computedSwTowels" inset></v-switch>
             </v-card>
           </v-col>
-          <v-col cols="6" style="margin-bottom: 1%">
-            <v-card outlined style="padding: 5%; display: flex" color="#e0e0e0">
-              <span class="d-flex align-center" style="margin-right: 5%">
+          <v-col cols="12" xl="4" lg="6" md="6" sm="6" xs="12">
+            <v-card outlined class="d-flex align-center justify-space-between px-3 py-5" color="#e0e0e0">
+              <span class="mr-2">
                 <strong>Pool bar</strong>
               </span>
-              <v-switch class="ml-auto" v-model="computedSwBarPool" inset></v-switch>
+              <v-switch v-model="computedSwBarPool" inset></v-switch>
             </v-card>
           </v-col>
         </v-row>
         <br />
         <br />
-        <v-row class="ml-1 mt-n6" align="center">
-          <span>
-            <strong>Horario de apertura</strong>
-          </span>
+        <v-row justify-xl="start" justify-lg="start" justify-md="start" justify="center" class="ml-xl-1 ml-lg-1 ml-md-1">
+          <div class="font-weight-bold">Horario de apertura</div>
         </v-row>
         <br />
         <v-row class="mt-n6">
-          <v-col md="12" class="d-flex">
+          <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12">
             <v-dialog
               ref="dialogHourOpen"
               v-model="modalHourOpen"
@@ -98,17 +92,15 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-autocomplete
+                outlined
                 :error-messages="computedErrorHourOpen"
                   :items="[computedHourOpen]"
                   v-model="computedHourOpen"
                   v-bind="attrs"
                   v-on="on"
                   readonly
-                  dense
                   label="Desde las"
                   filled
-                  style="margin-right: 2%"
-                  class="col-6"
                 ></v-autocomplete>
               </template>
               <v-time-picker v-if="modalHourOpen" v-model="computedHourOpen" format="24hr" full-width>
@@ -117,6 +109,8 @@
                 <v-btn text color="primary" @click="$refs.dialogHourOpen.save(computedHourOpen)">Aceptar</v-btn>
               </v-time-picker>
             </v-dialog>
+          </v-col>
+          <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12">
             <v-dialog
               ref="dialogHourClose"
               v-model="modalHourClose"
@@ -126,17 +120,15 @@
             >
               <template v-slot:activator="{ on, attrs }">
                 <v-autocomplete
+                outlined
                 :error-messages="computedErrorHourClose"
                   :items="[computedHourClose]"
                   v-model="computedHourClose"
                   v-bind="attrs"
                   v-on="on"
                   readonly
-                  dense
                   label="Hasta las"
                   filled
-                  style="margin-right: 2%"
-                  class="col-6"
                 ></v-autocomplete>
               </template>
               <v-time-picker v-if="modalHourClose" v-model="computedHourClose" format="24hr" full-width>
@@ -149,6 +141,37 @@
         </v-row>
       </div>
     </v-sheet>
+        <v-row justify="center">
+          <v-dialog
+            v-model="dialogAceptCancelRemovePool"
+            persistent
+            max-width="290"
+          >
+            <v-card>
+              <v-card-title class="headline">
+                ¿Eliminar piscina?
+              </v-card-title>
+              <v-card-text>Al aceptar, esta piscina se eliminará.</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red"
+                  text
+                  @click="dialogAceptCancelRemovePool = false"
+                >
+                  CANCELAR
+                </v-btn>
+                <v-btn
+                  color="blue"
+                  text
+                  @click="btnApplyRemovePool()"
+                >
+                  ACEPTAR
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
   </v-carousel-item>
 </template>
 
@@ -202,6 +225,7 @@ export default {
   },
   data() {
     return {
+        dialogAceptCancelRemovePool: false,
         componentID: this.idCompo + "" + this.objArrCompo.id,
         id: this.idCompo,
         arrayComponents: [],
@@ -380,6 +404,10 @@ export default {
     }
   },
   methods: {
+    btnApplyRemovePool(){
+        this.dialogAceptCancelRemovePool = false;
+        this.removeCompo(this.id);
+    },
     removeCompo(id) {
       this.$emit("removeCompo", id);
     },
