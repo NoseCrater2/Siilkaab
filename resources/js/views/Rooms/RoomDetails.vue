@@ -181,7 +181,7 @@
                 <span>¿Necesitas agregar más bedrooms para está habitación?</span><br>
                 <span class="caption">Por ejemplo, puede tener una habitación doble con 2 camas gemelas (twin) o 1 cama (queen)</span>
               </v-col>
-              <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12" class="d-flex align-center justify-xl-end justify-lg-end justify-md-end justify-sm-end justify-center"> 
+              <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12" class="d-flex align-center justify-xl-end justify-lg-end justify-md-end justify-sm-end justify-center">
                 <v-btn @click="addCompoButton()" outlined>
                   Agregar bedroom
                 </v-btn>

@@ -18,9 +18,10 @@
         </v-overlay>
         <v-container>
           <v-row no-gutters>
-            <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12">
-              <!--Usamos componente LateralMenu-->
-              <LateralMenu></LateralMenu>
+            <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12" :style="$vuetify.breakpoint.sm ? 'position: sticky; z-index: 2; top: 137px;' : $vuetify.breakpoint.xs ? 'position: sticky; z-index: 2; top: 189px;' : ''">
+              <!--Usamos componente LateralMenu o LateralMenuMobile-->
+              <LateralMenu v-if="$vuetify.breakpoint.mdAndUp" :style="$vuetify.breakpoint.mdAndUp ? 'position: sticky; z-index: 2; top: 134px' : ''"></LateralMenu>
+              <LateralMenuMobile v-if="!$vuetify.breakpoint.mdAndUp"></LateralMenuMobile>
             </v-col>
             <v-col cols="12" xl="9" lg="9" md="9" sm="12" xs="12">
               <div v-if="iditemsListOptions === 0 && chargeView === true">
@@ -91,6 +92,7 @@ import { mapState, mapActions, mapMutations } from "vuex";
 
 import ButtonActionsSup from "../../views/Hotel/ButtonActionsSup";
 import LateralMenu from "../../views/Hotel/LateralMenu";
+import LateralMenuMobile from "../../views/Hotel/LateralMenuMobile";
 import Information from "../../views/Hotel/Information";
 import Configuration from "../../views/Hotel/Configuration";
 import Contact from "../../views/Hotel/Contact";
@@ -178,6 +180,7 @@ export default {
   components: {
     ButtonActionsSup,
     LateralMenu,
+    LateralMenuMobile,
     Information,
     Configuration,
     Contact,

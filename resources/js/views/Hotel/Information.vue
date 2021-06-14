@@ -36,10 +36,10 @@
           ></v-select>
         </v-col>
 
-        <v-col cols="12" xl="3" lg="4" md="12" sm="12" xs="12">
+        <v-col cols="12" xl="3" lg="4" md="6" sm="6" xs="12">
           <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumRooms" :error-messages="errorsInformation.num_rooms" prepend-inner-icon="mdi-home-plus" label="Número de habitaciones" outlined required></v-text-field>
         </v-col>
-        <v-col cols="12" xl="3" lg="4" md="12" sm="12" xs="12">
+        <v-col cols="12" xl="3" lg="4" md="6" sm="6" xs="12">
           <v-text-field maxlength="4" @keydown="keyhandler" :rules="[rules.numbersFloorRoom]" :class="visibleNumRoomsNumFloors == false ? 'd-none' : ''" v-model.number="computedNumFloors" :error-messages="errorsInformation.num_floors" prepend-inner-icon="mdi-home-plus" label="Número de pisos" outlined required></v-text-field>
         </v-col>
 

@@ -104,7 +104,7 @@ class RegimeController extends Controller
             'full_pension_adult' => 'numeric',
             'all_included_children' => 'numeric',
             'all_included_adult' => 'numeric',
-            'hotel_id' => 'required|exists:hotels,id',
+            'hotel_id' => 'exists:hotels,id',
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
 

@@ -93,12 +93,12 @@ class HotelController extends Controller
 
         $rules = [
             'title'=>'required|unique:hotels,id,'.'$hotel->id',
-            'url'=>'required|url',
+            'url'=>'url',
             'reference_code'=>'required',
-            'image'=>'image|nullable',
+            'image'=>'image',
             'short_text' => 'string|nullable',
             'large_text' => 'string|nullable',
-            'type' => 'required|in:bungalow,cabana,build',
+            'type' => 'in:bungalow,cabana,build',
             'num_rooms' => 'required_if:type,build',
             'num_floors' => 'required_if:type,build',
             'enabled' => 'in:0,1',
