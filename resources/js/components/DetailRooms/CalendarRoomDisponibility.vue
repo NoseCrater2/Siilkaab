@@ -1,21 +1,22 @@
 <template>
-    <v-row justify="space-between">
-        <v-col cols="12">
-            <v-toolbar flat>
+    <v-row>
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
+            <v-toolbar flat dense class="mt-n5">
                 <v-btn
                     outlined
-                    class="mr-4"
+                    class="ml-n4"
                     color="grey darken-2"
                     @click="setToday"
                     >MES ACTUAL</v-btn
                 >
+                <v-spacer></v-spacer>
                 <v-btn fab text small color="grey darken-2" @click="prev">
                     <v-icon small>mdi-chevron-left</v-icon>
                 </v-btn>
                 <v-btn fab text small color="grey darken-2" @click="next">
                     <v-icon small> mdi-chevron-right </v-icon>
                 </v-btn>
-                <v-toolbar-title v-if="$refs.calendar">
+                <v-toolbar-title v-if="$refs.calendar" class="mr-n4">
                     {{ $refs.calendar.title }}
                 </v-toolbar-title>
             </v-toolbar>
@@ -33,8 +34,8 @@
             >
             </v-calendar>
         </v-col>
-        <v-col cols="12" class="mt-11">
-            <div class="text-right">
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12" class="mt-4 mb-n5">
+            <div class="mx-n3">
                 <span class="mx-2" style="color: green">
                     <v-icon color="green" left>mdi-checkbox-blank</v-icon>
                     Disponible
@@ -118,7 +119,7 @@ export default {
                     }
                     let startDate = moment(itemRate.start);
                     let diffDays = moment(itemRate.end).diff(itemRate.start, 'days') + 1;
-                    for (let index = 0; index < diffDays; index++) { 
+                    for (let index = 0; index < diffDays; index++) {
                         secondCategoryEvents.push({
                             name: `$${itemRate.rack}`,
                             start: startDate.clone().format('YYYY-MM-DD'),
@@ -128,7 +129,7 @@ export default {
                         });
                         startDate.add(1, 'days');
                     }
-                } 
+                }
                 else if (
                 itemRate.monday > 0 ||
                 itemRate.tuesday > 0 ||
@@ -190,7 +191,7 @@ export default {
             let deletedThird = [];
             for (let indexFirstCategory = 0; indexFirstCategory < firstCategoryEvents.length; indexFirstCategory++) {
                 for (let indexSecondCategory = 0; indexSecondCategory < secondCategoryEvents.length; indexSecondCategory++) {
-                    if((firstCategoryEvents[indexFirstCategory].start == secondCategoryEvents[indexSecondCategory].start) && (firstCategoryEvents[indexFirstCategory].category != secondCategoryEvents[indexSecondCategory].category)){           
+                    if((firstCategoryEvents[indexFirstCategory].start == secondCategoryEvents[indexSecondCategory].start) && (firstCategoryEvents[indexFirstCategory].category != secondCategoryEvents[indexSecondCategory].category)){
                         deletedSecond.push(indexSecondCategory);
                     }
                 }
@@ -202,7 +203,7 @@ export default {
             }
             for (let indexSecondCategory = 0; indexSecondCategory < secondCategoryEvents.length; indexSecondCategory++) {
                 for (let indexThirdCategory = 0; indexThirdCategory < thirdCategoryEvents.length; indexThirdCategory++) {
-                    if((secondCategoryEvents[indexSecondCategory].start == thirdCategoryEvents[indexThirdCategory].start) && (secondCategoryEvents[indexSecondCategory].category != thirdCategoryEvents[indexThirdCategory].category)){           
+                    if((secondCategoryEvents[indexSecondCategory].start == thirdCategoryEvents[indexThirdCategory].start) && (secondCategoryEvents[indexSecondCategory].category != thirdCategoryEvents[indexThirdCategory].category)){
                         deletedThird.push(indexThirdCategory);
                     }
                 }

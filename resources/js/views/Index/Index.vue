@@ -4,10 +4,10 @@
       <!--Usamos el componente NavbarSiilkaab.vue-->
       <NavbarSiilkaab></NavbarSiilkaab>
       <v-main>
-      
+
           <!--Aqui se vera con router-view la informacion de hoteles, usuarios, etc-->
           <router-view></router-view>
-       
+
       </v-main>
       <!--Usamos el componente NavigationDashboard.vue-->
       <NavigationDashboard></NavigationDashboard>
@@ -22,13 +22,9 @@ import NavbarSiilkaab from "./NavbarSiilkaab";
 import NavigationDashboard from "./NavigationDashboard";
 
 export default {
-  mounted(){
-    this.$store.dispatch("getHotels");
-  },
   data() {
     return {
-      lastStorage: this.$store.state.lastStorage,
-      dialog: false
+
     };
   },
   props: {

@@ -31,7 +31,7 @@ const bookingsModule = {
                     }
                 }
             })
-            console.log(parseFloat(additionPriceProp))
+
             return additionPriceProp;
 
             //     state.bookings.rooms.map(function(room){
@@ -56,21 +56,37 @@ const bookingsModule = {
 
     mutations: {
         setNewRoom(state, newRoom){
+            console.log("NEWNENENNENE", newRoom)
           state.bookings.rooms[newRoom.index] = newRoom.room
+          state.bookings.rooms[newRoom.index].selectedCard = newRoom.selectedCard
+          let itemLocalStorage = JSON.parse(localStorage.getItem('reservationStorage'));
+          itemLocalStorage.booking = JSON.parse(JSON.stringify(state.bookings));
+          localStorage.setItem('reservationStorage', JSON.stringify(itemLocalStorage))
         },
         setGeneralInformation(state, information){
             state.bookings.from = information.from
             state.bookings.to = information.to
             state.bookings.nights = information.nights
             state.bookings.guests = information.rooms
+            let itemLocalStorage = JSON.parse(localStorage.getItem('reservationStorage'));
+            itemLocalStorage.information = information
+            itemLocalStorage.booking = state.bookings;
+            localStorage.setItem('reservationStorage', JSON.stringify(itemLocalStorage))
         },
 
         resetRooms(state){
+            let localBooking = JSON.parse(localStorage.getItem('reservationStorage'));
+            localBooking.rooms = [];
+            localStorage.setItem('reservationStorage', JSON.stringify({booking: localBooking, information: {}}))
            state.bookings.rooms.length = 0
         },
 
         setReservations(state, reservations){
             state.reservations = reservations
+        },
+
+        setBookings(state, bookings){
+            state.bookings = bookings;
         },
 
         setReservation(state, reservation){
@@ -107,6 +123,21 @@ const bookingsModule = {
     },
 
     actions: {
+        chargeLocalStorage({commit}){
+            if(localStorage.getItem('reservationStorage')){
+              const booking = JSON.parse(localStorage.getItem('reservationStorage'))
+              commit('setBookings', booking.booking)
+              return
+            }
+            let localBooking = {
+                nights : 0,
+                from : null,
+                to : null,
+                rooms: [],
+                guests: [],
+            }
+            localStorage.setItem('reservationStorage', JSON.stringify({booking: localBooking, information: {}}))
+        },
         addRoom: async function ({commit, state}, newRoom) {
             commit('setNewRoom',newRoom)
         },

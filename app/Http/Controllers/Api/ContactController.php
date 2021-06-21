@@ -103,7 +103,7 @@ class ContactController extends Controller
             'manager_name' => 'required|string',
             'legal_rep' => 'required|string',
             // 'country_id' => 'exists:countries,id',
-            'hotel_id' => 'required|exists:hotels,id'
+            'hotel_id' => 'exists:hotels,id'
         ];
         $validator= Validator::make($data,$rules, Messages::getMessages());
 

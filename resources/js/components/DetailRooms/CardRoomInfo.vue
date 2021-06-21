@@ -1,23 +1,17 @@
 <template>
-        <v-row>
-            <v-col cols="4">
-                <v-card height="450" flat>
-                <v-img width="216" height="161" :src="`/img/${room.default_image}`">
-                </v-img>
-                </v-card>
-              
-            </v-col >
-            <v-col cols="8">
-                <v-card height="450" flat>
-                    <v-card-title>{{room.name}}</v-card-title>
-                    <v-card-text>
-                        <p>Capacidad Máxima ({{ room.max_adults }} Adultos y {{ room.max_children}} Niños )</p>
-                        <p> <b>Esta {{room.type }} cuenta con:</b> </p>
-                        {{room.large_text}}
-                    </v-card-text>
-                </v-card>
-            </v-col>
-        </v-row>
+    <v-card flat height="452">
+            <v-row>
+                <v-col cols="4" xl="4" lg="4" md="4" sm="4" xs="4">
+                    <v-img width="216" height="161" :src="`/img/${room.default_image}`">
+                    </v-img>
+                </v-col >
+                <v-col cols="8" xl="8" lg="8" md="8" sm="8" xs="8">
+                    <p>Capacidad máxima: ({{ room.max_adults }} Adultos y {{ room.max_children}} Niños)</p>
+                    <p> <b>Esta habitación de tipo "{{room.type}}" cuenta con:</b></p>
+                    <span v-html="room.large_text"></span>
+                </v-col>
+            </v-row>
+    </v-card>
 </template>
 
 <script>

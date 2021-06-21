@@ -132,7 +132,7 @@
             x-large
             block
             :loading="loading"
-            :disabled="loading"
+            :disabled="((!isLoadedPromises && !showResults) || loading) ? true : false"
             class="white--text"
              color="primary"
              @click="search()">
@@ -145,8 +145,18 @@
     </v-card>
     </v-form>
   </v-row>
-    <v-row justify="center" class="px-0 mx-0" v-if="bookings.rooms.length > 0" >
-      <v-breadcrumbs  :items="items">
+    <v-row justify="center" class="px-0 mx-0" v-if="showResults" >
+      <v-breadcrumbs :items="items">
+        <template v-slot:item="{ item }">
+            <v-breadcrumbs-item
+                :active-class="$route.name == item.to.name ? 'v-breadcrumbs__item--disabled black--text' : 'v-breadcrumbs__item--disabled'"
+                :disabled="item.disabled"
+                :to="item.to"
+            >
+              {{ item.text.toUpperCase() }}
+            </v-breadcrumbs-item>
+        </template>
+
         <template v-slot:divider>
             <v-icon>mdi-chevron-right</v-icon>
         </template>
@@ -158,16 +168,16 @@
             width="100%"
             dense
             text
-            class="text-center mx-2 mb-n3"
+            class="text-center mx-5 mb-n3"
             color="success"
         >
             Estás a un paso de completar tu reserva.
         </v-alert>
       <v-container fluid style="width: 100%">
         <v-row no-gutters>
-        <v-col cols="12" xl="3" lg="3" md="3" sm="12" xs="12" order-md="1" order-sm="1">
+        <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12" order-md="1" order-sm="1">
         <v-card flat style="position: sticky; top:0;">
-          <v-avatar tile size="100%" @click="openHotelDialog">
+          <v-avatar tile size="97%" @click="openHotelDialog" :class="$vuetify.breakpoint.lgAndUp ? 'mx-2' : 'mx-4'">
             <v-hover v-slot="{ hover }">
                   <v-img width="auto" height="auto" :src="`/img/${hotel.image}`">
                      <v-row style="background-color: rgba(10, 10, 10, 0.5);" align="center" justify="center" v-if="hover">
@@ -176,19 +186,17 @@
                   </v-img>
             </v-hover>
           </v-avatar>
-            <v-card-title class="font-weight-bold ml-1">{{hotel.title}}</v-card-title>
-            <v-card-subtitle>
-                <v-row>
-                    <v-col cols="1">
-                        <v-icon>mdi-map-marker</v-icon>
-                    </v-col>
-                    <v-col cols="11">
-                        <span>{{hotel.title}} jajaaaaaaaaaaaaaaaaajsjs pero lo que pasa es que ya es tarde jajaja</span>
-                    {{contact.display_name}}
-                    </v-col>
-                </v-row>
-            </v-card-subtitle>
-          <v-divider></v-divider>
+                <h2 class="text-center mt-2">{{hotel.title}}</h2>
+                <v-alert
+                    icon="mdi-map-marker"
+                    colored-border
+                    type="info"
+                    elevation="0"
+                    style="font-size: 13px"
+                  >
+                    {{hotel.title}}
+                </v-alert>
+          <v-divider class="mx-2"></v-divider>
           <div class="d-flex justify-space-between">
             <v-col cols="5">
                 <div class="font-weight-bold" style="font-size: 13px">
@@ -225,9 +233,9 @@
                     </div>
                 </v-col>
             </div>
-            <v-divider></v-divider>
+            <v-divider class="mx-2"></v-divider>
             <div v-for="(room, index) in bookings.rooms" :key="index">
-                <div class="d-flex justify-space-between mb-n3">
+                <div class="d-flex justify-space-between align-center mb-n3">
                 <v-col cols="7">
                     <div class="font-weight-bold">
                         {{room.name}}
@@ -239,7 +247,7 @@
                     </div>
                 </v-col>
                 </div>
-                <div class="d-flex justify-space-between mb-n5">
+                <div class="d-flex justify-space-between align-center mb-n5">
                     <v-col cols="5">
                         <div class="font-weight-bold" style="font-size: 13px">
                             Ocupacion:
@@ -251,7 +259,7 @@
                         </div>
                     </v-col>
                 </div>
-                <div class="d-flex justify-space-between mb-n5">
+                <div class="d-flex justify-space-between align-center mb-n5">
                     <v-col cols="5">
                         <div class="font-weight-bold" style="font-size: 13px">
                             Régimen:
@@ -263,21 +271,21 @@
                         </div>
                     </v-col>
                 </div>
-                <div class="d-flex justify-space-between">
+                <div class="d-flex justify-space-between align-center">
                     <v-col cols="5">
                         <div class="font-weight-bold" style="font-size: 13px">
                             Condiciones de la tarifa:
                         </div>
                     </v-col>
-                    <v-col cols="7">
-                        <div class="d-flex justify-end text-right" style="font-size: 13px">
+                    <v-col cols="7" class="">
+                        <div class="text-right" style="font-size: 13px">
                             {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
                         </div>
                     </v-col>
                 </div>
-                <v-divider></v-divider>
+                <v-divider class="mx-2"></v-divider>
             </div>
-            <div class="d-flex justify-space-between">
+            <div class="d-flex justify-space-between align-center">
             <v-col cols="5">
                 <div class="font-weight-bold">
                     Total reserva:
@@ -296,12 +304,12 @@
         </v-card>
       </v-col>
 
-       <v-col cols="12" xl="9" lg="9" md="9" sm="12" xs="12" order-md="2" order-sm="2">
-        <router-view :key="$route.path"></router-view>
-      </v-col>
+        <v-col cols="12" xl="9" lg="9" md="12" sm="12" xs="12" order-md="2" order-sm="2">
+            <router-view :key="$route.path"></router-view>
+        </v-col>
         </v-row>
-
-        <v-row>
+        <v-divider class="mx-2 mb-2"></v-divider>
+        <v-row class="mx-2">
           <iframe
           width="100%"
           height="50%"
@@ -315,27 +323,28 @@
         </v-row>
       </v-container>
     </v-row>
-     <DialogDetailHotel @closeDialog="closeHotelDetail" :dialog="dialog" v-if="dialog"  />
+     <DialogDetailHotel @closeDialog="closeHotelDetail" :dialog="dialog" v-if="dialog" />
   </v-app>
 </template>
 
 
 <script >
-import {mapGetters, mapState } from 'vuex';
+import {mapGetters, mapState, mapActions } from 'vuex';
 import DialogDetailHotel from '../../components/DetailRooms/DialogDetailHotel'
 export default {
   data () {
     return {
+        isLoadedPromises: false,
       dialog: false,
       items: [
         {
           text: 'Selecciona habitación',
-
+          disabled: false,
           to: {name: 'selectRoom'}
         },
         {
           text: 'Datos personales',
-
+          disabled: true,
           to: {name: 'PersonalData'}
         },
         {
@@ -370,8 +379,43 @@ export default {
       ]
     }
   },
-
+  mounted(){
+      this.chargePromises();
+  },
   methods:{
+      ...mapActions(["getHotel", "getCountries", "getContacts", "getConfiguration", "getConditions", "chargeLocalStorage", "addRoom"]),
+        async chargePromises(){
+            let promiseHotel = 1;
+            let promiseCountries = 1;
+            let promiseContacts = 1;
+            let promiseConfiguration = 1;
+            let promiseConditions = 1;
+
+            promiseHotel = await this.getHotel(this.id);
+            promiseCountries = await this.getCountries(this.id);
+            promiseContacts = await this.getContacts(this.hotel.idContact);
+            promiseConfiguration = await this.getConfiguration(this.hotel.idConfiguration);
+            promiseConditions = await this.getConditions(this.hotel.idCondition);
+
+            await Promise.all([promiseHotel, promiseCountries, promiseContacts, promiseConfiguration, promiseConditions]).then(values => {
+                this.isLoadedPromises = true;
+            }).catch(()=>{
+                this.isLoadedPromises = true;
+            });
+            //Cargamos localStorage
+            await this.chargeLocalStorage();
+            let itemLocalStorage = JSON.parse(localStorage.getItem('reservationStorage'));
+            if(Object.keys(itemLocalStorage.information).length){
+                this.id = itemLocalStorage.information.id
+                this.date = itemLocalStorage.information.from
+                this.date2 = itemLocalStorage.information.to
+                this.form = itemLocalStorage.information.rooms
+                this.selectedRooms = parseInt(itemLocalStorage.information.rooms.length);
+                if(itemLocalStorage.booking.rooms.length > 0){
+                    this.localGetAvailabilityRooms(itemLocalStorage.information);
+                }
+            }
+        },
     changeCoutRooms(){
       this.form = []
        for (let index = 0; index < parseInt(this.selectedRooms); index++) {
@@ -396,9 +440,29 @@ export default {
       this.dialog = false
     },
 
+    localGetAvailabilityRooms(terms, formMethodFind = false){
+        this.$store.dispatch('getAvailabilityRooms',terms).then(()=>{
+            if(formMethodFind){
+                for (const prop in this.availableRooms) {
+                    //AÑADIMOS AL LOCALSTORAGE LAS HABITACIONES
+                    this.addRoom({index: parseInt(prop - 1), room: this.availableRooms[prop][0], selectedCard: 0})
+                    console.log("PROPROR", this.availableRooms[prop][0])
+                }
+            }
+          this.showResults = true;
+          this.loading = false;
+          terms.nights = this.$moment(this.date2).diff(this.$moment(this.date),'days')
+          this.$store.dispatch('addGeneralInformation',terms).then(()=>{
+            if(this.$route.name !== 'selectRoom' && this.$route.name !== 'PersonalData'){
+              this.$router.push({name: 'selectRoom'})
+            }
+          })
+        })
+    },
+
     search(){
+        this.loading = true;
       if(this.$refs.form.validate()){
-        // this.loading = true;
         this.$store.dispatch('resetRooms').then(()=>{
            this.errors = null;
         let terms = {id: 0, from: null, to: null, rooms: []}
@@ -407,14 +471,7 @@ export default {
         terms.to = this.date2
         terms.rooms = this.form
         console.log(terms.rooms)
-        this.$store.dispatch('getAvailabilityRooms',terms).then(()=>{
-          this.showResults = true;
-          terms.nights = this.$moment(this.date2).diff(this.$moment(this.date),'days')
-          this.$store.dispatch('addGeneralInformation',terms)
-          if(this.$route.name !== 'selectRoom'){
-            this.$router.push({name: 'selectRoom'})
-          }
-        })
+        this.localGetAvailabilityRooms(terms, true);
         })
 
       }
@@ -435,6 +492,7 @@ export default {
 
   computed:{
      ...mapState({
+        availableRooms: state => state.RoomModule.availableRooms,
         bookings: state => state.bookingsModule.bookings,
         hotel: (state) => state.HotelModule.hotel,
         contact: state => state.HotelModule.contacts,
@@ -521,19 +579,6 @@ export default {
     noAvailiability(){
       return 404 === this.status;
     }
-  },
-
-
-  mounted(){
-
-    this.$store.dispatch('getHotel', this.id).then(() => {
-        this.$store.dispatch('getCountries')
-        this.$store.dispatch('getContacts', this.hotel.idContact)
-        this.$store.dispatch('getConfiguration', this.hotel.idConfiguration)
-        this.$store.dispatch('getConditions', this.hotel.idCondition)
-    })
-
-
   },
 
   props:['id'],

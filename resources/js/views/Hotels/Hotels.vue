@@ -1,8 +1,11 @@
 <template>
   <div>
     <v-container class="elevation-1 outlined" fluid>
-    <div v-if="hotels === []">
+    <div v-if="isLoadedPromises == false">
       <v-app id="inspire">
+        <div class="text-center mb-7">
+          <span class="text-h4 text-uppercase font-weight-bold">Hoteles</span>
+        </div>
         <v-data-table
           item-key="title"
           class="elevation-1"
@@ -150,10 +153,11 @@
 </template>
 
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
+        isLoadedPromises: false,
         isLoadingActionSwitchChangeState: false,
       deleteDialog: false,
       selected: [],
@@ -190,8 +194,22 @@ export default {
     })
   },
 
+  mounted(){
+      this.chargePromises();
+  },
+
   methods: {
+    ...mapActions(["getHotels"]),
     ...mapMutations(["setSnackbar"]),
+    async chargePromises(){
+        let promiseHotels = 1;
+        promiseHotels = this.getHotels();
+        await Promise.all([promiseHotels]).then(values => {
+            this.isLoadedPromises = true;
+        }).catch(()=>{
+            this.isLoadedPromises = true;
+        });
+    },
 
     showDeleteDialog() {
       this.deleteDialog = true;

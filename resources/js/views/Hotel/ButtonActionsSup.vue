@@ -107,7 +107,7 @@ export default {
         return this.idHotel;
       },
       set(idHotel) {
-        this.idHotel = idHotel;
+        this.idHotel = parseInt(idHotel);
         router.replace({ name: "Hotel", params: { id: this.idHotel } });
         //Setea todo a null para antes de hacer el cambio de pestaña de hotel
         this.setReinicialized();
@@ -208,6 +208,8 @@ export default {
             //metodo post
             if(this.hotel.id == null){
               this.postEditHotel(this.hotel).then(()=>{
+                router.replace({ name: "Hotel", params: { id: parseInt(this.hotel.id) } });
+                this.idHotel = parseInt(this.hotel.id);
                 //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
                   // this.$router.replace({ name: "Hotel", params: { id: this.hotel.id } });
@@ -295,6 +297,7 @@ export default {
 
           if(this.hotel.idContact == null){
             //metodo post
+            console.log("IDHOTEL", idHotel, this.$route.params.id)
             this.contacts.hotel_id = idHotel;
             await this.postEditContacts(this.contacts).then(()=>{
                 progress++
