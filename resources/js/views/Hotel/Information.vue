@@ -345,6 +345,14 @@ export default {
             this.ddwnTypeModel = "Edificio";
           }
         }
+        else{
+            this.numRoomsModel = '';
+            this.hotel.num_rooms = '';
+            this.numFloorsModel = '';
+            this.hotel.num_floors = '';
+            this.visibleNumRoomsNumFloors = true;
+            this.hotel.type = "build";
+        }
         return this.ddwnTypeModel;
       },
       set(model) {

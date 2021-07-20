@@ -175,9 +175,9 @@
         </v-alert>
       <v-container fluid style="width: 100%">
         <v-row no-gutters>
-        <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12" order-md="1" order-sm="1">
+        <v-col cols="12" xl="3" lg="3" md="12" sm="12" xs="12" order="1" order-xl="1" order-lg="1">
         <v-card flat style="position: sticky; top:0;">
-          <v-avatar tile size="97%" @click="openHotelDialog" :class="$vuetify.breakpoint.lgAndUp ? 'mx-2' : 'mx-4'">
+          <v-avatar tile size="97%" @click="openHotelDialog" :class="$vuetify.breakpoint.lgAndUp ? 'mx-2' : 'mx-4'" v-if="$vuetify.breakpoint.lgAndUp">
             <v-hover v-slot="{ hover }">
                   <v-img width="auto" height="auto" :src="`/img/${hotel.image}`">
                      <v-row style="background-color: rgba(10, 10, 10, 0.5);" align="center" justify="center" v-if="hover">
@@ -234,58 +234,60 @@
                 </v-col>
             </div>
             <v-divider class="mx-2"></v-divider>
-            <div v-for="(room, index) in bookings.rooms" :key="index">
-                <div class="d-flex justify-space-between align-center mb-n3">
-                <v-col cols="7">
-                    <div class="font-weight-bold">
-                        {{room.name}}
-                    </div>
-                </v-col>
-                <v-col cols="5">
-                    <div class="d-flex justify-end text-right">
-                        {{configuration.currency_symbol}}{{roomPrice(room.rates[0])}} {{configuration.currency_code}}
-                    </div>
-                </v-col>
-                </div>
-                <div class="d-flex justify-space-between align-center mb-n5">
-                    <v-col cols="5">
-                        <div class="font-weight-bold" style="font-size: 13px">
-                            Ocupacion:
-                        </div>
-                    </v-col>
+            <div v-if="$vuetify.breakpoint.lgAndUp">
+                <div v-for="(room, index) in bookings.rooms" :key="index">
+                    <div class="d-flex justify-space-between align-center mb-n3">
                     <v-col cols="7">
-                        <div class="d-flex justify-end text-right" style="font-size: 13px">
-                            {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                        <div class="font-weight-bold">
+                            {{room.name}}
                         </div>
                     </v-col>
-                </div>
-                <div class="d-flex justify-space-between align-center mb-n5">
                     <v-col cols="5">
-                        <div class="font-weight-bold" style="font-size: 13px">
-                            Régimen:
+                        <div class="d-flex justify-end text-right">
+                            {{configuration.currency_symbol}}{{roomPrice(room.rates[0])}} {{configuration.currency_code}}
                         </div>
                     </v-col>
-                    <v-col cols="7">
-                        <div class="d-flex justify-end text-right" style="font-size: 13px">
-                            {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
-                        </div>
-                    </v-col>
+                    </div>
+                    <div class="d-flex justify-space-between align-center mb-n5">
+                        <v-col cols="5">
+                            <div class="font-weight-bold" style="font-size: 13px">
+                                Ocupacion:
+                            </div>
+                        </v-col>
+                        <v-col cols="7">
+                            <div class="d-flex justify-end text-right" style="font-size: 13px">
+                                {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                            </div>
+                        </v-col>
+                    </div>
+                    <div class="d-flex justify-space-between align-center mb-n5">
+                        <v-col cols="5">
+                            <div class="font-weight-bold" style="font-size: 13px">
+                                Régimen:
+                            </div>
+                        </v-col>
+                        <v-col cols="7">
+                            <div class="d-flex justify-end text-right" style="font-size: 13px">
+                                {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                            </div>
+                        </v-col>
+                    </div>
+                    <div class="d-flex justify-space-between align-center">
+                        <v-col cols="5">
+                            <div class="font-weight-bold" style="font-size: 13px">
+                                Condiciones de la tarifa:
+                            </div>
+                        </v-col>
+                        <v-col cols="7" class="">
+                            <div class="text-right" style="font-size: 13px">
+                                {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
+                            </div>
+                        </v-col>
+                    </div>
+                    <v-divider class="mx-2"></v-divider>
                 </div>
-                <div class="d-flex justify-space-between align-center">
-                    <v-col cols="5">
-                        <div class="font-weight-bold" style="font-size: 13px">
-                            Condiciones de la tarifa:
-                        </div>
-                    </v-col>
-                    <v-col cols="7" class="">
-                        <div class="text-right" style="font-size: 13px">
-                            {{ $moment(bookings.from).format("Do dddd MMM gggg") }}
-                        </div>
-                    </v-col>
-                </div>
-                <v-divider class="mx-2"></v-divider>
             </div>
-            <div class="d-flex justify-space-between align-center">
+            <div class="d-flex justify-space-between align-center" v-if="$vuetify.breakpoint.lgAndUp">
             <v-col cols="5">
                 <div class="font-weight-bold">
                     Total reserva:
@@ -304,11 +306,11 @@
         </v-card>
       </v-col>
 
-        <v-col cols="12" xl="9" lg="9" md="12" sm="12" xs="12" order-md="2" order-sm="2">
+        <v-col cols="12" xl="9" lg="9" md="12" sm="12" xs="12" order="2" order-xl="2" order-lg="2">
             <router-view :key="$route.path"></router-view>
         </v-col>
         </v-row>
-        <v-divider class="mx-2 mb-2"></v-divider>
+        <v-divider v-if="$vuetify.breakpoint.lgAndUp" class="mx-2 mb-2"></v-divider>
         <v-row class="mx-2">
           <iframe
           width="100%"

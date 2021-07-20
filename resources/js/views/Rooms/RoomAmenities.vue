@@ -11,21 +11,20 @@
                     mandatory
                     v-model="itemArrayModelBtn.btnGroupModel"
                     dark
-                    :active-class="roomAmenities.length>0?'blue darken-3':'red'"
                 >
-                  <v-btn small value="all">
+                  <v-btn small value="all" :active-class="colorBtnToggle">
                     <span>Todas</span>
                   </v-btn>
-                  <v-btn small value="some">
+                  <v-btn small value="some" :active-class="colorBtnToggle">
                     <span>Algunas habitaciones</span>
                   </v-btn>
-                  <v-btn small value="none">
+                  <v-btn small value="none" :active-class="colorBtnToggle">
                     <span>Ninguna</span>
                   </v-btn>
                 </v-btn-toggle>
 
                 <div v-if="itemArrayModelBtn.btnGroupModel=='some'" class="mt-3 d-flex flex-column align-center">
-                    <span v-if="roomAmenities.length > 0" class="font-weight-bold body-2">Selecciona en que habitación aplica esta amenidad</span>
+                    <span v-if="(roomAmenities.length > 0)" class="font-weight-bold body-2">Selecciona en que habitación aplica esta amenidad</span>
                     <span v-else class="font-weight-bold body-2 red--text">No existen habitaciones con amenidades vigentes para este hotel</span>
                     <v-row>
                         <v-col cols="12" xl="3" lg="4" md="4" sm="12" xs="12" v-for="(itemRoomAmenities) in roomAmenities" :key="itemRoomAmenities.id" class="d-flex flex-column align-xl-start align-lg-start align-md-start align-center">
@@ -74,15 +73,13 @@
 import {mapState, mapActions, mapMutations} from 'vuex';
 export default {
     name: "RoomAmenities",
-    created(){
-        console.log("MOUNTED", this.roomAmenities)
-        this.arrayModelBtn.forEach((item, index)=>{
-            this.getValueBtnModel(index);
-        })
+    mounted(){
+        this.localSetAmenitiesColors();
     },
     data() {
         return {
             isLoadingBtnAcept: false,
+            colorBtnToggle: '',
             arrayModelBtn: [
                 { btnGroupModel: 'none', label: 'Aire acondicionado', value: 'air_conditioning'},
                 { btnGroupModel: 'none', label: 'Balcon', value: 'balcony'},
@@ -164,7 +161,19 @@ export default {
     methods: {
         //this.roomAmenities.reduce((a, b) => a["air_conditioning"] + b["air_conditioning"]) == 2 ? 'all' : this.roomAmenities.reduce((a, b) => a["air_conditioning"] + b["air_conditioningf"]) == 1 ? 'some' : 'none'
         ...mapActions(["putRoomAmenitiesAXIOS"]),
-        ...mapMutations(["setSnackbarRoomAmenities", "setReinicializedErrorsStatusRoomModule"]),
+        ...mapMutations(["setSnackbarRoomAmenities", "setReinicializedErrorsStatusRoomModule", "setProgressbarNavbarStateRoomAndAmenity"]),
+        localSetAmenitiesColors(){
+            if(this.roomAmenities.length > 0){
+                this.colorBtnToggle = 'blue darken-3';
+            }
+            else{
+                this.colorBtnToggle = 'red';
+            }
+            console.log("MOUNTED", this.colorBtnToggle)
+            this.arrayModelBtn.forEach((item, index)=>{
+                this.getValueBtnModel(index);
+            })
+        },
         modifyTabModelFromRoomAmenities(){
             this.$emit("modifyTabModelFromRoomAmenities");
         },
@@ -172,6 +181,7 @@ export default {
             this.modifyTabModelFromRoomAmenities();
         },
         btnUploadAXIOSRoomAmenities(){
+            let progress = 0;
             this.isLoadingBtnAcept = true;
             this.setReinicializedErrorsStatusRoomModule();
             this.setSnackbarRoomAmenities({stateSnackbar: false, messaggeSnackbar: "", colorSnackbar: ""});
@@ -187,10 +197,15 @@ export default {
                     })
                 }
             })
+            progress++
+            this.setProgressbarNavbarStateRoomAndAmenity((progress * 100) / 1);
             this.putRoomAmenitiesAXIOS(this.roomAmenities).then(()=>{
                 let returnedErrorObj = this.verifyErrorsPutRoomAmenities();
                 this.setSnackbarRoomAmenities({stateSnackbar: true, messaggeSnackbar: returnedErrorObj.messagge, colorSnackbar: returnedErrorObj.color});
                 this.isLoadingBtnAcept = false;
+                this.setProgressbarNavbarStateRoomAndAmenity(0);
+            }).catch(()=>{
+                this.setProgressbarNavbarStateRoomAndAmenity(0);
             })
         },
         getValueBtnModel(index){
@@ -225,6 +240,9 @@ export default {
                     this.arrayModelBtn[index].btnGroupModel = 'none'
                 }
             }
+            else if(this.roomAmenities.length == 0){
+                this.arrayModelBtn[index].btnGroupModel = 'none';
+            }
         },
         verifyErrorsPutRoomAmenities(){
           let obj = {};
@@ -239,13 +257,20 @@ export default {
           return obj;
         },
     },
+    watch:{
+        changeRoomAmenitiesColors(newValue, oldValue){
+            this.localSetAmenitiesColors();
+        }
+    },
     computed:{
         ...mapState({
+        currentHotelRooms: (state) => state.RoomModule.currentHotelRooms,
           roomAmenities: (state) => state.RoomModule.roomAmenities,
           snackbarRoomAmenities: (state) => state.RoomModule.snackbarRoomAmenities,
           timeoutSnackbarRoomAmenities: (state) => state.RoomModule.timeoutSnackbarRoomAmenities,
           statusRoomsAmenities: (state) => state.RoomModule.statusRoomsAmenities
         }),
-    }
+    },
+    props:['changeRoomAmenitiesColors']
 }
 </script>

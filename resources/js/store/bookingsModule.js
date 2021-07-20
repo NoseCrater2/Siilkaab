@@ -168,7 +168,6 @@ const bookingsModule = {
             const request =  await axios
             .get("/api/dashboard-reservations/");
             commit('setReservations',request.data.data)
-
         },
 
         getHistory: async function ({ commit}, id){

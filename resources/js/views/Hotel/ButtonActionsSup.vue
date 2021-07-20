@@ -208,7 +208,9 @@ export default {
             //metodo post
             if(this.hotel.id == null){
               this.postEditHotel(this.hotel).then(()=>{
-                router.replace({ name: "Hotel", params: { id: parseInt(this.hotel.id) } });
+                  if(typeof(this.hotel.id) != 'undefined'){
+                    router.replace({ name: "Hotel", params: { id: parseInt(this.hotel.id) } });
+                  }
                 this.idHotel = parseInt(this.hotel.id);
                 //Se ejecuta el metodo que llama a los demas metodos de API que dependen del resultado de hotel.id
                 this.executeSaveOnAPIAfterHotel(this.hotel.id).then(()=>{
@@ -360,28 +362,26 @@ export default {
         }
         //CODIGO PARA GUARDAR REGIMENES TERMINA
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL INICIA
-        if(this.aditionalInfo.spa != null){
-          if(this.aditionalInfo.hotel_id == null){
-            //metodo post
-            this.aditionalInfo.hotel_id = idHotel;
-            await this.postEditAditionalInfo(this.aditionalInfo).then(()=>{
-                progress++
-                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
-            }).catch(()=>{
-                progress++
-                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
-            });
-          }
-          else{
-            //metodo put
-            await this.putEditAditionalInfo(this.aditionalInfo).then(()=>{
-                progress++
-                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
-            }).catch(()=>{
-                progress++
-                this.setProgressbarNavbarStateHotel((progress * 100) / 8)
-            });
-          }
+        if(this.aditionalInfo.hotel_id == null){
+          //metodo post
+          this.aditionalInfo.hotel_id = idHotel;
+          await this.postEditAditionalInfo(this.aditionalInfo).then(()=>{
+              progress++
+              this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+          }).catch(()=>{
+              progress++
+              this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+          });
+        }
+        else if(this.aditionalInfo.hotel_id != null){
+          //metodo put
+          await this.putEditAditionalInfo(this.aditionalInfo).then(()=>{
+              progress++
+              this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+          }).catch(()=>{
+              progress++
+              this.setProgressbarNavbarStateHotel((progress * 100) / 8)
+          });
         }
         //CODIGO PARA GUARDAR INFORMACION ADICIONAL TERMINA
         //CODIGO PARA GUARDAR RESTAURANTES Y HORARIOS INICIA

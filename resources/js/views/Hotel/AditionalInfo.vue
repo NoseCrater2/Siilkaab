@@ -647,6 +647,9 @@ import CarrouselPool from "../../components/Hotel/CarrouselPool";
 
 export default {
   name: "AditionalInfo",
+  mounted(){
+      console.log("this.aditionalInfo", this.aditionalInfo)
+  },
   data() {
     return {
       spaItems: ["Gratis", "De Pago", "Ninguno"],

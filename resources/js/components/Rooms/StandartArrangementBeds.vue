@@ -62,8 +62,13 @@
 import { mapState } from "vuex";
 export default {
   name: "StandartArrangementBeds",
+  mounted(){
+      //componentID es utilizado como key unica para el proceso de muestra de errores
+      this.objArrCompo.componentID = this.componentID;
+  },
   data() {
     return {
+        componentID: this.idCompo + "" + this.objArrCompo['obj'].id,
       id: this.idCompo,
       roomTypeItems: ["Twin", "Full", "Queen", "King", "Triple", "Quad"],
       ddwnRoomTypeModel: "Twin",
@@ -125,7 +130,7 @@ export default {
           this.objArrCompo["obj"].type = "queen";
         }
         if (this.ddwnRoomTypeModel == "King") {
-          this.objArrCompo["obj"].type = "King";
+          this.objArrCompo["obj"].type = "king";
         }
         if (this.ddwnRoomTypeModel == "Triple") {
           this.objArrCompo["obj"].type = "triple";

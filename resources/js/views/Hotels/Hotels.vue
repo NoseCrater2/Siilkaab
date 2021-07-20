@@ -199,7 +199,7 @@ export default {
   },
 
   methods: {
-    ...mapActions(["getHotels"]),
+    ...mapActions(["getHotels", "actionHotelStatus"]),
     ...mapMutations(["setSnackbar"]),
     async chargePromises(){
         let promiseHotels = 1;
@@ -237,8 +237,7 @@ export default {
       } else {
         item.enabled = 0;
       }
-      console.log(item)
-      this.$store.dispatch("editHotel", item).then(()=>{
+      this.actionHotelStatus(item).then(()=>{
           this.isLoadingActionSwitchChangeState = false;
       }).catch(()=>{
           this.isLoadingActionSwitchChangeState = false;

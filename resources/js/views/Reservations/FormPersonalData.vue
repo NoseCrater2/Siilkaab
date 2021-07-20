@@ -79,7 +79,15 @@
               </v-select>
                 </v-col>
                 <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
-              <v-textarea height="100" v-model="form.special" outlined label="Peticiones especiales"></v-textarea>
+              <v-textarea
+                outlined
+                no-resize
+                rows="4"
+                row-height="30"
+                maxlength="191"
+                counter
+                v-model="form.special"
+                label="Peticiones especiales"></v-textarea>
                 </v-col>
               </v-row>
                </v-form>

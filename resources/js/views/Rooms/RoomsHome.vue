@@ -10,6 +10,7 @@
           <v-autocomplete
             v-model="hotelSelected"
             :items="hotels"
+            :loading="loadingFindBar"
             item-text="title"
             item-value="id"
             outlined
@@ -18,7 +19,7 @@
           ></v-autocomplete>
         </v-col>
 
-        <div v-if="flagActiveRooms == true">
+        <div v-if="isLoadedPromises == true">
           <v-tabs
             v-model="tabModel"
             background-color="transparent"
@@ -135,8 +136,8 @@
                 </v-col>
               </v-row>
             </v-tab-item>
-            <v-tab-item v-if="roomAmenitiesLoaded">
-              <RoomAmenities @modifyTabModelFromRoomAmenities="modifyTabModelFromRoomAmenities"></RoomAmenities>
+            <v-tab-item>
+              <RoomAmenities :changeRoomAmenitiesColors="changeRoomAmenitiesColors" @modifyTabModelFromRoomAmenities="modifyTabModelFromRoomAmenities"></RoomAmenities>
             </v-tab-item>
           </v-tabs-items>
         </div>
@@ -158,25 +159,58 @@ import RoomAmenities from "./RoomAmenities";
 import { mapActions, mapState, mapMutations } from "vuex";
 export default {
   name: "RoomsHome",
-  created() {
-    this.getHotelsForAdmin();
-  },
   data() {
     return {
+        isLoadedPromises: false,
+        loadingFindBar: false,
+        changeRoomAmenitiesColors: null,
       tabModel: null,
-      roomAmenitiesLoaded: false,
       routerFullQueryId: this.$router.currentRoute.query,
       photosDialog: false,
-      currentRooms: null,
       roomImageRoute: null,
       selectedId: 0,
       hotelSelected: parseInt(this.$route.query.id) || null,
-      loadingRooms: false,
-      flagActiveRooms: false,
     };
   },
 
+  mounted() {
+    this.chargePromises();
+  },
+
   methods: {
+    async chargePromises(){
+        let promiseHotels = 1;
+        let promiseRooms = 1;
+        let promiseAmenities = 1;
+        this.loadingFindBar = true;
+        promiseHotels = await this.getHotelsForAdmin();
+        for (let index = 0; index < this.hotels.length; index++) {
+            this.setReinicializedErrorsStatusRoomModule();
+            if(this.hotelSelected != null){
+                promiseRooms = await this.getCurrentHotelRooms(this.hotelSelected);
+                promiseAmenities = await this.getRoomAmenities(this.hotelSelected);
+                break;
+            }
+            else if(this.hotelSelected == null){
+                promiseRooms = await this.getCurrentHotelRooms(this.hotels[index].id);
+                promiseAmenities = await this.getRoomAmenities(this.hotels[index].id);
+                if(this.currentHotelRooms.length > 0){
+                    this.hotelSelected = this.hotels[index].id;
+                    this.$router.push({ name: "RoomsHome", query: { id: this.hotelSelected } });
+                    break;
+                }
+            }
+        }
+        await Promise.all([promiseHotels, promiseRooms, promiseAmenities]).then(values => {
+            this.isLoadedPromises = true;
+            this.loadingFindBar = false;
+            this.changeRoomAmenitiesColors = this.hotelSelected;
+        }).catch(()=>{
+            this.isLoadedPromises = true;
+            this.loadingFindBar = false;
+            this.changeRoomAmenitiesColors = this.hotelSelected;
+        });
+    },
     modifyTabModelFromRoomAmenities(){
       this.tabModel = 0;
     },
@@ -205,37 +239,34 @@ export default {
 
     ...mapActions(["getHotelsForAdmin", "getCurrentHotelRooms", "getRoomAmenities"]),
     ...mapMutations(["setReinicializedErrorsStatusRoomModule"]),
-    searchRoom(idHotel) {
-      if (typeof this.routerFullQueryId.id != "undefined") {
-        if (this.routerFullQueryId.id != idHotel) {
-          this.routerFullQueryId = idHotel;
-          this.$router.push({ name: "RoomsHome", query: { id: idHotel } });
+    async searchRoom(idHotel) {
+        let promiseRooms = 1;
+        let promiseAmenities = 1;
+        this.loadingFindBar = true;
+        //REINICIAMOS LOS ERRORES
+        this.setReinicializedErrorsStatusRoomModule();
+        //ACCEDIENDO A DETALLES DE HABITACION
+        promiseRooms = await this.getCurrentHotelRooms(idHotel);
+        //ACCEDIENDO A AMENIDADES DE HABITACIONES
+        promiseAmenities = await this.getRoomAmenities(idHotel);
+        if (typeof this.routerFullQueryId.id != "undefined") {
+            if (this.routerFullQueryId.id != idHotel) {
+              this.routerFullQueryId = idHotel;
+              this.$router.push({ name: "RoomsHome", query: { id: idHotel } });
+            }
         }
-      } else {
-        this.routerFullQueryId = idHotel;
-        this.$router.push({ name: "RoomsHome", query: { id: idHotel } });
-      }
-      this.loadingRooms = true;
-      this.flagActiveRooms = false;
-      this.roomAmenitiesLoaded = false;
-      //REINICIAMOS LOS ERRORES
-      this.setReinicializedErrorsStatusRoomModule();
-      //ACCEDIENDO A AMENIDADES DE HABITACIONES
-      this.getRoomAmenities(idHotel).then(()=>{
-        this.roomAmenitiesLoaded = true;
-      });
-      //ACCEDIENDO A DETALLES DE HABITACION
-      this.getCurrentHotelRooms(idHotel).then(() => {
-        this.flagActiveRooms = true;
-        this.loadingRooms = false;
-      });
+        else {
+            this.routerFullQueryId = idHotel;
+            this.$router.push({ name: "RoomsHome", query: { id: idHotel } });
+        }
+        await Promise.all([promiseRooms, promiseAmenities]).then(values => {
+            this.loadingFindBar = false;
+            this.changeRoomAmenitiesColors = this.hotelSelected;
+        }).catch(()=>{
+            this.loadingFindBar = false;
+            this.changeRoomAmenitiesColors = this.hotelSelected;
+        });
     },
-  },
-
-  mounted() {
-    if (this.hotelSelected != null) {
-      this.searchRoom(this.hotelSelected);
-    }
   },
 
   computed: {

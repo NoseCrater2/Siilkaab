@@ -14,10 +14,11 @@
               </v-tab-item>
           </v-tabs-items>
       </v-card>
-        <v-card flat class="mx-2">
-          <v-card-title>Es bueno saber</v-card-title>
-          <v-card-text v-html="conditions.cancelation_text"></v-card-text>
-        </v-card>
+      <v-divider class="mx-2"></v-divider>
+      <v-card class="mx-2 mt-4" flat>
+        <div class="mb-2">Consideraciones: </div>
+        <div v-html="conditions.cancelation_text"></div>
+      </v-card>
     </div>
 </template>
 <script >

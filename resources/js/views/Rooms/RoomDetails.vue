@@ -168,8 +168,10 @@
             :indexBedroom="index"
             :idBedroom="component.idBedroom"
             :idCompo="component.idCompo"
+            :idCompoBedroom="component.objArrCompo.idCompoBedroom"
             :key="component.idCompo"
             :objArrCompo="component.objArrCompo"
+            :roomNumber="component.roomNumber"
             :is="component.TagStandartArr"
             @removeCompoBedrooms="removeCompoBedrooms"
           ></component>
@@ -291,6 +293,7 @@ export default {
   },
   data() {
     return {
+        countLastElementArrayComponents: 0,
       arrayComponents: [],
       countIdCompo: -1,
       arrayIdBedroom: [],
@@ -392,7 +395,7 @@ export default {
     };
   },
   methods: {
-    ...mapActions(["getRoomDetails", "getBedrooms", "getBeds", "postPutEditRoomsAXIOS", "postPutEditBedroomsAXIOS"]),
+    ...mapActions(["getRoomDetails", "getBedrooms", "getBeds", "postPutEditRoomsAXIOS", "putEditBedrooms", "putEditBeds"]),
     ...mapMutations(["setReinicializedRoomModule", "setReinicializedErrorsStatusRoomModule", "setErrorsDetailsRoom", "setStatusDetailsRoom"]),
     keyhandler(event) {
       const pattern = /^(1|[0-9]\d{0,1})$/
@@ -407,14 +410,17 @@ export default {
       }
     },
     removeCompoBedrooms(idCompoParam){
+    this.countLastElementArrayComponents--;
+    console.log(this.countLastElementArrayComponents + 1)
       let deletedBedroomIndex = -1;
       let deleteBedsIndex = -1;
       let localIdBedroom;
+
       this.arrayComponents.forEach((elementArray, indexArray)=>{
         if(elementArray.idCompo == idCompoParam){
           localIdBedroom = elementArray.idBedroom;
           deletedBedroomIndex = indexArray;
-          elementArray.objArrCompo.deleted = "DELETED";
+          elementArray.objArrCompo.deletedBedroom = "DELETED";
         }
       })
       this.beds.forEach((elementArrayBed, indexElementArrayBed)=>{
@@ -422,7 +428,7 @@ export default {
           if(elementArrayBed[0].idBedroom == localIdBedroom){
             let indexWhile = 0;
             while(indexWhile < elementArrayBed.length){
-              elementArrayBed[indexWhile].deleted = "DELETED";
+              elementArrayBed[indexWhile].deletedBedroom = "DELETED";
               indexWhile++;
             }
           }
@@ -436,13 +442,20 @@ export default {
       if(deleteBedsIndex > -1){
         this.beds[deleteBedsIndex] = new Array();
         this.beds[deleteBedsIndex].push({
-          deleted: "DELETED",
+          deletedBedroom: "DELETED",
           idBedroom: localIdBedroom
         })
       }
       if(deletedBedroomIndex > -1){
         this.arrayComponents.splice(deletedBedroomIndex, 1);
       }
+
+    let fixRoomNumber = 0;
+      this.arrayComponents = this.arrayComponents.map(element=>{
+        element.roomNumber = fixRoomNumber++;
+        return element;
+      })
+
     },
     chargeDataRoom(){
       this.setReinicializedRoomModule(); //Reinicia el objeto room (esto es por que no hay una recarga de pag con router-link)
@@ -480,18 +493,23 @@ export default {
       }
     },
     addCompo(obj) {
+        this.countLastElementArrayComponents = this.arrayComponents.length;
       this.countIdCompo++;
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagStandartArr: StandartArrangement,
+        roomNumber: this.countLastElementArrayComponents,
         objArrCompo: obj,
         idBedroom: obj.id
       });
     },
     addCompoButton() {
+        this.countLastElementArrayComponents = this.arrayComponents.length;
       this.countIdCompo++;
+      let putId = "NEW"+ "" +this.countIdCompo;
       let obj = {
           id: "NEW"+this.countIdCompo, //Se pone "NEW" para identificarlo en el posterior metodo PUT
+          idCompoBedroom: putId,
           idCompo: this.countIdCompo,
           private_bathroom: 0,
           room_id: typeof(this.idRoom)!='undefined' ? parseInt(this.idRoom) : "NEW"
@@ -499,6 +517,7 @@ export default {
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagStandartArr: StandartArrangement,
+        roomNumber: this.countLastElementArrayComponents,
         objArrCompo: obj,
         idBedroom: obj.id
       });
@@ -520,11 +539,13 @@ export default {
             if(bedroomElement.room_id == "NEW"){
               bedroomElement.room_id = this.roomDetails.id;
             }
-            console.log("this.roomDetailsFFFF", this.roomDetails)
           })
         }
-        this.postPutEditBedroomsAXIOS(this.bedrooms);
-        console.log("this.beds", this.beds)
+        this.putEditBedrooms(this.bedrooms).then(()=>{
+            this.putEditBeds(this.beds).then(()=>{
+                console.log(this.bedrooms, this.beds)
+            });
+        });
       });
     }
   },

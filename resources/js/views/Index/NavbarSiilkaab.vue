@@ -93,13 +93,17 @@ export default {
     ...mapState({
         isLoggedIn: (state) => state.isLoggedIn,
         user: (state) => state.user,
-        progressbarNavbarStateHotel: (state) => state.HotelModule.progressbarNavbarStateHotel
+        progressbarNavbarStateHotel: (state) => state.HotelModule.progressbarNavbarStateHotel,
+        progressbarNavbarStateRoomAndAmenity: (state) => state.RoomModule.progressbarNavbarStateRoomAndAmenity
       }),
   },
   watch:{
       progressbarNavbarStateHotel(newValue, oldValue){
         this.localProgress = newValue;
-      }
+      },
+      progressbarNavbarStateRoomAndAmenity(newValue, oldValue){
+        this.localProgress = newValue;
+      },
   },
   methods:{
       ...mapMutations(["setProgressbarNavbarStateHotel"]),

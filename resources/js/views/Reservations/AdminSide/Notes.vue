@@ -9,7 +9,7 @@
                         </div>
                     </v-col>
                     <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12">
-                        <v-btn depressed color="primary" block tile @click="addNote" :loading="btnLoading" :disabled="btnLoading">Agregar nota</v-btn>
+                        <v-btn depressed color="primary" block tile @click="addNote" :loading="btnLoading" :disabled="(btnLoading || (note == null || note == '')) ? true : false">Agregar nota</v-btn>
                     </v-col>
                 </v-row>
             </div>
@@ -107,11 +107,14 @@ export default {
 
     methods:{
         addNote(){
-
             if(this.$refs.noteForm.validate()){
                 this.btnLoading = true
                this.$store.dispatch('saveNote',{content: this.note, reservation_id: this.id, user_id: 1})
                .then(()=>{
+                   this.btnLoading = false
+                   this.note = null;
+                   this.$refs.noteForm.reset()
+               }).catch(()=>{
                    this.btnLoading = false
                    this.$refs.noteForm.reset()
                })
