@@ -14,12 +14,14 @@ use App\Http\Resources\IndexReservationResource;
 use App\Http\Resources\ShowReservationResource;
 use App\Http\Resources\BinnacleShowResource;
 use App\Http\Resources\BinnacleIndexResource;
+use App\Mail\ChangedState;
 use DateInterval;
 use DatePeriod;
 use DateTime;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Mail;
 
 class ReservationController extends Controller
 {
@@ -55,7 +57,7 @@ class ReservationController extends Controller
             'state' => 'required|in:Confirmed,Cancelled',
             'hotel_id' => 'required|exists:hotels,id',
         ];
-                  
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
             return response($validator->errors(),422);
@@ -73,7 +75,7 @@ class ReservationController extends Controller
                         }else{
                             $currentRoom->decrement('quantity',1);
                         }
-                    } 
+                    }
 
                     $reservation->rooms()->attach($currentRoom->id,
                     [
@@ -86,7 +88,7 @@ class ReservationController extends Controller
                 }
                 return $reservation;
             });
-            
+
             return new ShowReservationResource(Reservation::findOrFail($r->id));
         }
     }
@@ -114,12 +116,12 @@ class ReservationController extends Controller
             'guest_petitions' => 'nullable|string',
             'check_in' => 'required|date_format:H:i',
         ];
-                  
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
-              
+
              foreach ($data['guest_names'] as $room) {
                 DB::table('reservation_room')
                 ->where('id', $room['id'])
@@ -138,15 +140,17 @@ class ReservationController extends Controller
             'state' => 'required|in:Confirmed,Pending,Cancelled,Aborted',
             'send_email' => 'required|boolean',
         ];
-                  
+
         $validator= Validator::make($data,$rules, Messages::getMessages());
         if($validator->fails()){
             return response($validator->errors(),422);
         }else{
-            if($data['send_email']){
-                //SEND EMAIL
-            }
+            // dd($data['send_email']);
+            $pastState = $reservation->state;
             $reservation->update($data);
+            if($data['send_email']){
+                Mail::to($reservation->guest_email)->send(new ChangedState($reservation, $pastState));
+            }
             return new ShowReservationResource(Reservation::findOrFail($reservation->id));
         }
     }
@@ -162,7 +166,7 @@ class ReservationController extends Controller
         $ids = auth('sanctum')->user()->hotels->map(function($hotel){
             return $hotel->id;
         });
-        
+
         $hotels = new Collection();
         foreach ($ids as $id) {
             $hotel = [];
@@ -177,7 +181,7 @@ class ReservationController extends Controller
 
             $hotel['counts'] =  $counts;
             $hotel['range'] =  $dates;
-           
+
 
             $hotels->put($id, $hotel);
         }

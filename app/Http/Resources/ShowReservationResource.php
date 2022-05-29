@@ -36,7 +36,7 @@ class ShowReservationResource extends JsonResource
                 {
                     return [
                         'name' => $room->name,
-                        'image' => $room->images->isNotEmpty() ? $room->images[0]->name : null, 
+                        'image' => $room->images->isNotEmpty() ? $room->images[0]->name : null,
                         'smoking_policy' => $room->smoking_policy,
                         'type' => $room->type,
                         'short_text' => $room->short_text,

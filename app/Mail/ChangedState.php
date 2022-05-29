@@ -5,24 +5,24 @@ namespace App\Mail;
 use App\Reservation;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-// use Asahasrabuddhe\LaravelMJML\Mail\Mailable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
-
-class SendBooking extends Mailable
+class ChangedState extends Mailable
 {
     use Queueable, SerializesModels;
     public $reservation;
+    public $pastState;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct(Reservation $reservation)
+    public function __construct(Reservation $reservation, $pastState)
     {
         $this->reservation = $reservation;
+        $this->pastState = $pastState;
     }
 
     /**
@@ -32,6 +32,6 @@ class SendBooking extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.booking')->from(['address' => $this->reservation->hotel->contact->email, 'name' => $this->reservation->hotel->title])->subject('Reservacion '.$this->reservation->id.' Enviada');
+        return $this->markdown('emails.changedstate')->from(['address' => $this->reservation->hotel->contact->email, 'name' => $this->reservation->hotel->title])->subject('CAMBIO DE ESTADO DE RESERVACIÓN');
     }
 }

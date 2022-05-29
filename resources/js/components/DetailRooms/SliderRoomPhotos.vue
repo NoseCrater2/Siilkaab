@@ -1,11 +1,10 @@
 <template>
-    <v-carousel hide-delimiters height="450">
+    <v-carousel hide-delimiters height="452">
         <v-carousel-item
-        v-for="(item, i) in additionalImages" 
-        :key="i" :src="`/img/${item.name}`" 
-        reverse-transition="fade-transition" 
+        v-for="(item, i) in additionalImages"
+        :key="i" :src="`/img/${item.name}`"
+        reverse-transition="fade-transition"
         transition="fade-transition"
-        
         ></v-carousel-item>
     </v-carousel>
 </template>

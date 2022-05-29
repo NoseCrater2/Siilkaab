@@ -27,7 +27,7 @@
             </v-list-item-content>
           </v-list-item> -->
 
-          <v-list-item v-if="index < 2" :style="item.borderStyle" link :to="item.route">
+          <v-list-item v-if="index < 3" :style="item.borderStyle" link :to="item.route">
             <v-list-item-icon>
               <v-icon>{{ item.icon }}</v-icon>
             </v-list-item-icon>
@@ -36,7 +36,7 @@
               <v-list-item-title>{{ item.text }}</v-list-item-title>
             </v-list-item-content>
           </v-list-item>
-          <v-list-group :value="$vuetify.breakpoint.mdAndUp ? fnIsActive(item.children): false" v-if="index >= 2" @click.stop="expandNavigationDrawer(index-2)">
+          <v-list-group :value="$vuetify.breakpoint.mdAndUp ? fnIsActive(item.children): false" v-if="index >= 3" @click.stop="expandNavigationDrawer(index-2)">
             <template v-slot:activator>
               <v-list-item-icon>
                 <v-icon :style="item.borderStyle">{{ item.icon }}</v-icon>
@@ -94,27 +94,9 @@ export default {
         },
         {
           icon: "mdi-clipboard-list",
-          text: "Control Diario",
-          borderStyle: "border-left: 5px solid #cb552d",
-          children: [
-            {
-              route: "/disponibility",
-              icon: "mdi-clipboard-list",
-              text: "Disponibilidad y Tarifas",
-              borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #cb552d; padding-left: 3px",
-              availableFor: ['administrator','super','manager'],
-            },
-            {
-              icon: "mdi-domain-off",
-              text: "Restricciones",
-              borderStyle: "padding-left: 37px; text-decoration: none;",
-              borderStyleSub:
-                "border-left: 2px solid #cb552d; padding-left: 3px",
-              availableFor: ['administrator','super','manager'],
-            }
-          ]
+          text: "Disponibilidad y Tarifas",
+          borderStyle: "padding-left: 13px",
+          route: '/disponibility'
         },
         {
           icon: "mdi-office-building",
@@ -202,7 +184,7 @@ export default {
               borderStyleSub: "border-left: 2px solid #7a429b; padding-left: 3px",
               availableFor: ['administrator','super'],
             },
-             
+
             {
               icon: "mdi-api",
               text: "Ajustes de API",
@@ -248,7 +230,7 @@ export default {
     }
   },
     computed: {
-      
+
        ...mapState({
         isLoggedIn: (state) => state.isLoggedIn,
         user: (state) => state.user,

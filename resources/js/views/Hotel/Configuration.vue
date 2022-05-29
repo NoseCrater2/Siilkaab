@@ -12,7 +12,7 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" md="6">
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12">
           <v-autocomplete
             :error-messages="errorsConfiguration.currency_id"
             :items="currencies"
@@ -24,7 +24,7 @@
             label="Divisa"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12">
           <v-autocomplete
             :error-messages="errorsConfiguration.timezone"
             :items="timezones"
@@ -34,23 +34,25 @@
             label="Zona horaria"
           ></v-autocomplete>
         </v-col>
-        <v-col cols="12" md="6">
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12">
           <v-card outlined class="pa-5">
-            <span>
-              <strong>Formas de pago</strong>
-            </span>
-            <v-checkbox :error-messages="errorsConfiguration.payment_place" v-model="computedSelectPaymentsPlace" label="Online" value="online"></v-checkbox>
-            <v-checkbox :error-messages="errorsConfiguration.payment_place" v-model="computedSelectPaymentsPlace" label="Offline" value="offline"></v-checkbox>
+            <p class="text-center font-weight-bold">
+              Formas de pago
+            </p>
+            <div class="d-flex flex-column align-center">
+              <v-checkbox :error-messages="errorsConfiguration.payment_place" v-model="computedSelectPaymentsPlace" label="Online" value="online"></v-checkbox>
+              <v-checkbox :error-messages="errorsConfiguration.payment_place" v-model="computedSelectPaymentsPlace" label="Offline" value="offline"></v-checkbox>
+            </div>
           </v-card>
         </v-col>
-        <v-col cols="12" md="6">
-          <v-card outlined class="px-auto pb-11 pa-5">
-            <div>
-              <strong>Tipo de pago</strong>
-            </div>
+        <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12">
+          <v-card outlined class="pa-5">
+            <p class="text-center font-weight-bold">
+              Tipo de pago
+            </p>
             <v-select
               :error-messages="errorsConfiguration.payment_type"
-              class="ml-auto mt-5"
+              class="ml-auto mt-5 mb-10"
               :items="paymentTypeItems"
               v-model="configuration.payment_type"
               multiple
@@ -58,7 +60,6 @@
               prepend-inner-icon="mdi-cash"
               :menu-props="{ bottom: true, offsetY: true }"
               outlined
-              
             ></v-select>
           </v-card>
         </v-col>
@@ -73,7 +74,7 @@
         </div>
       </v-banner>
       <v-row class="pa-6">
-        <v-col cols="12" lg="12" md="12" sm="12" xl="12">
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
           <v-combobox
             prepend-inner-icon="mdi-email"
             v-model="computedNotificationVoucher"
@@ -105,7 +106,7 @@
           </v-combobox>
         </v-col>
 
-        <v-col cols="12" lg="12" md="12" sm="12" xl="12">
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
           <v-combobox
             prepend-inner-icon="mdi-email"
             v-model="computedNotificationDetails"
@@ -137,7 +138,7 @@
           </v-combobox>
         </v-col>
 
-        <v-col cols="12" lg="12" md="12" sm="12" xl="12">
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
           <v-combobox
             prepend-inner-icon="mdi-email"
             v-model="computedNotificationCard"
@@ -171,21 +172,25 @@
       </v-row>
       <v-banner single-line>
         <div class="d-flex align-center ml-1">
-          <v-icon class="mb-1" left>mdi-pa</v-icon>
+          <v-icon class="mb-1" left>mdi-palette</v-icon>
           <div class="mt-n1">
             <span class="text-h6 font-weight-bold">PERSONALIZACIÓN</span>
           </div>
         </div>
       </v-banner>
-      <v-row>
-        <v-col cols="12" md="6" sm="12">
-          <v-alert outlined type="info" >
-            Seleccione un color primario para personalizar su hotel o para diferenciarlo cuando tiene más de uno,
-            si no elige un color se asignará el azul (Blue) por default.
+      <v-row class="pa-6">
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
+          <v-alert outlined type="info" color="blue darken-3">
+            Seleccione un color para personalizar su hotel y diferenciarlo del resto de hoteles.
+            Si no elige un color, el color por defecto será azul (Blue).
           </v-alert>
         </v-col>
-        <v-col cols="12" md="6" sm="12">
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
           <v-autocomplete
+          outlined
+          solo
+          flat
+          required
           chips
           v-model="configuration.color"
           :items="colors"
@@ -327,14 +332,14 @@ export default {
         return this.notificationCardModel;
       },
     },
-   
+
     computedSelectPaymentsPlace: {
       get() {
         if (this.configuration.payment_place != null) {
           if (this.configuration.payment_place === "both") {
             this.selectPaymentsPlaceModel.push("online");
             this.selectPaymentsPlaceModel.push("offline");
-          } 
+          }
           else {
             this.selectPaymentsPlaceModel.push(this.configuration.payment_place);
           }

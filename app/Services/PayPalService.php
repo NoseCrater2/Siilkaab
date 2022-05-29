@@ -17,20 +17,20 @@ class PayPalService{
     protected $clientSecret;
 
     public  $baseUri;
-    
+
     public function __construct() {
         $this->baseUri = config('services.paypal.base_uri');
         $this->clientId = config('services.paypal.client_id');
         $this->clientSecret = config('services.paypal.client_secret');
 
     }
-   
+
     public function resolveAuthorization(&$queryParams, &$formParams, &$headers)
     {
-      
+
 
         $headers['Authorization'] = "Bearer ".$this->resolveAccesToken();
-      
+
     }
 
     public function decodeResponse($response)
@@ -45,8 +45,8 @@ class PayPalService{
         // $credentials = base64_encode("{$this->clientId}:{$this->clientSecret}");
         // return "Basic {$credentials}";
         $client = new Client();
-        
-       
+
+
        $res = $client->request('POST','https://api.sandbox.paypal.com/v1/oauth2/token',
             [
             "auth"=> [$this->clientId,$this->clientSecret],
@@ -54,12 +54,12 @@ class PayPalService{
                 "Accept"=> "application/json",
                 "Accept-Language"=> "en_US",
             ],
-            
+
             "body" => "grant_type=client_credentials",
             "verify" => base_path("cacert.pem"),
             ]
-            
-        ); 
+
+        );
 
         $response =  $res->getBody()->getContents();
         return json_decode($response)->{'access_token'};
@@ -74,8 +74,8 @@ class PayPalService{
         $approve = $orderLinks->where('rel', 'approve')->first();
 
         session()->put('approvalId', $order->id);
-        
-       
+
+
         return (['id'=> $order->id]);
     }
 
@@ -131,7 +131,7 @@ class PayPalService{
             [],
             $isJsonRequest = true
         );
-        
+
     }
 
     public function capturePayment($approvalId)

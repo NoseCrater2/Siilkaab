@@ -1,10 +1,10 @@
 <template>
     <v-dialog v-model="dialog" width="700" max-width="800" persistent >
-        <v-card >
+        <v-card>
             <v-card-title>
                 {{hotel.title}}
                 <v-spacer></v-spacer>
-                <v-btn icon  @click="closeHotelDetail">
+                <v-btn icon @click="closeHotelDetail">
                    <v-icon>mdi-close-thick</v-icon>
                   </v-btn>
             </v-card-title>
@@ -25,7 +25,7 @@
                         <v-icon left>
                           mdi-file-document-outline
                         </v-icon>
-                         <span class="hidden-sm-and-down">Info</span>
+                         <span class="hidden-sm-and-down">Información</span>
                     </v-btn>
 
                 </v-btn-toggle>

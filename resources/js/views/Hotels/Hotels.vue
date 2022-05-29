@@ -1,8 +1,11 @@
 <template>
   <div>
     <v-container class="elevation-1 outlined" fluid>
-    <div v-if="hotels === []">
+    <div v-if="isLoadedPromises == false">
       <v-app id="inspire">
+        <div class="text-center mb-7">
+          <span class="text-h4 text-uppercase font-weight-bold">Hoteles</span>
+        </div>
         <v-data-table
           item-key="title"
           class="elevation-1"
@@ -17,7 +20,7 @@
         <div class="text-center mb-7">
           <span class="text-h4 text-uppercase font-weight-bold">Hoteles</span>
         </div>
-        
+
         <v-card outlined tile>
           <v-data-table
             v-model="selected"
@@ -25,40 +28,43 @@
             show-select
             :headers="headers"
             :items="hotels"
-            :items-per-page="20"
             :single-select="singleSelect"
             multi-sort
             :search="search"
           >
             <template v-slot:top>
-              <v-toolbar flat color="white">
-                  <v-col cols="12" xl="3" lg="3" md="3" sm="3" xs="12" class="mt-3">
-                    <div v-show="selected==! []?false:true">
-                        <v-btn small depressed rounded outlined block color="red" @click="showDeleteDialog()">
-                          <!-- <span class="black--text">ELIMINAR SELECCIÓN</span> -->
-                          <v-icon dark>mdi-delete-sweep</v-icon>ELIMINAR
+              <v-toolbar flat color="white" :style="!$vuetify.breakpoint.mdAndUp ? 'height: 146px !important' : ''">
+                  <v-row align="center" justify="center">
+                    <v-col cols="12" xl="3" lg="3" md="3" sm="6" xs="6" order="2" order-md="1" order-lg="1" order-xl="1">
+                      <div v-show="selected==! []?false:true">
+                          <v-btn small depressed rounded outlined block color="red" @click="showDeleteDialog()">
+                            <!-- <span class="black--text">ELIMINAR SELECCIÓN</span> -->
+                            <v-icon dark>mdi-delete-sweep</v-icon>ELIMINAR
+                          </v-btn>
+                      </div>
+                    </v-col>
+                    <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12" order="1" order-md="2" order-lg="2" order-xl="2">
+                      <v-text-field
+                        v-model="search"
+                        append-icon="mdi-magnify"
+                        label="Buscar hotel"
+                        single-line
+                        hide-details
+                        outlined
+                        dense
+                      ></v-text-field>
+                    </v-col>
+                    <v-col cols="12" xl="3" lg="3" md="3" sm="6" xs="6" order="3" order-md="3" order-lg="3" order-xl="3">
+                        <v-btn small depressed rounded outlined block color="info" :to="{name: 'Hotel'}">
+                          <!-- <span class="black--text">NUEVO HOTEL</span> -->
+                          <v-icon left dark>mdi-plus</v-icon>NUEVO HOTEL
                         </v-btn>
-                    </div>
-                  </v-col>
-                  <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12" class="mt-3">
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="Buscar hotel"
-                      single-line
-                      hide-details
-                      outlined
-                      dense
-                    ></v-text-field>
-                  </v-col>
-                  <v-col cols="12" xl="3" lg="3" md="3" sm="3" xs="12" class="mt-3">
-                    <div class="d-flex justify-end">
-                      <v-btn small depressed rounded outlined block color="info" :to="{name: 'Hotel'}">
-                        <!-- <span class="black--text">NUEVO HOTEL</span> -->
-                        <v-icon left dark>mdi-plus</v-icon>NUEVO HOTEL
-                      </v-btn>
-                    </div>
-                  </v-col>
+                    </v-col>
+                  </v-row>
+              </v-toolbar>
+              <div class="d-flex align-center ml-2 my-n4">
+                <v-switch v-model="singleSelect" label="Selección única" class="pa-3" dense inset></v-switch>
+              </div>
                 <v-dialog v-model="deleteDialog" persistent max-width="290">
                   <v-card>
                     <v-card-title class="headline">¿Eliminar hotel(es)?</v-card-title>
@@ -73,30 +79,18 @@
                     </v-card-actions>
                   </v-card>
                 </v-dialog>
-              </v-toolbar>
-              <div class="d-flex align-center ml-2 my-n4">
-                <v-switch v-model="singleSelect" label="Selección única" class="pa-3" dense inset></v-switch>
-              </div>
             </template>
 
             <template v-slot:item.rooms="{item}">
-              <div class="d-flex align-center justify-start ml-5">
-                <v-badge :content="item.rooms" :value="item.rooms" color="red" overlap>
+              <div>
+                <v-badge :content="item.rooms" :value="item.rooms" color="red" overlap offset-x="15" offset-y="18">
                   <v-btn icon :to="{name: 'RoomsHome', query: {id: item.id}}"><v-icon>mdi-bed</v-icon></v-btn>
                 </v-badge>
               </div>
             </template>
 
-            <!-- <template v-slot:item.rates="{item}">
-              <div class="d-flex align-center justify-start ml-1">
-                <v-badge :content="item.rates" :value="item.rates" color="red" overlap>
-                  <v-icon>mdi-cash-multiple</v-icon>
-                </v-badge>
-              </div>
-            </template> -->
-
             <template v-slot:item.discounts="{item}">
-              <div class="d-flex align-center justify-start ml-5">
+              <div>
                 <v-badge :content="item.discounts" :value="item.discounts" color="red" overlap>
                   <v-icon>mdi-label-percent</v-icon>
                 </v-badge>
@@ -104,7 +98,7 @@
             </template>
 
             <template v-slot:item.extras="{item}">
-              <div class="d-flex align-center justify-start ml-1">
+              <div>
                 <v-badge :content="item.extras" :value="item.extras" color="red" overlap>
                   <v-icon>mdi-tag-plus</v-icon>
                 </v-badge>
@@ -112,23 +106,28 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-              <div
-                :class="windowSize"
-              >
-                <router-link
-                  :to="{name: 'Hotel' , params: {id: item.id}}"
-                  class="text-decoration-none mx-4"
-                >
-                  <v-icon>mdi-pencil</v-icon>
-                </router-link>
-                <v-switch
-                  :input-value="item.enabled"
-                  value
-                  dense
-                  inset
-                  @change="changeStatus(item,$event)"
-                ></v-switch>
-              </div>
+              <v-row align="center" justify="center">
+                <div>
+                  <v-btn
+                    icon
+                    :disabled="isLoadingActionSwitchChangeState"
+                    :to="{name: 'Hotel' , params: {id: item.id}}"
+                    class="text-decoration-none mx-4">
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                </div>
+                <div>
+                  <v-switch
+                      :input-value="item.enabled"
+                      :loading="isLoadingActionSwitchChangeState"
+                      :disabled="isLoadingActionSwitchChangeState"
+                      value
+                      dense
+                      inset
+                      @change="changeStatus(item,$event)"
+                  ></v-switch>
+                </div>
+              </v-row>
             </template>
           </v-data-table>
         </v-card>
@@ -154,11 +153,12 @@
 </template>
 
 <script>
-import { mapActions, mapState, mapMutations } from "vuex";
-import router from "../../routes";
+import { mapState, mapMutations, mapActions } from "vuex";
 export default {
   data() {
     return {
+        isLoadedPromises: false,
+        isLoadingActionSwitchChangeState: false,
       deleteDialog: false,
       selected: [],
       search: "",
@@ -167,18 +167,18 @@ export default {
       columns: 3,
 
       headers: [
+        { text: "ID", value: "id" , align: 'center' },
+        { text: "Código de referencia", value: "reference_code", align: 'center' },
         {
-          text: "Título",
+          text: "Hotel",
           sortable: true,
           value: "title",
+          align: 'center'
         },
-        { text: "Código de referencia", value: "reference_code" },
-        { text: "Habitaciones", value: "rooms" },
-        // { text: "Tarifas", value: "rates" },
-        { text: "Descuentos", value: "discounts" },
-        { text: "Extras", value: "extras" },
-        { text: "ID", value: "id" },
-        { text: "Acciones", value: "actions", sortable: false },
+        { text: "Habitaciones", value: "rooms", align: 'center' },
+        { text: "Descuentos", value: "discounts", align: 'center' },
+        { text: "Extras", value: "extras", align: 'center' },
+        { text: "Acciones", value: "actions", sortable: false, align: 'center' },
       ],
       hotelIds: {
         hotelIds: [],
@@ -191,32 +191,25 @@ export default {
       snackbar: (state) => state.HotelModule.snackbar,
       timeoutSnackbar: (state) => state.HotelModule.timeoutSnackbar,
       errorsInformation: (state) => state.HotelModule.errorsInformation,
-    }),
-    windowSize() {
-      switch (this.$vuetify.breakpoint.name) {
-        case "xs":
-          return 'd-flex align-center justify-start mr-n4';
-        case "sm":
-          return 'd-flex align-center justify-start ml-n8';
-        case "md":
-          return 'd-flex align-center justify-start ml-n8';
-        case "lg":
-          return 'd-flex align-center justify-start ml-n8';
-        case "xl":
-          return 'd-flex align-center justify-start ml-n8';
-      }
-    },
+    })
   },
 
-  mounted() {
-
+  mounted(){
+      this.chargePromises();
   },
 
   methods: {
+    ...mapActions(["getHotels", "actionHotelStatus"]),
     ...mapMutations(["setSnackbar"]),
-    editItem(item) {},
-
-    deleteItem(item) {},
+    async chargePromises(){
+        let promiseHotels = 1;
+        promiseHotels = this.getHotels();
+        await Promise.all([promiseHotels]).then(values => {
+            this.isLoadedPromises = true;
+        }).catch(()=>{
+            this.isLoadedPromises = true;
+        });
+    },
 
     showDeleteDialog() {
       this.deleteDialog = true;
@@ -235,18 +228,30 @@ export default {
       this.hotelIds.hotelIds = [];
       this.selected = [];
       this.deleteDialog = false;
-      //this.$store.commit('setErrors',this.defaultErrors)
     },
 
     changeStatus(item, event) {
+        this.isLoadingActionSwitchChangeState = true;
       if (event) {
         item.enabled = 1;
       } else {
         item.enabled = 0;
       }
-
-      this.$store.dispatch("editHotel", item);
+      this.actionHotelStatus(item).then(()=>{
+          this.isLoadingActionSwitchChangeState = false;
+      }).catch(()=>{
+          this.isLoadingActionSwitchChangeState = false;
+      });
     },
   },
 };
 </script>
+
+<style scoped>
+/* No borres este estilo aunque lo marque mal el visual. Asi es */
+@media only screen and (max-width: 959px) {
+    >>>.v-toolbar__content{
+      height: 146px !important;
+    }
+}
+</style>

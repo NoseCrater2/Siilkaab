@@ -28,7 +28,7 @@ class RegimeController extends Controller
         );
     }
 
-   
+
 
     /**
      * Store a newly created resource in storage.
@@ -40,9 +40,9 @@ class RegimeController extends Controller
     {
         $data = $request->all();
 
-        $rules = [  
+        $rules = [
             'priority' => 'required|in:normal,medium,high',
-            'only_room' => 'boolean',
+            'only_room' => 'required|boolean',
             'start_period' => 'date_format:Y-m-d H:i',
             'final_period' => 'date_format:Y-m-d H:i|after:start_period',
             'lodging_breakfast_children' => 'numeric',
@@ -64,7 +64,7 @@ class RegimeController extends Controller
             $regime = Regime::create($data);
             return new RegimeIndexResource(Regime::findOrFail($regime->id));
         }
-        
+
     }
 
     /**
@@ -78,7 +78,7 @@ class RegimeController extends Controller
         return new RegimeIndexResource(Regime::findOrFail($regime->id));
     }
 
-  
+
 
     /**
      * Update the specified resource in storage.
@@ -92,8 +92,8 @@ class RegimeController extends Controller
         $data = $request->all();
 
         $rules  = [
-            'priority' => 'in:normal,medium,high',
-            'only_room' => 'boolean',
+            'priority' => 'required|in:normal,medium,high',
+            'only_room' => 'required|boolean',
             'start_period' => 'date_format:Y-m-d H:i',
             'final_period' => 'date_format:Y-m-d H:i|after:start_period',
             'lodging_breakfast_children' => 'numeric',
@@ -114,7 +114,7 @@ class RegimeController extends Controller
             $regime->update($data);
             return new RegimeIndexResource(Regime::findOrFail($regime->id));
         }
-        
+
     }
 
     /**

@@ -2,41 +2,43 @@
   <v-carousel-item>
     <v-sheet color="#eeeeee" height="100%">
       <div class="pa-3">
-        <v-row class="ml-1 d-flex">
-          <span>
-            <h2>
-              <strong>Restaurante #{{restauranNumber+1}}</strong>
-            </h2>
-          </span>
-          <div class="ml-auto mr-3">
-            <v-btn
-              small
-              class="white--text"
-              depressed
-              color="red"
-              @click="removeCompo(id)"
-            >Eliminar restaurante</v-btn>
-          </div>
+        <v-row :justify="$vuetify.breakpoint.smAndUp ? 'space-between': 'center'" :class="$vuetify.breakpoint.smAndUp ? 'px-4' : ''" >
+            <div class="font-weight-bold"><h2>Restaurante #{{restauranNumber+1}}</h2></div>
+            <div>
+                <v-btn
+                  small
+                  class="white--text"
+                  depressed
+                  color="red"
+                  @click="dialogAceptCancelRemoveRestaurant = true"
+                >Eliminar restaurante</v-btn>
+            </div>
         </v-row>
         <br />
-        <v-text-field v-model="computedRestaurantName" label="Nombre del restaurante" required></v-text-field>
+        <v-text-field v-model="computedRestaurantName" :error-messages="computedErrorRestaurantName" outlined label="Nombre del restaurante" required></v-text-field>
         <br />
-        <span>
+        <v-row justify-xl="start" justify-lg="start" justify-md="start" justify="center" class="ml-xl-1 ml-lg-1 ml-md-1">
           <strong>Tipo de menú</strong>
-        </span>
-        <v-row justify="space-around">
-          <v-checkbox v-model="computedSelectMenuType" label="A la carta" value="a la carte"></v-checkbox>
-          <v-checkbox v-model="computedSelectMenuType" label="Buffet" value="buffet"></v-checkbox>
+        </v-row>
+        <v-row justify="space-between" justify-xl="space-around" justify-lg="space-around" class="px-md-5 px-sm-5" :class="$vuetify.breakpoint.xsOnly ? 'px-5' : ''">
+            <v-checkbox :error="computedErrorMenuType != '' ? true : false" v-model="computedSelectMenuType" label="A la carta" value="a la carte"></v-checkbox>
+            <v-checkbox :error="computedErrorMenuType != '' ? true : false" v-model="computedSelectMenuType" label="Buffet" value="buffet"></v-checkbox>
+            <div v-if="computedErrorMenuType != ''" class="mt-n2">
+                <span class="red--text text-caption">Debe seleccionarse al menos un tipo de menú</span>
+            </div>
         </v-row>
         <br />
         <br />
-        <v-row class="ml-1" align="center">
-          <span>
-            <strong>Introduce el horario</strong>
-          </span>
+        <v-row justify-xl="start" justify-lg="start" justify-md="start" justify="center" class="ml-xl-1 ml-lg-1 ml-md-1">
+          <div class="font-weight-bold">Introduce el horario</div>
         </v-row>
-        <br />
-        <span>Dile a los clientes cuándo pueden usar este servicio</span>
+        <v-row>
+            <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12">
+              <v-alert outlined type="info" color="blue darken-3">
+                Dile a los clientes cuándo pueden usar este servicio
+              </v-alert>
+            </v-col>
+        </v-row>
         <component
           v-for="(component) in arrayComponents"
           :idCompo="component.idCompo"
@@ -45,7 +47,7 @@
           :is="component.TagSTimePicker"
           @removeCompoTime="removeCompoTime"
         ></component>
-        <div class="d-flex justify-end">        
+        <div class="d-flex justify-end">
           <v-btn
             x-small
             depressed
@@ -59,6 +61,37 @@
         </div>
       </div>
     </v-sheet>
+        <v-row justify="center">
+          <v-dialog
+            v-model="dialogAceptCancelRemoveRestaurant"
+            persistent
+            max-width="290"
+          >
+            <v-card>
+              <v-card-title class="headline">
+                ¿Eliminar restaurant?
+              </v-card-title>
+              <v-card-text>Al aceptar, este restaurant se eliminará.</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red"
+                  text
+                  @click="dialogAceptCancelRemoveRestaurant = false"
+                >
+                  CANCELAR
+                </v-btn>
+                <v-btn
+                  color="blue"
+                  text
+                  @click="btnApplyRemoveRestaurant()"
+                >
+                  ACEPTAR
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
   </v-carousel-item>
 </template>
 
@@ -106,20 +139,20 @@ export default {
   },
   data() {
     return {
+    dialogAceptCancelRemoveRestaurant: false,
       componentID: this.idCompo + "" + this.objArrCompo.id,
       arrayComponents: [],
       countIdCompo: -1,
       id: this.idCompo,
       restaurantNameModel: null,
-      selectMenuTypeModel: [],
-      restaurantId: 0,
+      selectMenuTypeModel: []
     };
   },
   computed: {
     ...mapState({
-      hotel: (state) => state.HotelModule.hotel,
       restaurants: (state) => state.HotelModule.restaurants,
       schedules: (state) => state.HotelModule.schedules,
+      errorsRestaurants: (state) => state.HotelModule.errorsRestaurants
     }),
     computedRestaurantName: {
       get() {
@@ -145,10 +178,46 @@ export default {
         return this.selectMenuTypeModel;
       },
     },
+    computedErrorRestaurantName: {
+      get() {
+        let error = '';
+        this.errorsRestaurants.forEach((itemErrorRestaurant)=>{
+          if(typeof(itemErrorRestaurant.error.name) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRestaurant.componentID){
+              error = itemErrorRestaurant.error.name;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    },
+    computedErrorMenuType: {
+      get() {
+        let error = '';
+        this.errorsRestaurants.forEach((itemErrorRestaurant)=>{
+          if(typeof(itemErrorRestaurant.error.menu_type) != 'undefined'){
+            if(this.objArrCompo.componentID == itemErrorRestaurant.componentID){
+              error = itemErrorRestaurant.error.menu_type;
+            }
+          }
+          else{
+            return '';
+          }
+        })
+        return error;
+      }
+    }
   },
   methods: {
     //Esta mutacion setea schedules
     ...mapMutations(["setArrayRestaurants","setArraySchedules"]),
+    btnApplyRemoveRestaurant(){
+        this.dialogAceptCancelRemoveRestaurant = false;
+        this.removeCompo(this.id);
+    },
 
     removeCompo(id) {
       this.$emit("removeCompo", id);
@@ -200,7 +269,7 @@ export default {
           }
         }
       });
-      
+
       //Creamos la variable "newArraySchedules" que guardará el nuevo horario que se creo por medio de este boton
       let newArraySchedules = this.arrayComponents[this.arrayComponents.length-1].objArrCompo;
       //Y modificamos el state "schedules" insertando "newArraySchedules"
@@ -247,7 +316,7 @@ export default {
           }).map((currentStateSchedule) => { //Y a este retorno le aplicamos un map
               //Creamos un ciclo que permanezca activo mientras el contador sea mayor o igual a 0
               while (countCurrentStateSchedule >= 0) {
-                              
+
                 if(itemArrayComponents.objArrCompo.id == 'NEW'){
                   //Con el contador accedemos al indice del array "restaurantSchedules"
                   //Y verificamos si en este indice se encuentra una coincidencia de ids entre este indice y el id (que es el de restaurant)

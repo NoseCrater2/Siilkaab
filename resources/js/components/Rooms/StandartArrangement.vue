@@ -4,7 +4,7 @@
       <v-row>
         <v-col cols="8" xl="8" lg="8" md="8" sm="8" xs="8">
           <div class="font-weight-bold primary--text mb-3 mt-2">
-            Bedroom {{idCompo+1}}
+            Bedroom {{roomNumber + 1}}
           </div>
         </v-col>
         <v-col cols="4" xl="4" lg="6" md="4" sm="4" xs="4" class="d-flex align-center justify-end">
@@ -39,11 +39,18 @@ import StandartArrangementBeds from "../../components/Rooms/StandartArrangementB
 export default {
   name: "StandartArrangement",
   mounted() {
+      this.objArrCompo.componentID = this.componentID;
+      console.log(this.beds);
     this.beds.forEach((element, index) => {
       if(Array.isArray(element) == true){
-        if (element[0].idBedroom == this.idBedroomModel) {
-          this.indexArrayBedroomBeds.push(index)
-        }
+          if(element.length > 0){
+            if (element[0].idBedroom == this.idBedroomModel) {
+              this.indexArrayBedroomBeds.push(index)
+            }
+          }
+          else{
+              this.indexArrayBedroomBeds.push(index)
+          }
       }
       else if(Array.isArray(element) == false){
         if (element.idBedroom == this.idBedroomModel) {
@@ -61,6 +68,7 @@ export default {
   },
   data() {
     return {
+        componentID: this.idCompo + "" + this.objArrCompo.id,
       id: this.idCompo,
       indexArrayBedroomBeds: [],
       idBedroomModel: this.idBedroom,
@@ -74,14 +82,17 @@ export default {
     },
     addCompoButton() {
       this.countIdCompo++;
+      let putId = this.countIdCompo + "" + "NEW";
       this.arrayComponents.push({
         idCompo: this.countIdCompo,
         TagStandartArrBeds: StandartArrangementBeds,
         objArrCompo: {
           new: "NEW",
+          idCompoStandartArrangementBeds: putId,
           idBedroom: this.idBedroomModel,
           obj: {
             id: "NEW", //Se pone "NEW" para identificarlo en el posterior metodo PUT
+            bedroom_id: this.idCompoBedroom,
             type: "twin",
             quantity: 1,
           },
@@ -100,6 +111,7 @@ export default {
           );
         }
       })
+      console.log("ADDBED", this.beds)
     },
     addCompo(obj) {
       this.countIdCompo++;
@@ -140,7 +152,9 @@ export default {
       type: [ Number, String ]
     },
     idCompo: Number,
+    idCompoBedroom: String,
     objArrCompo: Object,
+    roomNumber: Number
   },
 };
 </script>

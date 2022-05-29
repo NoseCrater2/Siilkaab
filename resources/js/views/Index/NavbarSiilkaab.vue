@@ -8,6 +8,7 @@
       flat
       :clipped-left="$vuetify.breakpoint.smAndUp || $vuetify.breakpoint.xsOnly"
     >
+    <v-progress-linear absolute top height="4" color="blue-grey lighten-5" :active="localProgress > 0 ? true : false" v-model="localProgress"></v-progress-linear>
       <v-toolbar-title class="ml-n6 pl-4">
         <div class="d-flex align-center">
           <v-img
@@ -37,8 +38,8 @@
 
            <v-list >
             <v-list-item >
-              
-         
+
+
             <v-list-item-content>
               <v-list-item-title class="title">{{user.name+' '+user.last_name}}</v-list-item-title>
               <v-list-item-subtitle>{{user.type}}</v-list-item-subtitle>
@@ -46,8 +47,8 @@
             </v-list-item-content>
           </v-list-item>
             <v-divider></v-divider>
-           
-          </v-list> 
+
+          </v-list>
 
           <v-list nav dense>
             <v-list-item-group color="primary">
@@ -57,15 +58,15 @@
                 </v-list-item-icon>
                 <v-list-item-content>
                   <v-list-item-title>Perfil</v-list-item-title>
-                </v-list-item-content>    
+                </v-list-item-content>
               </v-list-item> -->
-              
+
 
             <v-list-item @click="logOut()">
               <v-list-item-icon>
                 <v-icon >mdi-logout</v-icon>
               </v-list-item-icon>
-  
+
               <v-list-item-content>
                 <v-list-item-title>Salir</v-list-item-title>
               </v-list-item-content>
@@ -79,19 +80,33 @@
 </template>
 
 <script>
-import {mapState} from 'vuex'
+import {mapState, mapMutations} from 'vuex'
 import axios from 'axios'
 export default {
-  
+    name: "NavbarSiilkaab",
+    data() {
+        return {
+            localProgress: 0
+        }
+    },
   computed:{
     ...mapState({
         isLoggedIn: (state) => state.isLoggedIn,
         user: (state) => state.user,
+        progressbarNavbarStateHotel: (state) => state.HotelModule.progressbarNavbarStateHotel,
+        progressbarNavbarStateRoomAndAmenity: (state) => state.RoomModule.progressbarNavbarStateRoomAndAmenity
       }),
   },
-  name: "NavbarSiilkaab",
-
+  watch:{
+      progressbarNavbarStateHotel(newValue, oldValue){
+        this.localProgress = newValue;
+      },
+      progressbarNavbarStateRoomAndAmenity(newValue, oldValue){
+        this.localProgress = newValue;
+      },
+  },
   methods:{
+      ...mapMutations(["setProgressbarNavbarStateHotel"]),
     async logOut(){
       try {
         axios.post("/logout");

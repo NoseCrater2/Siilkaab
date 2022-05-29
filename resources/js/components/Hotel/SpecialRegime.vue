@@ -1,26 +1,21 @@
 <template>
   <div>
-    <v-row class="d-flex align-center justify-center pa-6 mt-n7">
-      <v-col cols="12" md="2" sm="12" xs="12">
-        <v-btn small color="red" class="white--text mt-1" depressed @click="removeCompo(id)">
-          <v-icon left dark>mdi-close-circle</v-icon>Eliminar
-        </v-btn>
-      </v-col>
+    <v-row class="d-flex align-center justify-center pa-6 mt-n15">
       <!--MENU DESDE-->
-      <v-col cols="12" md="5" sm="12" xs="12" class="mt-8">
+      <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12" class="mt-xl-8 mt-lg-8">
         <div v-if="getStartDate!=null">
           <DateTimePicker :dates="getStartDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </div>
       </v-col>
 
       <!--MENU HASTA-->
-      <v-col cols="12" md="5" sm="12" xs="12" class="mt-8">
+      <v-col cols="12" xl="6" lg="6" md="12" sm="12" xs="12" class="mt-xl-8 mt-lg-8 mt-n9">
         <div v-if="getFinalDate!=null">
           <DateTimePicker :dates="getFinalDate" @sendNewHour="sendNewHour"></DateTimePicker>
         </div>
       </v-col>
 
-      <v-col cols="12" md="6" sm="12" xs="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="36">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -30,7 +25,7 @@
             <span class="caption">Sólo dormir. Sin regímenes</span>
           </v-tooltip>
       </v-col>
-      <v-col cols="12" md="6" sm="12" xs="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
         <v-select
           :items="prioritiesModel"
           :error-messages="computedErrorPriority"
@@ -41,7 +36,7 @@
           outlined
         ></v-select>
       </v-col>
-      <v-col cols="12" md="6" sm="12" xs="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="12">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -51,7 +46,7 @@
             <span class="caption">Alojamiento con desayuno incluido</span>
           </v-tooltip>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtBreakfastAdult"
           prepend-inner-icon="mdi-currency-usd"
@@ -64,7 +59,7 @@
           :error-messages="computedErrorLodgingBreakfastAdult"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtBreakfastChildren"
           prepend-inner-icon="mdi-currency-usd"
@@ -77,7 +72,7 @@
           :error-messages="computedErrorLodgingBreakfastChildren"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" sm="12" xs="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-right="18">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -87,7 +82,7 @@
             <span class="caption">Media pensión con desayuno y cena incluidos</span>
           </v-tooltip>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtHalfPensionAdult"
           prepend-inner-icon="mdi-currency-usd"
@@ -100,7 +95,7 @@
           :error-messages="computedErrorHalfPensionAdult"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtHalfPensionChildren"
           prepend-inner-icon="mdi-currency-usd"
@@ -113,7 +108,7 @@
           :error-messages="computedErrorHalfPensionChildren"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" sm="12" xs="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="6">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -123,7 +118,7 @@
             <span class="caption">Pensión completa con comida y cena</span>
           </v-tooltip>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtFullPensionAdult"
           prepend-inner-icon="mdi-currency-usd"
@@ -136,7 +131,7 @@
           :error-messages="computedErrorFullPensionAdult"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtFullPensionChildren"
           prepend-inner-icon="mdi-currency-usd"
@@ -149,7 +144,7 @@
           :error-messages="computedErrorFullPensionChildren"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="6" sm="12" xs="12">
+      <v-col cols="12" xl="6" lg="6" md="6" sm="6" xs="12">
           <v-tooltip top nudge-bottom="8" nudge-left="76">
             <template v-slot:activator="{ on, attrs }">
               <div v-bind="attrs" v-on="on">
@@ -159,7 +154,7 @@
             <span class="caption">Todo incluido</span>
           </v-tooltip>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model.number="computedTxtAllIncludedAdult"
           prepend-inner-icon="mdi-currency-usd"
@@ -172,7 +167,7 @@
           :error-messages="computedErrorAllIncludedAdult"
         ></v-text-field>
       </v-col>
-      <v-col cols="12" md="3" sm="12" xs="12">
+      <v-col cols="6" xl="3" lg="3" md="3" sm="3" xs="6">
         <v-text-field
           v-model="computedTxtAllIncludedChildren"
           prepend-inner-icon="mdi-currency-usd"
@@ -185,8 +180,44 @@
           :error-messages="computedErrorAllIncludedChildren"
         ></v-text-field>
       </v-col>
+        <v-col cols="12" xl="12" lg="12" md="12" sm="12" xs="12" class="d-flex justify-end">
+            <v-btn small color="red" class="white--text mt-1" depressed @click="dialogAceptCancelRemoveRegime = true">
+              <v-icon left dark>mdi-close-circle</v-icon>Eliminar
+            </v-btn>
+        </v-col>
     </v-row>
-    <v-divider></v-divider>
+    <v-divider :class="regimes.length > 1 ? 'mb-9' : ''"></v-divider>
+        <v-row justify="center">
+          <v-dialog
+            v-model="dialogAceptCancelRemoveRegime"
+            persistent
+            max-width="290"
+          >
+            <v-card>
+              <v-card-title class="headline">
+                ¿Eliminar regimen?
+              </v-card-title>
+              <v-card-text>Al aceptar, este regimen se eliminará.</v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="red"
+                  text
+                  @click="dialogAceptCancelRemoveRegime = false"
+                >
+                  CANCELAR
+                </v-btn>
+                <v-btn
+                  color="blue"
+                  text
+                  @click="btnApplyRemoveRegime()"
+                >
+                  ACEPTAR
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-row>
   </div>
 </template>
 
@@ -203,6 +234,7 @@ export default {
   },
   data() {
     return {
+        dialogAceptCancelRemoveRegime: false,
       //DATOS DEL FORMULARIO
       componentID: this.idCompo + "" + this.objArrCompo.id,
       id: this.idCompo,
@@ -646,6 +678,10 @@ export default {
     },
   },
   methods: {
+    btnApplyRemoveRegime(){
+        this.dialogAceptCancelRemoveRegime = false;
+        this.removeCompo(this.id);
+    },
     removeCompo(id) {
       this.$emit("removeCompo", id);
     },

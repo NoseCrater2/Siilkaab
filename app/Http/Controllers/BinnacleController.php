@@ -23,12 +23,12 @@ class BinnacleController extends Controller
         return  BinnacleIndexResource::collection(
             Binnacle::whereIn('actor_id',$users)->latest()->get()->unique('actor_id')
         );
-        
+
     }
 
-    
 
-    
+
+
 
     /**
      * Display the specified resource.
@@ -37,13 +37,13 @@ class BinnacleController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function show(Binnacle $binnacle)
-    {        
+    {
         return  BinnacleShowResource::collection(
             Binnacle::where('actor_id', $binnacle->actor_id)->orderBy('updated_at', 'desc')->get()
         );
     }
 
-  
+
 
 
     /**

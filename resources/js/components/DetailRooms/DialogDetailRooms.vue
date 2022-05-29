@@ -1,6 +1,5 @@
 <template>
     <v-dialog v-model="dialog" width="700" max-width="800" persistent >
-            
                 <v-card v-if="room">
                     <v-card-title>
                         {{room.name}}
@@ -15,26 +14,26 @@
                         <CardRoomInfo  v-else-if="icon == 'info'" />
 
                         <CalendarRoomDisponibility v-else-if="icon == 'disponibility'" />
-                       
+
                     </v-card-text>
                     <v-card-actions >
                         <v-btn-toggle tile group v-model="icon" color="blue" mandatory >
                             <v-btn small value="photos" class="ml-3">
-                                
+
                                 <v-icon left>
                                   mdi-image-multiple
                                 </v-icon>
                                 <span class="hidden-sm-and-down">Fotos</span>
                             </v-btn>
                             <v-btn small value="info">
-                               
+
                                 <v-icon left>
                                   mdi-file-document-outline
                                 </v-icon>
-                                 <span class="hidden-sm-and-down">Info</span>
+                                 <span class="hidden-sm-and-down">Información</span>
                             </v-btn>
                             <v-btn small value="disponibility">
-                               
+
                                 <v-icon left>
                                   mdi-calendar-month
                                 </v-icon>
@@ -42,7 +41,7 @@
                             </v-btn>
                         </v-btn-toggle>
                         <v-spacer></v-spacer>
-                        <v-btn class="mr-3" depressed  @click="closeRoomDetail" tile>Cerrar</v-btn>
+                        <v-btn class="mr-3" outlined  @click="closeRoomDetail" tile>Cerrar</v-btn>
                     </v-card-actions>
                 </v-card>
         </v-dialog>

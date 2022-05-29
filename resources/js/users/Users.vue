@@ -1,52 +1,71 @@
 <template>
   <div>
-    <div v-if="users === []"><!--Empieza tabla de carga -->
-      <v-app id="inspire">     
-        <v-data-table item-key="title" class="elevation-1" loading loading-text="Obteniendo datos..."></v-data-table>
-      </v-app>  
-    </div><!---------------------Empieza tabla de carga -->
+    <v-container class="elevation-1 outlined" fluid>
+    <div v-if="isLoadedPromises == false">
+      <v-app id="inspire">
+        <div class="text-center mb-7">
+          <span class="text-h4 text-uppercase font-weight-bold">Usuarios</span>
+        </div>
+        <v-data-table
+            item-key="title"
+            class="elevation-1"
+            loading
+            loading-text="Obteniendo datos...">
+        </v-data-table>
+      </v-app>
+    </div>
 
-    <div v-else><!---------------Empieza tabla de datos -->
+    <div v-else>
       <v-app id="inspire" >
-        <v-bottom-navigation  grow>
-          <div v-show="selected==! []?false:true">
-          <v-btn @click="showDeleteDialog()"><span color="error">ELIMINAR SELECCIÓN</span> <v-icon large color="error">mdi-delete-sweep</v-icon> </v-btn>
-          </div>
-          <v-divider class="mx-4"  inset vertical></v-divider>
-           <v-spacer></v-spacer>
+        <div class="text-center mb-7">
+          <span class="text-h4 text-uppercase font-weight-bold">Usuarios</span>
+        </div>
 
-           <h1>USUARIOS</h1>
-            
-           <v-spacer> </v-spacer>
-           <v-divider class="mx-4"  inset vertical></v-divider> 
-          <v-btn  @click="dialog = !dialog"> <span color="error">NUEVO USUARIO</span> <v-icon large color="primary">mdi-plus</v-icon></v-btn>
-        </v-bottom-navigation>
-        <v-card>
+        <v-card outlined tile>
           <v-data-table
-            v-model="selected"  
+            v-model="selected"
             item-key="id"
             show-select
             :headers="headers"
-            :items="users" 
-            :items-per-page="20"
+            :items="users"
             :single-select="singleSelect"
             multi-sort
-            class="elevation-1"
-            :search="search">
-              <template v-slot:top>
-                <v-toolbar flat color="white">   
-                    <v-spacer></v-spacer>
-                    <v-text-field
-                      v-model="search"
-                      append-icon="mdi-magnify"
-                      label="Buscar Usuario"
-                      single-line
-                      hide-details
-                      align="center"
-                    ></v-text-field>
-                    <v-spacer></v-spacer>
+            :search="search"
+            >
+                <template v-slot:top>
+                    <v-toolbar flat color="white" :style="!$vuetify.breakpoint.mdAndUp ? 'height: 146px !important' : ''">
+                        <v-row align="center" justify="center">
+                            <v-col cols="12" xl="3" lg="3" md="3" sm="6" xs="6" order="2" order-md="1" order-lg="1" order-xl="1">
+                              <div v-show="selected==! []?false:true">
+                                  <v-btn small depressed rounded outlined block color="red" @click="showDeleteDialog()">
+                                    <!-- <span class="black--text">ELIMINAR SELECCIÓN</span> -->
+                                    <v-icon dark>mdi-delete-sweep</v-icon>ELIMINAR
+                                  </v-btn>
+                              </div>
+                            </v-col>
+                            <v-col cols="12" xl="6" lg="6" md="6" sm="12" xs="12" order="1" order-md="2" order-lg="2" order-xl="2">
+                              <v-text-field
+                                v-model="search"
+                                append-icon="mdi-magnify"
+                                label="Buscar usuario"
+                                single-line
+                                hide-details
+                                outlined
+                                dense
+                              ></v-text-field>
+                            </v-col>
+                            <v-col cols="12" xl="3" lg="3" md="3" sm="6" xs="6" order="3" order-md="3" order-lg="3" order-xl="3">
+                                <v-btn small depressed rounded outlined block color="info" @click="dialog = !dialog">
+                                  <!-- <span class="black--text">NUEVO HOTEL</span> -->
+                                  <v-icon left dark>mdi-plus</v-icon>NUEVO USUARIO
+                                </v-btn>
+                            </v-col>
+                        </v-row>
+                    </v-toolbar>
+                    <div class="d-flex align-center ml-2 my-n4">
+                        <v-switch v-model="singleSelect" label="Selección única" class="pa-3" dense inset></v-switch>
+                    </div>
                     <v-dialog v-model="dialog" persistent max-width="500px">
-                      
                       <v-card>
                         <v-card-title>
                           <span class="headline">{{ formTitle }}</span>
@@ -57,10 +76,10 @@
                               <v-row>
 
                                 <v-col cols="12" sm="6" md="6">
-                                  <v-text-field 
-                                    label="Nombre(s)*" 
-                                    v-model="editedItem.name" 
-                                    required  
+                                  <v-text-field
+                                    label="Nombre(s)*"
+                                    v-model="editedItem.name"
+                                    required
                                     :error-messages="getErrors.data.name"
                                   ></v-text-field>
                                 </v-col>
@@ -72,7 +91,7 @@
                                 <v-col cols="12">
                                   <v-text-field label="Email*" v-model="editedItem.email" required :error-messages="getErrors.data.email"></v-text-field>
                                 </v-col>
-                                
+
                                 <v-col cols="12" sm="6" md="6">
                                   <v-select
                                     :items="user.type == 'super'?superTypes:administratorTypes"
@@ -82,7 +101,7 @@
                                     required
                                   ></v-select>
                                 </v-col>
-                                
+
                                 <v-col cols="12" sm="6" md="6">
                                   <v-select
                                   :items="['Español', 'English']"
@@ -92,7 +111,7 @@
                                   required
                                   ></v-select>
                                 </v-col>
-                                
+
                                 <v-col cols="12">
                                   <div v-if="timezones !== []">
                                     <v-autocomplete
@@ -113,9 +132,9 @@
                                     ></v-autocomplete>
                                   </div>
                                 </v-col>
-                                
+
                                 <v-col cols="12">
-                                  
+
                                     <v-autocomplete
                                     v-if="hotels"
                                       v-model="editedItem.hotels"
@@ -150,7 +169,7 @@
                                 <v-col cols="12" v-if="user.type == 'super' && editedItem.type != 'super'">
                                   <v-alert dense type="info" style="font-size: 12px;">
                                     Usuarios Administradores pueden o no tener un usuario Administrador a su cargo,
-                                    usuarios Managers deben tener un usuario Administrador a su cargo. 
+                                    usuarios Managers deben tener un usuario Administrador a su cargo.
                                   </v-alert>
                                   <v-autocomplete
                                   v-model="editedItem.parent_id"
@@ -173,7 +192,7 @@
                               </v-row>
                             </v-container>
                           </v-form>
-                          
+
                           </v-card-text>
                             <v-card-actions>
                               <v-spacer></v-spacer>
@@ -196,29 +215,34 @@
                         </v-card-actions>
                       </v-card>
                     </v-dialog>
-            
-                </v-toolbar>
+                </template>
 
-                <v-switch v-model="singleSelect" label="Selección única" class="pa-3"></v-switch>
-
-              </template>
-
-              <template v-slot:item.actions="{ item }">
-                <v-icon  @click="editItem(item)"> mdi-pencil</v-icon>
-                <!--<v-icon small @click="showDeleteDialog(item)"> mdi-delete</v-icon>-->
-              </template>
-          </v-data-table>
+                <template v-slot:item.actions="{ item }">
+                    <v-row align="center" justify="center">
+                        <div>
+                            <v-btn
+                                icon
+                                @click="editItem(item)"
+                                class="text-decoration-none mx-4">
+                                <v-icon>mdi-pencil</v-icon>
+                            </v-btn>
+                        </div>
+                    </v-row>
+                </template>
+            </v-data-table>
         </v-card>
-      </v-app>       
-    </div>     
+      </v-app>
+    </div>
+    </v-container>
   </div>
 </template>
 
 <script>
-import {mapState ,mapGetters } from 'vuex';
+import {mapState ,mapGetters, mapActions } from 'vuex';
 export default {
   data(){
     return {
+        isLoadedPromises: false,
       editedIndex: -1,
       dialog: false,
       deleteDialog: false,
@@ -275,15 +299,15 @@ export default {
       },
 
       headers: [
-        {text: 'Nombre',align: 'start',sortable: true,value: 'all_name',},
-        { text: 'Email', value: 'email' },
-        { text: 'Tipo', value: 'type' },
-        { text: 'ID', value: 'id' },
-        { text: 'Actions', value: 'actions', sortable: false },
+        { text: 'ID', value: 'id', align: 'center' },
+        { text: 'Tipo', value: 'type', align: 'center' },
+        { text: 'Nombre', sortable: true, value: 'all_name', align: 'center' },
+        { text: 'Email', value: 'email', align: 'center' },
+        { text: 'Acciones', value: 'actions', sortable: false, align: 'center' },
       ],
     };
   },
-    
+
   computed:{
     formTitle(){
       return this.editedIndex === -1 ? 'Nuevo Usuario' : 'Editar Usuario'
@@ -303,17 +327,30 @@ export default {
       // 'getAssignHotels',
       'getUserId',
      ]),
-  
+
   },
 
-  mounted(){  
-    this.$store.dispatch('getUsers')
-    this.$store.dispatch('getTimeZones')
-    this.$store.dispatch('getCurrencies')
-    this.$store.dispatch('getHotelsForAdmin') 
+  mounted(){
+      this.chargePromises();
   },
 
   methods:{
+    ...mapActions(['getUsers', 'getTimeZones', 'getCurrencies', 'getHotelsForAdmin']),
+    async chargePromises(){
+        let promiseUsers = 1;
+        let promiseTimeZones = 1;
+        let promiseCurrencies = 1;
+        let promiseHotelsAdmin = 1;
+        promiseUsers = this.getUsers();
+        promiseTimeZones = this.getTimeZones();
+        promiseCurrencies = this.getCurrencies();
+        promiseHotelsAdmin = this.getHotelsForAdmin();
+        await Promise.all([promiseUsers, promiseTimeZones, promiseCurrencies, promiseHotelsAdmin]).then(values => {
+            this.isLoadedPromises = true;
+        }).catch(()=>{
+            this.isLoadedPromises = true;
+        });
+    },
     editItem (item) {
       this.editedIndex = this.users.indexOf(item)
       this.editedItem = Object.assign({},item)
@@ -325,21 +362,21 @@ export default {
 
 
   showDeleteDialog () {
-    this.deleteDialog = true  
+    this.deleteDialog = true
   },
 
   deleteItem(){
-  
+
   this.selected.forEach(element => {
     this.userIds.userIds.push(element.id)
   });
-  
+
    this.$store.dispatch('deleteUser',this.userIds).then(()=>{
       this.close();
     });
 
   },
-     
+
   close () {
      this.userIds.userIds= []
     this.selectedHotels = null
@@ -355,32 +392,32 @@ export default {
       })
     this.$store.commit('setErrors',this.defaultErrors)
   },
-    
+
   save () {
     if(this.user.type == 'administrator'){
       this.editedItem.parent_id = this.user.id
-      
-    }  
+
+    }
     if (this.editedIndex > -1) {
-      try {    
+      try {
         this.$store.dispatch('editUser',this.editedItem).then(()=>{
           if(this.getStatus=== 200){
             this.close()
          }
         })
         } catch (error) {
-          
+
         }
-         
-    } else { 
-      try {     
+
+    } else {
+      try {
         this.$store.dispatch('saveUser',this.editedItem).then(()=>{
           if(this.getStatus=== 200){
             this.close()
           }
           })
-        } catch (error) {   
-        }           
+        } catch (error) {
+        }
       }
     },
   }
@@ -388,7 +425,11 @@ export default {
 }
 </script>
 
-
-<style  scoped>
-
+<style scoped>
+/* No borres este estilo aunque lo marque mal el visual. Asi es */
+@media only screen and (max-width: 959px) {
+    >>>.v-toolbar__content{
+      height: 146px !important;
+    }
+}
 </style>
