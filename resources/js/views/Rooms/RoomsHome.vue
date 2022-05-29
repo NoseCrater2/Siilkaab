@@ -101,7 +101,7 @@
                       <v-btn text @click="routerPushExistingRoom(room.id)">
                         Editar
                       </v-btn>
-                      <v-btn color="red" text>Eliminar</v-btn>
+                      <v-btn color="red" @click="showDeleteDialog(room.id)" text>Eliminar</v-btn>
                       <v-btn
                         color="blue darken-3"
                         text
@@ -140,6 +140,20 @@
               <RoomAmenities :changeRoomAmenitiesColors="changeRoomAmenitiesColors" @modifyTabModelFromRoomAmenities="modifyTabModelFromRoomAmenities"></RoomAmenities>
             </v-tab-item>
           </v-tabs-items>
+            <v-dialog v-model="deleteDialog" persistent max-width="290">
+              <v-card>
+                <v-card-title class="headline">¿Eliminar habitación?</v-card-title>
+                <v-card-text>
+                  Está a punto de eliminar la habitación.
+                  Esta acción no se puede deshacer. ¿Continuar?
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn color="gray darken-1" text @click="closeDeleteDialog()">CANCELAR</v-btn>
+                  <v-btn color="red darken-1" text @click="deleteItem()">ELIMINAR</v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
         </div>
 
         <DialogAdditionalImages
@@ -161,6 +175,8 @@ export default {
   name: "RoomsHome",
   data() {
     return {
+        localModelRoomId: -1,
+        deleteDialog: false,
         isLoadedPromises: false,
         loadingFindBar: false,
         changeRoomAmenitiesColors: null,
@@ -178,6 +194,22 @@ export default {
   },
 
   methods: {
+    showDeleteDialog(roomID) {
+        this.localModelRoomId = roomID;
+        console.log(this.localModelRoomId)
+      this.deleteDialog = true;
+    },
+    closeDeleteDialog() {
+        this.localModelRoomId = -1;
+      this.deleteDialog = false;
+    },
+    deleteItem() {
+      this.$store.dispatch("deleteRoomAXIOS", this.localModelRoomId).then(() => {
+        this.closeDeleteDialog();
+      }).catch(()=>{
+          this.closeDeleteDialog();
+      });
+    },
     async chargePromises(){
         let promiseHotels = 1;
         let promiseRooms = 1;

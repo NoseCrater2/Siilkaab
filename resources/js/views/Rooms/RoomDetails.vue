@@ -274,7 +274,7 @@
           </v-col>
         </v-row>
       </v-card>
-      <v-btn block color="primary" @click="btnUploadAXIOSRoomChangues()">Continuar</v-btn>
+      <v-btn block color="primary" :disabled="isLoadingSave" :loading="isLoadingSave" @click="btnUploadAXIOSRoomChangues()">GUARDAR</v-btn>
     </v-container>
   </div>
 </template>
@@ -293,6 +293,7 @@ export default {
   },
   data() {
     return {
+        isLoadingSave: false,
         countLastElementArrayComponents: 0,
       arrayComponents: [],
       countIdCompo: -1,
@@ -527,6 +528,7 @@ export default {
       this.beds.push({idBedroom: "NEW"+this.countIdCompo});
     },
     btnUploadAXIOSRoomChangues(){
+        this.isLoadingSave = true;
       //Seteamos las variables de error
       this.setErrorsDetailsRoom([])
       this.setStatusDetailsRoom(0)
@@ -542,9 +544,18 @@ export default {
           })
         }
         this.putEditBedrooms(this.bedrooms).then(()=>{
+            this.isLoadingSave = false;
             this.putEditBeds(this.beds).then(()=>{
+                this.isLoadingSave = false;
+                this.$router.push({ name: "RoomsHome" });
                 console.log(this.bedrooms, this.beds)
+            }).catch(()=>{
+                this.$router.push({ name: "RoomsHome" });
+                this.isLoadingSave = false;
             });
+        }).catch(()=>{
+            this.$router.push({ name: "RoomsHome" });
+            this.isLoadingSave = false;
         });
       });
     }

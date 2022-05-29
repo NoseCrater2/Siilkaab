@@ -117,6 +117,10 @@ const RoomModule = {
         setCurrentHotelRooms(state, currentHotelRooms) {
             state.currentHotelRooms = currentHotelRooms;
         },
+        deleteRoom(state, deletedRoomId) {
+            let r = state.currentHotelRooms.find(currentRoom => currentRoom.id === deletedRoomId);
+            state.currentHotelRooms.splice(state.currentHotelRooms.indexOf(r), 1);
+        },
         setRoomDetails(state, roomDetails) {
             state.roomDetails = roomDetails;
         },
@@ -202,24 +206,25 @@ const RoomModule = {
         },
 
         postAddBeds(state, beds){
-            let positionStateBeds = [];
-            console.log("MUTATION ADD BEDS", beds)
+            // let positionStateBeds = [];
             //ASIGNAMOS LAS BEDS AL STATE BEDS
             beds.forEach(itemBed => {
-                for (let outterIndex = 0; outterIndex < state.beds.length; index++) {
-                    for (let index = 0; index < stateBed.length; index++) {
-                        if(state.beds[outterIndex][index].idBedroom == itemBed.bedroom_id){
-                            if(typeof(state.beds[outterIndex][index].obj) != 'undefined'){
-                                if(Object.keys(state.beds[outterIndex][index].obj).length > 0){
-                                    if(state.beds[outterIndex][index].componentID === itemBed.componentID){
-                                        positionStateBeds.push({outside: outterIndex, inside: index});
-                                        Object.assign(state.beds[outterIndex][index].obj, itemBed);
+                state.beds.forEach((outStateBedElement, outIndexStateBedElement)=>{
+                    state.beds[outIndexStateBedElement].forEach((inStateBedElement, inIndexStateBedElement)=>{
+                        if(inStateBedElement.idBedroom == itemBed.bedroom_id){
+                            if(typeof(inStateBedElement.obj) != 'undefined'){
+                                if(Object.keys(inStateBedElement.obj).length > 0){
+                                    if(inStateBedElement.componentID === itemBed.componentID){
+                                        // positionStateBeds.push({outside: outIndexStateBedElement, inside: inIndexStateBedElement});
+                                        let newItemBed = JSON.parse(JSON.stringify(itemBed));
+                                        delete inStateBedElement.new;
+                                        Object.assign(inStateBedElement.obj, newItemBed);
                                     }
                                 }
                             }
                         }
-                    }
-                }
+                    })
+                })
             });
             // if(positionStateBeds.length > 0){
             //     positionStateBeds.forEach(elementPositionBed=>{
@@ -234,19 +239,20 @@ const RoomModule = {
         putUpdateBeds(state, beds) {
             //ASIGNAMOS LAS BEDS AL STATE DE BEDS
             beds.forEach(itemBed => {
-                for (let stateBed of state.beds) {
-                    for (let index = 0; index < stateBed.length; index++) {
-                        if(stateBed[index].idBedroom == itemBed.bedroom_id){
-                            if(typeof(stateBed[index].obj) != 'undefined'){
-                                if(Object.keys(stateBed[index].obj).length > 0){
-                                    if(stateBed[index].obj.id === itemBed.id){
-                                        Object.assign(stateBed[index].obj, itemBed.obj);
+                state.beds.forEach((outStateBedElement, outIndexStateBedElement)=>{
+                    state.beds[outIndexStateBedElement].forEach((inStateBedElement, inIndexStateBedElement)=>{
+                        if(inStateBedElement.idBedroom == itemBed.bedroom_id){
+                            if(typeof(inStateBedElement.obj) != 'undefined'){
+                                if(Object.keys(inStateBedElement.obj).length > 0){
+                                    if(inStateBedElement.id === itemBed.id){
+                                        let updateItemBed = JSON.parse(JSON.stringify(itemBed));
+                                        Object.assign(inStateBedElement.obj, updateItemBed);
                                     }
                                 }
                             }
                         }
-                    }
-                }
+                    })
+                })
             });
         },
 
@@ -255,8 +261,8 @@ const RoomModule = {
             let localDeleteBedroomIndex = [];
             state.beds.forEach((stateItemBed, index)=>{
                 for (let indexFor = 0; indexFor < stateItemBed.length; indexFor++) {
-                    if(typeof(stateItemBed[indexFor].deletedBedroom) != "undefined"){
-                        if(stateItemBed[indexFor].deletedBedroom == "DELETED"){
+                    if((typeof(stateItemBed[indexFor].deletedBedroom) != "undefined") || (typeof(stateItemBed[indexFor].deleted) != "undefined")){
+                        if((stateItemBed[indexFor].deletedBedroom == "DELETED") || (stateItemBed[indexFor].deleted == "DELETED")){
                             localDeleteBedroomIndex.push({x: index, y: indexFor})
                         }
                     }
@@ -268,44 +274,41 @@ const RoomModule = {
                     state.beds[elementIndex.x].splice(elementIndex.y, 1);
                 }
             })
+
             //LUEGO, VERIFICAMOS BEDS ESPECIFICAS DE RESTAURANTES
-            let deletedSpecificBedsIndex = []
-            state.beds.forEach((stateBedroomBedsItem, indexStateBedroomBeds)=>{
-                for (let index = 0; index < stateBedroomBedsItem.length; index++) {
-                    beds.forEach(localBedsItem=>{
-                        if(localBedsItem.obj.bedroom_id == stateBedroomBedsItem[index].idBedroom){
-                            if(localBedsItem.obj.id != "NEW"){
-                                if(localBedsItem.obj.id == stateBedroomBedsItem[index].obj.id) {
-                                    let newBed = JSON.parse(JSON.stringify(localBedsItem))
-                                    newBed.obj = {}
-                                    delete newBed.deleted;
-                                    deletedSpecificBedsIndex.push({indexStateBedroomBeds: {x: indexStateBedroomBeds, y: index}, componentID: stateBedroomBedsItem[index].componentID, newBed: newBed})
-                                }
-                            }
-                            else if(localBedsItem.obj.id == "NEW"){
-                                if(localBedsItem.componentID == stateBedroomBedsItem[index].componentID) {
-                                    let newBed = JSON.parse(JSON.stringify(localBedsItem))
-                                    newBed.obj = {}
-                                    delete newBed.deleted;
-                                    deletedSpecificBedsIndex.push({indexStateBedroomBeds: {x: indexStateBedroomBeds, y: index}, componentID: stateBedroomBedsItem[index].componentID, newBed: newBed})
-                                }
-                            }
-                        }
-                    })
-                }
-            })
-            console.log("STATEBEDS", state.beds)
-            console.log("DELETEDSPECIFICINDES", deletedSpecificBedsIndex)
+            // let deletedSpecificBedsIndex = []
+            // state.beds.forEach((stateBedroomBedsItem, indexStateBedroomBeds)=>{
+            //     for (let index = 0; index < stateBedroomBedsItem.length; index++) {
+            //         beds.forEach(localBedsItem=>{
+            //             if(localBedsItem.obj.bedroom_id == stateBedroomBedsItem[index].idBedroom){
+            //                 if(localBedsItem.obj.id != "NEW"){
+            //                     if(localBedsItem.obj.id == stateBedroomBedsItem[index].obj.id) {
+            //                         let newBed = JSON.parse(JSON.stringify(localBedsItem))
+            //                         newBed.obj = {}
+            //                         delete newBed.deleted;
+            //                         deletedSpecificBedsIndex.push({indexStateBedroomBeds: {x: indexStateBedroomBeds, y: index}, componentID: stateBedroomBedsItem[index].componentID, newBed: newBed})
+            //                     }
+            //                 }
+            //                 else if(localBedsItem.obj.id == "NEW"){
+            //                     if(localBedsItem.componentID == stateBedroomBedsItem[index].componentID) {
+            //                         let newBed = JSON.parse(JSON.stringify(localBedsItem))
+            //                         newBed.obj = {}
+            //                         delete newBed.deleted;
+            //                         deletedSpecificBedsIndex.push({indexStateBedroomBeds: {x: indexStateBedroomBeds, y: index}, componentID: stateBedroomBedsItem[index].componentID, newBed: newBed})
+            //                     }
+            //                 }
+            //             }
+            //         })
+            //     }
+            // })
+
             //PROCEDEMOS A ELIMINAR LAS BEDS ESPECIFICAS
-            deletedSpecificBedsIndex.forEach(elementIndex=>{
-                let findedIndex = state.beds[elementIndex.indexStateBedroomBeds.x].findIndex(elementFinded=> elementFinded.componentID == elementIndex.componentID)
-                if(findedIndex > -1){
-                    console.log("BEDELIMINATEDJAJAJAJAJAJAJAJ", state.beds[elementIndex.indexStateBedroomBeds.x][findedIndex])
-                    state.beds[elementIndex.indexStateBedroomBeds.x][findedIndex] = JSON.parse(JSON.stringify(elementIndex.newBed))
-                    // Object.assign(state.beds[elementIndex.indexStateBedroomBeds.x][findedIndex], elementIndex.newBed);
-                }
-            })
-            console.log("DELETEDBEDSSTATE", state.beds)
+            // deletedSpecificBedsIndex.forEach(elementIndex=>{
+            //     let findedIndex = state.beds[elementIndex.indexStateBedroomBeds.x].findIndex(elementFinded=> elementFinded.componentID == elementIndex.componentID)
+            //     if(findedIndex > -1){
+            //         state.beds[elementIndex.indexStateBedroomBeds.x][findedIndex] = JSON.parse(JSON.stringify(elementIndex.newBed))
+            //     }
+            // })
         },
 
         setSearchErrors(state, errors) {
@@ -665,9 +668,6 @@ const RoomModule = {
                     }
                 })
                 if(arrayDeletedBeds.length > 0){
-                    //SI AL GUARDAR CAMBIO Y GUARDO, LA CANTIDAD DE VECES QUE CAMBIO Y GUARDO AL REFRESCAR APARECERA EN NUMERO
-                    //FALTA VERIFICAR QUE AGREGUE BIEN LOS ELEMENTOS AL STATE
-                    //FALTA ELIMINAR BIEN LOS ELEMENTOS
                     await dispatch("deleteBedsAXIOS", arrayDeletedBeds);
                 }
                 if(postBeds.length > 0){
@@ -688,7 +688,6 @@ const RoomModule = {
             let status;
             for (const itemBed of localPostBeds) {
                 try {
-                    console.log("ADDITEM", itemBed.obj)
                     const requestAddItemBed = await axios.post(`/api/beds`, itemBed.obj);
                     let trasformedRequest = requestAddItemBed.data.data;
                     trasformedRequest.componentID = itemBed.componentID;
@@ -760,7 +759,12 @@ const RoomModule = {
                 commit("setStatusBeds", error.response.status);
             }
         },
-
+        deleteRoomAXIOS: async function({ commit }, roomId){
+            try {
+                const request = await axios.delete(`/api/rooms/${roomId}`);
+                commit("deleteRoom", roomId);
+            } catch (error) {}
+        },
         deleteImage: async function({ commit }, roomId){
             try {
                 const request = await axios.delete('/api/images/'+roomId);
